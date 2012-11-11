@@ -19,7 +19,7 @@ Please notice that [WooCommerce](http://wordpress.org/extend/plugins/woocommerce
 
 ### Descrição em Português:
 
-Adiciona novos campos para Pessoa Física ou Juridíca, Data de Nascimento, Sexo, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
+Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
 
 É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
 
