@@ -87,3 +87,4 @@ You should have received a copy of the GNU General Public License along with Aut
 1. screenshot-1.png
 2. screenshot-2.png
 3. screenshot-3.png
+4. screenshot-4.png
