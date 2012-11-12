@@ -3,7 +3,7 @@ Contributors: claudiosanches
 Tags: ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce
 Requires at least: 3.0
 Tested up to: 3.4.2
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,7 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * MailCheck jQuery: [https://github.com/Kicksend/mailcheck](https://github.com/Kicksend/mailcheck).
 * Masked Input jQuery: [https://github.com/digitalBush/jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput).
-* Republica Virtual - WebService CEP: [http://www.republicavirtual.com.br/cep/](http://www.republicavirtual.com.br/cep/).
+* Tools Web - WebService CEP: [http://www.toolsweb.com.br/?webservice](http://www.toolsweb.com.br/?webservice).
 
 == Installation ==
 
@@ -72,11 +72,19 @@ You should have received a copy of the GNU General Public License along with Aut
 
 == Changelog ==
 
+= 1.1 =
+
+* Trocado o Webservice de CEP da http://www.republicavirtual.com.br/ para http://www.toolsweb.com.br/.
+
 = 1.0 =
 
-* Initial Relase.
+* Primeira versão.
 
 == Upgrade Notice ==
+
+= 1.1 =
+
+* Atualização no Webserice de CEP.
 
 = 1.0 =
 

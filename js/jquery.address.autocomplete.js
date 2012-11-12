@@ -14,26 +14,17 @@ jQuery(document).ready(function($) {
 
             // Check country is BR.
             if (cep != '' && cep.length == 8 && country == 'BR') {
-                $.getScript('http://cep.republicavirtual.com.br/web_cep.php?cep=' + cep + '&formato=javascript', function() {
+                $.getScript('http://www.toolsweb.com.br/webservice/clienteWebService.php?cep=' + cep + '&formato=javascript', function() {
 
-                    // Check if is valid CEP.
-                    if (unescape(resultadoCEP['resultado']) == '1') {
-                        if (unescape(resultadoCEP['tipo_logradouro']) != '') {
-                            $('#' + field + '_address_1').val(unescape(resultadoCEP['tipo_logradouro']) + ' ' + unescape(resultadoCEP['logradouro']));
-                        }
-                        else {
-                            $('#' + field + '_address_1').val(unescape(resultadoCEP['logradouro']));
-                        }
-                        $('#' + field + '_neighborhood').val(unescape(resultadoCEP['bairro']));
-                        $('#' + field + '_city').val(unescape(resultadoCEP['cidade']));
-                        $('#' + field + '_state').val(unescape(resultadoCEP['uf']));
+                    if (unescape(resultadoCEP['tipoLogradouro']) != '') {
+                        $('#' + field + '_address_1').val(unescape(resultadoCEP['tipoLogradouro']) + ' ' + unescape(resultadoCEP['logradouro']));
                     }
-
-                    // Check if is a city with only CEP.
-                    if (unescape(resultadoCEP['resultado']) == '2') {
-                        $('#' + field + '_city').val(unescape(resultadoCEP['cidade']));
-                        $('#' + field + '_state').val(unescape(resultadoCEP['uf']));
+                    else {
+                        $('#' + field + '_address_1').val(unescape(resultadoCEP['logradouro']));
                     }
+                    $('#' + field + '_neighborhood').val(unescape(resultadoCEP['bairro']));
+                    $('#' + field + '_city').val(unescape(resultadoCEP['cidade']));
+                    $('#' + field + '_state').val(unescape(resultadoCEP['estado']));
 
                 });
             }
