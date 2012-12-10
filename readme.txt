@@ -3,7 +3,7 @@ Contributors: claudiosanches
 Tags: ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce
 Requires at least: 3.0
 Tested up to: 3.5
-Stable tag: 1.2
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ You should have received a copy of the GNU General Public License along with Aut
 
 == Changelog ==
 
+= 1.2.1 10/12/2012 =
+
+* Corrigida a máscara do campo *Data de Nascimento*.
+
 = 1.2 10/12/2012 =
 
 * Adicionadas máscaras para campos de CEP.
@@ -86,7 +90,11 @@ You should have received a copy of the GNU General Public License along with Aut
 
 == Upgrade Notice ==
 
-= 1.1 =
+= 1.2.1 =
+
+* Fixed Birthdate mask.
+
+= 1.2 =
 
 * Added Zip code mask.
 
