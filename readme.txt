@@ -2,8 +2,8 @@
 Contributors: claudiosanches
 Tags: ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce
 Requires at least: 3.0
-Tested up to: 3.4.2
-Stable tag: 1.1
+Tested up to: 3.5
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ You should have received a copy of the GNU General Public License along with Aut
 
 == Changelog ==
 
+= 1.2 10/12/2012 =
+
+* Adicionadas máscaras para campos de CEP.
+
 = 1.1 =
 
 * Trocado o Webservice de CEP da http://www.republicavirtual.com.br/ para http://www.toolsweb.com.br/.
@@ -84,7 +88,11 @@ You should have received a copy of the GNU General Public License along with Aut
 
 = 1.1 =
 
-* Atualização no Webserice de CEP.
+* Added Zip code mask.
+
+= 1.1 =
+
+* Update address Webserice.
 
 = 1.0 =
 
