@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Juridíca, Data de Nascimento, Sexo, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://www.claudiosmweb.com/
- * Version: 1.2.1
+ * Version: 1.2.2
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -63,6 +63,9 @@ class WC_BrazilianCheckoutFields {
 
         // Admin Custom order billing fields.
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
+
+		// Save custom billing & shipping fields from admin.
+		add_action( 'save_post', array( &$this,'save_custom_fields' ) );
 
         // User edit custom fields.
         add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
@@ -865,6 +868,22 @@ class WC_BrazilianCheckoutFields {
 
         echo $html;
     }
+
+    /**
+     * Save custom fields.
+     *
+     * @param  array $post_id Post ID.
+     * @return void
+     */
+
+	public function save_custom_fields($post_id) {
+		global $post_type;
+		if( $post_type == 'shop_order' ) {
+			update_post_meta( $post_id, '_billing_neighborhood', stripslashes( $_POST['_billing_neighborhood'] ));
+			update_post_meta( $post_id, '_shipping_neighborhood', stripslashes( $_POST['_shipping_neighborhood'] ));
+		}
+		return;
+	}
 
     /**
      * Custom user edit fields.
