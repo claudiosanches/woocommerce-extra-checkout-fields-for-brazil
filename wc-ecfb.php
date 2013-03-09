@@ -134,7 +134,6 @@ class WC_BrazilianCheckoutFields {
         $default = array(
             'person_type'     => '1',
             'birthdate_sex'   => '1',
-            'neighborhood'    => '1',
             'cell_phone'      => '1',
             'mailcheck'       => '1',
             'maskedinput'     => '1',
@@ -227,20 +226,6 @@ class WC_BrazilianCheckoutFields {
                 'menu' => $option,
                 'id' => 'birthdate_sex',
                 'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'wcbcf' )
-            )
-        );
-
-        // Neighborhood option.
-        add_settings_field(
-            'neighborhood',
-            __( 'Display Neighborhood:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
-            $option,
-            'options_section',
-            array(
-                'menu' => $option,
-                'id' => 'neighborhood',
-                'label' => __( 'If checked show the Neighborhood field in billing and shipping options.', 'wcbcf' )
             )
         );
 
@@ -515,16 +500,12 @@ class WC_BrazilianCheckoutFields {
             'clear'    => true,
         );
 
-        if ( isset( $settings['neighborhood'] ) ) {
-
-            // Billing Neighborhood.
-            $fields['billing']['billing_neighborhood'] = array(
-                'label'       => __( 'Neighborhood', 'wcbcf' ),
-                'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
-                'clear'       => true
-            );
-
-        }
+        // Billing Neighborhood.
+        $fields['billing']['billing_neighborhood'] = array(
+            'label'       => __( 'Neighborhood', 'wcbcf' ),
+            'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
+            'clear'       => true
+        );
 
         // Billing City.
         $fields['billing']['billing_city'] = array(
@@ -665,16 +646,12 @@ class WC_BrazilianCheckoutFields {
             'clear'    => true,
         );
 
-        if ( isset( $settings['neighborhood'] ) ) {
-
-            // Shipping Neighborhood.
-            $fields['shipping']['shipping_neighborhood'] = array(
-                'label'       => __( 'Neighborhood', 'wcbcf' ),
-                'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
-                'clear'       => true
-            );
-
-        }
+        // Shipping Neighborhood.
+        $fields['shipping']['shipping_neighborhood'] = array(
+            'label'       => __( 'Neighborhood', 'wcbcf' ),
+            'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
+            'clear'       => true
+        );
 
         // Shipping City.
         $fields['shipping']['shipping_city'] = array(
@@ -821,12 +798,8 @@ class WC_BrazilianCheckoutFields {
                     $html .= '<strong>' . __( 'Sex', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_sex', true ) . '<br />';
                 }
 
-                if ( isset( $settings['neighborhood'] ) ) {
-
-                    // Neighborhood Information.
-                    $html .= '<strong>' . __( 'Neighborhood', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_neighborhood', true ) . '<br />';
-
-                }
+                // Neighborhood Information.
+                $html .= '<strong>' . __( 'Neighborhood', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_neighborhood', true ) . '<br />';
 
                 if ( isset( $settings['cell_phone'] ) ) {
 
@@ -948,14 +921,10 @@ class WC_BrazilianCheckoutFields {
             'description' => ''
         );
 
-        if ( isset( $settings['neighborhood'] ) ) {
-
-            $fields['billing']['fields']['billing_neighborhood'] = array(
-                'label' => __( 'Neighborhood', 'wcbcf' ),
-                'description' => ''
-            );
-
-        }
+        $fields['billing']['fields']['billing_neighborhood'] = array(
+            'label' => __( 'Neighborhood', 'wcbcf' ),
+            'description' => ''
+        );
 
         $fields['billing']['fields']['billing_city'] = array(
             'label' => __( 'City', 'wcbcf' ),
@@ -1015,14 +984,10 @@ class WC_BrazilianCheckoutFields {
             'description' => ''
         );
 
-        if ( isset( $settings['neighborhood'] ) ) {
-
-            $fields['shipping']['fields']['shipping_neighborhood'] = array(
-                'label' => __( 'Neighborhood', 'wcbcf' ),
-                'description' => ''
-            );
-
-        }
+        $fields['shipping']['fields']['shipping_neighborhood'] = array(
+            'label' => __( 'Neighborhood', 'wcbcf' ),
+            'description' => ''
+        );
 
         $fields['shipping']['fields']['shipping_city'] = array(
             'label' => __( 'City', 'wcbcf' ),
@@ -1048,14 +1013,10 @@ class WC_BrazilianCheckoutFields {
 
         $settings = get_option( 'wcbcf_settings' );
 
-        if ( isset( $settings['neighborhood'] ) ) {
+        $order_id = esc_attr( $_REQUEST['order'] );
+        $order = new WC_Order( $order_id );
 
-            $order_id = esc_attr( $_REQUEST['order'] );
-            $order = new WC_Order( $order_id );
-
-            $args['pagador_bairro'] = $order->billing_neighborhood;
-
-        }
+        $args['pagador_bairro'] = $order->billing_neighborhood;
 
         return $args;
     }
