@@ -25,13 +25,14 @@ class WC_BrazilianCheckoutFields {
         add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 );
 
         // New checkout fields.
-        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_fields' ), 1 );
+        add_filter( 'woocommerce_billing_fields', array( &$this, 'checkout_billing_fields' ) );
+        add_filter( 'woocommerce_shipping_fields', array( &$this, 'checkout_shipping_fields' ) );
 
         // Valid checkout fields.
         add_action( 'woocommerce_checkout_process', array( &$this, 'valid_checkout_fields' ) );
 
         // Load scripts in front-end.
-        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 999 );
 
         // Default options.
         register_activation_hook( __FILE__, array( &$this, 'default_settings' ) );
@@ -356,22 +357,21 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
-     * New checkout fields
+     * New checkout billing fields
      *
      * @param  array $fields Default fields.
      *
      * @return array         New fields.
      */
-    public function checkout_fields( $fields ) {
-        // Remove default fields.
-        unset( $fields['billing'] );
-        unset( $fields['shipping'] );
+    public function checkout_billing_fields( $fields ) {
+
+        $new_fields = array();
 
         // Get plugin settings.
         $settings = get_option( 'wcbcf_settings' );
 
         // Billing First Name.
-        $fields['billing']['billing_first_name'] = array(
+        $new_fields['billing_first_name'] = array(
             'label'       => __( 'First Name', 'wcbcf' ),
             'placeholder' => _x( 'First Name', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first' ),
@@ -379,7 +379,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing Last Name.
-        $fields['billing']['billing_last_name'] = array(
+        $new_fields['billing_last_name'] = array(
             'label'       => __( 'Last Name', 'wcbcf' ),
             'placeholder' => _x( 'Last Name', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last' ),
@@ -390,7 +390,7 @@ class WC_BrazilianCheckoutFields {
         if ( isset( $settings['person_type'] ) ) {
 
             // Billing Person Type.
-            $fields['billing']['billing_persontype'] = array(
+            $new_fields['billing_persontype'] = array(
                 'type'        => 'select',
                 'label'       => __( 'Person type', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -403,7 +403,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing CPF.
-            $fields['billing']['billing_cpf'] = array(
+            $new_fields['billing_cpf'] = array(
                 'label'       => __( 'CPF', 'wcbcf' ),
                 'placeholder' => _x( 'CPF', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -411,7 +411,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing Company.
-            $fields['billing']['billing_company'] = array(
+            $new_fields['billing_company'] = array(
                 'label'       => __( 'Company Name', 'wcbcf' ),
                 'placeholder' => _x( 'Company Name', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -419,7 +419,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing CNPJ.
-            $fields['billing']['billing_cnpj'] = array(
+            $new_fields['billing_cnpj'] = array(
                 'label'       => __( 'CNPJ', 'wcbcf' ),
                 'placeholder' => _x( 'CNPJ', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -428,7 +428,7 @@ class WC_BrazilianCheckoutFields {
 
         } else {
             // Billing Company.
-            $fields['billing']['billing_company'] = array(
+            $new_fields['billing_company'] = array(
                 'label'       => __( 'Company', 'wcbcf' ),
                 'placeholder' => _x( 'Company', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -439,7 +439,7 @@ class WC_BrazilianCheckoutFields {
         if ( isset( $settings['birthdate_sex'] ) ) {
 
             // Billing Birthdate.
-            $fields['billing']['billing_birthdate'] = array(
+            $new_fields['billing_birthdate'] = array(
                 'label'       => __( 'Birthdate', 'wcbcf' ),
                 'placeholder' => _x( 'Birthdate', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-first' ),
@@ -448,7 +448,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing Sex.
-            $fields['billing']['billing_sex'] = array(
+            $new_fields['billing_sex'] = array(
                 'type'        => 'select',
                 'label'       => __( 'Sex', 'wcbcf' ),
                 'class'       => array( 'form-row-last' ),
@@ -464,7 +464,7 @@ class WC_BrazilianCheckoutFields {
         }
 
         // Billing Country.
-        $fields['billing']['billing_country'] = array(
+        $new_fields['billing_country'] = array(
             'type'        => 'country',
             'label'       => __( 'Country', 'wcbcf' ),
             'placeholder' => _x( 'Country', 'placeholder', 'wcbcf' ),
@@ -474,7 +474,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing Post Code.
-        $fields['billing']['billing_postcode'] = array(
+        $new_fields['billing_postcode'] = array(
             'label'       => __( 'Post Code', 'wcbcf' ),
             'placeholder' => _x( 'Post Code', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
@@ -483,7 +483,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing Anddress 01.
-        $fields['billing']['billing_address_1'] = array(
+        $new_fields['billing_address_1'] = array(
             'label'       => __( 'Address', 'wcbcf' ),
             'placeholder' => _x( 'Address', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' ),
@@ -491,7 +491,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing Number.
-        $fields['billing']['billing_number'] = array(
+        $new_fields['billing_number'] = array(
             'label'       => __( 'Number', 'wcbcf' ),
             'placeholder' => _x( 'Number', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
@@ -500,14 +500,14 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing Anddress 02.
-        $fields['billing']['billing_address_2'] = array(
+        $new_fields['billing_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2 (optional)', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' )
         );
 
         // Billing Neighborhood.
-        $fields['billing']['billing_neighborhood'] = array(
+        $new_fields['billing_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
@@ -515,7 +515,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing City.
-        $fields['billing']['billing_city'] = array(
+        $new_fields['billing_city'] = array(
             'label'       => __( 'City', 'wcbcf' ),
             'placeholder' => _x( 'City', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' ),
@@ -523,7 +523,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Billing State.
-        $fields['billing']['billing_state'] = array(
+        $new_fields['billing_state'] = array(
             'type'        => 'state',
             'label'       => __( 'State', 'wcbcf' ),
             'placeholder' => _x( 'State', 'placeholder', 'wcbcf' ),
@@ -535,7 +535,7 @@ class WC_BrazilianCheckoutFields {
         if ( isset( $settings['cell_phone'] ) ) {
 
             // Billing Phone.
-            $fields['billing']['billing_phone'] = array(
+            $new_fields['billing_phone'] = array(
                 'label'       => __( 'Phone', 'wcbcf' ),
                 'placeholder' => _x( 'Phone', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-first' ),
@@ -543,7 +543,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing Cell Phone.
-            $fields['billing']['billing_cellphone'] = array(
+            $new_fields['billing_cellphone'] = array(
                 'label'       => __( 'Cell Phone', 'wcbcf' ),
                 'placeholder' => _x( 'Cell Phone (optional)', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-last' ),
@@ -551,7 +551,7 @@ class WC_BrazilianCheckoutFields {
             );
 
             // Billing Email.
-            $fields['billing']['billing_email'] = array(
+            $new_fields['billing_email'] = array(
                 'label'       => __( 'Email', 'wcbcf' ),
                 'placeholder' => _x( 'Email', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -563,16 +563,15 @@ class WC_BrazilianCheckoutFields {
         } else {
 
             // Billing Phone.
-            $fields['billing']['billing_phone'] = array(
+            $new_fields['billing_phone'] = array(
                 'label'       => __( 'Phone', 'wcbcf' ),
                 'placeholder' => _x( 'Phone', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
                 'required'    => true
             );
 
-
             // Billing Email.
-            $fields['billing']['billing_email'] = array(
+            $new_fields['billing_email'] = array(
                 'label'       => __( 'Email', 'wcbcf' ),
                 'placeholder' => _x( 'Email', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-wide' ),
@@ -581,8 +580,25 @@ class WC_BrazilianCheckoutFields {
 
         }
 
+        return apply_filters( 'wcbcf_billing_fields', $new_fields );
+    }
+
+    /**
+     * New checkout shipping fields
+     *
+     * @param  array $fields Default fields.
+     *
+     * @return array         New fields.
+     */
+    public function checkout_shipping_fields( $fields ) {
+
+        $new_fields = array();
+
+        // Get plugin settings.
+        $settings = get_option( 'wcbcf_settings' );
+
         // Shipping First Name.
-        $fields['shipping']['shipping_first_name'] = array(
+        $new_fields['shipping_first_name'] = array(
             'label'       => __( 'First Name', 'wcbcf' ),
             'placeholder' => _x( 'First Name', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first' ),
@@ -590,7 +606,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Last Name.
-        $fields['shipping']['shipping_last_name'] = array(
+        $new_fields['shipping_last_name'] = array(
             'label'       => __( 'Last Name', 'wcbcf' ),
             'placeholder' => _x( 'Last Name', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last' ),
@@ -599,14 +615,14 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Company.
-        $fields['shipping']['shipping_company'] = array(
+        $new_fields['shipping_company'] = array(
             'label'       => __( 'Company Name', 'wcbcf' ),
             'placeholder' => _x( 'Company Name (optional)', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-wide' )
         );
 
         // Shipping Country.
-        $fields['shipping']['shipping_country'] = array(
+        $new_fields['shipping_country'] = array(
             'type'        => 'country',
             'label'       => __( 'Country', 'wcbcf' ),
             'placeholder' => _x( 'Country', 'placeholder', 'wcbcf' ),
@@ -615,7 +631,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Post Code.
-        $fields['shipping']['shipping_postcode'] = array(
+        $new_fields['shipping_postcode'] = array(
             'label'       => __( 'Post Code', 'wcbcf' ),
             'placeholder' => _x( 'Post Code', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
@@ -624,7 +640,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Anddress 01.
-        $fields['shipping']['shipping_address_1'] = array(
+        $new_fields['shipping_address_1'] = array(
             'label'       => __( 'Address', 'wcbcf' ),
             'placeholder' => _x( 'Address', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' ),
@@ -632,7 +648,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Number.
-        $fields['shipping']['shipping_number'] = array(
+        $new_fields['shipping_number'] = array(
             'label'       => __( 'Number', 'wcbcf' ),
             'placeholder' => _x( 'Number  (optional)', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
@@ -640,14 +656,14 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping Anddress 02.
-        $fields['shipping']['shipping_address_2'] = array(
+        $new_fields['shipping_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2  (optional)', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' )
         );
 
         // Shipping Neighborhood.
-        $fields['shipping']['shipping_neighborhood'] = array(
+        $new_fields['shipping_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
@@ -655,7 +671,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping City.
-        $fields['shipping']['shipping_city'] = array(
+        $new_fields['shipping_city'] = array(
             'label'       => __( 'City', 'wcbcf' ),
             'placeholder' => _x( 'City', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' ),
@@ -663,7 +679,7 @@ class WC_BrazilianCheckoutFields {
         );
 
         // Shipping State.
-        $fields['shipping']['shipping_state'] = array(
+        $new_fields['shipping_state'] = array(
             'type'        => 'state',
             'label'       => __( 'State', 'wcbcf' ),
             'placeholder' => _x( 'State', 'placeholder', 'wcbcf' ),
@@ -672,7 +688,7 @@ class WC_BrazilianCheckoutFields {
             'required'    => true
         );
 
-        return apply_filters( 'wcbcf_checkout_fields', $fields );
+        return apply_filters( 'wcbcf_shipping_fields', $new_fields );
     }
 
     /**
