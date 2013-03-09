@@ -490,19 +490,28 @@ class WC_BrazilianCheckoutFields {
             'required'    => true
         );
 
+        // Billing Number.
+        $fields['billing']['billing_number'] = array(
+            'label'       => __( 'Number', 'wcbcf' ),
+            'placeholder' => _x( 'Number', 'placeholder', 'wcbcf' ),
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true,
+            'required'    => true
+        );
+
         // Billing Anddress 02.
         $fields['billing']['billing_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2 (optional)', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'address-field' ),
-            'clear'       => true,
+            'class'       => array( 'form-row-first', 'address-field' )
         );
 
         // Billing Neighborhood.
         $fields['billing']['billing_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-wide', 'address-field' ),
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true,
         );
 
         // Billing City.
@@ -622,19 +631,27 @@ class WC_BrazilianCheckoutFields {
             'required'    => true
         );
 
+        // Shipping Number.
+        $fields['shipping']['shipping_number'] = array(
+            'label'       => __( 'Number', 'wcbcf' ),
+            'placeholder' => _x( 'Number  (optional)', 'placeholder', 'wcbcf' ),
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true
+        );
+
         // Shipping Anddress 02.
         $fields['shipping']['shipping_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2  (optional)', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'address-field' ),
-            'clear'       => true
+            'class'       => array( 'form-row-first', 'address-field' )
         );
 
         // Shipping Neighborhood.
         $fields['shipping']['shipping_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-wide', 'address-field' )
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true
         );
 
         // Shipping City.
