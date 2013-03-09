@@ -43,20 +43,20 @@ class WC_BrazilianCheckoutFields {
         // Init plugin options form.
         add_action( 'admin_init', array( &$this, 'plugin_settings' ) );
 
-  //       // Load custom order data.
-  //       add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
+        // Load custom order data.
+        add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
 
-  //       // Admin order billing fields.
-  //       add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+        // Admin order billing fields.
+        // add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
 
-  //       // Admin order shipping fields.
-  //       add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
+        // Admin order shipping fields.
+        // add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
 
-  //       // Admin Custom order shipping fields.
-  //       add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
+        // Admin Custom order shipping fields.
+        // add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
 
-  //       // Admin Custom order billing fields.
-  //       add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
+        // Admin Custom order billing fields.
+        // add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
 
 		// // Save custom billing & shipping fields from admin.
 		// add_action( 'save_post', array( &$this,'save_custom_fields' ) );
@@ -737,10 +737,12 @@ class WC_BrazilianCheckoutFields {
         $data['billing_cnpj']          = '';
         $data['billing_birthdate']     = '';
         $data['billing_sex']           = '';
+        $data['billing_number']        = '';
         $data['billing_neighborhood']  = '';
         $data['billing_cellphone']     = '';
 
         // Shipping
+        $data['shipping_number']       = '';
         $data['shipping_neighborhood'] = '';
 
         return $data;
@@ -859,7 +861,6 @@ class WC_BrazilianCheckoutFields {
      * @param  array $post_id Post ID.
      * @return void
      */
-
 	public function save_custom_fields($post_id) {
 		global $post_type;
 
