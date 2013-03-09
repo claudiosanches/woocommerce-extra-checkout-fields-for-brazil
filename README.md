@@ -26,9 +26,9 @@ Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo
 
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
-*** MailCheck jQuery:** [https://github.com/Kicksend/mailcheck](https://github.com/Kicksend/mailcheck).  
-*** Masked Input jQuery:** [https://github.com/digitalBush/jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput).  
-*** Tools Web - WebService CEP:** [http://www.toolsweb.com.br/?webservice](http://www.toolsweb.com.br/?webservice).  
+* MailCheck jQuery: [https://github.com/Kicksend/mailcheck](https://github.com/Kicksend/mailcheck).
+* Masked Input jQuery: [https://github.com/digitalBush/jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput).
+* Tools Web - WebService CEP: [http://www.toolsweb.com.br/?webservice](http://www.toolsweb.com.br/?webservice).
 
 ## Installation ##
 
@@ -62,17 +62,17 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 ## Screenshots ##
 
-###1. screenshot-1.png###
-![screenshot-1.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-1.png)
+### 1. screenshot-1.png ###
+![1. screenshot-1.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-1.png)
 
-###2. screenshot-2.png###
-![screenshot-2.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-2.png)
+### 2. screenshot-2.png ###
+![2. screenshot-2.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-2.png)
 
-###3. screenshot-3.png###
-![screenshot-3.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-3.png)
+### 3. screenshot-3.png ###
+![3. screenshot-3.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-3.png)
 
-###4. screenshot-4.png###
-![screenshot-4.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-4.png)
+### 4. screenshot-4.png ###
+![4. screenshot-4.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-4.png)
 
 
 ## Changelog ##
@@ -114,7 +114,7 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 ## License ##
 
 This file is part of WooCommerce PagSeguro.
-**WooCommerce PagSeguro is free software:** you can redistribute it and/or modify it under the terms of the GNU General Public License as published  
+WooCommerce PagSeguro is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 WooCommerce PagSeguro is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
