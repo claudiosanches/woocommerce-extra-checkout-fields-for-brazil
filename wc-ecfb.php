@@ -502,7 +502,7 @@ class WC_BrazilianCheckoutFields {
         // Billing Anddress 02.
         $new_fields['billing_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
-            'placeholder' => _x( 'Address line 2 (optional)', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Address line 2', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' )
         );
 
@@ -545,7 +545,7 @@ class WC_BrazilianCheckoutFields {
             // Billing Cell Phone.
             $new_fields['billing_cellphone'] = array(
                 'label'       => __( 'Cell Phone', 'wcbcf' ),
-                'placeholder' => _x( 'Cell Phone (optional)', 'placeholder', 'wcbcf' ),
+                'placeholder' => _x( 'Cell Phone', 'placeholder', 'wcbcf' ),
                 'class'       => array( 'form-row-last' ),
                 'clear'       => true
             );
@@ -616,8 +616,8 @@ class WC_BrazilianCheckoutFields {
 
         // Shipping Company.
         $new_fields['shipping_company'] = array(
-            'label'       => __( 'Company Name', 'wcbcf' ),
-            'placeholder' => _x( 'Company Name (optional)', 'placeholder', 'wcbcf' ),
+            'label'       => __( 'Company', 'wcbcf' ),
+            'placeholder' => _x( 'Company', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-wide' )
         );
 
@@ -650,22 +650,23 @@ class WC_BrazilianCheckoutFields {
         // Shipping Number.
         $new_fields['shipping_number'] = array(
             'label'       => __( 'Number', 'wcbcf' ),
-            'placeholder' => _x( 'Number  (optional)', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Number ', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
-            'clear'       => true
+            'clear'       => true,
+            'required'    => true
         );
 
         // Shipping Anddress 02.
         $new_fields['shipping_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
-            'placeholder' => _x( 'Address line 2  (optional)', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Address line 2 ', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' )
         );
 
         // Shipping Neighborhood.
         $new_fields['shipping_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
-            'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
             'clear'       => true
         );
