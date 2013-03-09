@@ -43,26 +43,26 @@ class WC_BrazilianCheckoutFields {
         // Init plugin options form.
         add_action( 'admin_init', array( &$this, 'plugin_settings' ) );
 
-        // Load custom order data.
-        add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
+  //       // Load custom order data.
+  //       add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
 
-        // Admin order billing fields.
-        add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+  //       // Admin order billing fields.
+  //       add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
 
-        // Admin order shipping fields.
-        add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
+  //       // Admin order shipping fields.
+  //       add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
 
-        // Admin Custom order shipping fields.
-        add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
+  //       // Admin Custom order shipping fields.
+  //       add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
 
-        // Admin Custom order billing fields.
-        add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
+  //       // Admin Custom order billing fields.
+  //       add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
 
-		// Save custom billing & shipping fields from admin.
-		add_action( 'save_post', array( &$this,'save_custom_fields' ) );
+		// // Save custom billing & shipping fields from admin.
+		// add_action( 'save_post', array( &$this,'save_custom_fields' ) );
 
-        // User edit custom fields.
-        add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
+  //       // User edit custom fields.
+  //       add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
 
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
@@ -84,7 +84,7 @@ class WC_BrazilianCheckoutFields {
     public function enqueue_scripts() {
 
         // Load scripts only in checkout.
-        if ( is_checkout() ) {
+        if ( is_checkout() || is_page( woocommerce_get_page_id( 'edit_address' ) ) ) {
 
             // Get plugin settings.
             $settings = get_option( 'wcbcf_settings' );
