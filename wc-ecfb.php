@@ -25,7 +25,7 @@ class WC_BrazilianCheckoutFields {
         add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 );
 
         // New checkout fields.
-        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_fields' ) );
+        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_fields' ), 1 );
 
         // Valid checkout fields.
         add_action( 'woocommerce_checkout_process', array( &$this, 'valid_checkout_fields' ) );
@@ -374,17 +374,17 @@ class WC_BrazilianCheckoutFields {
         $fields['billing']['billing_first_name'] = array(
             'label'       => __( 'First Name', 'wcbcf' ),
             'placeholder' => _x( 'First Name', 'placeholder', 'wcbcf' ),
-            'required'    => true,
             'class'       => array( 'form-row-first' ),
+            'required'    => true
         );
 
         // Billing Last Name.
         $fields['billing']['billing_last_name'] = array(
             'label'       => __( 'Last Name', 'wcbcf' ),
             'placeholder' => _x( 'Last Name', 'placeholder', 'wcbcf' ),
-            'required'    => true,
             'class'       => array( 'form-row-last' ),
-            'clear'       => true
+            'clear'       => true,
+            'required'    => true
         );
 
         if ( isset( $settings['person_type'] ) ) {
@@ -393,8 +393,8 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_persontype'] = array(
                 'type'        => 'select',
                 'label'       => __( 'Person type', 'wcbcf' ),
+                'class'       => array( 'form-row-wide' ),
                 'required'    => true,
-                'clear'       => true,
                 'options'     => array(
                     '0'               => __( 'Select', 'wcbcf' ),
                     '1'               => __( 'Individuals', 'wcbcf' ),
@@ -406,30 +406,33 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_cpf'] = array(
                 'label'       => __( 'CPF', 'wcbcf' ),
                 'placeholder' => _x( 'CPF', 'placeholder', 'wcbcf' ),
-                'required'    => false,
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'required'    => false
             );
 
             // Billing Company.
             $fields['billing']['billing_company'] = array(
                 'label'       => __( 'Company Name', 'wcbcf' ),
                 'placeholder' => _x( 'Company Name', 'placeholder', 'wcbcf' ),
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'required'    => false
             );
 
             // Billing CNPJ.
             $fields['billing']['billing_cnpj'] = array(
                 'label'       => __( 'CNPJ', 'wcbcf' ),
                 'placeholder' => _x( 'CNPJ', 'placeholder', 'wcbcf' ),
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'required'    => false
             );
 
         } else {
             // Billing Company.
             $fields['billing']['billing_company'] = array(
-                'label'       => __( 'Company Name', 'wcbcf' ),
-                'placeholder' => _x( 'Company Name', 'placeholder', 'wcbcf' ),
-                'clear'       => true
+                'label'       => __( 'Company', 'wcbcf' ),
+                'placeholder' => _x( 'Company', 'placeholder', 'wcbcf' ),
+                'class'       => array( 'form-row-wide' ),
+                'required'    => false
             );
         }
 
@@ -439,18 +442,18 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_birthdate'] = array(
                 'label'       => __( 'Birthdate', 'wcbcf' ),
                 'placeholder' => _x( 'Birthdate', 'placeholder', 'wcbcf' ),
-                'required'    => true,
                 'class'       => array( 'form-row-first' ),
-                'clear'       => false
+                'clear'       => false,
+                'required'    => true
             );
 
             // Billing Sex.
             $fields['billing']['billing_sex'] = array(
                 'type'        => 'select',
                 'label'       => __( 'Sex', 'wcbcf' ),
-                'required'    => true,
                 'class'       => array( 'form-row-last' ),
                 'clear'       => true,
+                'required'    => true,
                 'options'     => array(
                     '0'                     => __( 'Select', 'wcbcf' ),
                     __( 'Female', 'wcbcf' ) => __( 'Female', 'wcbcf' ),
@@ -465,7 +468,8 @@ class WC_BrazilianCheckoutFields {
             'type'        => 'country',
             'label'       => __( 'Country', 'wcbcf' ),
             'placeholder' => _x( 'Country', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first', 'update_totals_on_change', 'country_select' ),
+            'class'       => array( 'form-row-first', 'update_totals_on_change', 'address-field' ),
+            'clear'       => false,
             'required'    => true,
         );
 
@@ -473,16 +477,16 @@ class WC_BrazilianCheckoutFields {
         $fields['billing']['billing_postcode'] = array(
             'label'       => __( 'Post Code', 'wcbcf' ),
             'placeholder' => _x( 'Post Code', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'update_totals_on_change' ),
-            'required'    => true,
-            'clear'       => true
+            'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
+            'clear'       => true,
+            'required'    => true
         );
 
         // Billing Anddress 01.
         $fields['billing']['billing_address_1'] = array(
             'label'       => __( 'Address', 'wcbcf' ),
             'placeholder' => _x( 'Address', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first' ),
+            'class'       => array( 'form-row-first', 'address-field' ),
             'required'    => true
         );
 
@@ -490,23 +494,22 @@ class WC_BrazilianCheckoutFields {
         $fields['billing']['billing_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2 (optional)', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last' ),
-            'label_class' => array( 'hidden' ),
-            'clear'    => true,
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true,
         );
 
         // Billing Neighborhood.
         $fields['billing']['billing_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood', 'placeholder', 'wcbcf' ),
-            'clear'       => true
+            'class'       => array( 'form-row-wide', 'address-field' ),
         );
 
         // Billing City.
         $fields['billing']['billing_city'] = array(
             'label'       => __( 'City', 'wcbcf' ),
             'placeholder' => _x( 'City', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first' ),
+            'class'       => array( 'form-row-first', 'address-field' ),
             'required'    => true
         );
 
@@ -515,9 +518,9 @@ class WC_BrazilianCheckoutFields {
             'type'        => 'state',
             'label'       => __( 'State', 'wcbcf' ),
             'placeholder' => _x( 'State', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'update_totals_on_change' ),
-            'required'    => true,
-            'clear'       => true
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true,
+            'required'    => true
         );
 
         if ( isset( $settings['cell_phone'] ) ) {
@@ -542,8 +545,10 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_email'] = array(
                 'label'       => __( 'Email', 'wcbcf' ),
                 'placeholder' => _x( 'Email', 'placeholder', 'wcbcf' ),
-                'required'    => true,
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'validate'    => array( 'email' ),
+                'clear'       => true,
+                'required'    => true
             );
 
         } else {
@@ -552,8 +557,8 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_phone'] = array(
                 'label'       => __( 'Phone', 'wcbcf' ),
                 'placeholder' => _x( 'Phone', 'placeholder', 'wcbcf' ),
-                'required'    => true,
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'required'    => true
             );
 
 
@@ -561,8 +566,8 @@ class WC_BrazilianCheckoutFields {
             $fields['billing']['billing_email'] = array(
                 'label'       => __( 'Email', 'wcbcf' ),
                 'placeholder' => _x( 'Email', 'placeholder', 'wcbcf' ),
-                'required'    => true,
-                'clear'       => true
+                'class'       => array( 'form-row-wide' ),
+                'required'    => true
             );
 
         }
@@ -571,24 +576,24 @@ class WC_BrazilianCheckoutFields {
         $fields['shipping']['shipping_first_name'] = array(
             'label'       => __( 'First Name', 'wcbcf' ),
             'placeholder' => _x( 'First Name', 'placeholder', 'wcbcf' ),
-            'required'    => true,
             'class'       => array( 'form-row-first' ),
+            'required'    => true
         );
 
         // Shipping Last Name.
         $fields['shipping']['shipping_last_name'] = array(
             'label'       => __( 'Last Name', 'wcbcf' ),
             'placeholder' => _x( 'Last Name', 'placeholder', 'wcbcf' ),
-            'required'    => true,
             'class'       => array( 'form-row-last' ),
-            'clear'       => true
+            'clear'       => true,
+            'required'    => true
         );
 
         // Shipping Company.
         $fields['shipping']['shipping_company'] = array(
             'label'       => __( 'Company Name', 'wcbcf' ),
             'placeholder' => _x( 'Company Name (optional)', 'placeholder', 'wcbcf' ),
-            'clear'       => true
+            'class'       => array( 'form-row-wide' )
         );
 
         // Shipping Country.
@@ -596,24 +601,24 @@ class WC_BrazilianCheckoutFields {
             'type'        => 'country',
             'label'       => __( 'Country', 'wcbcf' ),
             'placeholder' => _x( 'Country', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first', 'update_totals_on_change', 'country_select' ),
-            'required'    => true,
+            'class'       => array( 'form-row-first', 'update_totals_on_change', 'address-field' ),
+            'required'    => true
         );
 
         // Shipping Post Code.
         $fields['shipping']['shipping_postcode'] = array(
             'label'       => __( 'Post Code', 'wcbcf' ),
             'placeholder' => _x( 'Post Code', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'update_totals_on_change' ),
-            'required'    => true,
-            'clear'       => true
+            'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
+            'clear'       => true,
+            'required'    => true
         );
 
         // Shipping Anddress 01.
         $fields['shipping']['shipping_address_1'] = array(
             'label'       => __( 'Address', 'wcbcf' ),
             'placeholder' => _x( 'Address', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first' ),
+            'class'       => array( 'form-row-first', 'address-field' ),
             'required'    => true
         );
 
@@ -621,23 +626,22 @@ class WC_BrazilianCheckoutFields {
         $fields['shipping']['shipping_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
             'placeholder' => _x( 'Address line 2  (optional)', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last' ),
-            'label_class' => array( 'hidden' ),
-            'clear'    => true,
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true
         );
 
         // Shipping Neighborhood.
         $fields['shipping']['shipping_neighborhood'] = array(
             'label'       => __( 'Neighborhood', 'wcbcf' ),
             'placeholder' => _x( 'Neighborhood (optional)', 'placeholder', 'wcbcf' ),
-            'clear'       => true
+            'class'       => array( 'form-row-wide', 'address-field' )
         );
 
         // Shipping City.
         $fields['shipping']['shipping_city'] = array(
             'label'       => __( 'City', 'wcbcf' ),
             'placeholder' => _x( 'City', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-first' ),
+            'class'       => array( 'form-row-first', 'address-field' ),
             'required'    => true
         );
 
@@ -646,9 +650,9 @@ class WC_BrazilianCheckoutFields {
             'type'        => 'state',
             'label'       => __( 'State', 'wcbcf' ),
             'placeholder' => _x( 'State', 'placeholder', 'wcbcf' ),
-            'class'       => array( 'form-row-last', 'update_totals_on_change' ),
-            'required'    => true,
-            'clear'       => true
+            'class'       => array( 'form-row-last', 'address-field' ),
+            'clear'       => true,
+            'required'    => true
         );
 
         return apply_filters( 'wcbcf_checkout_fields', $fields );
