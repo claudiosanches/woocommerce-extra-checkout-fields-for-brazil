@@ -46,8 +46,9 @@ class WC_BrazilianCheckoutFields {
         // Load custom order data.
         add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
 
-        // Admin order billing fields.
-        // add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+        // Admin Custom order fields.
+        add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
 
         // Admin order shipping fields.
         // add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
@@ -115,6 +116,20 @@ class WC_BrazilianCheckoutFields {
                 wp_register_script( 'fix-person-fields', plugins_url( 'js/jquery.fix.person.fields.js' , __FILE__ ), array(), null, true );
                 wp_enqueue_script( 'fix-person-fields' );
             }
+        }
+    }
+
+    /**
+     * Admin Enqueue scripts.
+     *
+     * @return void
+     */
+    public function admin_enqueue_scripts() {
+        global $post_type;
+
+        if ( 'shop_order' == $post_type ) {
+            wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css' , __FILE__ ), array(), null );
+            wp_enqueue_style( 'wcbcf-admin-styles' );
         }
     }
 
@@ -751,17 +766,99 @@ class WC_BrazilianCheckoutFields {
     /**
      * Custom billing admin edit fields.
      *
-     * @param  array $fields Default WC_Order data.
+     * @param  array $data Default WC_Order data.
      * @return array         Custom WC_Order data.
      */
-    public function admin_billing_fields( $fields ) {
+    public function admin_billing_fields( $data ) {
+        global $woocommerce;
 
-        $fields['neighborhood'] = array(
-            'label' => __( 'Neighborhood', 'wcbcf' ),
+        // Get plugin settings.
+        $settings = get_option( 'wcbcf_settings' );
+
+        $billing_data['first_name'] = array(
+            'label' => __( 'First Name', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['last_name'] = array(
+            'label' => __( 'Last Name', 'wcbcf' ),
             'show'  => false
         );
 
-        return $fields;
+        if ( isset( $settings['person_type'] ) ) {
+            $billing_data['cpf'] = array(
+                'label' => __( 'CPF', 'wcbcf' ),
+            );
+            $billing_data['company'] = array(
+                'label' => __( 'Company Name', 'wcbcf' ),
+            );
+            $billing_data['cnpj'] = array(
+                'label' => __( 'CNPJ', 'wcbcf' ),
+            );
+        } else {
+            $billing_data['company'] = array(
+                'label' => __( 'Company', 'wcbcf' ),
+                'show'  => false
+            );
+        }
+
+        if ( isset( $settings['birthdate_sex'] ) ) {
+            $billing_data['birthdate'] = array(
+                'label' => __( 'Birthdate', 'wcbcf' )
+            );
+            $billing_data['sex'] = array(
+                'label' => __( 'Sex', 'wcbcf' )
+            );
+        }
+
+        $billing_data['address_1'] = array(
+            'label' => __( 'Address 1', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['number'] = array(
+            'label' => __( 'Number', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['address_2'] = array(
+            'label' => __( 'Address 2', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['neighborhood'] = array(
+            'label' => __( 'Neighborhood', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['city'] = array(
+            'label' => __( 'City', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['postcode'] = array(
+            'label' => __( 'Postcode', 'wcbcf' ),
+            'show'  => false
+        );
+        $billing_data['country'] = array(
+            'label' => __( 'Country', 'wcbcf' ),
+            'show'  => false,
+            'type'  => 'select',
+            'options' => array( '' => __( 'Select a country&hellip;', 'wcbcf' ) ) + $woocommerce->countries->get_allowed_countries()
+        );
+        $billing_data['state'] = array(
+            'label' => __( 'State', 'wcbcf' ),
+            'show'  => false
+        );
+
+        $billing_data['email'] = array(
+            'label' => __( 'Email', 'wcbcf' ),
+        );
+        $billing_data['phone'] = array(
+            'label' => __( 'Phone', 'wcbcf' ),
+        );
+
+        if ( isset( $settings['cell_phone'] ) ) {
+            $billing_data['cellphone'] = array(
+                'label' => __( 'Cell Phone', 'wcbcf' ),
+            );
+        }
+
+        return apply_filters( 'wcbcf_admin_billing_fields', $billing_data );
     }
 
     /**
