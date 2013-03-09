@@ -70,16 +70,9 @@ class WC_BrazilianCheckoutFields {
         // User edit custom fields.
         add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
 
-        // Payment plugins: MoIP.
-        if ( in_array( 'woocommerce-moip/wc-moip.php', get_option( 'active_plugins' ) ) ) {
-            add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
-        }
-
-        // Payment plugins: Bcash.
-        if ( in_array( 'woocommerce-bcash/wc-bcash.php', get_option( 'active_plugins' ) ) ) {
-            add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
-        }
-
+        // Gateways addons.
+        add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
+        add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
     }
 
     /**
@@ -1082,12 +1075,12 @@ class WC_BrazilianCheckoutFields {
             $order_id = esc_attr( $_REQUEST['order'] );
             $order = new WC_Order( $order_id );
 
-            if ( $order->billing_persontype == 1 ) {
+            if ( 1 == $order->billing_persontype ) {
                 $cpf = str_replace( array( '-', '.' ), '', $order->billing_cpf );
                 $args['cpf'] = $cpf;
             }
 
-            if ( $order->billing_persontype == 1 ) {
+            if ( 2 == $order->billing_persontype ) {
                 $cnpj = str_replace( array( '-', '.' ), '', $order->billing_cnpj );
                 $args['cliente_cnpj'] = $cnpj;
                 $args['cliente_razao_social'] = $order->billing_company;
