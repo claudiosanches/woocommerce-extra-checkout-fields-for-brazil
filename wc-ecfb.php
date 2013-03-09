@@ -48,10 +48,8 @@ class WC_BrazilianCheckoutFields {
 
         // Admin Custom order fields.
         add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+        add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-
-        // Admin order shipping fields.
-        // add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
 
         // Admin Custom order shipping fields.
         // add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
@@ -767,7 +765,8 @@ class WC_BrazilianCheckoutFields {
      * Custom billing admin edit fields.
      *
      * @param  array $data Default WC_Order data.
-     * @return array         Custom WC_Order data.
+     *
+     * @return array       Custom WC_Order data.
      */
     public function admin_billing_fields( $data ) {
         global $woocommerce;
@@ -864,17 +863,61 @@ class WC_BrazilianCheckoutFields {
     /**
      * Custom shipping admin edit fields.
      *
-     * @param  array $fields Default WC_Order data.
-     * @return array         Custom WC_Order data.
+     * @param  array $data Default WC_Order data.
+     *
+     * @return array       Custom WC_Order data.
      */
-    public function admin_shipping_fields( $fields ) {
+    public function admin_shipping_fields( $data ) {
+        global $woocommerce;
 
-        $fields['neighborhood'] = array(
+        $shipping_data['first_name'] = array(
+            'label' => __( 'First Name', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['last_name'] = array(
+            'label' => __( 'Last Name', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['company'] = array(
+            'label' => __( 'Company', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['address_1'] = array(
+            'label' => __( 'Address 1', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['number'] = array(
+            'label' => __( 'Number', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['address_2'] = array(
+            'label' => __( 'Address 2', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['neighborhood'] = array(
             'label' => __( 'Neighborhood', 'wcbcf' ),
             'show'  => false
         );
+        $shipping_data['city'] = array(
+            'label' => __( 'City', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['postcode'] = array(
+            'label' => __( 'Postcode', 'wcbcf' ),
+            'show'  => false
+        );
+        $shipping_data['country'] = array(
+            'label' => __( 'Country', 'wcbcf' ),
+            'show'  => false,
+            'type'  => 'select',
+            'options' => array( '' => __( 'Select a country&hellip;', 'wcbcf' ) ) + $woocommerce->countries->get_allowed_countries()
+        );
+        $shipping_data['state'] = array(
+            'label' => __( 'State', 'wcbcf' ),
+            'show'  => false
+        );
 
-        return $fields;
+        return apply_filters( 'wcbcf_admin_shipping_fields', $shipping_data );
     }
 
     /**

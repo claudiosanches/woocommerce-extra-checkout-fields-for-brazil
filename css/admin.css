@@ -5,6 +5,7 @@
 }
 
 #order_data .order_data_column ._billing_sex_field,
-#order_data .order_data_column ._billing_number_field {
+#order_data .order_data_column ._billing_number_field,
+#order_data .order_data_column ._shipping_number_field {
     float: right !important;
 }
