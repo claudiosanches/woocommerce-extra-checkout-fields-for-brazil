@@ -25,8 +25,7 @@ class WC_BrazilianCheckoutFields {
         add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 );
 
         // New checkout fields.
-        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_billing_fields' ) );
-        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_shipping_fields' ) );
+        add_filter( 'woocommerce_checkout_fields', array( &$this, 'checkout_fields' ) );
 
         // Valid checkout fields.
         add_action( 'woocommerce_checkout_process', array( &$this, 'valid_checkout_fields' ) );
@@ -357,13 +356,16 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
-     * New checkout billing fields
+     * New checkout fields
+     *
      * @param  array $fields Default fields.
+     *
      * @return array         New fields.
      */
-    public function checkout_billing_fields( $fields ) {
+    public function checkout_fields( $fields ) {
         // Remove default fields.
         unset( $fields['billing'] );
+        unset( $fields['shipping'] );
 
         // Get plugin settings.
         $settings = get_option( 'wcbcf_settings' );
@@ -384,7 +386,6 @@ class WC_BrazilianCheckoutFields {
             'class'       => array( 'form-row-last' ),
             'clear'       => true
         );
-
 
         if ( isset( $settings['person_type'] ) ) {
 
@@ -566,21 +567,6 @@ class WC_BrazilianCheckoutFields {
 
         }
 
-        return apply_filters( 'wcbcf_billing_fields', $fields );
-    }
-
-    /**
-     * New checkout shipping fields
-     * @param  array $fields Default fields.
-     * @return array         New fields.
-     */
-    public function checkout_shipping_fields( $fields ) {
-        // Remove default fields.
-        unset( $fields['shipping'] );
-
-        // Get plugin settings.
-        $settings = get_option( 'wcbcf_settings' );
-
         // Shipping First Name.
         $fields['shipping']['shipping_first_name'] = array(
             'label'       => __( 'First Name', 'wcbcf' ),
@@ -665,7 +651,7 @@ class WC_BrazilianCheckoutFields {
             'clear'       => true
         );
 
-        return apply_filters( 'wcbcf_shipping_fields', $fields );
+        return apply_filters( 'wcbcf_checkout_fields', $fields );
     }
 
     /**
