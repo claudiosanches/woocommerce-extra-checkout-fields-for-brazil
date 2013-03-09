@@ -1032,6 +1032,7 @@ class WC_BrazilianCheckoutFields {
         $order_id = esc_attr( $_REQUEST['order'] );
         $order = new WC_Order( $order_id );
 
+        $args['pagador_numero'] = $order->billing_number;
         $args['pagador_bairro'] = $order->billing_neighborhood;
 
         return $args;
