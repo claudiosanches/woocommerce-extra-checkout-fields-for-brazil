@@ -21,8 +21,6 @@ class WC_BrazilianCheckoutFields {
      */
     public function __construct() {
 
-        $settings = get_option( 'wcbcf_settings' );
-
         // Load textdomain.
         add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 );
 
@@ -48,18 +46,14 @@ class WC_BrazilianCheckoutFields {
         // Load custom order data.
         add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
 
-        if ( isset( $settings['neighborhood'] ) ) {
+        // Admin order billing fields.
+        add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
 
-            // Admin order billing fields.
-            add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
+        // Admin order shipping fields.
+        add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
 
-            // Admin order shipping fields.
-            add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
-
-            // Admin Custom order shipping fields.
-            add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
-
-        }
+        // Admin Custom order shipping fields.
+        add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
 
         // Admin Custom order billing fields.
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
