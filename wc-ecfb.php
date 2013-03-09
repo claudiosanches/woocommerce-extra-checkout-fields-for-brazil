@@ -706,17 +706,17 @@ class WC_BrazilianCheckoutFields {
         if ( isset( $settings['person_type'] ) ) {
 
             // Check CEP.
-            if ( $_POST['billing_persontype'] == 1 && !$_POST['billing_cpf'] ) {
+            if ( 1 == $_POST['billing_persontype'] && ! $_POST['billing_cpf'] ) {
                 $woocommerce->add_error( __( '<strong>CPF</strong> is a required field.', 'wcbcf' ) );
             }
 
             // Check Company.
-            if ( $_POST['billing_persontype'] == 2 && !$_POST['billing_company'] ) {
+            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_company'] ) {
                 $woocommerce->add_error( __( '<strong>Company</strong> is a required field.', 'wcbcf' ) );
             }
 
             // Check CPNJ.
-            if ( $_POST['billing_persontype'] == 2 && !$_POST['billing_cnpj'] ) {
+            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_cnpj'] ) {
                 $woocommerce->add_error( __( '<strong>CNPJ</strong> is a required field.', 'wcbcf' ) );
             }
 
@@ -862,9 +862,10 @@ class WC_BrazilianCheckoutFields {
 
 	public function save_custom_fields($post_id) {
 		global $post_type;
-		if( $post_type == 'shop_order' ) {
-			update_post_meta( $post_id, '_billing_neighborhood', stripslashes( $_POST['_billing_neighborhood'] ));
-			update_post_meta( $post_id, '_shipping_neighborhood', stripslashes( $_POST['_shipping_neighborhood'] ));
+
+		if ( $post_type == 'shop_order' ) {
+			update_post_meta( $post_id, '_billing_neighborhood', stripslashes( $_POST['_billing_neighborhood'] ) );
+			update_post_meta( $post_id, '_shipping_neighborhood', stripslashes( $_POST['_shipping_neighborhood'] ) );
 		}
 		return;
 	}
