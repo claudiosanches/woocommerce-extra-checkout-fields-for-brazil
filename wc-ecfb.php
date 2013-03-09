@@ -61,8 +61,8 @@ class WC_BrazilianCheckoutFields {
 		// // Save custom billing & shipping fields from admin.
 		// add_action( 'save_post', array( &$this,'save_custom_fields' ) );
 
-  //       // User edit custom fields.
-  //       add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
+        // User edit custom fields.
+        add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
 
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
@@ -893,7 +893,6 @@ class WC_BrazilianCheckoutFields {
         );
 
         if ( isset( $settings['person_type'] ) ) {
-
             $fields['billing']['fields']['billing_cpf'] = array(
                 'label' => __( 'CPF', 'wcbcf' ),
                 'description' => ''
@@ -906,11 +905,9 @@ class WC_BrazilianCheckoutFields {
                 'label' => __( 'Company', 'wcbcf' ),
                 'description' => ''
             );
-
         }
 
         if ( isset( $settings['birthdate_sex'] ) ) {
-
             $fields['billing']['fields']['billing_birthdate'] = array(
                 'label' => __( 'Birthdate', 'wcbcf' ),
                 'description' => ''
@@ -919,7 +916,6 @@ class WC_BrazilianCheckoutFields {
                 'label' => __( 'Sex', 'wcbcf' ),
                 'description' => ''
             );
-
         }
 
         $fields['billing']['fields']['billing_country'] = array(
@@ -934,16 +930,18 @@ class WC_BrazilianCheckoutFields {
             'label' => __( 'Address 1', 'wcbcf' ),
             'description' => ''
         );
+        $fields['billing']['fields']['billing_number'] = array(
+            'label' => __( 'Number', 'wcbcf' ),
+            'description' => ''
+        );
         $fields['billing']['fields']['billing_address_2'] = array(
             'label' => __( 'Address 2', 'wcbcf' ),
             'description' => ''
         );
-
         $fields['billing']['fields']['billing_neighborhood'] = array(
             'label' => __( 'Neighborhood', 'wcbcf' ),
             'description' => ''
         );
-
         $fields['billing']['fields']['billing_city'] = array(
             'label' => __( 'City', 'wcbcf' ),
             'description' => ''
@@ -958,12 +956,10 @@ class WC_BrazilianCheckoutFields {
         );
 
         if ( isset( $settings['cell_phone'] ) ) {
-
             $fields['billing']['fields']['billing_cellphone'] = array(
                 'label' => __( 'Cell Phone', 'wcbcf' ),
                 'description' => ''
             );
-
         }
 
         $fields['billing']['fields']['billing_email'] = array(
@@ -997,16 +993,18 @@ class WC_BrazilianCheckoutFields {
             'label' => __( 'Address 1', 'wcbcf' ),
             'description' => ''
         );
+        $fields['shipping']['fields']['shipping_number'] = array(
+            'label' => __( 'Number', 'wcbcf' ),
+            'description' => ''
+        );
         $fields['shipping']['fields']['shipping_address_2'] = array(
             'label' => __( 'Address 2', 'wcbcf' ),
             'description' => ''
         );
-
         $fields['shipping']['fields']['shipping_neighborhood'] = array(
             'label' => __( 'Neighborhood', 'wcbcf' ),
             'description' => ''
         );
-
         $fields['shipping']['fields']['shipping_city'] = array(
             'label' => __( 'City', 'wcbcf' ),
             'description' => ''
