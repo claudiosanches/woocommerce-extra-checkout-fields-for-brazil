@@ -948,8 +948,8 @@ class WC_BrazilianCheckoutFields {
             'description' => ''
         );
         $fields['billing']['fields']['billing_state'] = array(
-            'label' => __( 'State/County', 'wcbcf' ),
-            'description' => __( 'Country or state code', 'wcbcf' )
+            'label' => __( 'State', 'wcbcf' ),
+            'description' => __( 'State code', 'wcbcf' )
         );
         $fields['billing']['fields']['billing_phone'] = array(
             'label' => __( 'Telephone', 'wcbcf' ),
@@ -1011,8 +1011,8 @@ class WC_BrazilianCheckoutFields {
             'description' => ''
         );
         $fields['shipping']['fields']['shipping_state'] = array(
-            'label' => __( 'State/County', 'wcbcf' ),
-            'description' => __( 'Country or state code', 'wcbcf' )
+            'label' => __( 'State', 'wcbcf' ),
+            'description' => __( 'State code', 'wcbcf' )
         );
 
         $new_fields = apply_filters( 'wcbcf_customer_meta_fields', $fields );
