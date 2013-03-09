@@ -354,7 +354,7 @@ class WC_BrazilianCheckoutFields {
             if ( isset( $input[$key] ) ) {
 
                 // Strip all HTML and PHP tags and properly handle quoted strings.
-                $output[$key] = strip_tags( stripslashes( $input[$key] ) );
+                $output[$key] = sanitize_text_field( $input[$key] );
             }
         }
 
