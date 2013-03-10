@@ -62,6 +62,7 @@ class WC_BrazilianCheckoutFields {
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
+        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'moip_args' ) );
     }
 
     /**
@@ -1349,6 +1350,22 @@ class WC_BrazilianCheckoutFields {
                 $args['cliente_razao_social'] = $order->billing_company;
             }
         }
+
+        return $args;
+    }
+
+    /**
+     * Custom PagSeguro arguments.
+     *
+     * @param  array $args PagSeguro default arguments.
+     *
+     * @return array       New arguments.
+     */
+    public function pagseguro_args( $args ) {
+        $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
+        $order = new WC_Order( $order_id );
+
+        $args['shippingAddressNumber'] = $order->billing_number;
 
         return $args;
     }
