@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Juridíca, Data de Nascimento, Sexo, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://www.claudiosmweb.com/
- * Version: 1.3
+ * Version: 2.0
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -49,13 +49,9 @@ class WC_BrazilianCheckoutFields {
         // Admin Custom order fields.
         add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
         add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
+        add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
+        add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-
-        // Admin Custom order shipping fields.
-        // add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
-
-        // Admin Custom order billing fields.
-        // add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
 
 		// // Save custom billing & shipping fields from admin.
 		// add_action( 'save_post', array( &$this,'save_custom_fields' ) );
@@ -128,6 +124,12 @@ class WC_BrazilianCheckoutFields {
         if ( 'shop_order' == $post_type ) {
             wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css' , __FILE__ ), array(), null );
             wp_enqueue_style( 'wcbcf-admin-styles' );
+
+            // Get plugin settings.
+            $settings = get_option( 'wcbcf_settings' );
+
+            wp_register_script( 'wcbcf-admin-scripts', plugins_url( 'js/jquery.fix.person.fields.admin.js' , __FILE__ ), array( 'jquery' ), null, true );
+            wp_enqueue_script( 'wcbcf-admin-scripts' );
         }
     }
 
@@ -348,6 +350,7 @@ class WC_BrazilianCheckoutFields {
      * Valid options.
      *
      * @param  array $input options to valid.
+     *
      * @return array        validated options.
      */
     public function validate_options( $input ) {
@@ -740,6 +743,7 @@ class WC_BrazilianCheckoutFields {
      * Load order custom data.
      *
      * @param  array $data Default WC_Order data.
+     *
      * @return array       Custom WC_Order data.
      */
     public function load_order_data( $data ) {
@@ -784,6 +788,15 @@ class WC_BrazilianCheckoutFields {
         );
 
         if ( isset( $settings['person_type'] ) ) {
+            $billing_data['persontype'] = array(
+                'type'  => 'select',
+                'label' => __( 'Person type', 'wcbcf' ),
+                'options'     => array(
+                    '0'               => __( 'Select', 'wcbcf' ),
+                    '1'               => __( 'Individuals', 'wcbcf' ),
+                    '2'               => __( 'Legal Person', 'wcbcf' )
+                )
+            );
             $billing_data['cpf'] = array(
                 'label' => __( 'CPF', 'wcbcf' ),
             );
@@ -829,8 +842,8 @@ class WC_BrazilianCheckoutFields {
             'label' => __( 'City', 'wcbcf' ),
             'show'  => false
         );
-        $billing_data['postcode'] = array(
-            'label' => __( 'Postcode', 'wcbcf' ),
+        $billing_data['state'] = array(
+            'label' => __( 'State', 'wcbcf' ),
             'show'  => false
         );
         $billing_data['country'] = array(
@@ -839,14 +852,11 @@ class WC_BrazilianCheckoutFields {
             'type'  => 'select',
             'options' => array( '' => __( 'Select a country&hellip;', 'wcbcf' ) ) + $woocommerce->countries->get_allowed_countries()
         );
-        $billing_data['state'] = array(
-            'label' => __( 'State', 'wcbcf' ),
+        $billing_data['postcode'] = array(
+            'label' => __( 'Postcode', 'wcbcf' ),
             'show'  => false
         );
 
-        $billing_data['email'] = array(
-            'label' => __( 'Email', 'wcbcf' ),
-        );
         $billing_data['phone'] = array(
             'label' => __( 'Phone', 'wcbcf' ),
         );
@@ -856,6 +866,10 @@ class WC_BrazilianCheckoutFields {
                 'label' => __( 'Cell Phone', 'wcbcf' ),
             );
         }
+
+        $billing_data['email'] = array(
+            'label' => __( 'Email', 'wcbcf' ),
+        );
 
         return apply_filters( 'wcbcf_admin_billing_fields', $billing_data );
     }
@@ -902,8 +916,8 @@ class WC_BrazilianCheckoutFields {
             'label' => __( 'City', 'wcbcf' ),
             'show'  => false
         );
-        $shipping_data['postcode'] = array(
-            'label' => __( 'Postcode', 'wcbcf' ),
+        $shipping_data['state'] = array(
+            'label' => __( 'State', 'wcbcf' ),
             'show'  => false
         );
         $shipping_data['country'] = array(
@@ -912,8 +926,8 @@ class WC_BrazilianCheckoutFields {
             'type'  => 'select',
             'options' => array( '' => __( 'Select a country&hellip;', 'wcbcf' ) ) + $woocommerce->countries->get_allowed_countries()
         );
-        $shipping_data['state'] = array(
-            'label' => __( 'State', 'wcbcf' ),
+        $shipping_data['postcode'] = array(
+            'label' => __( 'Postcode', 'wcbcf' ),
             'show'  => false
         );
 
@@ -923,52 +937,77 @@ class WC_BrazilianCheckoutFields {
     /**
      * Custom billing admin fields.
      *
-     * @return string Custom information.
+     * @param  object $order Order data.
+     *
+     * @return string        Custom information.
      */
-    public function custom_admin_billing_fields() {
-        global $post;
+    public function custom_admin_billing_fields( $order ) {
+        global $woocommerce;
 
         // Get plugin settings.
         $settings = get_option( 'wcbcf_settings' );
 
-        $html = '<div class="wcbcf-custom-fields">';
-            $html .= '<h2>' . __( 'Extra information', 'wcbcf' ) . ':</h2>';
-            $html .= '<p>';
+        $html = '<div class="wcbcf-address">';
 
-                if ( isset( $settings['person_type'] ) ) {
+        if ( ! $order->get_formatted_billing_address() ) {
+            $html .= '<p class="none_set"><strong>' . __( 'Address', 'wcbcf' ) . ':</strong> ' . __( 'No billing address set.', 'wcbcf' ) . '</p>';
+        } else {
 
-                    // Person type information.
-                    $person_type = get_post_meta( $post->ID, '_billing_persontype', true );
-                    if ( $person_type == 1 ) {
-                        $html .= '<strong>' . __( 'CPF', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_cpf', true ) . '<br />';
-                    }
-                    if ( $person_type == 2 ) {
-                        $html .= '<strong>' . __( 'CNPJ', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_cnpj', true ) . '<br />';
-                        $html .= '<strong>' . __( 'Company Name', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_company', true ) . '<br />';
-                    }
-
-                }
-
-                if ( isset( $settings['birthdate_sex'] ) ) {
-
-                    // Birthdate information.
-                    $html .= '<strong>' . __( 'Birthdate', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_birthdate', true ) . '<br />';
-
-                    // Sex Information.
-                    $html .= '<strong>' . __( 'Sex', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_sex', true ) . '<br />';
-                }
-
-                // Neighborhood Information.
-                $html .= '<strong>' . __( 'Neighborhood', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_neighborhood', true ) . '<br />';
-
-                if ( isset( $settings['cell_phone'] ) ) {
-
-                    // Cell Phone Information.
-                    $html .= '<strong>' . __( 'Cell Phone', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_cellphone', true ) . '<br />';
-
-                }
+            $html .= '<p><strong>' . __( 'Address', 'wcbcf' ) . ':</strong><br />';
+            $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
+            $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
+            $html .= $order->billing_address_2 . '<br />';
+            $html .= $order->billing_neighborhood . '<br />';
+            $html .= $order->billing_city . '<br />';
+            if ( $woocommerce->countries->states[$order->billing_country] ) {
+                $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+            } else {
+                $html .= $order->billing_state . '<br />';
+            }
+            $html .= $order->billing_postcode . '<br />';
+            $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
 
             $html .= '</p>';
+        }
+
+        $html .= '<h4>' . __( 'Client data', 'wcbcf' ) . '</h4>';
+
+        $html .= '<p>';
+
+        if ( isset( $settings['person_type'] ) ) {
+
+            // Person type information.
+            if ( 1 == $order->billing_persontype ) {
+                $html .= '<strong>' . __( 'CPF', 'wcbcf' ) . ': </strong>' . $order->billing_cpf . '<br />';
+            }
+            if ( 2 == $order->billing_persontype ) {
+                $html .= '<strong>' . __( 'CNPJ', 'wcbcf' ) . ': </strong>' . $order->billing_cnpj . '<br />';
+                $html .= '<strong>' . __( 'Company Name', 'wcbcf' ) . ': </strong>' . $order->billing_company . '<br />';
+            }
+        } else {
+            $html .= '<strong>' . __( 'Company', 'wcbcf' ) . ': </strong>' . $order->billing_company . '<br />';
+        }
+
+        if ( isset( $settings['birthdate_sex'] ) ) {
+
+            // Birthdate information.
+            $html .= '<strong>' . __( 'Birthdate', 'wcbcf' ) . ': </strong>' . $order->billing_birthdate . '<br />';
+
+            // Sex Information.
+            $html .= '<strong>' . __( 'Sex', 'wcbcf' ) . ': </strong>' . $order->billing_sex . '<br />';
+        }
+
+        $html .= '<strong>' . __( 'Phone', 'wcbcf' ) . ': </strong>' . $order->billing_phone . '<br />';
+
+        if ( isset( $settings['cell_phone'] ) ) {
+            // Cell Phone Information.
+            $html .= '<strong>' . __( 'Cell Phone', 'wcbcf' ) . ': </strong>' . $order->billing_cellphone . '<br />';
+        }
+
+        $html .= '<strong>' . __( 'Email', 'wcbcf' ) . ': </strong>' . $order->billing_email . '<br />';
+
+        $html .= '</p>';
+
         $html .= '</div>';
 
         echo $html;
@@ -977,19 +1016,39 @@ class WC_BrazilianCheckoutFields {
     /**
      * Custom billing admin fields.
      *
-     * @return string Custom information.
+     * @param  object $order Order data.
+     *
+     * @return string        Custom information.
      */
-    public function custom_admin_shipping_fields() {
-        global $post;
+    public function custom_admin_shipping_fields( $order ) {
+        global $woocommerce;
 
-        $html = '<div class="wcbcf-custom-fields">';
-            $html .= '<h2>' . __( 'Extra information', 'wcbcf' ) . ':</h2>';
-            $html .= '<p>';
+        // Get plugin settings.
+        $settings = get_option( 'wcbcf_settings' );
 
-                // Neighborhood Information.
-                $html .= '<strong>' . __( 'Neighborhood', 'wcbcf' ) . ': </strong>' . get_post_meta( $post->ID, '_billing_neighborhood', true ) . '<br />';
+        $html = '<div class="wcbcf-address">';
+
+        if ( ! $order->get_formatted_shipping_address() ) {
+            $html .= '<p class="none_set"><strong>' . __( 'Address', 'wcbcf' ) . ':</strong> ' . __( 'No shipping address set.', 'wcbcf' ) . '</p>';
+        } else {
+
+            $html .= '<p><strong>' . __( 'Address', 'wcbcf' ) . ':</strong><br />';
+            $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
+            $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
+            $html .= $order->billing_address_2 . '<br />';
+            $html .= $order->billing_neighborhood . '<br />';
+            $html .= $order->billing_city . '<br />';
+            if ( $woocommerce->countries->states[$order->billing_country] ) {
+                $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+            } else {
+                $html .= $order->billing_state . '<br />';
+            }
+            $html .= $order->billing_postcode . '<br />';
+            $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
 
             $html .= '</p>';
+        }
+
         $html .= '</div>';
 
         echo $html;
@@ -1015,6 +1074,7 @@ class WC_BrazilianCheckoutFields {
      * Custom user edit fields.
      *
      * @param  array $fields Default fields.
+     *
      * @return array         Custom fields.
      */
     public function user_edit_fields( $fields ) {
@@ -1165,6 +1225,7 @@ class WC_BrazilianCheckoutFields {
      * Custom MoIP arguments.
      *
      * @param  array $args MoIP default arguments.
+     *
      * @return array       New arguments.
      */
     public function moip_args( $args ) {
@@ -1184,6 +1245,7 @@ class WC_BrazilianCheckoutFields {
      * Custom Bcash arguments.
      *
      * @param  array $args Bcash default arguments.
+     *
      * @return array       New arguments.
      */
     public function bcash_args( $args ) {

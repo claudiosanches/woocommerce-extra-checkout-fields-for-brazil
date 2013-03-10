@@ -1,3 +1,4 @@
+#order_data .order_data_column ._billing_persontype_field,
 #order_data .order_data_column ._billing_cpf_field,
 #order_data .order_data_column ._billing_cnpj_field {
     clear: both !important;
@@ -8,4 +9,9 @@
 #order_data .order_data_column ._billing_number_field,
 #order_data .order_data_column ._shipping_number_field {
     float: right !important;
+}
+
+
+#order_data.panel .order_data_column .address {
+    display: none;
 }
