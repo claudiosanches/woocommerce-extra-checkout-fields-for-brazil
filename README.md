@@ -3,8 +3,8 @@
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce  
 **Requires at least:** 3.0  
-**Tested up to:** 3.5  
-**Stable tag:** 1.2.1  
+**Tested up to:** 3.5.1  
+**Stable tag:** 2.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -20,9 +20,19 @@ Please notice that [WooCommerce](http://wordpress.org/extend/plugins/woocommerce
 
 ### Descrição em Português: ###
 
-Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
+Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
 
 É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
+
+#### Compatibilidade: ####
+
+Funciona com os plugins:
+
+* [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **CPF**, **Razão Social** e **CNPJ**)
+* [WooCommerce MoIP](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número**)
+* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona a informação de **número**)
+
+#### Créditos: ####
 
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
@@ -62,20 +72,32 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 ## Screenshots ##
 
-### 1. screenshot-1.png ###
-![1. screenshot-1.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-1.png)
+### 1. Página de Checkout ###
+![1. Página de Checkout](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-1.png)
 
-### 2. screenshot-2.png ###
-![2. screenshot-2.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-2.png)
+### 2. Página de edição de endereço ###
+![2. Página de edição de endereço](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-2.png)
 
-### 3. screenshot-3.png ###
-![3. screenshot-3.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-3.png)
+### 3. Página de dados do pedido ###
+![3. Página de dados do pedido](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-3.png)
 
-### 4. screenshot-4.png ###
-![4. screenshot-4.png](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-4.png)
+### 4. Configurações do plugin ###
+![4. Configurações do plugin](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-4.png)
+
+### 5. Sugestão de e-mail ###
+![5. Sugestão de e-mail](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-5.png)
 
 
 ## Changelog ##
+
+### 2.0 10/03/2013 ###
+
+* Compatível com o WooCommerce 2.0.0 ou superior.
+* Adicionado campo de **número**.
+* Adicionada compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
+* Campo de **bairro** agora é nativo do plugin.
+* Adicionado campos personalizados na página de edição do perfil do cliente.
+* Correção da página de detalhes do pedido.
 
 ### 1.2.1 10/12/2012 ###
 
