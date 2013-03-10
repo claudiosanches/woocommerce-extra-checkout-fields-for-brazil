@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Extra Checkout Fields for Brazil
  * Plugin URI: http://claudiosmweb.com/
- * Description: Adiciona novos campos para Pessoa Física ou Juridíca, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
+ * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
  * Version: 2.0
@@ -670,7 +670,7 @@ class WC_BrazilianCheckoutFields {
         // Shipping Number.
         $new_fields['shipping_number'] = array(
             'label'       => __( 'Number', 'wcbcf' ),
-            'placeholder' => _x( 'Number ', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Number', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-last', 'address-field' ),
             'clear'       => true,
             'required'    => true
@@ -679,7 +679,7 @@ class WC_BrazilianCheckoutFields {
         // Shipping Anddress 02.
         $new_fields['shipping_address_2'] = array(
             'label'       => __( 'Address line 2', 'wcbcf' ),
-            'placeholder' => _x( 'Address line 2 ', 'placeholder', 'wcbcf' ),
+            'placeholder' => _x( 'Address line 2', 'placeholder', 'wcbcf' ),
             'class'       => array( 'form-row-first', 'address-field' )
         );
 
