@@ -367,7 +367,7 @@ class WC_BrazilianCheckoutFields {
             if ( isset( $input[$key] ) ) {
 
                 // Strip all HTML and PHP tags and properly handle quoted strings.
-                $output[$key] = sanitize_text_field( $input[$key] );
+                $output[$key] = woocommerce_clean( $input[$key] );
             }
         }
 
@@ -1313,7 +1313,7 @@ class WC_BrazilianCheckoutFields {
 
         $settings = get_option( 'wcbcf_settings' );
 
-        $order_id = esc_attr( $_REQUEST['order'] );
+        $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
         $order = new WC_Order( $order_id );
 
         $args['pagador_numero'] = $order->billing_number;
@@ -1335,7 +1335,7 @@ class WC_BrazilianCheckoutFields {
 
         if ( isset( $settings['person_type'] ) ) {
 
-            $order_id = esc_attr( $_REQUEST['order'] );
+            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
             $order = new WC_Order( $order_id );
 
             if ( 1 == $order->billing_persontype ) {
