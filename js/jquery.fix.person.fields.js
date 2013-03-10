@@ -8,11 +8,11 @@ jQuery(document).ready(function($) {
         $('#billing_company_field').hide();
         $('#billing_cnpj_field').hide();
 
-        if (current == 1) {
+        if (1 == current) {
             $('#billing_cpf_field').show();
         }
 
-        if (current == 2) {
+        if (2 == current) {
             $('#billing_company_field').show();
             $('#billing_cnpj_field').show();
         }
