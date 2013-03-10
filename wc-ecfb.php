@@ -52,7 +52,8 @@ class WC_BrazilianCheckoutFields {
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
         add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-		add_action( 'save_post', array( &$this, 'save_custom_fields' ) );
+        add_action( 'save_post', array( &$this, 'save_custom_fields' ) );
+		add_action( 'admin_head', array( &$this, 'shop_order_head' ) );
 
         // User edit custom fields.
         add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
@@ -128,6 +129,9 @@ class WC_BrazilianCheckoutFields {
 
             wp_register_script( 'wcbcf-admin-scripts', plugins_url( 'js/jquery.fix.person.fields.admin.js' , __FILE__ ), array( 'jquery' ), null, true );
             wp_enqueue_script( 'wcbcf-admin-scripts' );
+
+            wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js' , __FILE__ ), array( 'jquery' ), null, true );
+            wp_enqueue_script( 'wcbcf-write-panels' );
         }
     }
 
@@ -1111,6 +1115,14 @@ class WC_BrazilianCheckoutFields {
         return $post_id;
     }
 
+    public function shop_order_head() {
+        ?>
+        <script type="text/javascript">
+        /* <![CDATA[ */ var wcbcf_writepanel_params = {"load_message":"<?php _e( 'Load the customer extras data?', 'wcbcf' ); ?>","copy_message":"<?php _e( 'Also copy the data of number and neighborhood?', 'wcbcf' ); ?>"}; /* ]]> */
+        </script>
+        <?php
+    }
+
     /**
      * Custom user edit fields.
      *
@@ -1338,3 +1350,31 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 } else {
     add_action( 'admin_notices', 'wcbcf_fallback_notice' );
 }
+
+
+/**
+ * Get customer details via ajax
+ *
+ * @access public
+ * @return void
+ */
+function wcbcf_get_customer_details( $customer_data ) {
+
+    $user_id = (int) trim( stripslashes( $_POST['user_id'] ) );
+    $type_to_load = esc_attr( trim( stripslashes( $_POST['type_to_load'] ) ) );
+
+    $custom_data = array(
+        $type_to_load . '_number' => get_user_meta( $user_id, $type_to_load . '_number', true ),
+        $type_to_load . '_neighborhood' => get_user_meta( $user_id, $type_to_load . '_neighborhood', true ),
+        $type_to_load . '_persontype' => get_user_meta( $user_id, $type_to_load . '_persontype', true ),
+        $type_to_load . '_cpf' => get_user_meta( $user_id, $type_to_load . '_cpf', true ),
+        $type_to_load . '_cnpj' => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
+        $type_to_load . '_birthdate' => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
+        $type_to_load . '_sex' => get_user_meta( $user_id, $type_to_load . '_sex', true ),
+        $type_to_load . '_cellphone' => get_user_meta( $user_id, $type_to_load . '_cellphone', true )
+    );
+
+    return array_merge( $customer_data, $custom_data );
+}
+
+add_filter( 'woocommerce_found_customer_details', 'wcbcf_get_customer_details' );
