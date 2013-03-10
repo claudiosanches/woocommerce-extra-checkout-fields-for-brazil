@@ -52,9 +52,7 @@ class WC_BrazilianCheckoutFields {
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
         add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-
-		// // Save custom billing & shipping fields from admin.
-		// add_action( 'save_post', array( &$this,'save_custom_fields' ) );
+		add_action( 'save_post', array( &$this, 'save_custom_fields' ) );
 
         // User edit custom fields.
         add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
@@ -947,6 +945,9 @@ class WC_BrazilianCheckoutFields {
         // Get plugin settings.
         $settings = get_option( 'wcbcf_settings' );
 
+        // Use nonce for verification.
+        wp_nonce_field( basename( __FILE__ ), 'wcbcf_meta_fields' );
+
         $html = '<div class="wcbcf-address">';
 
         if ( ! $order->get_formatted_billing_address() ) {
@@ -970,7 +971,7 @@ class WC_BrazilianCheckoutFields {
             $html .= '</p>';
         }
 
-        $html .= '<h4>' . __( 'Client data', 'wcbcf' ) . '</h4>';
+        $html .= '<h4>' . __( 'Customer data', 'wcbcf' ) . '</h4>';
 
         $html .= '<p>';
 
@@ -1057,18 +1058,57 @@ class WC_BrazilianCheckoutFields {
     /**
      * Save custom fields.
      *
-     * @param  array $post_id Post ID.
-     * @return void
+     * @param  int  $post_id Post ID.
+     *
+     * @return mixed
      */
-	public function save_custom_fields($post_id) {
-		global $post_type;
+    public function save_custom_fields( $post_id ) {
+        global $post_type;
 
-		if ( $post_type == 'shop_order' ) {
-			update_post_meta( $post_id, '_billing_neighborhood', stripslashes( $_POST['_billing_neighborhood'] ) );
-			update_post_meta( $post_id, '_shipping_neighborhood', stripslashes( $_POST['_shipping_neighborhood'] ) );
-		}
-		return;
-	}
+        if ( 'shop_order' == $post_type ) {
+
+            // Verify nonce.
+            if ( ! isset( $_POST['wcbcf_meta_fields'] ) || ! wp_verify_nonce( $_POST['wcbcf_meta_fields'], basename( __FILE__ ) ) ) {
+                return $post_id;
+            }
+
+            // Verify if this is an auto save routine.
+            if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+                return $post_id;
+            }
+
+            // Verify current user.
+            if ( ! current_user_can( 'edit_pages', $post_id ) ) {
+                return $post_id;
+            }
+
+            // Get plugin settings.
+            $settings = get_option( 'wcbcf_settings' );
+
+            // Update options.
+            update_post_meta( $post_id, '_billing_number', woocommerce_clean( $_POST['_billing_number'] ) );
+            update_post_meta( $post_id, '_billing_neighborhood', woocommerce_clean( $_POST['_billing_neighborhood'] ) );
+            update_post_meta( $post_id, '_shipping_number', woocommerce_clean( $_POST['_shipping_number'] ) );
+            update_post_meta( $post_id, '_shipping_neighborhood', woocommerce_clean( $_POST['_shipping_neighborhood'] ) );
+
+            if ( isset( $settings['person_type'] ) ) {
+                update_post_meta( $post_id, '_billing_cpf', woocommerce_clean( $_POST['_billing_cpf'] ) );
+                update_post_meta( $post_id, '_billing_cnpj', woocommerce_clean( $_POST['_billing_cnpj'] ) );
+            }
+
+            if ( isset( $settings['birthdate_sex'] ) ) {
+                update_post_meta( $post_id, '_billing_birthdate', woocommerce_clean( $_POST['_billing_birthdate'] ) );
+                update_post_meta( $post_id, '_billing_sex', woocommerce_clean( $_POST['_billing_sex'] ) );
+            }
+
+            if ( isset( $settings['cell_phone'] ) ) {
+                update_post_meta( $post_id, '_billing_cellphone', woocommerce_clean( $_POST['_billing_cellphone'] ) );
+            }
+
+        }
+
+        return $post_id;
+    }
 
     /**
      * Custom user edit fields.
