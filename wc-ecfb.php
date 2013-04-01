@@ -90,25 +90,25 @@ class WC_BrazilianCheckoutFields {
 
             // Call Mailcheck.
             if ( isset( $settings['mailcheck'] ) ) {
-                wp_register_script( 'mailcheck', plugins_url( 'js/jquery.mailcheck.min.js' , __FILE__ ), array(), null, true );
+                wp_register_script( 'mailcheck', plugins_url( 'js/jquery.mailcheck.min.js', __FILE__ ), array(), null, true );
                 wp_enqueue_script( 'mailcheck' );
             }
 
             // Call Maskedinput.
             if ( isset( $settings['maskedinput'] ) ) {
-                wp_register_script( 'maskedinput', plugins_url( 'js/jquery.maskedinput.min.js' , __FILE__ ), array(), null, true );
+                wp_register_script( 'maskedinput', plugins_url( 'js/jquery.maskedinput.min.js', __FILE__ ), array(), null, true );
                 wp_enqueue_script( 'maskedinput' );
             }
 
             // Call Adress Autocomplete
             if ( isset( $settings['addresscomplete'] ) ) {
-                wp_register_script( 'addresscomplete', plugins_url( 'js/jquery.address.autocomplete.js' , __FILE__ ), array(), null, true );
+                wp_register_script( 'addresscomplete', plugins_url( 'js/jquery.address.autocomplete.js', __FILE__ ), array(), null, true );
                 wp_enqueue_script( 'addresscomplete' );
             }
 
             // Call Person Fields fix.
             if ( isset( $settings['person_type'] ) ) {
-                wp_register_script( 'fix-person-fields', plugins_url( 'js/jquery.fix.person.fields.js' , __FILE__ ), array(), null, true );
+                wp_register_script( 'fix-person-fields', plugins_url( 'js/jquery.fix.person.fields.js', __FILE__ ), array(), null, true );
                 wp_enqueue_script( 'fix-person-fields' );
             }
         }
@@ -123,16 +123,16 @@ class WC_BrazilianCheckoutFields {
         global $post_type;
 
         if ( 'shop_order' == $post_type ) {
-            wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css' , __FILE__ ), array(), null );
+            wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array(), null );
             wp_enqueue_style( 'wcbcf-admin-styles' );
 
             // Get plugin settings.
             $settings = get_option( 'wcbcf_settings' );
 
-            wp_register_script( 'wcbcf-admin-scripts', plugins_url( 'js/jquery.fix.person.fields.admin.js' , __FILE__ ), array( 'jquery' ), null, true );
+            wp_register_script( 'wcbcf-admin-scripts', plugins_url( 'js/jquery.fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), null, true );
             wp_enqueue_script( 'wcbcf-admin-scripts' );
 
-            wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js' , __FILE__ ), array( 'jquery' ), null, true );
+            wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js', __FILE__ ), array( 'jquery' ), null, true );
             wp_enqueue_script( 'wcbcf-write-panels' );
         }
     }
@@ -218,7 +218,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'person_type',
             __( 'Display Person Type:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'options_section',
             array(
@@ -232,7 +232,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'birthdate_sex',
             __( 'Display Birthdate and Sex:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'options_section',
             array(
@@ -246,7 +246,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'cell_phone',
             __( 'Display Cell Phone:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'options_section',
             array(
@@ -268,7 +268,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'mailcheck',
             __( 'Enable Mail Check:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'jquery_section',
             array(
@@ -282,7 +282,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'maskedinput',
             __( 'Enable Input Mask:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'jquery_section',
             array(
@@ -296,7 +296,7 @@ class WC_BrazilianCheckoutFields {
         add_settings_field(
             'addresscomplete',
             __( 'Enable Address Autocomplete:', 'wcbcf' ),
-            array( &$this , 'checkbox_element_callback' ),
+            array( &$this, 'checkbox_element_callback' ),
             $option,
             'jquery_section',
             array(
@@ -1385,7 +1385,7 @@ class WC_BrazilianCheckoutFields {
  */
 function wcbcf_fallback_notice() {
     $message = '<div class="error">';
-        $message .= '<p>' . sprintf( __( 'WooCommerce Brazilian Checkout Fields depends on <a href="%s">WooCommerce</a> to work!' , 'wcbcf' ), 'http://wordpress.org/extend/plugins/woocommerce/' ) . '</p>';
+        $message .= '<p>' . sprintf( __( 'WooCommerce Brazilian Checkout Fields depends on <a href="%s">WooCommerce</a> to work!', 'wcbcf' ), 'http://wordpress.org/extend/plugins/woocommerce/' ) . '</p>';
     $message .= '</div>';
 
     echo $message;
