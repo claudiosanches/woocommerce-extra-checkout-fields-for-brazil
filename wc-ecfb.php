@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
- * Version: 2.0
+ * Version: 2.0.1
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -62,7 +62,7 @@ class WC_BrazilianCheckoutFields {
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
-        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'moip_args' ) );
+        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ) );
     }
 
     /**
@@ -1371,6 +1371,7 @@ class WC_BrazilianCheckoutFields {
         $order = new WC_Order( $order_id );
 
         $args['shippingAddressNumber'] = $order->billing_number;
+        $args['shippingAddressDistrict'] = $order->billing_neighborhood;
 
         return $args;
     }
