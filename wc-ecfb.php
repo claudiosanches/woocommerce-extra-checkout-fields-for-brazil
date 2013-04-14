@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
- * Version: 2.0.1
+ * Version: 2.1
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -20,9 +20,6 @@ class WC_BrazilianCheckoutFields {
      * Construct.
      */
     public function __construct() {
-
-        // Load textdomain.
-        add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 );
 
         // New checkout fields.
         add_filter( 'woocommerce_billing_fields', array( &$this, 'checkout_billing_fields' ) );
@@ -46,30 +43,34 @@ class WC_BrazilianCheckoutFields {
         // Load custom order data.
         add_filter( 'woocommerce_load_order_data', array( &$this, 'load_order_data' ) );
 
-        // Custom admin order details.
+        // Custom shop_order details.
         add_filter( 'woocommerce_admin_billing_fields', array( &$this, 'admin_billing_fields' ) );
         add_filter( 'woocommerce_admin_shipping_fields', array( &$this, 'admin_shipping_fields' ) );
+        add_filter( 'woocommerce_found_customer_details', array( &$this, 'custom_customer_details_ajax' ) );
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
         add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
-        add_filter( 'woocommerce_found_customer_details', array( &$this, 'custom_customer_details_ajax' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
         add_action( 'admin_head', array( &$this, 'shop_order_head' ) );
         add_action( 'save_post', array( &$this, 'save_custom_fields' ) );
 
+        // Custom address format.
+        add_filter( 'woocommerce_localisation_address_formats', array( &$this, 'localisation_address_formats' ) );
+
         // Custom user edit fields.
-        add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
+        if ( version_compare( WOOCOMMERCE_VERSION, '2.0.6', '>=' ) ) {
+            add_filter( 'woocommerce_customer_meta_fields', array( &$this, 'user_edit_fields' ) );
+            add_filter( 'woocommerce_formatted_address_replacements', array( &$this, 'formatted_address_replacements' ), 1, 2 );
+            add_filter( 'woocommerce_order_formatted_billing_address', array( &$this, 'order_formatted_billing_address' ), 1, 2 );
+            add_filter( 'woocommerce_order_formatted_shipping_address', array( &$this, 'order_formatted_shipping_address' ), 1, 2 );
+            add_filter( 'woocommerce_user_column_billing_address', array( &$this, 'user_column_billing_address' ), 1, 2 );
+            add_filter( 'woocommerce_user_column_shipping_address', array( &$this, 'user_column_shipping_address' ), 1, 2 );
+            add_filter( 'woocommerce_my_account_my_address_formatted_address', array( &$this, 'my_account_my_address_formatted_address' ), 1, 3 );
+        }
 
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
         add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ) );
-    }
-
-    /**
-     * Load translations.
-     */
-    public function languages() {
-        load_plugin_textdomain( 'wcbcf', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
     }
 
     /**
@@ -123,6 +124,7 @@ class WC_BrazilianCheckoutFields {
         global $post_type;
 
         if ( 'shop_order' == $post_type ) {
+
             wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array(), null );
             wp_enqueue_style( 'wcbcf-admin-styles' );
 
@@ -162,7 +164,14 @@ class WC_BrazilianCheckoutFields {
      * @return void.
      */
     public function menu() {
-        add_submenu_page( 'woocommerce', __( 'Brazilian Checkout Fields', 'wcbcf' ), __( 'Brazilian Checkout Fields', 'wcbcf' ), 'manage_options', 'wcbcf', array( $this, 'settings_page' ) );
+        add_submenu_page(
+            'woocommerce',
+            __( 'Brazilian Checkout Fields', 'wcbcf' ),
+            __( 'Brazilian Checkout Fields', 'wcbcf' ),
+            'manage_options',
+            'wcbcf',
+            array( $this, 'settings_page' )
+        );
     }
 
     /**
@@ -961,18 +970,23 @@ class WC_BrazilianCheckoutFields {
         } else {
 
             $html .= '<p><strong>' . __( 'Address', 'wcbcf' ) . ':</strong><br />';
-            $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
-            $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
-            $html .= $order->billing_address_2 . '<br />';
-            $html .= $order->billing_neighborhood . '<br />';
-            $html .= $order->billing_city . '<br />';
-            if ( $woocommerce->countries->states[$order->billing_country] ) {
-                $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+            if ( version_compare( WOOCOMMERCE_VERSION, '2.0.5', '<=' ) ) {
+                $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
+                $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
+                $html .= $order->billing_address_2 . '<br />';
+                $html .= $order->billing_neighborhood . '<br />';
+                $html .= $order->billing_city . '<br />';
+                if ( $woocommerce->countries->states[$order->billing_country] ) {
+                    $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+                } else {
+                    $html .= $order->billing_state . '<br />';
+                }
+                $html .= $order->billing_postcode . '<br />';
+                $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
+
             } else {
-                $html .= $order->billing_state . '<br />';
+                $html .= $order->get_formatted_billing_address();
             }
-            $html .= $order->billing_postcode . '<br />';
-            $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
 
             $html .= '</p>';
         }
@@ -1040,18 +1054,22 @@ class WC_BrazilianCheckoutFields {
         } else {
 
             $html .= '<p><strong>' . __( 'Address', 'wcbcf' ) . ':</strong><br />';
-            $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
-            $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
-            $html .= $order->billing_address_2 . '<br />';
-            $html .= $order->billing_neighborhood . '<br />';
-            $html .= $order->billing_city . '<br />';
-            if ( $woocommerce->countries->states[$order->billing_country] ) {
-                $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+                if ( version_compare( WOOCOMMERCE_VERSION, '2.0.5', '<=' ) ) {
+                $html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
+                $html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
+                $html .= $order->billing_address_2 . '<br />';
+                $html .= $order->billing_neighborhood . '<br />';
+                $html .= $order->billing_city . '<br />';
+                if ( $woocommerce->countries->states[$order->billing_country] ) {
+                    $html .= $woocommerce->countries->states[$order->billing_country][$order->billing_state] . '<br />';
+                } else {
+                    $html .= $order->billing_state . '<br />';
+                }
+                $html .= $order->billing_postcode . '<br />';
+                $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
             } else {
-                $html .= $order->billing_state . '<br />';
+                $html .= $order->get_formatted_shipping_address();
             }
-            $html .= $order->billing_postcode . '<br />';
-            $html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
 
             $html .= '</p>';
         }
@@ -1309,6 +1327,118 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
+     * Custom country address formats.
+     *
+     * @param  array $formats Defaul formats.
+     *
+     * @return array          New BR format.
+     */
+    function localisation_address_formats( $formats ) {
+
+        $formats['BR'] = "{name}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
+
+        return $formats;
+    }
+
+    /**
+     * Custom country address format.
+     *
+     * @param  array $replacements Default replacements.
+     * @param  array $args         Arguments to replace.
+     *
+     * @return array               New replacements.
+     */
+    function formatted_address_replacements( $replacements, $args ) {
+        extract( $args );
+
+        $replacements['{number}']       = $number;
+        $replacements['{neighborhood}'] = $neighborhood;
+
+        return $replacements;
+    }
+
+    /**
+     * Custom order formatted billing address.
+     *
+     * @param  array $address Default address.
+     * @param  object $order  Order data.
+     *
+     * @return array          New address format.
+     */
+    function order_formatted_billing_address( $address, $order ) {
+
+        $address['number']       = $order->billing_number;
+        $address['neighborhood'] = $order->billing_neighborhood;
+
+        return $address;
+    }
+
+    /**
+     * Custom order formatted shipping address.
+     *
+     * @param  array $address Default address.
+     * @param  object $order  Order data.
+     *
+     * @return array          New address format.
+     */
+    function order_formatted_shipping_address( $address, $order ) {
+
+        $address['number']       = $order->shipping_number;
+        $address['neighborhood'] = $order->shipping_neighborhood;
+
+        return $address;
+    }
+
+    /**
+     * Custom user column billing address information.
+     *
+     * @param  array $address Default address.
+     * @param  int $user_id   User id.
+     *
+     * @return array          New address format.
+     */
+    function user_column_billing_address( $address, $user_id ) {
+
+        $address['number']       = get_user_meta( $user_id, 'billing_number', true );
+        $address['neighborhood'] = get_user_meta( $user_id, 'billing_neighborhood', true );
+
+        return $address;
+    }
+
+    /**
+     * Custom user column shipping address information.
+     *
+     * @param  array $address Default address.
+     * @param  int $user_id   User id.
+     *
+     * @return array          New address format.
+     */
+    function user_column_shipping_address( $address, $user_id ) {
+
+        $address['number']       = get_user_meta( $user_id, 'shipping_number', true );
+        $address['neighborhood'] = get_user_meta( $user_id, 'shipping_neighborhood', true );
+
+        return $address;
+    }
+
+    /**
+     * Custom my address formatted address.
+     *
+     * @param  array $address   Default address.
+     * @param  int $customer_id Customer ID.
+     * @param  string $name     Field name (billing or shipping).
+     *
+     * @return array            New address format.
+     */
+    function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
+
+        $address['number']       = get_user_meta( $customer_id, $name . '_number', true );
+        $address['neighborhood'] = get_user_meta( $customer_id, $name . '_neighborhood', true );
+
+        return $address;
+    }
+
+    /**
      * Custom MoIP arguments.
      *
      * @param  array $args MoIP default arguments.
@@ -1351,7 +1481,7 @@ class WC_BrazilianCheckoutFields {
 
             if ( 2 == $order->billing_persontype ) {
                 $cnpj = str_replace( array( '-', '.' ), '', $order->billing_cnpj );
-                $args['cliente_cnpj'] = $cnpj;
+                $args['cliente_cnpj']         = $cnpj;
                 $args['cliente_razao_social'] = $order->billing_company;
             }
         }
@@ -1370,7 +1500,7 @@ class WC_BrazilianCheckoutFields {
         $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
         $order = new WC_Order( $order_id );
 
-        $args['shippingAddressNumber'] = $order->billing_number;
+        $args['shippingAddressNumber']   = $order->billing_number;
         $args['shippingAddressDistrict'] = $order->billing_neighborhood;
 
         return $args;
@@ -1384,20 +1514,26 @@ class WC_BrazilianCheckoutFields {
  * @return string Fallack notice.
  */
 function wcbcf_fallback_notice() {
-    $message = '<div class="error">';
-        $message .= '<p>' . sprintf( __( 'WooCommerce Brazilian Checkout Fields depends on <a href="%s">WooCommerce</a> to work!', 'wcbcf' ), 'http://wordpress.org/extend/plugins/woocommerce/' ) . '</p>';
-    $message .= '</div>';
+    $html = '<div class="error">';
+        $html .= '<p>' . sprintf( __( 'WooCommerce Brazilian Checkout Fields depends on <a href="%s">WooCommerce</a> to work!', 'wcbcf' ), 'http://wordpress.org/extend/plugins/woocommerce/' ) . '</p>';
+    $html .= '</div>';
 
-    echo $message;
+    echo $html;
 }
 
 /**
- * Check if WooCommerce is active.
- *
- * Ref: http://wcdocs.woothemes.com/codex/extending/create-a-plugin/.
+ * Load plugin functions.
  */
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-    $wcBrazilianCheckoutFields = new WC_BrazilianCheckoutFields();
-} else {
-    add_action( 'admin_notices', 'wcbcf_fallback_notice' );
+add_action( 'plugins_loaded', 'wcbcf_plugin', 0 );
+
+function wcbcf_plugin() {
+    load_plugin_textdomain( 'wcbcf', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+    // Check if WooCommerce is active.
+    // Ref: http://wcdocs.woothemes.com/codex/extending/create-a-plugin/.
+    if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+        $wcBrazilianCheckoutFields = new WC_BrazilianCheckoutFields();
+    } else {
+        add_action( 'admin_notices', 'wcbcf_fallback_notice' );
+    }
 }

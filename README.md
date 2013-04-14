@@ -4,7 +4,7 @@
 **Tags:** ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce  
 **Requires at least:** 3.0  
 **Tested up to:** 3.5.1  
-**Stable tag:** 2.0.1  
+**Stable tag:** 2.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -30,7 +30,7 @@ Funciona com os plugins:
 
 * [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **CPF**, **Razão Social** e **CNPJ**)
 * [WooCommerce MoIP](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número**)
-* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona a informação de **número**)
+* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro** e **número**)
 
 #### Créditos: ####
 
@@ -90,6 +90,10 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 ## Changelog ##
 
+### 2.1 13/04/2013 ###
+
+* Adicionada nova formatação de endereços (funciona para o WooCommerce 2.0.6 ou superior).
+
 ### 2.0.1 01/04/2013 ###
 
 * Correção da compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
@@ -119,29 +123,9 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * Primeira versão.
 
-## Upgrade Notice ##
-
-### 1.2.1 ###
-
-* Fixed Birthdate mask.
-
-### 1.2 ###
-
-* Added Zip code mask.
-
-### 1.1 ###
-
-* Update address Webserice.
-
-### 1.0 ###
-
-* Enjoy it.
-
 ## License ##
 
 This file is part of WooCommerce Extra Checkout Fields for Brazil.
-WooCommerce Extra Checkout Fields for Brazil is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published
-by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-WooCommerce Extra Checkout Fields for Brazil is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+WooCommerce Extra Checkout Fields for Brazil is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+WooCommerce Extra Checkout Fields for Brazil is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Author Bio Box. If not, see <http://www.gnu.org/licenses/>.
