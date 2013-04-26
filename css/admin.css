@@ -14,3 +14,8 @@
 #order_data.panel .order_data_column .address {
     display: none;
 }
+
+/* To WooCommerce 1.6.6 or earlier */
+#order_data.panel .order_data .address {
+    display: none;
+}

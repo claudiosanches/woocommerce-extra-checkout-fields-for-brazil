@@ -4,7 +4,7 @@
 **Tags:** ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce  
 **Requires at least:** 3.0  
 **Tested up to:** 3.5.1  
-**Stable tag:** 2.1  
+**Stable tag:** 2.1.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -89,6 +89,10 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 
 ## Changelog ##
+
+### 2.1.1 26/04/2013 ###
+
+* Correção da formatação de endereços para o WooCommerce 1.6.6 ou anterior.
 
 ### 2.1 13/04/2013 ###
 
