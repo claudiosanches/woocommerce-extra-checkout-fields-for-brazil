@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-24 22:37:24+0000\n"
+"PO-Revision-Date: 2013-06-24 22:38:34+0000\n"
 "Last-Translator: Claudio Sanches <claudiosmweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -460,7 +460,6 @@ msgstr "WooCommerce Brazilian Checkout Fields depende do <a href=\"%s\">WooComme
 msgid "WooCommerce Extra Checkout Fields for Brazil"
 msgstr "WooCommerce Extra Checkout Fields for Brazil"
 
-#. translators: plugin header field 'PluginURI'
 #. translators: plugin header field 'AuthorURI'
 #: wc-ecfb.php:0
 #@ wcbcf
@@ -595,4 +594,10 @@ msgstr "é um campo obrigatório"
 #@ wcbcf
 msgid "is not valid"
 msgstr "é inválido"
+
+#. translators: plugin header field 'PluginURI'
+#: wc-ecfb.php:0
+#@ wcbcf
+msgid "https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil"
+msgstr "https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil"
 

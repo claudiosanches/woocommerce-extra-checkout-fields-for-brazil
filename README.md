@@ -3,8 +3,8 @@
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce  
 **Requires at least:** 3.0  
-**Tested up to:** 3.5.1  
-**Stable tag:** 2.1.1  
+**Tested up to:** 3.6  
+**Stable tag:** 2.2.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -90,6 +90,15 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 ## Changelog ##
 
+### 2.2.0 24/06/2013 ###
+
+* Adicionado suporte para o WooCommerce 2.1 ou superior.
+* Adicionada opção para validar CPF.
+* Adicionada opção para validar CNPJ.
+* Correçao da função que instala as opções padrões na instalação.
+* Removido o método `shop_order_head` em favor da função `wp_localize_script`.
+* Melhorada a tradução.
+
 ### 2.1.1 26/04/2013 ###
 
 * Correção da formatação de endereços para o WooCommerce 1.6.6 ou anterior.
@@ -126,6 +135,12 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 ### 1.0 ###
 
 * Primeira versão.
+
+## Upgrade Notice ##
+
+### 2.2.0 ###
+
+* Agora o plugin conta com validação de CPF e CNPJ.
 
 ## License ##
 
