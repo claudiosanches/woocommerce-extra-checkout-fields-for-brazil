@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.0\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-10 03:06:31+0000\n"
+"PO-Revision-Date: 2013-06-24 22:37:24+0000\n"
 "Last-Translator: Claudio Sanches <claudiosmweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,438 +26,429 @@ msgstr ""
 msgid "claudiosanches"
 msgstr "claudiosanches"
 
-#: wc-ecfb.php:165
-#: wc-ecfb.php:176
+#: wc-ecfb.php:203
+#: wc-ecfb.php:204
+#: wc-ecfb.php:219
 #@ wcbcf
 msgid "Brazilian Checkout Fields"
 msgstr "Dados personalizados no checkout"
 
-#: wc-ecfb.php:212
+#: wc-ecfb.php:254
 #@ wcbcf
 msgid "Checkout Custom Fields:"
 msgstr "Campos personalizados de Checkout:"
 
-#: wc-ecfb.php:220
+#: wc-ecfb.php:262
 #@ wcbcf
 msgid "Display Person Type:"
 msgstr "Exibir Tipo de Pessoa:"
 
-#: wc-ecfb.php:227
+#: wc-ecfb.php:269
 #@ wcbcf
 msgid "If checked show the Person Type option and CPF, Company and CNJP fields in billing options."
 msgstr "Caso esteja marcado exibe os campos de Tipo de Pessoa, CPF, Empresa e CNJP nas informações de cobrança."
 
-#: wc-ecfb.php:234
+#: wc-ecfb.php:276
 #@ wcbcf
 msgid "Display Birthdate and Sex:"
 msgstr "Exibir Data de Nascimento e Sexo:"
 
-#: wc-ecfb.php:241
+#: wc-ecfb.php:283
 #@ wcbcf
 msgid "If checked show the Birthdate and Sex field in billing options."
 msgstr "Caso esteja marcado exibe os campos de Data de nascimento e Sexo nas informações de cobrança."
 
-#: wc-ecfb.php:248
+#: wc-ecfb.php:290
 #@ wcbcf
 msgid "Display Cell Phone:"
 msgstr "Exibir Celular:"
 
-#: wc-ecfb.php:255
+#: wc-ecfb.php:297
 #@ wcbcf
 msgid "If checked show the Cell Phone field in billing options."
 msgstr "Caso esteja marcado exibe o campo de Celular nas informações de cobrança."
 
-#: wc-ecfb.php:262
+#: wc-ecfb.php:304
 #@ wcbcf
 msgid "jQuery Options:"
 msgstr "Opções de jQuery:"
 
-#: wc-ecfb.php:270
+#: wc-ecfb.php:312
 #@ wcbcf
 msgid "Enable Mail Check:"
 msgstr "Habilitar Sugestões de E-mail"
 
-#: wc-ecfb.php:277
+#: wc-ecfb.php:319
 #@ wcbcf
 msgid "If checked informs typos in email to users."
 msgstr "Caso esteja marcado exibe dicas quando o usuário digita o e-mail de forma errada."
 
-#: wc-ecfb.php:284
+#: wc-ecfb.php:326
 #@ wcbcf
 msgid "Enable Input Mask:"
 msgstr "Habilitar Máscara de Campos:"
 
-#: wc-ecfb.php:291
+#: wc-ecfb.php:333
 #@ wcbcf
 msgid "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone."
 msgstr "Caso esteja marcado adiciona máscaras de preenchimento para os campos de CPF, CNPJ, Data de Nascimento, Telefone e Celular."
 
-#: wc-ecfb.php:298
+#: wc-ecfb.php:340
 #@ wcbcf
 msgid "Enable Address Autocomplete:"
 msgstr "Habilitar Auto Preenchimento de Endereço:"
 
-#: wc-ecfb.php:305
+#: wc-ecfb.php:347
 #@ wcbcf
 msgid "If checked automatically complete the address fields based on the zip code."
 msgstr "Caso esteja marcado as informações de endereço serão preenchidas automaticamente com base no país como Brasil e pelo CEP."
 
-#: wc-ecfb.php:395
-#: wc-ecfb.php:622
-#: wc-ecfb.php:786
-#: wc-ecfb.php:892
+#: wc-ecfb.php:467
+#: wc-ecfb.php:694
+#: wc-ecfb.php:935
+#: wc-ecfb.php:1043
 #@ wcbcf
 msgid "First Name"
 msgstr "Nome"
 
-#: wc-ecfb.php:396
-#: wc-ecfb.php:623
+#: wc-ecfb.php:468
+#: wc-ecfb.php:695
 #@ wcbcf
 msgctxt "placeholder"
 msgid "First Name"
 msgstr "Nome"
 
-#: wc-ecfb.php:403
-#: wc-ecfb.php:630
-#: wc-ecfb.php:790
-#: wc-ecfb.php:896
+#: wc-ecfb.php:475
+#: wc-ecfb.php:702
+#: wc-ecfb.php:939
+#: wc-ecfb.php:1047
 #@ wcbcf
 msgid "Last Name"
 msgstr "Sobrenome"
 
-#: wc-ecfb.php:404
-#: wc-ecfb.php:631
+#: wc-ecfb.php:476
+#: wc-ecfb.php:703
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Last Name"
 msgstr "Sobrenome"
 
-#: wc-ecfb.php:415
-#: wc-ecfb.php:797
+#: wc-ecfb.php:487
+#: wc-ecfb.php:946
 #@ wcbcf
 msgid "Person type"
 msgstr "Tipo de Pessoa"
 
-#: wc-ecfb.php:419
-#: wc-ecfb.php:478
-#: wc-ecfb.php:799
+#: wc-ecfb.php:491
+#: wc-ecfb.php:550
+#: wc-ecfb.php:948
 #@ wcbcf
 msgid "Select"
 msgstr "Selecionar"
 
-#: wc-ecfb.php:420
-#: wc-ecfb.php:800
+#: wc-ecfb.php:492
+#: wc-ecfb.php:949
 #@ wcbcf
 msgid "Individuals"
 msgstr "Pessoa Física"
 
-#: wc-ecfb.php:421
-#: wc-ecfb.php:801
+#: wc-ecfb.php:493
+#: wc-ecfb.php:950
 #@ wcbcf
 msgid "Legal Person"
 msgstr "Pessoa Jurídica"
 
-#: wc-ecfb.php:427
-#: wc-ecfb.php:805
-#: wc-ecfb.php:988
-#: wc-ecfb.php:1181
+#: wc-ecfb.php:499
+#: wc-ecfb.php:874
+#: wc-ecfb.php:877
+#: wc-ecfb.php:954
+#: wc-ecfb.php:1146
+#: wc-ecfb.php:1326
 #@ wcbcf
 msgid "CPF"
 msgstr "CPF"
 
-#: wc-ecfb.php:428
+#: wc-ecfb.php:500
 #@ wcbcf
 msgctxt "placeholder"
 msgid "CPF"
 msgstr "CPF"
 
-#: wc-ecfb.php:435
-#: wc-ecfb.php:808
-#: wc-ecfb.php:992
-#: wc-ecfb.php:1189
+#: wc-ecfb.php:507
+#: wc-ecfb.php:957
+#: wc-ecfb.php:1150
+#: wc-ecfb.php:1334
 #@ wcbcf
 msgid "Company Name"
 msgstr "Razão Social"
 
-#: wc-ecfb.php:436
+#: wc-ecfb.php:508
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Company Name"
 msgstr "Razão Social"
 
-#: wc-ecfb.php:443
-#: wc-ecfb.php:811
-#: wc-ecfb.php:991
-#: wc-ecfb.php:1185
+#: wc-ecfb.php:515
+#: wc-ecfb.php:886
+#: wc-ecfb.php:889
+#: wc-ecfb.php:960
+#: wc-ecfb.php:1149
+#: wc-ecfb.php:1330
 #@ wcbcf
 msgid "CNPJ"
 msgstr "CNPJ"
 
-#: wc-ecfb.php:444
+#: wc-ecfb.php:516
 #@ wcbcf
 msgctxt "placeholder"
 msgid "CNPJ"
 msgstr "CNPJ"
 
-#: wc-ecfb.php:463
-#: wc-ecfb.php:822
-#: wc-ecfb.php:1001
-#: wc-ecfb.php:1201
+#: wc-ecfb.php:535
+#: wc-ecfb.php:971
+#: wc-ecfb.php:1159
+#: wc-ecfb.php:1346
 #@ wcbcf
 msgid "Birthdate"
 msgstr "Data de Nascimento"
 
-#: wc-ecfb.php:464
+#: wc-ecfb.php:536
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Birthdate"
 msgstr "Data de Nascimento"
 
-#: wc-ecfb.php:473
-#: wc-ecfb.php:825
-#: wc-ecfb.php:1004
-#: wc-ecfb.php:1205
+#: wc-ecfb.php:545
+#: wc-ecfb.php:974
+#: wc-ecfb.php:1162
+#: wc-ecfb.php:1350
 #@ wcbcf
 msgid "Sex"
 msgstr "Sexo"
 
-#: wc-ecfb.php:479
+#: wc-ecfb.php:551
 #@ wcbcf
 msgid "Female"
 msgstr "Feminino"
 
-#: wc-ecfb.php:480
+#: wc-ecfb.php:552
 #@ wcbcf
 msgid "Male"
 msgstr "Masculino"
 
-#: wc-ecfb.php:489
-#: wc-ecfb.php:647
-#: wc-ecfb.php:854
-#: wc-ecfb.php:928
-#: wc-ecfb.php:1211
-#: wc-ecfb.php:1274
+#: wc-ecfb.php:561
+#: wc-ecfb.php:719
+#: wc-ecfb.php:1003
+#: wc-ecfb.php:1079
+#: wc-ecfb.php:1356
+#: wc-ecfb.php:1419
 #@ wcbcf
 msgid "Country"
 msgstr "País"
 
-#: wc-ecfb.php:490
-#: wc-ecfb.php:648
+#: wc-ecfb.php:562
+#: wc-ecfb.php:720
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Country"
 msgstr "País"
 
-#: wc-ecfb.php:498
-#: wc-ecfb.php:655
+#: wc-ecfb.php:570
+#: wc-ecfb.php:727
 #@ wcbcf
 msgid "Post Code"
 msgstr "CEP"
 
-#: wc-ecfb.php:499
-#: wc-ecfb.php:656
+#: wc-ecfb.php:571
+#: wc-ecfb.php:728
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Post Code"
 msgstr "CEP"
 
-#: wc-ecfb.php:507
-#: wc-ecfb.php:664
-#: wc-ecfb.php:960
-#: wc-ecfb.php:963
-#: wc-ecfb.php:1039
-#: wc-ecfb.php:1042
+#: wc-ecfb.php:579
+#: wc-ecfb.php:736
+#: wc-ecfb.php:1113
+#: wc-ecfb.php:1116
+#: wc-ecfb.php:1196
+#: wc-ecfb.php:1199
 #@ wcbcf
 msgid "Address"
 msgstr "Endereço"
 
-#: wc-ecfb.php:508
-#: wc-ecfb.php:665
+#: wc-ecfb.php:580
+#: wc-ecfb.php:737
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Address"
 msgstr "Endereço"
 
-#: wc-ecfb.php:524
-#: wc-ecfb.php:681
+#: wc-ecfb.php:596
+#: wc-ecfb.php:753
 #@ wcbcf
 msgid "Address line 2"
 msgstr "Complemento"
 
-#: wc-ecfb.php:531
-#: wc-ecfb.php:688
-#: wc-ecfb.php:842
-#: wc-ecfb.php:916
-#: wc-ecfb.php:1231
-#: wc-ecfb.php:1294
+#: wc-ecfb.php:603
+#: wc-ecfb.php:760
+#: wc-ecfb.php:991
+#: wc-ecfb.php:1067
+#: wc-ecfb.php:1376
+#: wc-ecfb.php:1439
 #@ wcbcf
 msgid "Neighborhood"
 msgstr "Bairro"
 
-#: wc-ecfb.php:532
-#: wc-ecfb.php:689
+#: wc-ecfb.php:604
+#: wc-ecfb.php:761
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Neighborhood"
 msgstr "Bairro"
 
-#: wc-ecfb.php:539
-#: wc-ecfb.php:696
-#: wc-ecfb.php:846
-#: wc-ecfb.php:920
-#: wc-ecfb.php:1235
-#: wc-ecfb.php:1298
+#: wc-ecfb.php:611
+#: wc-ecfb.php:768
+#: wc-ecfb.php:995
+#: wc-ecfb.php:1071
+#: wc-ecfb.php:1380
+#: wc-ecfb.php:1443
 #@ wcbcf
 msgid "City"
 msgstr "Cidade"
 
-#: wc-ecfb.php:540
-#: wc-ecfb.php:697
+#: wc-ecfb.php:612
+#: wc-ecfb.php:769
 #@ wcbcf
 msgctxt "placeholder"
 msgid "City"
 msgstr "Cidade"
 
-#: wc-ecfb.php:548
-#: wc-ecfb.php:705
-#: wc-ecfb.php:850
-#: wc-ecfb.php:924
-#: wc-ecfb.php:1239
-#: wc-ecfb.php:1302
+#: wc-ecfb.php:620
+#: wc-ecfb.php:777
+#: wc-ecfb.php:999
+#: wc-ecfb.php:1075
+#: wc-ecfb.php:1384
+#: wc-ecfb.php:1447
 #@ wcbcf
 msgid "State"
 msgstr "Estado"
 
-#: wc-ecfb.php:549
-#: wc-ecfb.php:706
+#: wc-ecfb.php:621
+#: wc-ecfb.php:778
 #@ wcbcf
 msgctxt "placeholder"
 msgid "State"
 msgstr "Estado"
 
-#: wc-ecfb.php:559
-#: wc-ecfb.php:587
-#: wc-ecfb.php:865
-#: wc-ecfb.php:1007
+#: wc-ecfb.php:631
+#: wc-ecfb.php:659
+#: wc-ecfb.php:1016
+#: wc-ecfb.php:1165
 #@ wcbcf
 msgid "Phone"
 msgstr "Telefone"
 
-#: wc-ecfb.php:560
-#: wc-ecfb.php:588
+#: wc-ecfb.php:632
+#: wc-ecfb.php:660
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Phone"
 msgstr "Telefone"
 
-#: wc-ecfb.php:567
-#: wc-ecfb.php:870
-#: wc-ecfb.php:1011
-#: wc-ecfb.php:1249
+#: wc-ecfb.php:639
+#: wc-ecfb.php:1021
+#: wc-ecfb.php:1169
+#: wc-ecfb.php:1394
 #@ wcbcf
 msgid "Cell Phone"
 msgstr "Celular"
 
-#: wc-ecfb.php:575
-#: wc-ecfb.php:595
-#: wc-ecfb.php:875
-#: wc-ecfb.php:1014
-#: wc-ecfb.php:1255
+#: wc-ecfb.php:647
+#: wc-ecfb.php:667
+#: wc-ecfb.php:1026
+#: wc-ecfb.php:1171
+#: wc-ecfb.php:1400
 #@ wcbcf
 msgid "Email"
 msgstr "E-mail"
 
-#: wc-ecfb.php:576
-#: wc-ecfb.php:596
+#: wc-ecfb.php:648
+#: wc-ecfb.php:668
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Email"
 msgstr "E-mail"
 
-#: wc-ecfb.php:730
-#@ wcbcf
-msgid "<strong>CPF</strong> is a required field."
-msgstr "<strong>CPF</strong> é um campo obrigatório."
-
-#: wc-ecfb.php:735
-#@ wcbcf
-msgid "<strong>Company</strong> is a required field."
-msgstr "<strong>Razão Social</strong> é um campo obrigatório."
-
-#: wc-ecfb.php:740
-#@ wcbcf
-msgid "<strong>CNPJ</strong> is a required field."
-msgstr "<strong>CNPJ</strong> é um campo obrigatório."
-
-#: wc-ecfb.php:1169
+#: wc-ecfb.php:1314
 #@ wcbcf
 msgid "Customer Billing Address"
 msgstr "Endereço de Cobrança do Cliente"
 
-#: wc-ecfb.php:1171
-#: wc-ecfb.php:1262
+#: wc-ecfb.php:1316
+#: wc-ecfb.php:1407
 #@ wcbcf
 msgid "First name"
 msgstr "Nome"
 
-#: wc-ecfb.php:1175
-#: wc-ecfb.php:1266
+#: wc-ecfb.php:1320
+#: wc-ecfb.php:1411
 #@ wcbcf
 msgid "Last name"
 msgstr "Sobrenome"
 
-#: wc-ecfb.php:452
-#: wc-ecfb.php:639
-#: wc-ecfb.php:815
-#: wc-ecfb.php:900
-#: wc-ecfb.php:995
-#: wc-ecfb.php:1194
-#: wc-ecfb.php:1270
+#: wc-ecfb.php:524
+#: wc-ecfb.php:711
+#: wc-ecfb.php:882
+#: wc-ecfb.php:964
+#: wc-ecfb.php:1051
+#: wc-ecfb.php:1153
+#: wc-ecfb.php:1339
+#: wc-ecfb.php:1415
 #@ wcbcf
 msgid "Company"
 msgstr "Empresa"
 
-#: wc-ecfb.php:1212
-#: wc-ecfb.php:1275
+#: wc-ecfb.php:1357
+#: wc-ecfb.php:1420
 #@ wcbcf
 msgid "2 letter Country code"
 msgstr "Código de duas letras"
 
-#: wc-ecfb.php:860
-#: wc-ecfb.php:934
-#: wc-ecfb.php:1215
-#: wc-ecfb.php:1278
+#: wc-ecfb.php:1011
+#: wc-ecfb.php:1087
+#: wc-ecfb.php:1360
+#: wc-ecfb.php:1423
 #@ wcbcf
 msgid "Postcode"
 msgstr "CEP"
 
-#: wc-ecfb.php:830
-#: wc-ecfb.php:904
-#: wc-ecfb.php:1219
-#: wc-ecfb.php:1282
+#: wc-ecfb.php:979
+#: wc-ecfb.php:1055
+#: wc-ecfb.php:1364
+#: wc-ecfb.php:1427
 #@ wcbcf
 msgid "Address 1"
 msgstr "Endereço"
 
-#: wc-ecfb.php:838
-#: wc-ecfb.php:912
-#: wc-ecfb.php:1227
-#: wc-ecfb.php:1290
+#: wc-ecfb.php:987
+#: wc-ecfb.php:1063
+#: wc-ecfb.php:1372
+#: wc-ecfb.php:1435
 #@ wcbcf
 msgid "Address 2"
 msgstr "Complemento"
 
-#: wc-ecfb.php:1243
+#: wc-ecfb.php:1388
 #@ wcbcf
 msgid "Telephone"
 msgstr "Telefone"
 
-#: wc-ecfb.php:1260
+#: wc-ecfb.php:1405
 #@ wcbcf
 msgid "Customer Shipping Address"
 msgstr "Endereço de Envio do Cliente"
 
-#: wc-ecfb.php:1387
+#: wc-ecfb.php:1647
 #, php-format
 #@ wcbcf
 msgid "WooCommerce Brazilian Checkout Fields depends on <a href=\"%s\">WooCommerce</a> to work!"
@@ -476,82 +467,76 @@ msgstr "WooCommerce Extra Checkout Fields for Brazil"
 msgid "http://claudiosmweb.com/"
 msgstr "http://claudiosmweb.com/"
 
-#. translators: plugin header field 'Version'
-#: wc-ecfb.php:0
-#@ wcbcf
-msgid "2.0"
-msgstr "2.0"
-
-#: wc-ecfb.php:453
-#: wc-ecfb.php:640
+#: wc-ecfb.php:525
+#: wc-ecfb.php:712
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Company"
 msgstr "Empresa"
 
-#: wc-ecfb.php:515
-#: wc-ecfb.php:672
-#: wc-ecfb.php:834
-#: wc-ecfb.php:908
-#: wc-ecfb.php:1223
-#: wc-ecfb.php:1286
+#: wc-ecfb.php:587
+#: wc-ecfb.php:744
+#: wc-ecfb.php:983
+#: wc-ecfb.php:1059
+#: wc-ecfb.php:1368
+#: wc-ecfb.php:1431
 #@ wcbcf
 msgid "Number"
 msgstr "Número"
 
-#: wc-ecfb.php:516
-#: wc-ecfb.php:673
+#: wc-ecfb.php:588
+#: wc-ecfb.php:745
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Number"
 msgstr "Número"
 
-#: wc-ecfb.php:525
-#: wc-ecfb.php:682
+#: wc-ecfb.php:597
+#: wc-ecfb.php:754
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Address line 2"
 msgstr "Apartamento, suite, casa, etc"
 
-#: wc-ecfb.php:568
+#: wc-ecfb.php:640
 #@ wcbcf
 msgctxt "placeholder"
 msgid "Cell Phone"
 msgstr "Celular"
 
-#: wc-ecfb.php:857
-#: wc-ecfb.php:931
+#: wc-ecfb.php:1007
+#: wc-ecfb.php:1083
 #@ wcbcf
 msgid "Select a country&hellip;"
 msgstr "Selecionar País&hellip;"
 
-#: wc-ecfb.php:960
+#: wc-ecfb.php:1113
 #@ wcbcf
 msgid "No billing address set."
 msgstr "Nenhum endereço de pagamento foi definido."
 
-#: wc-ecfb.php:980
+#: wc-ecfb.php:1138
 #@ wcbcf
 msgid "Customer data"
 msgstr "Informações do cliente"
 
-#: wc-ecfb.php:1039
+#: wc-ecfb.php:1196
 #@ wcbcf
 msgid "No shipping address set."
 msgstr "Nenhum endereço de entrega foi definido."
 
-#: wc-ecfb.php:1126
+#: wc-ecfb.php:142
 #@ wcbcf
 msgid "Load the customer extras data?"
 msgstr "Carregar informações adicionais do cliente?"
 
-#: wc-ecfb.php:1126
+#: wc-ecfb.php:143
 #@ wcbcf
 msgid "Also copy the data of number and neighborhood?"
 msgstr "Copiar também as informações de número e bairro?"
 
-#: wc-ecfb.php:1240
-#: wc-ecfb.php:1303
+#: wc-ecfb.php:1385
+#: wc-ecfb.php:1448
 #@ wcbcf
 msgid "State code"
 msgstr "UF"
@@ -561,4 +546,53 @@ msgstr "UF"
 #@ wcbcf
 msgid "Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP."
 msgstr "Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP."
+
+#. translators: plugin header field 'Version'
+#: wc-ecfb.php:0
+#@ wcbcf
+msgid "2.2.0"
+msgstr "2.2.0"
+
+#: wc-ecfb.php:167
+#@ wcbcf
+msgid "Settings"
+msgstr "Configurações"
+
+#: wc-ecfb.php:354
+#@ wcbcf
+msgid "Validation:"
+msgstr "Validação:"
+
+#: wc-ecfb.php:362
+#@ wcbcf
+msgid "Validate CPF:"
+msgstr "Validar CPF:"
+
+#: wc-ecfb.php:369
+#@ wcbcf
+msgid "Checks if the CPF is valid."
+msgstr "Verifica se o CPF é válido."
+
+#: wc-ecfb.php:376
+#@ wcbcf
+msgid "Validate CNPJ:"
+msgstr "Validar CNPJ:"
+
+#: wc-ecfb.php:383
+#@ wcbcf
+msgid "Checks if the CNPJ is valid."
+msgstr "Verifica se o CNPJ é válido."
+
+#: wc-ecfb.php:874
+#: wc-ecfb.php:882
+#: wc-ecfb.php:886
+#@ wcbcf
+msgid "is a required field"
+msgstr "é um campo obrigatório"
+
+#: wc-ecfb.php:877
+#: wc-ecfb.php:889
+#@ wcbcf
+msgid "is not valid"
+msgstr "é inválido"
 
