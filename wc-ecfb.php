@@ -31,9 +31,6 @@ class WC_BrazilianCheckoutFields {
         // Load scripts in front-end.
         add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ), 999 );
 
-        // Default options.
-        register_activation_hook( __FILE__, array( &$this, 'default_settings' ) );
-
         // Add menu.
         add_action( 'admin_menu', array( &$this, 'menu' ) );
 
@@ -154,12 +151,12 @@ class WC_BrazilianCheckoutFields {
     public function default_settings() {
 
         $default = array(
-            'person_type'     => '1',
-            'birthdate_sex'   => '1',
-            'cell_phone'      => '1',
-            'mailcheck'       => '1',
-            'maskedinput'     => '1',
-            'addresscomplete' => '1'
+            'person_type'     => 1,
+            'birthdate_sex'   => 1,
+            'cell_phone'      => 1,
+            'mailcheck'       => 1,
+            'maskedinput'     => 1,
+            'addresscomplete' => 1
         );
 
         add_option( 'wcbcf_settings', $default );
@@ -219,7 +216,7 @@ class WC_BrazilianCheckoutFields {
 
         // Create option in wp_options.
         if ( false == get_option( $option ) )
-            add_option( $option );
+            $this->default_settings();
 
         // Set Custom Fields cection.
         add_settings_section(
