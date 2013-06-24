@@ -1,3 +1,4 @@
+/*global wcbcf_writepanel_params*/
 jQuery(document).ready(function($) {
     $('button.load_customer_billing').click(function(){
         var answer = confirm(wcbcf_writepanel_params.load_message);

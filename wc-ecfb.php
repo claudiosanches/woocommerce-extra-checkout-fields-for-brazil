@@ -50,7 +50,6 @@ class WC_BrazilianCheckoutFields {
         add_action( 'woocommerce_admin_order_data_after_billing_address', array( &$this, 'custom_admin_billing_fields' ) );
         add_action( 'woocommerce_admin_order_data_after_shipping_address', array( &$this, 'custom_admin_shipping_fields' ) );
         add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueue_scripts' ) );
-        add_action( 'admin_head', array( &$this, 'shop_order_head' ) );
         add_action( 'save_post', array( &$this, 'save_custom_fields' ) );
 
         // Custom address format.
@@ -134,6 +133,16 @@ class WC_BrazilianCheckoutFields {
 
             wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js', __FILE__ ), array( 'jquery' ), null, true );
             wp_enqueue_script( 'wcbcf-write-panels' );
+
+            // Localize strings.
+            wp_localize_script(
+                'wcbcf-write-panels',
+                'wcbcf_writepanel_params',
+                array(
+                    'load_message' => __( 'Load the customer extras data?', 'wcbcf' ),
+                    'copy_message' => __( 'Also copy the data of number and neighborhood?', 'wcbcf' )
+                )
+            );
         }
     }
 
@@ -1119,17 +1128,6 @@ class WC_BrazilianCheckoutFields {
         }
 
         return $post_id;
-    }
-
-    /**
-     * Custom shop order scripts.
-     */
-    public function shop_order_head() {
-        ?>
-        <script type="text/javascript">
-        /* <![CDATA[ */ var wcbcf_writepanel_params = {"load_message":"<?php _e( 'Load the customer extras data?', 'wcbcf' ); ?>","copy_message":"<?php _e( 'Also copy the data of number and neighborhood?', 'wcbcf' ); ?>"}; /* ]]> */
-        </script>
-        <?php
     }
 
     /**
