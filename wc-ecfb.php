@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
- * Version: 2.1.1
+ * Version: 2.2.0
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -1444,8 +1444,10 @@ class WC_BrazilianCheckoutFields {
      * @return array       New arguments.
      */
     public function moip_args( $args ) {
-
-        $settings = get_option( 'wcbcf_settings' );
+        if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
+            $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
+        else
+            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
 
         $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
         $order = new WC_Order( $order_id );
@@ -1464,12 +1466,15 @@ class WC_BrazilianCheckoutFields {
      * @return array       New arguments.
      */
     public function bcash_args( $args ) {
-
         $settings = get_option( 'wcbcf_settings' );
 
         if ( isset( $settings['person_type'] ) ) {
 
-            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
+            if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
+                $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
+            else
+                $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
+
             $order = new WC_Order( $order_id );
 
             if ( 1 == $order->billing_persontype ) {
@@ -1495,7 +1500,11 @@ class WC_BrazilianCheckoutFields {
      * @return array       New arguments.
      */
     public function pagseguro_args( $args ) {
-        $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
+        if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
+            $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
+        else
+            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
+
         $order = new WC_Order( $order_id );
 
         $args['shippingAddressNumber']   = $order->billing_number;
@@ -1503,7 +1512,6 @@ class WC_BrazilianCheckoutFields {
 
         return $args;
     }
-
 }
 
 /**
@@ -1522,16 +1530,29 @@ function wcbcf_fallback_notice() {
 /**
  * Load plugin functions.
  */
-add_action( 'plugins_loaded', 'wcbcf_plugin', 0 );
-
 function wcbcf_plugin() {
     load_plugin_textdomain( 'wcbcf', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
     // Check if WooCommerce is active.
-    // Ref: http://wcdocs.woothemes.com/codex/extending/create-a-plugin/.
-    if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    if ( wcbcf_is_woocommerce_active() )
         $wcBrazilianCheckoutFields = new WC_BrazilianCheckoutFields();
-    } else {
+    else
         add_action( 'admin_notices', 'wcbcf_fallback_notice' );
-    }
+}
+
+add_action( 'plugins_loaded', 'wcbcf_plugin', 0 );
+
+/**
+ * Checks if WooCommerce is active.
+ *
+ * @return bool true if WooCommerce is active, false otherwise.
+ */
+function wcbcf_is_woocommerce_active() {
+
+    $active_plugins = (array) get_option( 'active_plugins', array() );
+
+    if ( is_multisite() )
+        $active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+
+    return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
 }
