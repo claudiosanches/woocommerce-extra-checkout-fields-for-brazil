@@ -128,8 +128,8 @@ class WC_BrazilianCheckoutFields {
             // Get plugin settings.
             $settings = get_option( 'wcbcf_settings' );
 
-            wp_register_script( 'wcbcf-admin-scripts', plugins_url( 'js/jquery.fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), null, true );
-            wp_enqueue_script( 'wcbcf-admin-scripts' );
+            wp_register_script( 'wcbcf-shop-order', plugins_url( 'js/jquery.fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), null, true );
+            wp_enqueue_script( 'wcbcf-shop-order' );
 
             wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js', __FILE__ ), array( 'jquery' ), null, true );
             wp_enqueue_script( 'wcbcf-write-panels' );
@@ -143,6 +143,11 @@ class WC_BrazilianCheckoutFields {
                     'copy_message' => __( 'Also copy the data of number and neighborhood?', 'wcbcf' )
                 )
             );
+        }
+
+        if ( isset( $_GET['page'] ) && 'wcbcf' == $_GET['page'] ) {
+            wp_register_script( 'wcbcf-admin', plugins_url( 'js/jquery.admin.js', __FILE__ ), array( 'jquery' ), null, true );
+            wp_enqueue_script( 'wcbcf-admin' );
         }
     }
 
@@ -179,7 +184,9 @@ class WC_BrazilianCheckoutFields {
             'cell_phone'      => 1,
             'mailcheck'       => 1,
             'maskedinput'     => 1,
-            'addresscomplete' => 1
+            'addresscomplete' => 1,
+            'validate_cpf'    => 1,
+            'validate_cnpj'   => 1
         );
 
         add_option( 'wcbcf_settings', $default );
@@ -338,6 +345,42 @@ class WC_BrazilianCheckoutFields {
                 'menu' => $option,
                 'id' => 'addresscomplete',
                 'label' => __( 'If checked automatically complete the address fields based on the zip code.', 'wcbcf' )
+            )
+        );
+
+        // Set Custom Fields cection.
+        add_settings_section(
+            'validation_section',
+            __( 'Validation:', 'wcbcf' ),
+            array( &$this, 'section_options_callback' ),
+            $option
+        );
+
+        // Validate CPF option.
+        add_settings_field(
+            'validate_cpf',
+            __( 'Validate CPF:', 'wcbcf' ),
+            array( &$this, 'checkbox_element_callback' ),
+            $option,
+            'validation_section',
+            array(
+                'menu' => $option,
+                'id' => 'validate_cpf',
+                'label' => __( 'Checks if the CPF is valid.', 'wcbcf' )
+            )
+        );
+
+        // Validate CPF option.
+        add_settings_field(
+            'validate_cnpj',
+            __( 'Validate CNPJ:', 'wcbcf' ),
+            array( &$this, 'checkbox_element_callback' ),
+            $option,
+            'validation_section',
+            array(
+                'menu' => $option,
+                'id' => 'validate_cnpj',
+                'label' => __( 'Checks if the CNPJ is valid.', 'wcbcf' )
             )
         );
 
@@ -742,12 +785,84 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
+     * Checks if the CPF is valid.
+     *
+     * @param  string $cpf
+     *
+     * @return bool
+     */
+    protected function is_cpf( $cpf ) {
+        $cpf = preg_replace( '/[^0-9]/', '', $cpf );
+
+        if ( 11 != strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
+            return false;
+        }
+
+        $digit = substr( $cpf, 0, 9 );
+
+        for ( $j = 10; $j <= 11; $j++ ) {
+            $sum = 0;
+
+            for( $i = 0; $i< $j-1; $i++ ) {
+                $sum += ( $j - $i ) * ( (int) $digit[ $i ] );
+            }
+
+            $summod11 = $sum % 11;
+            $digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
+        }
+
+        return $digit[9] == ( (int) $cpf[9] ) && $digit[10] == ( (int) $cpf[10] );
+    }
+
+    /**
+     * Checks if the CNPJ is valid.
+     *
+     * @param  string $cnpj
+     *
+     * @return bool
+     */
+    protected function is_cnpj( $cnpj ) {
+        $cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+
+        if ( 14 != ( strlen( $cnpj ) ) || ( 0 == intval( substr( $cnpj, -4 ) ) ) ) {
+            return false;
+        }
+
+        for ( $t = 11; $t < 13; ) {
+            for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
+                $d += $cnpj[ $c ] * $p;
+            }
+
+            if ( $cnpj[ ++$t ] != ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Add error message in checkout.
+     *
+     * @param string $message Error message.
+     *
+     * @return string         Displays the error message.
+     */
+    protected function add_error( $message ) {
+        global $woocommerce;
+
+        if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
+            wc_add_error( $message );
+        else
+            $woocommerce->add_error( $message );
+    }
+
+    /**
      * Valid checkout fields.
      *
-     * @return void
+     * @return string Displays the error message.
      */
     public function valid_checkout_fields() {
-        global $woocommerce;
 
         // Get plugin settings.
         $settings = get_option( 'wcbcf_settings' );
@@ -755,16 +870,25 @@ class WC_BrazilianCheckoutFields {
         if ( isset( $settings['person_type'] ) ) {
 
             // Check CEP.
-            if ( 1 == $_POST['billing_persontype'] && ! $_POST['billing_cpf'] )
-                $woocommerce->add_error( __( '<strong>CPF</strong> is a required field.', 'wcbcf' ) );
+            if ( 1 == $_POST['billing_persontype'] && ! $_POST['billing_cpf'] ) {
+                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
+            } else {
+                if ( isset( $settings['validate_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) )
+                    $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'wcbcf' ), __( 'is not valid', 'wcbcf' ) ) );
+            }
 
             // Check Company.
             if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_company'] )
-                $woocommerce->add_error( __( '<strong>Company</strong> is a required field.', 'wcbcf' ) );
+                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
 
             // Check CPNJ.
-            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_cnpj'] )
-                $woocommerce->add_error( __( '<strong>CNPJ</strong> is a required field.', 'wcbcf' ) );
+            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_cnpj'] ) {
+                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
+            } else {
+                if ( isset( $settings['validate_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) )
+                    $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'wcbcf' ), __( 'is not valid', 'wcbcf' ) ) );
+
+            }
         }
     }
 
