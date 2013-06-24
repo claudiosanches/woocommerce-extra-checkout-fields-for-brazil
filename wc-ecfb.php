@@ -65,6 +65,9 @@ class WC_BrazilianCheckoutFields {
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
         add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ) );
+
+        // Actions links.
+        add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'action_links' ) );
     }
 
     /**
@@ -141,6 +144,26 @@ class WC_BrazilianCheckoutFields {
                 )
             );
         }
+    }
+
+    /**
+     * Adds custom settings url in plugins page.
+     *
+     * @param  array $links Default links.
+     *
+     * @return array        Default links and settings link.
+     */
+    public function action_links( $links ) {
+
+        $settings = array(
+            'settings' => sprintf(
+                '<a href="%s">%s</a>',
+                admin_url( 'admin.php?page=wcbcf' ),
+                __( 'Settings', 'wcbcf' )
+            )
+        );
+
+        return array_merge( $settings, $links );
     }
 
     /**
