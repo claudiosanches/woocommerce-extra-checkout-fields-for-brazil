@@ -18,6 +18,10 @@ This plugin adds Brazilian checkout fields in WooCommerce.
 
 Please notice that [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) must be installed and active.
 
+#### Contribute ####
+
+You can contribute to the source code in our [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil) page.
+
 ### Descrição em Português: ###
 
 Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
@@ -39,6 +43,10 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 * MailCheck jQuery: [https://github.com/Kicksend/mailcheck](https://github.com/Kicksend/mailcheck).
 * Masked Input jQuery: [https://github.com/digitalBush/jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput).
 * Tools Web - WebService CEP: [http://www.toolsweb.com.br/?webservice](http://www.toolsweb.com.br/?webservice).
+
+#### Coloborar ####
+
+Você pode contribuir com código-fonte em nossa página no [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
 
 ## Installation ##
 
