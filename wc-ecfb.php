@@ -64,6 +64,7 @@ class WC_BrazilianCheckoutFields {
         // Gateways addons.
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ), 1, 2 );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ), 1, 2 );
+        add_filter( 'woocommerce_moip_holder_data', array( &$this, 'moip_transparent_checkout_args' ), 1, 2 );
         add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ), 1, 2 );
 
         // Actions links.
@@ -1571,9 +1572,9 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
-     * Custom MoIP arguments.
+     * Custom Moip arguments.
      *
-     * @param  array  $args  MoIP default arguments.
+     * @param  array  $args  Moip default arguments.
      * @param  object $order Order data.
      *
      * @return array         New arguments.
@@ -1581,6 +1582,32 @@ class WC_BrazilianCheckoutFields {
     public function moip_args( $args, $order ) {
         $args['pagador_numero'] = $order->billing_number;
         $args['pagador_bairro'] = $order->billing_neighborhood;
+
+        return $args;
+    }
+
+    /**
+     * Custom Moip Transparent Checkout arguments.
+     *
+     * @param  array  $args  Moip Transparent Checkout default arguments.
+     * @param  object $order Order data.
+     *
+     * @return array         New arguments.
+     */
+    public function moip_transparent_checkout_args( $args, $order ) {
+
+        if ( isset( $order->billing_cpf ) )
+            $args['cpf'] = $order->billing_cpf;
+
+        if ( isset( $order->billing_birthdate ) ) {
+            $birthdate = explode( '/', $order->billing_birthdate );
+
+            $args['birthdate_day']   = $birthdate[0];
+            $args['birthdate_month'] = $birthdate[1];
+            $args['birthdate_year']  = $birthdate[2];
+        }
+
+        error_log( print_r( $args, true ) );
 
         return $args;
     }
