@@ -62,9 +62,9 @@ class WC_BrazilianCheckoutFields {
         }
 
         // Gateways addons.
-        add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ) );
-        add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ) );
-        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ) );
+        add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ), 1, 2 );
+        add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ), 1, 2 );
+        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ), 1, 2 );
 
         // Actions links.
         add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'action_links' ) );
@@ -1560,54 +1560,22 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
-     * Custom MoIP arguments.
-     *
-     * @param  array $args MoIP default arguments.
-     *
-     * @return array       New arguments.
-     */
-    public function moip_args( $args ) {
-        if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
-            $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
-        else
-            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
-
-        $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
-        $order = new WC_Order( $order_id );
-
-        $args['pagador_numero'] = $order->billing_number;
-        $args['pagador_bairro'] = $order->billing_neighborhood;
-
-        return $args;
-    }
-
-    /**
      * Custom Bcash arguments.
      *
-     * @param  array $args Bcash default arguments.
+     * @param  array $args   Bcash default arguments.
+     * @param  object $order Order data.
      *
-     * @return array       New arguments.
+     * @return array         New arguments.
      */
-    public function bcash_args( $args ) {
-        $settings = get_option( 'wcbcf_settings' );
+    public function bcash_args( $args, $order ) {
+        $args['numero'] = $order->billing_number;
 
-        if ( isset( $settings['person_type'] ) ) {
-
-            if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
-                $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
-            else
-                $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
-
-            $order = new WC_Order( $order_id );
-
-            if ( 1 == $order->billing_persontype ) {
-                $cpf = str_replace( array( '-', '.' ), '', $order->billing_cpf );
-                $args['cpf'] = $cpf;
-            }
+        if ( isset( $order->billing_persontype ) ) {
+            if ( 1 == $order->billing_persontype )
+                $args['cpf'] = str_replace( array( '-', '.' ), '', $order->billing_cpf );
 
             if ( 2 == $order->billing_persontype ) {
-                $cnpj = str_replace( array( '-', '.' ), '', $order->billing_cnpj );
-                $args['cliente_cnpj']         = $cnpj;
+                $args['cliente_cnpj']         = str_replace( array( '-', '.' ), '', $order->billing_cnpj );
                 $args['cliente_razao_social'] = $order->billing_company;
             }
         }
@@ -1616,20 +1584,29 @@ class WC_BrazilianCheckoutFields {
     }
 
     /**
+     * Custom MoIP arguments.
+     *
+     * @param  array  $args  MoIP default arguments.
+     * @param  object $order Order data.
+     *
+     * @return array         New arguments.
+     */
+    public function moip_args( $args, $order ) {
+        $args['pagador_numero'] = $order->billing_number;
+        $args['pagador_bairro'] = $order->billing_neighborhood;
+
+        return $args;
+    }
+
+    /**
      * Custom PagSeguro arguments.
      *
-     * @param  array $args PagSeguro default arguments.
+     * @param  array $args   PagSeguro default arguments.
+     * @param  object $order Order data.
      *
-     * @return array       New arguments.
+     * @return array         New arguments.
      */
-    public function pagseguro_args( $args ) {
-        if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) )
-            $order_id = woocommerce_get_order_id_by_order_key( $_REQUEST['key'] );
-        else
-            $order_id = (int) woocommerce_clean( $_REQUEST['order'] );
-
-        $order = new WC_Order( $order_id );
-
+    public function pagseguro_args( $args, $order ) {
         $args['shippingAddressNumber']   = $order->billing_number;
         $args['shippingAddressDistrict'] = $order->billing_neighborhood;
 
