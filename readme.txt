@@ -1,10 +1,10 @@
 === WooCommerce Extra Checkout Fields for Brazil ===
 Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
-Tags: ecommerce, e-commerce, commerce, wordpress ecommerce, checkout, woocommerce
+Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,8 +32,8 @@ Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo
 
 Funciona com os plugins:
 
-* [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **CPF**, **Razão Social** e **CNPJ**)
-* [WooCommerce MoIP](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número**)
+* [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
+* [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
 * [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro** e **número**)
 
 #### Créditos: ####
@@ -88,7 +88,15 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
-= 2.2.0 24/06/2013 =
+= 2.3.0 - 26/07/2013 =
+
+* Melhorada a integração com o [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/).
+* Melhorada a integração com o [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/).
+* Melhorada a integração com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
+* Adicionada integração com o Checkout Transparente do [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/).
+* Corrigido um bug na validação de CPF e CNPJ.
+
+= 2.2.0 - 24/06/2013 =
 
 * Adicionado suporte para o WooCommerce 2.1 ou superior.
 * Adicionada opção para validar CPF.
@@ -97,19 +105,19 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Removido o método `shop_order_head` em favor da função `wp_localize_script`.
 * Melhorada a tradução.
 
-= 2.1.1 26/04/2013 =
+= 2.1.1 - 26/04/2013 =
 
 * Correção da formatação de endereços para o WooCommerce 1.6.6 ou anterior.
 
-= 2.1 13/04/2013 =
+= 2.1 - 13/04/2013 =
 
 * Adicionada nova formatação de endereços (funciona para o WooCommerce 2.0.6 ou superior).
 
-= 2.0.1 01/04/2013 =
+= 2.0.1 - 01/04/2013 =
 
 * Correção da compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
 
-= 2.0 10/03/2013 =
+= 2.0 - 10/03/2013 =
 
 * Compatível com o WooCommerce 2.0.0 ou superior.
 * Adicionado campo de **número**.
@@ -118,11 +126,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Adicionado campos personalizados na página de edição do perfil do cliente.
 * Correção da página de detalhes do pedido.
 
-= 1.2.1 10/12/2012 =
+= 1.2.1 - 10/12/2012 =
 
 * Corrigida a máscara do campo *Data de Nascimento*.
 
-= 1.2 10/12/2012 =
+= 1.2 - 10/12/2012 =
 
 * Adicionadas máscaras para campos de CEP.
 
@@ -136,9 +144,13 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.2.0 =
+= 2.3.0 =
 
-* Agora o plugin conta com validação de CPF e CNPJ.
+* Melhorada a integração com o WooCommerce Bcash.
+* Melhorada a integração com o WooCommerce Moip.
+* Melhorada a integração com o WooCommerce PagSeguro.
+* Adicionada integração com o Checkout Transparente do WooCommerce Moip.
+* Corrigido um bug na validação de CPF e CNPJ.
 
 == License ==
 
