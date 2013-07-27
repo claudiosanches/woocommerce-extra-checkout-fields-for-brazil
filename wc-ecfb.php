@@ -87,28 +87,20 @@ class WC_BrazilianCheckoutFields {
             wp_enqueue_script( 'jquery' );
 
             // Call Mailcheck.
-            if ( isset( $settings['mailcheck'] ) ) {
-                wp_register_script( 'mailcheck', plugins_url( 'js/jquery.mailcheck.min.js', __FILE__ ), array(), null, true );
-                wp_enqueue_script( 'mailcheck' );
-            }
+            if ( isset( $settings['mailcheck'] ) )
+                wp_enqueue_script( 'mailcheck', plugins_url( 'js/jquery.mailcheck.min.js', __FILE__ ), array(), null, true );
 
             // Call Maskedinput.
-            if ( isset( $settings['maskedinput'] ) ) {
-                wp_register_script( 'maskedinput', plugins_url( 'js/jquery.maskedinput.min.js', __FILE__ ), array(), null, true );
-                wp_enqueue_script( 'maskedinput' );
-            }
+            if ( isset( $settings['maskedinput'] ) )
+                wp_enqueue_script( 'maskedinput', plugins_url( 'js/jquery.maskedinput.min.js', __FILE__ ), array(), null, true );
 
             // Call Adress Autocomplete
-            if ( isset( $settings['addresscomplete'] ) ) {
-                wp_register_script( 'addresscomplete', plugins_url( 'js/jquery.address.autocomplete.js', __FILE__ ), array(), null, true );
-                wp_enqueue_script( 'addresscomplete' );
-            }
+            if ( isset( $settings['addresscomplete'] ) )
+                wp_enqueue_script( 'addresscomplete', plugins_url( 'js/jquery.address.autocomplete.js', __FILE__ ), array(), null, true );
 
             // Call Person Fields fix.
-            if ( isset( $settings['person_type'] ) ) {
-                wp_register_script( 'fix-person-fields', plugins_url( 'js/jquery.fix.person.fields.js', __FILE__ ), array(), null, true );
-                wp_enqueue_script( 'fix-person-fields' );
-            }
+            if ( isset( $settings['person_type'] ) )
+                wp_enqueue_script( 'fix-person-fields', plugins_url( 'js/jquery.fix.person.fields.js', __FILE__ ), array(), null, true );
         }
     }
 
@@ -122,17 +114,14 @@ class WC_BrazilianCheckoutFields {
 
         if ( 'shop_order' == $post_type ) {
 
-            wp_register_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array(), null );
-            wp_enqueue_style( 'wcbcf-admin-styles' );
+            // Styles.
+            wp_enqueue_style( 'wcbcf-admin-styles', plugins_url( 'css/admin.css', __FILE__ ), array(), null );
 
-            // Get plugin settings.
-            $settings = get_option( 'wcbcf_settings' );
+            // Shop order.
+            wp_enqueue_script( 'wcbcf-shop-order', plugins_url( 'js/jquery.fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), null, true );
 
-            wp_register_script( 'wcbcf-shop-order', plugins_url( 'js/jquery.fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), null, true );
-            wp_enqueue_script( 'wcbcf-shop-order' );
-
-            wp_register_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js', __FILE__ ), array( 'jquery' ), null, true );
-            wp_enqueue_script( 'wcbcf-write-panels' );
+            // Write panels.
+            wp_enqueue_script( 'wcbcf-write-panels', plugins_url( 'js/jquery.write-panels.js', __FILE__ ), array( 'jquery' ), null, true );
 
             // Localize strings.
             wp_localize_script(
@@ -145,10 +134,8 @@ class WC_BrazilianCheckoutFields {
             );
         }
 
-        if ( isset( $_GET['page'] ) && 'wcbcf' == $_GET['page'] ) {
-            wp_register_script( 'wcbcf-admin', plugins_url( 'js/jquery.admin.js', __FILE__ ), array( 'jquery' ), null, true );
-            wp_enqueue_script( 'wcbcf-admin' );
-        }
+        if ( isset( $_GET['page'] ) && 'wcbcf' == $_GET['page'] )
+            wp_enqueue_script( 'wcbcf-admin', plugins_url( 'js/jquery.admin.js', __FILE__ ), array( 'jquery' ), null, true );
     }
 
     /**
