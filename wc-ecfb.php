@@ -1632,7 +1632,7 @@ class WC_BrazilianCheckoutFields {
  * @return string Fallack notice.
  */
 function wcbcf_fallback_notice() {
-    echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Brazilian Checkout Fields depends on %s to work!', 'wcbcf' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>' ) . '</p></div>';
+    echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', 'wcbcf' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>' ) . '</p></div>';
 }
 
 /**
