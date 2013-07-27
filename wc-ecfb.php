@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
- * Version: 2.2.0
+ * Version: 2.3.0
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -1606,8 +1606,6 @@ class WC_BrazilianCheckoutFields {
             $args['birthdate_month'] = $birthdate[1];
             $args['birthdate_year']  = $birthdate[2];
         }
-
-        error_log( print_r( $args, true ) );
 
         return $args;
     }
