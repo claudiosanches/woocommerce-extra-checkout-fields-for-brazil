@@ -869,25 +869,25 @@ class WC_BrazilianCheckoutFields {
 
         if ( isset( $settings['person_type'] ) ) {
 
-            // Check CEP.
-            if ( 1 == $_POST['billing_persontype'] && ! $_POST['billing_cpf'] ) {
-                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
-            } else {
-                if ( isset( $settings['validate_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) )
+            // Check CPF.
+            if ( 1 == $_POST['billing_persontype'] ) {
+                if ( empty( $_POST['billing_cpf'] ) )
+                    $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
+
+                if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) )
                     $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'wcbcf' ), __( 'is not valid', 'wcbcf' ) ) );
             }
 
-            // Check Company.
-            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_company'] )
-                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
+            // Check Company and CPNJ.
+            if ( 2 == $_POST['billing_persontype'] ) {
+                if ( empty( $_POST['billing_company'] ) )
+                    $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
 
-            // Check CPNJ.
-            if ( 2 == $_POST['billing_persontype'] && ! $_POST['billing_cnpj'] ) {
-                $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
-            } else {
-                if ( isset( $settings['validate_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) )
+                if ( empty( $_POST['billing_cnpj'] ) )
+                    $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'wcbcf' ), __( 'is a required field', 'wcbcf' ) ) );
+
+                if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) )
                     $this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'wcbcf' ), __( 'is not valid', 'wcbcf' ) ) );
-
             }
         }
     }
