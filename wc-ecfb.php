@@ -65,7 +65,7 @@ class WC_BrazilianCheckoutFields {
         add_filter( 'woocommerce_bcash_args', array( &$this, 'bcash_args' ), 1, 2 );
         add_filter( 'woocommerce_moip_args', array( &$this, 'moip_args' ), 1, 2 );
         add_filter( 'woocommerce_moip_holder_data', array( &$this, 'moip_transparent_checkout_args' ), 1, 2 );
-        add_filter( 'woocommerce_pagseguro_args', array( &$this, 'pagseguro_args' ), 1, 2 );
+        add_filter( 'woocommerce_pagseguro_payment_xml', array( &$this, 'pagseguro_args' ), 1, 2 );
 
         // Actions links.
         add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'action_links' ) );
@@ -1613,16 +1613,26 @@ class WC_BrazilianCheckoutFields {
     /**
      * Custom PagSeguro arguments.
      *
-     * @param  array $args   PagSeguro default arguments.
+     * @param  object $xml   PagSeguro SimpleXMLElement object.
      * @param  object $order Order data.
      *
-     * @return array         New arguments.
+     * @return object        New arguments.
      */
-    public function pagseguro_args( $args, $order ) {
-        $args['shippingAddressNumber']   = $order->billing_number;
-        $args['shippingAddressDistrict'] = $order->billing_neighborhood;
+    public function pagseguro_args( $xml, $order ) {
+        if ( isset( $order->billing_cpf ) ) {
+            $documents = $xml->sender->addChild( 'documents' );
+            $document = $documents->addChild( 'document' );
+            $document->addChild( 'type', 'CPF' );
+            $document->addChild( 'value', str_replace( array( '.', '-' ), '', $order->billing_cpf ) );
+        }
 
-        return $args;
+        if ( $order->billing_number )
+            $xml->shipping->address->addChild( 'number', $order->billing_number );
+
+        if ( $order->billing_neighborhood )
+            $xml->shipping->address->addChild( 'district' )->addCData( $order->billing_neighborhood );
+
+        return $xml;
     }
 }
 
