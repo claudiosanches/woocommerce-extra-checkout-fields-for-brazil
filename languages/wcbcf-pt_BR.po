@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.3.0\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-27 03:13:47+0000\n"
+"PO-Revision-Date: 2013-08-18 20:13:11+0000\n"
 "Last-Translator: Claudio Sanches <claudiosmweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -589,15 +589,15 @@ msgstr "é inválido"
 msgid "https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil"
 msgstr "https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil"
 
-#. translators: plugin header field 'Version'
-#: wc-ecfb.php:0
-#@ wcbcf
-msgid "2.3.0"
-msgstr "2.3.0"
-
-#: wc-ecfb.php:1635
+#: wc-ecfb.php:1645
 #, php-format
 #@ wcbcf
 msgid "WooCommerce Extra Checkout Fields for Brazil depends on %s to work!"
 msgstr "WooCommerce Extra Checkout Fields for Brazil depende do %s para funcionar!"
+
+#. translators: plugin header field 'Version'
+#: wc-ecfb.php:0
+#@ wcbcf
+msgid "2.4.0"
+msgstr "2.4.0"
 

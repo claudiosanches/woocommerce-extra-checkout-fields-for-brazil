@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 2.3.0
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,7 @@ Funciona com os plugins:
 
 * [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
 * [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
-* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro** e **número**)
+* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
 
 #### Créditos: ####
 
@@ -87,6 +87,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 2.4.0 - 18/08/2013 =
+
+* Adicionado suporte ao [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) 2.0.0.
 
 = 2.3.0 - 26/07/2013 =
 
@@ -144,13 +148,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.3.0 =
+= 2.4.0 - 18/08/2013 =
 
-* Melhorada a integração com o WooCommerce Bcash.
-* Melhorada a integração com o WooCommerce Moip.
-* Melhorada a integração com o WooCommerce PagSeguro.
-* Adicionada integração com o Checkout Transparente do WooCommerce Moip.
-* Corrigido um bug na validação de CPF e CNPJ.
+* Adicionado suporte ao WooCommerce PagSeguro 2.0.0 (envia os campos de bairro, CPF e número).
 
 == License ==
 
