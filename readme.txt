@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 2.4.1 - 19/08/2013 =
+
+* Melhorada a compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
+
 = 2.4.0 - 18/08/2013 =
 
 * Adicionado suporte ao [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) 2.0.0.
@@ -148,7 +152,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.4.0 - 18/08/2013 =
+= 2.4.1 - 18/08/2013 =
 
 * Adicionado suporte ao WooCommerce PagSeguro 2.0.0 (envia os campos de bairro, CPF e número).
 

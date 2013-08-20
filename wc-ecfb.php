@@ -5,7 +5,7 @@
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
  * Author: claudiosanches
  * Author URI: http://claudiosmweb.com/
- * Version: 2.4.0
+ * Version: 2.4.1
  * License: GPLv2 or later
  * Text Domain: wcbcf
  * Domain Path: /languages/
@@ -1626,11 +1626,13 @@ class WC_BrazilianCheckoutFields {
             $document->addChild( 'value', str_replace( array( '.', '-' ), '', $order->billing_cpf ) );
         }
 
-        if ( $order->billing_number )
-            $xml->shipping->address->addChild( 'number', $order->billing_number );
+        if ( isset( $xml->shipping->address ) ) {
+            if ( $order->billing_number )
+                $xml->shipping->address->addChild( 'number', $order->billing_number );
 
-        if ( $order->billing_neighborhood )
-            $xml->shipping->address->addChild( 'district' )->addCData( $order->billing_neighborhood );
+            if ( $order->billing_neighborhood )
+                $xml->shipping->address->addChild( 'district' )->addCData( $order->billing_neighborhood );
+        }
 
         return $xml;
     }
