@@ -172,10 +172,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.5.0 - 18/08/2013 ###
+### 2.6.0 ###
 
-* Melhoria no auto preenchimento de endereços. Agora preenche os dados ao carregar a janela.
-* Adicionado suporte ao Chosen no auto preenchimento de endereços.
+* Auto preenchimento dos campos de endereço pelo CEP agora funciona com HTTPS/SSL.
 
 ## License ##
 
