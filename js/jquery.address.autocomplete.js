@@ -9,11 +9,12 @@ jQuery(document).ready(function($) {
      */
     function addressAutoComplete(field) {
         // Valid CEP.
-        var cep = $('#' + field + '_postcode').val().replace('.','').replace('-', '');
-        var country = $('#' + field + '_country').val();
+        var cep = $('#' + field + '_postcode').val().replace('.','').replace('-', ''),
+            country = $('#' + field + '_country').val(),
+            address_1 = $('#' + field + '_address_1').val();
 
         // Check country is BR.
-        if (cep !== '' && 8 === cep.length && 'BR' === country) {
+        if (cep !== '' && 8 === cep.length && 'BR' === country && 0 === address_1.length) {
 
             // Gets the address.
             $.ajax({

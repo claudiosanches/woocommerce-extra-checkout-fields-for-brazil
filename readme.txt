@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.0
 Tested up to: 3.6.1
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 2.6.1 - 11/09/2013 =
+
+* Adicionada condição para não auto completar o endereço caso ele já esteja preenchido.
+
 = 2.6.0 - 11/09/2013 =
 
 * Adicionada nova api de busca de CEP: [Correios RESTful API](http://correiosapi.apphb.com/).
@@ -162,7 +166,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.6.0 =
+= 2.6.1 =
 
 * Auto preenchimento dos campos de endereço pelo CEP agora funciona com HTTPS/SSL.
 
