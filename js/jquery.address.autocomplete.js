@@ -14,28 +14,36 @@ jQuery(document).ready(function($) {
 
         // Check country is BR.
         if (cep !== '' && 8 === cep.length && 'BR' === country) {
+
             // Gets the address.
-            $.getScript('http://www.toolsweb.com.br/webservice/clienteWebService.php?cep=' + cep + '&formato=javascript', function() {
+            $.ajax({
+                type: "GET",
+                url: '//correiosapi.apphb.com/cep/' + cep,
+                dataType: 'jsonp',
+                crossDomain: true,
+                contentType: "application/json",
+                success: function(address) {
 
-                // Address.
-                if ('' !== unescape(resultadoCEP['tipoLogradouro'])) {
-                    $('#' + field + '_address_1').val(unescape(resultadoCEP['tipoLogradouro']) + ' ' + unescape(resultadoCEP['logradouro']));
-                } else {
-                    $('#' + field + '_address_1').val(unescape(resultadoCEP['logradouro']));
+                    // Address.
+                    if ('' !== unescape(address.tipoDeLogradouro)) {
+                        $('#' + field + '_address_1').val(unescape(address.tipoDeLogradouro) + ' ' + unescape(address.logradouro));
+                    } else {
+                        $('#' + field + '_address_1').val(unescape(address.logradouro));
+                    }
+
+                    // Neighborhood.
+                    $('#' + field + '_neighborhood').val(unescape(address.bairro));
+
+                    // City.
+                    $('#' + field + '_city').val(unescape(address.cidade));
+
+                    // State.
+                    $('#' + field + '_state option:selected').attr('selected', false);
+                    $('#' + field + '_state option[value="' + unescape(address.estado) + '"]').attr('selected', true);
+
+                    // Chosen support.
+                    $('#' + field + '_state').trigger("liszt:updated");
                 }
-
-                // Neighborhood.
-                $('#' + field + '_neighborhood').val(unescape(resultadoCEP['bairro']));
-
-                // City.
-                $('#' + field + '_city').val(unescape(resultadoCEP['cidade']));
-
-                // State.
-                $('#' + field + '_state option:selected').attr('selected', false);
-                $('#' + field + '_state option[value="' + unescape(resultadoCEP['estado']) + '"]').attr('selected', true);
-
-                // Chosen support.
-                $('#' + field + '_state').trigger("liszt:updated");
             });
         }
     }

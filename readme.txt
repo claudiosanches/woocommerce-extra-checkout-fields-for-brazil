@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.0
-Tested up to: 3.6
-Stable tag: 2.5.0
+Tested up to: 3.6.1
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,9 +40,9 @@ Funciona com os plugins:
 
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
-* MailCheck jQuery: [https://github.com/Kicksend/mailcheck](https://github.com/Kicksend/mailcheck).
-* Masked Input jQuery: [https://github.com/digitalBush/jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput).
-* Tools Web - WebService CEP: [http://www.toolsweb.com.br/?webservice](http://www.toolsweb.com.br/?webservice).
+* [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
+* [Masked Input jQuery](https://github.com/digitalBush/jquery.maskedinput).
+* [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
 #### Coloborar ####
 
@@ -87,6 +87,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 2.6.0 - 11/09/2013 =
+
+* Adicionada nova api de busca de CEP: [Correios RESTful API](http://correiosapi.apphb.com/).
+* Correção do erro causado ao buscar CEP utilizando HTTPS/SSL.
 
 = 2.5.0 - 30/08/2013 =
 
