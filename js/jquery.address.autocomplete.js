@@ -8,44 +8,48 @@ jQuery(document).ready(function($) {
      * @return {void}         Autocomplete fields.
      */
     function addressAutoComplete(field) {
-        // Valid CEP.
-        var cep = $('#' + field + '_postcode').val().replace('.','').replace('-', ''),
-            country = $('#' + field + '_country').val(),
-            address_1 = $('#' + field + '_address_1').val();
+        // Checks with *_postcode field exist.
+        if ( $('#' + field + '_postcode').length ) {
 
-        // Check country is BR.
-        if (cep !== '' && 8 === cep.length && 'BR' === country && 0 === address_1.length) {
+            // Valid CEP.
+            var cep = $('#' + field + '_postcode').val().replace('.', '').replace('-', ''),
+                country = $('#' + field + '_country').val(),
+                address_1 = $('#' + field + '_address_1').val();
 
-            // Gets the address.
-            $.ajax({
-                type: "GET",
-                url: '//correiosapi.apphb.com/cep/' + cep,
-                dataType: 'jsonp',
-                crossDomain: true,
-                contentType: "application/json",
-                success: function(address) {
+            // Check country is BR.
+            if (cep !== '' && 8 === cep.length && 'BR' === country && 0 === address_1.length) {
 
-                    // Address.
-                    if ('' !== unescape(address.tipoDeLogradouro)) {
-                        $('#' + field + '_address_1').val(unescape(address.tipoDeLogradouro) + ' ' + unescape(address.logradouro));
-                    } else {
-                        $('#' + field + '_address_1').val(unescape(address.logradouro));
+                // Gets the address.
+                $.ajax({
+                    type: "GET",
+                    url: '//correiosapi.apphb.com/cep/' + cep,
+                    dataType: 'jsonp',
+                    crossDomain: true,
+                    contentType: "application/json",
+                    success: function(address) {
+
+                        // Address.
+                        if ('' !== address.tipoDeLogradouro) {
+                            $('#' + field + '_address_1').val(address.tipoDeLogradouro + ' ' + address.logradouro);
+                        } else {
+                            $('#' + field + '_address_1').val(address.logradouro);
+                        }
+
+                        // Neighborhood.
+                        $('#' + field + '_neighborhood').val(address.bairro);
+
+                        // City.
+                        $('#' + field + '_city').val(address.cidade);
+
+                        // State.
+                        $('#' + field + '_state option:selected').attr('selected', false);
+                        $('#' + field + '_state option[value="' + address.estado + '"]').attr('selected', true);
+
+                        // Chosen support.
+                        $('#' + field + '_state').trigger("liszt:updated");
                     }
-
-                    // Neighborhood.
-                    $('#' + field + '_neighborhood').val(unescape(address.bairro));
-
-                    // City.
-                    $('#' + field + '_city').val(unescape(address.cidade));
-
-                    // State.
-                    $('#' + field + '_state option:selected').attr('selected', false);
-                    $('#' + field + '_state option[value="' + unescape(address.estado) + '"]').attr('selected', true);
-
-                    // Chosen support.
-                    $('#' + field + '_state').trigger("liszt:updated");
-                }
-            });
+                });
+            }
         }
     }
 
