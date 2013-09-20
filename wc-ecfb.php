@@ -87,6 +87,17 @@ class WC_BrazilianCheckoutFields {
             // Call jQuery.
             wp_enqueue_script( 'jquery' );
 
+            // Fix checkout fields.
+            wp_enqueue_script( 'fix-checkout-fields', plugins_url( 'js/jquery.fix.checkout.fields.js', __FILE__ ), array(), null, true );
+            wp_localize_script(
+                'fix-checkout-fields',
+                'wcecfb_fix_params',
+                array(
+                    'state'  => __( 'State', 'wcbcf' ),
+                    'required'  => __( 'required', 'wcbcf' )
+                )
+            );
+
             // Call Mailcheck.
             if ( isset( $settings['mailcheck'] ) )
                 wp_enqueue_script( 'mailcheck', plugins_url( 'js/jquery.mailcheck.min.js', __FILE__ ), array(), null, true );
