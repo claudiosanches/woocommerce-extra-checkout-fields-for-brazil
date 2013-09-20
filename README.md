@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout fields, brazil, cpf, cpnj  
 **Requires at least:** 3.0  
 **Tested up to:** 3.6.1  
-**Stable tag:** 2.6.1  
+**Stable tag:** 2.7.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -98,6 +98,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
+### 2.7.0 - 19/09/2013 ###
+
+* Adicionado script para corrigir a posição do campo de CEP.
+* Melhorado o script de auto preenchimento de endereço quando não existe opções de endereço de entrega.
+
 ### 2.6.1 - 11/09/2013 ###
 
 * Adicionada condição para não auto completar o endereço caso ele já esteja preenchido.
@@ -176,9 +181,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.6.1 ###
+### 2.7.0 ###
 
-* Auto preenchimento dos campos de endereço pelo CEP agora funciona com HTTPS/SSL.
+* Melhoria no auto preenchimento de endereço e adicionado script para corrigir a posição do campo CEP.
 
 ## License ##
 
