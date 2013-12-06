@@ -79,7 +79,7 @@ class WC_BrazilianCheckoutFields {
 	public function enqueue_scripts() {
 
 		// Load scripts only in checkout.
-		if ( is_checkout() || is_page( woocommerce_get_page_id( 'edit_address' ) ) ) {
+		if ( is_checkout() || is_account_page() ) {
 
 			// Get plugin settings.
 			$settings = get_option( 'wcbcf_settings' );
