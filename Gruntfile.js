@@ -13,6 +13,7 @@ module.exports = function(grunt) {
                 ".editorconfig",
                 ".git/",
                 ".gitignore",
+                ".jshintrc",
                 ".sass-cache/",
                 "node_modules/",
                 "assets/sass/",
