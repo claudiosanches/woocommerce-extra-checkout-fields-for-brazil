@@ -2,9 +2,9 @@
 **Contributors:** claudiosanches  
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout fields, brazil, cpf, cpnj  
-**Requires at least:** 3.0  
-**Tested up to:** 3.6.1  
-**Stable tag:** 2.7.0  
+**Requires at least:** 3.5  
+**Tested up to:** 3.8  
+**Stable tag:** 2.7.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -98,6 +98,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
+### 2.7.1 - 06/09/2013 ###
+
+* Adicionado suporte para a versão 2.1 do WooCommerce.
+* Correção de standards de código.
+
 ### 2.7.0 - 19/09/2013 ###
 
 * Adicionado script para corrigir a posição do campo de CEP.
@@ -181,9 +186,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.7.0 ###
+### 2.7.1 ###
 
-* Melhoria no auto preenchimento de endereço e adicionado script para corrigir a posição do campo CEP.
+* Adicionado suporte para a versão 2.1 do WooCommerce.
 
 ## License ##
 
