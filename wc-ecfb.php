@@ -439,7 +439,6 @@ class WC_BrazilianCheckoutFields {
 	 * @return array        validated options.
 	 */
 	public function validate_options( $input ) {
-		// Create our array for storing the validated options.
 		$output = array();
 
 		// Loop through each of the incoming options.
@@ -448,11 +447,9 @@ class WC_BrazilianCheckoutFields {
 			if ( isset( $input[ $key ] ) ) {
 				$output[ $key ] = woocommerce_clean( $input[ $key ] );
 			}
-
 		}
 
-		// Return the array processing any additional functions filtered by this action.
-		return apply_filters( 'wcbcf_validate_input', $output, $input );
+		return $output;
 	}
 
 	/**
