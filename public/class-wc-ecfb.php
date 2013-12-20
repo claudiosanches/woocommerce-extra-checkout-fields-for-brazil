@@ -1,6 +1,6 @@
 <?php
 /**
- * Extra Checkout Fields for Brazil.
+ * WooCommerce Extra Checkout Fields for Brazil.
  *
  * @package   Extra_Checkout_Fields_For_Brazil
  * @author    Claudio Sanches <contato@claudiosmweb.com>
@@ -57,8 +57,30 @@ class Extra_Checkout_Fields_For_Brazil {
 		// Activate plugin when new blog is added.
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
 
+		// Load custom order data.
+		add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
+
 		// Load public-facing style sheet and JavaScript.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		// New checkout fields.
+		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ) );
+		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ) );
+
+		// Valid checkout fields.
+		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
+
+		// Custom address format.
+		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.6', '>=' ) ) {
+			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
+			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
+			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
+			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
+			add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
+			add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
+			add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
+			add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
+		}
 	}
 
 	/**
@@ -69,7 +91,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @return Plugin slug variable.
 	 */
 	public static function get_plugin_slug() {
-		return $this->plugin_slug;
+		return self::$plugin_slug;
 	}
 
 	/**
@@ -200,7 +222,18 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @since 2.8.0
 	 */
 	private static function single_activate() {
-		// @TODO: Define activation functionality here
+		$default = array(
+			'person_type'     => 1,
+			'birthdate_sex'   => 1,
+			'cell_phone'      => 1,
+			'mailcheck'       => 1,
+			'maskedinput'     => 1,
+			'addresscomplete' => 1,
+			'validate_cpf'    => 1,
+			'validate_cnpj'   => 1
+		);
+
+		add_option( 'wcbcf_settings', $default );
 	}
 
 	/**
@@ -209,7 +242,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @since 2.8.0
 	 */
 	private static function single_deactivate() {
-		// @TODO: Define deactivation functionality here
+		delete_option( 'wcbcf_settings' );
 	}
 
 	/**
@@ -228,13 +261,632 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
+	 * Load order custom data.
+	 *
+	 * @param  array $data Default WC_Order data.
+	 *
+	 * @return array       Custom WC_Order data.
+	 */
+	public function load_order_data( $data ) {
+
+		// Billing
+		$data['billing_persontype']    = '';
+		$data['billing_cpf']           = '';
+		$data['billing_cnpj']          = '';
+		$data['billing_birthdate']     = '';
+		$data['billing_sex']           = '';
+		$data['billing_number']        = '';
+		$data['billing_neighborhood']  = '';
+		$data['billing_cellphone']     = '';
+
+		// Shipping
+		$data['shipping_number']       = '';
+		$data['shipping_neighborhood'] = '';
+
+		return $data;
+	}
+
+	/**
 	 * Register and enqueues public-facing style sheet and JavaScript files.
 	 *
 	 * @since    2.8.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( self::$plugin_slug . '-plugin-script', plugins_url( 'assets/js/public.js', __FILE__ ), array( 'jquery' ), self::VERSION );
-		wp_enqueue_style( self::$plugin_slug . '-plugin-styles', plugins_url( 'assets/css/public.css', __FILE__ ), array(), self::VERSION );
+		// Load scripts only in checkout.
+		if ( is_checkout() || is_account_page() ) {
+
+			// Get plugin settings.
+			$settings = get_option( 'wcbcf_settings' );
+
+			// Call jQuery.
+			wp_enqueue_script( 'jquery' );
+
+			// Fix checkout fields.
+			wp_enqueue_script( self::$plugin_slug . '-fix-checkout-fields', plugins_url( 'assets/js/fix.checkout.fields.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+			wp_localize_script(
+				self::$plugin_slug . '-fix-checkout-fields',
+				'wcbcf_fix_params',
+				array(
+					'state'    => __( 'State', self::$plugin_slug ),
+					'required' => __( 'required', self::$plugin_slug )
+				)
+			);
+
+			// Call Mailcheck.
+			if ( isset( $settings['mailcheck'] ) ) {
+				wp_enqueue_script( self::$plugin_slug . '-mailcheck', plugins_url( 'assets/js/mailcheck.min.js', __FILE__ ), array(), self::VERSION, true );
+			}
+
+			// Call Maskedinput.
+			if ( isset( $settings['maskedinput'] ) ) {
+				wp_enqueue_script( self::$plugin_slug . '-maskedinput', plugins_url( 'assets/js/maskedinput.min.js', __FILE__ ), array(), self::VERSION, true );
+			}
+
+			// Call Adress Autocomplete.
+			if ( isset( $settings['addresscomplete'] ) ) {
+				wp_enqueue_script( self::$plugin_slug . '-addresscomplete', plugins_url( 'assets/js/address.autocomplete.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+			}
+
+			// Call Person Fields fix.
+			if ( isset( $settings['person_type'] ) ) {
+				wp_enqueue_script( self::$plugin_slug . '-fix-person-fields', plugins_url( 'assets/js/fix.person.fields.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+			}
+		}
 	}
 
+	/**
+	 * New checkout billing fields
+	 *
+	 * @param  array $fields Default fields.
+	 *
+	 * @return array         New fields.
+	 */
+	public function checkout_billing_fields( $fields ) {
+
+		$new_fields = array();
+
+		// Get plugin settings.
+		$settings = get_option( 'wcbcf_settings' );
+
+		// Billing First Name.
+		$new_fields['billing_first_name'] = array(
+			'label'       => __( 'First Name', self::$plugin_slug ),
+			'placeholder' => _x( 'First Name', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first' ),
+			'required'    => true
+		);
+
+		// Billing Last Name.
+		$new_fields['billing_last_name'] = array(
+			'label'       => __( 'Last Name', self::$plugin_slug ),
+			'placeholder' => _x( 'Last Name', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		if ( isset( $settings['person_type'] ) ) {
+
+			// Billing Person Type.
+			$new_fields['billing_persontype'] = array(
+				'type'     => 'select',
+				'label'    => __( 'Person type', self::$plugin_slug ),
+				'class'    => array( 'form-row-wide' ),
+				'required' => true,
+				'options'  => array(
+					'0' => __( 'Select', self::$plugin_slug ),
+					'1' => __( 'Individuals', self::$plugin_slug ),
+					'2' => __( 'Legal Person', self::$plugin_slug )
+				)
+			);
+
+			// Billing CPF.
+			$new_fields['billing_cpf'] = array(
+				'label'       => __( 'CPF', self::$plugin_slug ),
+				'placeholder' => _x( 'CPF', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => false
+			);
+
+			// Billing Company.
+			$new_fields['billing_company'] = array(
+				'label'       => __( 'Company Name', self::$plugin_slug ),
+				'placeholder' => _x( 'Company Name', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => false
+			);
+
+			// Billing CNPJ.
+			$new_fields['billing_cnpj'] = array(
+				'label'       => __( 'CNPJ', self::$plugin_slug ),
+				'placeholder' => _x( 'CNPJ', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => false
+			);
+
+		} else {
+			// Billing Company.
+			$new_fields['billing_company'] = array(
+				'label'       => __( 'Company', self::$plugin_slug ),
+				'placeholder' => _x( 'Company', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => false
+			);
+		}
+
+		if ( isset( $settings['birthdate_sex'] ) ) {
+
+			// Billing Birthdate.
+			$new_fields['billing_birthdate'] = array(
+				'label'       => __( 'Birthdate', self::$plugin_slug ),
+				'placeholder' => _x( 'Birthdate', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-first' ),
+				'clear'       => false,
+				'required'    => true
+			);
+
+			// Billing Sex.
+			$new_fields['billing_sex'] = array(
+				'type'        => 'select',
+				'label'       => __( 'Sex', self::$plugin_slug ),
+				'class'       => array( 'form-row-last' ),
+				'clear'       => true,
+				'required'    => true,
+				'options'     => array(
+					'0'                     => __( 'Select', self::$plugin_slug ),
+					__( 'Female', self::$plugin_slug ) => __( 'Female', self::$plugin_slug ),
+					__( 'Male', self::$plugin_slug )   => __( 'Male', self::$plugin_slug )
+				)
+			);
+
+		}
+
+		// Billing Country.
+		$new_fields['billing_country'] = array(
+			'type'        => 'country',
+			'label'       => __( 'Country', self::$plugin_slug ),
+			'placeholder' => _x( 'Country', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'update_totals_on_change', 'address-field' ),
+			'clear'       => false,
+			'required'    => true,
+		);
+
+		// Billing Post Code.
+		$new_fields['billing_postcode'] = array(
+			'label'       => __( 'Post Code', self::$plugin_slug ),
+			'placeholder' => _x( 'Post Code', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		// Billing Anddress 01.
+		$new_fields['billing_address_1'] = array(
+			'label'       => __( 'Address', self::$plugin_slug ),
+			'placeholder' => _x( 'Address', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' ),
+			'required'    => true
+		);
+
+		// Billing Number.
+		$new_fields['billing_number'] = array(
+			'label'       => __( 'Number', self::$plugin_slug ),
+			'placeholder' => _x( 'Number', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		// Billing Anddress 02.
+		$new_fields['billing_address_2'] = array(
+			'label'       => __( 'Address line 2', self::$plugin_slug ),
+			'placeholder' => _x( 'Address line 2', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' )
+		);
+
+		// Billing Neighborhood.
+		$new_fields['billing_neighborhood'] = array(
+			'label'       => __( 'Neighborhood', self::$plugin_slug ),
+			'placeholder' => _x( 'Neighborhood', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true,
+		);
+
+		// Billing City.
+		$new_fields['billing_city'] = array(
+			'label'       => __( 'City', self::$plugin_slug ),
+			'placeholder' => _x( 'City', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' ),
+			'required'    => true
+		);
+
+		// Billing State.
+		$new_fields['billing_state'] = array(
+			'type'        => 'state',
+			'label'       => __( 'State', self::$plugin_slug ),
+			'placeholder' => _x( 'State', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		if ( isset( $settings['cell_phone'] ) ) {
+
+			// Billing Phone.
+			$new_fields['billing_phone'] = array(
+				'label'       => __( 'Phone', self::$plugin_slug ),
+				'placeholder' => _x( 'Phone', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-first' ),
+				'required'    => true
+			);
+
+			// Billing Cell Phone.
+			$new_fields['billing_cellphone'] = array(
+				'label'       => __( 'Cell Phone', self::$plugin_slug ),
+				'placeholder' => _x( 'Cell Phone', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-last' ),
+				'clear'       => true
+			);
+
+			// Billing Email.
+			$new_fields['billing_email'] = array(
+				'label'       => __( 'Email', self::$plugin_slug ),
+				'placeholder' => _x( 'Email', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'validate'    => array( 'email' ),
+				'clear'       => true,
+				'required'    => true
+			);
+
+		} else {
+
+			// Billing Phone.
+			$new_fields['billing_phone'] = array(
+				'label'       => __( 'Phone', self::$plugin_slug ),
+				'placeholder' => _x( 'Phone', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => true
+			);
+
+			// Billing Email.
+			$new_fields['billing_email'] = array(
+				'label'       => __( 'Email', self::$plugin_slug ),
+				'placeholder' => _x( 'Email', 'placeholder', self::$plugin_slug ),
+				'class'       => array( 'form-row-wide' ),
+				'required'    => true
+			);
+
+		}
+
+		return apply_filters( 'wcbcf_billing_fields', $new_fields );
+	}
+
+	/**
+	 * New checkout shipping fields
+	 *
+	 * @param  array $fields Default fields.
+	 *
+	 * @return array         New fields.
+	 */
+	public function checkout_shipping_fields( $fields ) {
+
+		$new_fields = array();
+
+		// Get plugin settings.
+		$settings = get_option( 'wcbcf_settings' );
+
+		// Shipping First Name.
+		$new_fields['shipping_first_name'] = array(
+			'label'       => __( 'First Name', self::$plugin_slug ),
+			'placeholder' => _x( 'First Name', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first' ),
+			'required'    => true
+		);
+
+		// Shipping Last Name.
+		$new_fields['shipping_last_name'] = array(
+			'label'       => __( 'Last Name', self::$plugin_slug ),
+			'placeholder' => _x( 'Last Name', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		// Shipping Company.
+		$new_fields['shipping_company'] = array(
+			'label'       => __( 'Company', self::$plugin_slug ),
+			'placeholder' => _x( 'Company', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-wide' )
+		);
+
+		// Shipping Country.
+		$new_fields['shipping_country'] = array(
+			'type'        => 'country',
+			'label'       => __( 'Country', self::$plugin_slug ),
+			'placeholder' => _x( 'Country', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'update_totals_on_change', 'address-field' ),
+			'required'    => true
+		);
+
+		// Shipping Post Code.
+		$new_fields['shipping_postcode'] = array(
+			'label'       => __( 'Post Code', self::$plugin_slug ),
+			'placeholder' => _x( 'Post Code', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'update_totals_on_change', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		// Shipping Anddress 01.
+		$new_fields['shipping_address_1'] = array(
+			'label'       => __( 'Address', self::$plugin_slug ),
+			'placeholder' => _x( 'Address', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' ),
+			'required'    => true
+		);
+
+		// Shipping Number.
+		$new_fields['shipping_number'] = array(
+			'label'       => __( 'Number', self::$plugin_slug ),
+			'placeholder' => _x( 'Number', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		// Shipping Anddress 02.
+		$new_fields['shipping_address_2'] = array(
+			'label'       => __( 'Address line 2', self::$plugin_slug ),
+			'placeholder' => _x( 'Address line 2', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' )
+		);
+
+		// Shipping Neighborhood.
+		$new_fields['shipping_neighborhood'] = array(
+			'label'       => __( 'Neighborhood', self::$plugin_slug ),
+			'placeholder' => _x( 'Neighborhood', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true
+		);
+
+		// Shipping City.
+		$new_fields['shipping_city'] = array(
+			'label'       => __( 'City', self::$plugin_slug ),
+			'placeholder' => _x( 'City', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-first', 'address-field' ),
+			'required'    => true
+		);
+
+		// Shipping State.
+		$new_fields['shipping_state'] = array(
+			'type'        => 'state',
+			'label'       => __( 'State', self::$plugin_slug ),
+			'placeholder' => _x( 'State', 'placeholder', self::$plugin_slug ),
+			'class'       => array( 'form-row-last', 'address-field' ),
+			'clear'       => true,
+			'required'    => true
+		);
+
+		return apply_filters( 'wcbcf_shipping_fields', $new_fields );
+	}
+
+	/**
+	 * Checks if the CPF is valid.
+	 *
+	 * @param  string $cpf
+	 *
+	 * @return bool
+	 */
+	protected function is_cpf( $cpf ) {
+		$cpf = preg_replace( '/[^0-9]/', '', $cpf );
+
+		if ( 11 != strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
+			return false;
+		}
+
+		$digit = substr( $cpf, 0, 9 );
+
+		for ( $j = 10; $j <= 11; $j++ ) {
+			$sum = 0;
+
+			for( $i = 0; $i< $j-1; $i++ ) {
+				$sum += ( $j - $i ) * ( (int) $digit[ $i ] );
+			}
+
+			$summod11 = $sum % 11;
+			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
+		}
+
+		return $digit[9] == ( (int) $cpf[9] ) && $digit[10] == ( (int) $cpf[10] );
+	}
+
+	/**
+	 * Checks if the CNPJ is valid.
+	 *
+	 * @param  string $cnpj
+	 *
+	 * @return bool
+	 */
+	protected function is_cnpj( $cnpj ) {
+		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+
+		if ( 14 != ( strlen( $cnpj ) ) || ( 0 == intval( substr( $cnpj, -4 ) ) ) ) {
+			return false;
+		}
+
+		for ( $t = 11; $t < 13; ) {
+			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
+				$d += $cnpj[ $c ] * $p;
+			}
+
+			if ( $cnpj[ ++$t ] != ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Add error message in checkout.
+	 *
+	 * @param string $message Error message.
+	 *
+	 * @return string         Displays the error message.
+	 */
+	protected function add_error( $message ) {
+		global $woocommerce;
+
+		if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
+			wc_add_notice( $message, 'error' );
+		} else {
+			$woocommerce->add_error( $message );
+		}
+	}
+
+	/**
+	 * Valid checkout fields.
+	 *
+	 * @return string Displays the error message.
+	 */
+	public function valid_checkout_fields() {
+
+		// Get plugin settings.
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( isset( $settings['person_type'] ) ) {
+
+			// Check CPF.
+			if ( 1 == $_POST['billing_persontype'] ) {
+				if ( empty( $_POST['billing_cpf'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', self::$plugin_slug ), __( 'is a required field', self::$plugin_slug ) ) );
+				}
+
+				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', self::$plugin_slug ), __( 'is not valid', self::$plugin_slug ) ) );
+				}
+			}
+
+			// Check Company and CPNJ.
+			if ( 2 == $_POST['billing_persontype'] ) {
+				if ( empty( $_POST['billing_company'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', self::$plugin_slug ), __( 'is a required field', self::$plugin_slug ) ) );
+				}
+
+				if ( empty( $_POST['billing_cnpj'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', self::$plugin_slug ), __( 'is a required field', self::$plugin_slug ) ) );
+				}
+
+				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', self::$plugin_slug ), __( 'is not valid', self::$plugin_slug ) ) );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Custom country address formats.
+	 *
+	 * @param  array $formats Defaul formats.
+	 *
+	 * @return array          New BR format.
+	 */
+	function localisation_address_formats( $formats ) {
+		$formats['BR'] = "{name}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
+
+		return $formats;
+	}
+
+	/**
+	 * Custom country address format.
+	 *
+	 * @param  array $replacements Default replacements.
+	 * @param  array $args         Arguments to replace.
+	 *
+	 * @return array               New replacements.
+	 */
+	function formatted_address_replacements( $replacements, $args ) {
+		extract( $args );
+
+		$replacements['{number}']       = $number;
+		$replacements['{neighborhood}'] = $neighborhood;
+
+		return $replacements;
+	}
+
+	/**
+	 * Custom order formatted billing address.
+	 *
+	 * @param  array $address Default address.
+	 * @param  object $order  Order data.
+	 *
+	 * @return array          New address format.
+	 */
+	function order_formatted_billing_address( $address, $order ) {
+		$address['number']       = $order->billing_number;
+		$address['neighborhood'] = $order->billing_neighborhood;
+
+		return $address;
+	}
+
+	/**
+	 * Custom order formatted shipping address.
+	 *
+	 * @param  array $address Default address.
+	 * @param  object $order  Order data.
+	 *
+	 * @return array          New address format.
+	 */
+	function order_formatted_shipping_address( $address, $order ) {
+		$address['number']       = $order->shipping_number;
+		$address['neighborhood'] = $order->shipping_neighborhood;
+
+		return $address;
+	}
+
+	/**
+	 * Custom user column billing address information.
+	 *
+	 * @param  array $address Default address.
+	 * @param  int $user_id   User id.
+	 *
+	 * @return array          New address format.
+	 */
+	function user_column_billing_address( $address, $user_id ) {
+		$address['number']       = get_user_meta( $user_id, 'billing_number', true );
+		$address['neighborhood'] = get_user_meta( $user_id, 'billing_neighborhood', true );
+
+		return $address;
+	}
+
+	/**
+	 * Custom user column shipping address information.
+	 *
+	 * @param  array $address Default address.
+	 * @param  int $user_id   User id.
+	 *
+	 * @return array          New address format.
+	 */
+	function user_column_shipping_address( $address, $user_id ) {
+		$address['number']       = get_user_meta( $user_id, 'shipping_number', true );
+		$address['neighborhood'] = get_user_meta( $user_id, 'shipping_neighborhood', true );
+
+		return $address;
+	}
+
+	/**
+	 * Custom my address formatted address.
+	 *
+	 * @param  array $address   Default address.
+	 * @param  int $customer_id Customer ID.
+	 * @param  string $name     Field name (billing or shipping).
+	 *
+	 * @return array            New address format.
+	 */
+	function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
+		$address['number']       = get_user_meta( $customer_id, $name . '_number', true );
+		$address['neighborhood'] = get_user_meta( $customer_id, $name . '_neighborhood', true );
+
+		return $address;
+	}
 }
