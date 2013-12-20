@@ -220,7 +220,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			array(
 				'menu' => $option,
 				'id' => 'person_type',
-				'label' => __( 'If checked show the Person Type option and CPF, Company and CNJP fields in billing options.', $this->plugin_slug )
+				'label' => __( 'If checked show the Person Type option and CPF, Company and CNPJ fields in billing options.', $this->plugin_slug )
 			)
 		);
 

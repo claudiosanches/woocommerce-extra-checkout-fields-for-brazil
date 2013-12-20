@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-12-20 05:40:42+0000\n"
+"PO-Revision-Date: 2013-12-20 05:44:46+0000\n"
 "Last-Translator: Claudio Sanches <contato@claudiosmweb.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -54,8 +54,8 @@ msgstr "Exibir Tipo de Pessoa:"
 
 #: admin/class-wc-ecfb-admin.php:223
 #@ woocommerce-extra-checkout-fields-for-brasil
-msgid "If checked show the Person Type option and CPF, Company and CNJP fields in billing options."
-msgstr "Caso esteja marcado exibe os campos de Tipo de Pessoa, CPF, Empresa e CNJP nas informações de cobrança."
+msgid "If checked show the Person Type option and CPF, Company and CNPJ fields in billing options."
+msgstr "Caso esteja marcado exibe os campos de Tipo de Pessoa, CPF, Empresa e CNPJ nas informações de cobrança."
 
 #: admin/class-wc-ecfb-admin.php:230
 #@ woocommerce-extra-checkout-fields-for-brasil
