@@ -175,7 +175,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	public function add_plugin_admin_menu() {
 		$this->plugin_screen_hook_suffix = add_submenu_page(
 			'woocommerce',
-			__( 'Brazilian Checkout Fields', $this->plugin_slug ),
+			__( 'Checkout Fields', $this->plugin_slug ),
 			__( 'Checkout Fields', $this->plugin_slug ),
 			'manage_options',
 			$this->plugin_slug,
