@@ -26,7 +26,8 @@ module.exports = function( grunt ) {
 				sass: 'public/assets/sass',
 				images: 'public/assets/images',
 				fonts: 'public/assets/fonts'
-			}
+			},
+			bower: 'bower_components'
 		},
 
 		// svn settings
@@ -63,7 +64,7 @@ module.exports = function( grunt ) {
 				'<%= dirs.admin.js %>/*.js',
 				'!<%= dirs.admin.js %>/*.min.js',
 				'<%= dirs.front.js %>/*.js',
-				'<%= dirs.front.js %>/*.min.js'
+				'!<%= dirs.front.js %>/*.min.js'
 			]
 		},
 
@@ -71,6 +72,7 @@ module.exports = function( grunt ) {
 		uglify: {
 			dist: {
 				files: {
+					// admin
 					'<%= dirs.admin.js %>/admin.min.js': [
 						'<%= dirs.admin.js %>/admin.js'
 					],
@@ -81,8 +83,17 @@ module.exports = function( grunt ) {
 					'<%= dirs.admin.js %>/shop-order.min.js': [
 						'<%= dirs.admin.js %>/fix.person.fields.admin.js',
 						'<%= dirs.admin.js %>/write-panels.js'
+					],
+					// front
+					'<%= dirs.front.js %>/public.min.js': [
+						'<%= dirs.bower %>/jquery.maskedinput/jquery.maskedinput.js',
+						'<%= dirs.bower %>/mailcheck/src/mailcheck.js',
+						'<%= dirs.front.js %>/address.autocomplete.js',
+						'<%= dirs.front.js %>/checkout.masks.js',
+						'<%= dirs.front.js %>/fix.checkout.fields.js',
+						'<%= dirs.front.js %>/fix.person.fields.js',
+						'<%= dirs.front.js %>/mailcheck.js'
 					]
-					// '<%= dirs.front.js %>/public.min.js': ['<%= dirs.front.js %>/public.js']
 				}
 			}
 		},

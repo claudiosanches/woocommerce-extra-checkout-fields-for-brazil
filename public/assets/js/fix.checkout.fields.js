@@ -1,4 +1,4 @@
-/* global wcbcf_fix_params */
+/* global wcbcf_public_params */
 jQuery(document).ready(function($) {
 
     /**
@@ -8,12 +8,12 @@ jQuery(document).ready(function($) {
      */
     function fix_checkout_fields() {
         // Billing.
-        $( '#billing_state_field label' ).html( wcbcf_fix_params.state + ' <abbr class="required" title="' + wcbcf_fix_params.required + '">*</abbr>' );
+        $( '#billing_state_field label' ).html( wcbcf_public_params.state + ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
         $( '#billing_postcode_field' ).insertAfter( '#billing_country_field' );
 
         // Shipping.
         if ( $( '#shipping_state_field' ).length ) {
-            $( '#shipping_state_field label' ).html( wcbcf_fix_params.state + ' <abbr class="required" title="' + wcbcf_fix_params.required + '">*</abbr>' );
+            $( '#shipping_state_field label' ).html( wcbcf_public_params.state + ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
             $( '#shipping_postcode_field' ).insertAfter( '#shipping_country_field' );
         }
     }

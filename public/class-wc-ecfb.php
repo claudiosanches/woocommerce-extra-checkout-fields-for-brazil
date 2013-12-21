@@ -302,35 +302,19 @@ class Extra_Checkout_Fields_For_Brazil {
 			wp_enqueue_script( 'jquery' );
 
 			// Fix checkout fields.
-			wp_enqueue_script( self::$plugin_slug . '-fix-checkout-fields', plugins_url( 'assets/js/fix.checkout.fields.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+			wp_enqueue_script( self::$plugin_slug . '-public', plugins_url( 'assets/js/public.min.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
 			wp_localize_script(
-				self::$plugin_slug . '-fix-checkout-fields',
-				'wcbcf_fix_params',
+				self::$plugin_slug . '-public',
+				'wcbcf_public_params',
 				array(
-					'state'    => __( 'State', self::$plugin_slug ),
-					'required' => __( 'required', self::$plugin_slug )
+					'state'           => __( 'State', self::$plugin_slug ),
+					'required'        => __( 'required', self::$plugin_slug ),
+					'mailcheck'       => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+					'addresscomplete' => isset( $settings['addresscomplete'] ) ? 'yes' : 'no',
+					'person_type'     => isset( $settings['person_type'] ) ? 'yes' : 'no'
 				)
 			);
-
-			// Call Mailcheck.
-			if ( isset( $settings['mailcheck'] ) ) {
-				wp_enqueue_script( self::$plugin_slug . '-mailcheck', plugins_url( 'assets/js/mailcheck.min.js', __FILE__ ), array(), self::VERSION, true );
-			}
-
-			// Call Maskedinput.
-			if ( isset( $settings['maskedinput'] ) ) {
-				wp_enqueue_script( self::$plugin_slug . '-maskedinput', plugins_url( 'assets/js/maskedinput.min.js', __FILE__ ), array(), self::VERSION, true );
-			}
-
-			// Call Adress Autocomplete.
-			if ( isset( $settings['addresscomplete'] ) ) {
-				wp_enqueue_script( self::$plugin_slug . '-addresscomplete', plugins_url( 'assets/js/address.autocomplete.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
-			}
-
-			// Call Person Fields fix.
-			if ( isset( $settings['person_type'] ) ) {
-				wp_enqueue_script( self::$plugin_slug . '-fix-person-fields', plugins_url( 'assets/js/fix.person.fields.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
-			}
 		}
 	}
 
