@@ -1,6 +1,6 @@
 /* global wcbcf_writepanel_params, woocommerce_admin_meta_boxes */
 /**
- * Plugin settings.
+ * WooCommerce write panels/shop order scripts to WooCommerce 2.1 or later.
  */
 (function ( $ ) {
 	'use strict';
