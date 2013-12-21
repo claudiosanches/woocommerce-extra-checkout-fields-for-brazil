@@ -1,4 +1,4 @@
-/* global wcbcf_writepanel_params, woocommerce_admin_meta_boxes */
+/* global wcbcf_writepanel_params, woocommerce_writepanel_params */
 /**
  * Plugin settings.
  */
@@ -14,7 +14,7 @@
 
 			if ( answer ) {
 				if ( ! userId ) {
-					window.alert( woocommerce_admin_meta_boxes.no_customer_selected );
+					window.alert( woocommerce_writepanel_params.no_customer_selected );
 					return false;
 				}
 
@@ -22,19 +22,19 @@
 					user_id:      userId,
 					type_to_load: 'billing',
 					action:       'woocommerce_get_customer_details',
-					security:     woocommerce_admin_meta_boxes.get_customer_details_nonce
+					security:     woocommerce_writepanel_params.get_customer_details_nonce
 				};
 
 				$( this ).closest( '.edit_address' ).block({
 					message: null,
 					overlayCSS: {
-						background: '#fff url(' + woocommerce_admin_meta_boxes.plugin_url + '/assets/images/ajax-loader.gif) no-repeat center',
+						background: '#fff url(' + woocommerce_writepanel_params.plugin_url + '/assets/images/ajax-loader.gif) no-repeat center',
 						opacity: 0.6
 					}
 				});
 
 				$.ajax({
-					url: woocommerce_admin_meta_boxes.ajax_url,
+					url: woocommerce_writepanel_params.ajax_url,
 					data: data,
 					type: 'POST',
 					success: function( response ) {
@@ -65,7 +65,7 @@
 			if ( answer ) {
 
 				if ( ! userId ) {
-					window.alert( woocommerce_admin_meta_boxes.no_customer_selected );
+					window.alert( woocommerce_writepanel_params.no_customer_selected );
 					return false;
 				}
 
@@ -73,19 +73,19 @@
 					user_id:      userId,
 					type_to_load: 'shipping',
 					action:       'woocommerce_get_customer_details',
-					security:     woocommerce_admin_meta_boxes.get_customer_details_nonce
+					security:     woocommerce_writepanel_params.get_customer_details_nonce
 				};
 
 				$( this ).closest( '.edit_address' ).block({
 					message: null,
 					overlayCSS: {
-						background: '#fff url(' + woocommerce_admin_meta_boxes.plugin_url + '/assets/images/ajax-loader.gif) no-repeat center',
+						background: '#fff url(' + woocommerce_writepanel_params.plugin_url + '/assets/images/ajax-loader.gif) no-repeat center',
 						opacity: 0.6
 					}
 				});
 
 				$.ajax({
-					url: woocommerce_admin_meta_boxes.ajax_url,
+					url: woocommerce_writepanel_params.ajax_url,
 					data: data,
 					type: 'POST',
 					success: function( response ) {

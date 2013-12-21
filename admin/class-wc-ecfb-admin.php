@@ -144,14 +144,17 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			wp_enqueue_style( $this->plugin_slug . '-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 
 			// Shop order.
-			wp_enqueue_script( $this->plugin_slug . '-shop-order', plugins_url( 'assets/js/fix.person.fields.admin.js', __FILE__ ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
+				$shop_order_js = plugins_url( 'assets/js/shop-order.min.js', __FILE__ );
+			} else {
+				$shop_order_js = plugins_url( 'assets/js/shop-order.old.min.js', __FILE__ );
+			}
 
-			// Write panels.
-			wp_enqueue_script( $this->plugin_slug . '-write-panels', plugins_url( 'assets/js/write-panels.js', __FILE__ ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			wp_enqueue_script( $this->plugin_slug . '-shop-order', $shop_order_js, array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 
 			// Localize strings.
 			wp_localize_script(
-				$this->plugin_slug . '-write-panels',
+				$this->plugin_slug . '-shop-order',
 				'wcbcf_writepanel_params',
 				array(
 					'load_message' => __( 'Load the customer extras data?', $this->plugin_slug ),
@@ -161,7 +164,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		}
 
 		if ( $this->plugin_screen_hook_suffix == get_current_screen()->id ) {
-			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
+			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.min.js', __FILE__ ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
 		}
 	}
 
