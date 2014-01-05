@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout fields, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
 **Tested up to:** 3.8  
-**Stable tag:** 2.8.0  
+**Stable tag:** 2.8.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -97,6 +97,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 2.8.1 - 05/01/2014 ###
+
+* Corrigido os ganchos e filtros da classe `Extra_Checkout_Fields_For_Brazil`.
 
 ### 2.8.0 - 21/12/2013 ###
 
@@ -192,11 +196,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.8.0 ###
+### 2.8.1 ###
 
-* Melhorada a compatibilidade com o WooCommerce 2.1.
-* Correção nas traduções.
-* Melhoria em todo o código PHP, JavaScript e CSS.
+* Corrigido os ganchos e filtros da classe `Extra_Checkout_Fields_For_Brazil`.
 
 ## License ##
 
