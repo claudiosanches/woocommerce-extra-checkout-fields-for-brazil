@@ -73,7 +73,6 @@ class Extra_Checkout_Fields_For_Brazil {
 		// Custom address format.
 		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.6', '>=' ) ) {
 			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
-			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
 			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
 			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
 			add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
