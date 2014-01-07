@@ -104,10 +104,12 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * WooCommerce fallback notice.
 	 *
+	 * @since  2.8.2
+	 *
 	 * @return string Fallack notice.
 	 */
 	public function woocommerce_fallback_notice() {
-		echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', self::$plugin_slug ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>' ) . '</p></div>';
+		echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', $this->plugin_slug ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>' ) . '</p></div>';
 	}
 
 	/**
