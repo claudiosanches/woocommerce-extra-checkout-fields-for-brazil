@@ -11,11 +11,11 @@
 			$( '._billing_company_field' ).hide();
 			$( '._billing_cnpj_field' ).hide();
 
-			if ( 1 === current ) {
+			if ( '1' === current ) {
 				$( '._billing_cpf_field' ).show();
 			}
 
-			if ( 2 === current ) {
+			if ( '2' === current ) {
 				$( '._billing_company_field' ).show();
 				$( '._billing_cnpj_field' ).show();
 			}
