@@ -50,6 +50,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @since 2.8.0
 	 */
 	private function __construct() {
+		global $woocommerce;
 
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
@@ -74,7 +75,7 @@ class Extra_Checkout_Fields_For_Brazil {
 		add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
 
 		// Custom address format.
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.6', '>=' ) ) {
+		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
 			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
 			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
 			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
@@ -723,7 +724,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	protected function add_error( $message ) {
 		global $woocommerce;
 
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
+		if ( version_compare( $woocommerce->version, '2.1', '>=' ) ) {
 			wc_add_notice( $message, 'error' );
 		} else {
 			$woocommerce->add_error( $message );

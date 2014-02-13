@@ -41,6 +41,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 * @since 2.8.0
 	 */
 	private function __construct() {
+		global $woocommerce;
+
 		$this->plugin_slug = Extra_Checkout_Fields_For_Brazil::get_plugin_slug();
 
 		// Load admin style sheet and JavaScript.
@@ -60,7 +62,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
 
 		// Custom address format.
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.6', '>=' ) ) {
+		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
 			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
 		}
 
@@ -137,7 +139,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 * @return null Return early if no settings page is registered.
 	 */
 	public function enqueue_admin_scripts() {
-		global $post_type;
+		global $woocommerce, $post_type;
 
 		if ( 'shop_order' == $post_type ) {
 
@@ -145,7 +147,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			wp_enqueue_style( $this->plugin_slug . '-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 
 			// Shop order.
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
+			if ( version_compare( $woocommerce->version, '2.1', '>=' ) ) {
 				$shop_order_js = plugins_url( 'assets/js/shop-order.min.js', __FILE__ );
 			} else {
 				$shop_order_js = plugins_url( 'assets/js/shop-order.old.min.js', __FILE__ );
@@ -601,7 +603,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		} else {
 
 			$html .= '<p><strong>' . __( 'Address', $this->plugin_slug ) . ':</strong><br />';
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.0.5', '<=' ) ) {
+			if ( version_compare( $woocommerce->version, '2.0.5', '<=' ) ) {
 				$html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
 				$html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
 				$html .= $order->billing_address_2 . '<br />';
@@ -687,7 +689,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		} else {
 
 			$html .= '<p><strong>' . __( 'Address', $this->plugin_slug ) . ':</strong><br />';
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.0.5', '<=' ) ) {
+			if ( version_compare( $woocommerce->version, '2.0.5', '<=' ) ) {
 				$html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
 				$html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
 				$html .= $order->billing_address_2 . '<br />';
