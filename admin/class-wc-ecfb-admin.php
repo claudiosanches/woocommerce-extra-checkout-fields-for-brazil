@@ -28,7 +28,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Slug of the plugin screen.
 	 *
-	 * @since 2.8.0
+	 * @since 2.9.0
 	 *
 	 * @var   string
 	 */
@@ -38,7 +38,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 * Initialize the plugin by loading admin scripts & styles and adding a
 	 * settings page and menu.
 	 *
-	 * @since 2.8.0
+	 * @since 2.9.0
 	 */
 	private function __construct() {
 		global $woocommerce;
@@ -119,7 +119,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Register and enqueue admin-specific JavaScript.
 	 *
-	 * @since  2.8.0
+	 * @since  2.9.0
 	 *
 	 * @return null Return early if no settings page is registered.
 	 */
@@ -568,6 +568,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Custom billing admin fields.
 	 *
+	 * @since  2.9.0
+	 *
 	 * @param  object $order Order data.
 	 *
 	 * @return string        Custom information.
@@ -656,6 +658,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Custom billing admin fields.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @param  object $order Order data.
 	 *

@@ -19,11 +19,11 @@ class Extra_Checkout_Fields_For_Brazil {
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
-	 * @since 2.8.0
+	 * @since 2.9.0
 	 *
 	 * @var   string
 	 */
-	const VERSION = '2.8.0';
+	const VERSION = '2.9.0';
 
 	/**
 	 * Plugin slug.
@@ -47,7 +47,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Initialize the plugin by setting localization and loading public scripts
 	 * and styles.
 	 *
-	 * @since 2.8.0
+	 * @since 2.9.0
 	 */
 	private function __construct() {
 		global $woocommerce;
@@ -118,7 +118,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	/**
 	 * Checks if WooCommerce is active.
 	 *
-	 * @since  2.8.1
+	 * @since  2.9.0
 	 *
 	 * @return bool true if WooCommerce is active, false otherwise.
 	 */
@@ -734,6 +734,8 @@ class Extra_Checkout_Fields_For_Brazil {
 	/**
 	 * Add error message in checkout.
 	 *
+	 * @since  2.9.0
+	 *
 	 * @param string $message Error message.
 	 *
 	 * @return string         Displays the error message.
@@ -896,6 +898,8 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Add custom fields in customer details ajax.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @return void
 	 */
