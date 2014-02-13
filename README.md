@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout fields, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
 **Tested up to:** 3.8  
-**Stable tag:** 2.8.1  
+**Stable tag:** 2.9.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -97,6 +97,19 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 2.9.0 - 13/02/2014 ###
+
+* Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
+* Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
+* Melhoria na inicialização do plugin.
+* Melhoria na compatibilidade com as novas versões do WooCommerce
+* Adicionado campo de RG.
+* Adicionado campo de Inscrição Estadual.
+
+### 2.8.2 - 05/01/2014 ###
+
+* Correção da mensagem que avisa sobre a falta do WooCommerce na instalação.
 
 ### 2.8.1 - 05/01/2014 ###
 
@@ -196,9 +209,14 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.8.1 ###
+### 2.9.0 ###
 
-* Corrigido os ganchos e filtros da classe `Extra_Checkout_Fields_For_Brazil`.
+* Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
+* Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
+* Melhoria na inicialização do plugin.
+* Melhoria na compatibilidade com as novas versões do WooCommerce
+* Adicionado campo de RG.
+* Adicionado campo de Inscrição Estadual.
 
 ## License ##
 

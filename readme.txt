@@ -88,6 +88,15 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 2.9.0 - 13/02/2014 =
+
+* Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
+* Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
+* Melhoria na inicialização do plugin.
+* Melhoria na compatibilidade com as novas versões do WooCommerce
+* Adicionado campo de RG.
+* Adicionado campo de Inscrição Estadual.
+
 = 2.8.2 - 05/01/2014 =
 
 * Correção da mensagem que avisa sobre a falta do WooCommerce na instalação.
@@ -190,9 +199,14 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.8.1 =
+= 2.9.0 =
 
-* Corrigido os ganchos e filtros da classe `Extra_Checkout_Fields_For_Brazil`.
+* Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
+* Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
+* Melhoria na inicialização do plugin.
+* Melhoria na compatibilidade com as novas versões do WooCommerce
+* Adicionado campo de RG.
+* Adicionado campo de Inscrição Estadual.
 
 == License ==
 
