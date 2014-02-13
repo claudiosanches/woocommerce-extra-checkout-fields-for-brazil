@@ -58,31 +58,33 @@ class Extra_Checkout_Fields_For_Brazil {
 		// Activate plugin when new blog is added.
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
 
-		// Load custom order data.
-		add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
+		if ( self::has_woocommerce_active() ) {
+			// Load custom order data.
+			add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
 
-		// Load public-facing style sheet and JavaScript.
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			// Load public-facing style sheet and JavaScript.
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		// New checkout fields.
-		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ) );
-		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ) );
+			// New checkout fields.
+			add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ) );
+			add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ) );
 
-		// Valid checkout fields.
-		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
+			// Valid checkout fields.
+			add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
 
-		// Found customers details ajax.
-		add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
+			// Found customers details ajax.
+			add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
 
-		// Custom address format.
-		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
-			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
-			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
-			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
-			add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
-			add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
-			add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
-			add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
+			// Custom address format.
+			if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
+				add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
+				add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
+				add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
+				add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
+				add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
+				add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
+				add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
+			}
 		}
 	}
 
@@ -111,6 +113,21 @@ class Extra_Checkout_Fields_For_Brazil {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Checks if WooCommerce is active.
+	 *
+	 * @since  2.8.1
+	 *
+	 * @return bool true if WooCommerce is active, false otherwise.
+	 */
+	public static function has_woocommerce_active() {
+		if ( class_exists( 'WooCommerce' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

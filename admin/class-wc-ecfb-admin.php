@@ -45,29 +45,29 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 		$this->plugin_slug = Extra_Checkout_Fields_For_Brazil::get_plugin_slug();
 
-		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-
-		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 59 );
-
-		// Init plugin options form.
-		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
-
-		// Custom shop_order details.
-		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
-		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
-		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
-		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
-		add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
-
-		// Custom address format.
-		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
-			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
-		}
-
-		if ( ! $this->has_woocommerce_active() ) {
+		if ( ! Extra_Checkout_Fields_For_Brazil::has_woocommerce_active() ) {
 			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
+		} else {
+			// Load admin style sheet and JavaScript.
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+
+			// Add the options page and menu item.
+			add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 59 );
+
+			// Init plugin options form.
+			add_action( 'admin_init', array( $this, 'plugin_settings' ) );
+
+			// Custom shop_order details.
+			add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
+			add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
+			add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
+			add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
+			add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
+
+			// Custom address format.
+			if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
+				add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
+			}
 		}
 	}
 
@@ -85,21 +85,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Checks if WooCommerce is active.
-	 *
-	 * @return bool true if WooCommerce is active, false otherwise.
-	 */
-	protected function has_woocommerce_active() {
-		$active_plugins = (array) get_option( 'active_plugins', array() );
-
-		if ( is_multisite() ) {
-			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
-		}
-
-		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
 	}
 
 	/**
