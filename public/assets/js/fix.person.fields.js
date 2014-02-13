@@ -10,23 +10,27 @@
 		// Hide and show cpf and cnpj fields
 		function personTypeFields( current ) {
 			$( '#billing_cpf_field' ).hide();
+			$( '#billing_rg_field' ).hide();
 			$( '#billing_company_field' ).hide();
 			$( '#billing_cnpj_field' ).hide();
+			$( '#billing_ie_field' ).hide();
 
 			if ( '1' === current ) {
 				$( '#billing_cpf_field' ).show();
+				$( '#billing_rg_field' ).show();
 			}
 
 			if ( '2' === current ) {
 				$( '#billing_company_field' ).show();
 				$( '#billing_cnpj_field' ).show();
+				$( '#billing_ie_field' ).show();
 			}
 		}
 
 		if ( 'yes' === wcbcf_public_params.person_type ) {
 			// Required fields.
-			$( '#billing_company_field label, #billing_cpf_field label, #billing_cnpj_field label' )
-				.append( ' <abbr class="required" title="obrigatório">*</abbr>' );
+			$( '#billing_company_field label, #billing_cpf_field label, #billing_cnpj_field label, #billing_rg_field label, #billing_ie_field label' )
+				.append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 
 			personTypeFields( $( '#billing_persontype' ).val() );
 

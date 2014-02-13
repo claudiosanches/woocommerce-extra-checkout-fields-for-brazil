@@ -215,6 +215,34 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			)
 		);
 
+		// RG option.
+		add_settings_field(
+			'rg',
+			__( 'Display RG:', $this->plugin_slug ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu' => $option,
+				'id' => 'rg',
+				'label' => __( 'If checked show the RG field in billing options.', $this->plugin_slug )
+			)
+		);
+
+		// State Registration option.
+		add_settings_field(
+			'ie',
+			__( 'Display State Registration:', $this->plugin_slug ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu' => $option,
+				'id' => 'ie',
+				'label' => __( 'If checked show the State Registration field in billing options.', $this->plugin_slug )
+			)
+		);
+
 		// Birthdate and Sex option.
 		add_settings_field(
 			'birthdate_sex',
@@ -427,12 +455,22 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			$billing_data['cpf'] = array(
 				'label' => __( 'CPF', $this->plugin_slug ),
 			);
+			if ( isset( $settings['rg'] ) ) {
+				$billing_data['rg'] = array(
+					'label' => __( 'RG', $this->plugin_slug ),
+				);
+			}
 			$billing_data['company'] = array(
 				'label' => __( 'Company Name', $this->plugin_slug ),
 			);
 			$billing_data['cnpj'] = array(
 				'label' => __( 'CNPJ', $this->plugin_slug ),
 			);
+			if ( isset( $settings['ie'] ) ) {
+				$billing_data['ie'] = array(
+					'label' => __( 'State Registration', $this->plugin_slug ),
+				);
+			}
 		} else {
 			$billing_data['company'] = array(
 				'label' => __( 'Company', $this->plugin_slug ),
@@ -621,11 +659,19 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			// Person type information.
 			if ( 1 == $order->billing_persontype ) {
 				$html .= '<strong>' . __( 'CPF', $this->plugin_slug ) . ': </strong>' . $order->billing_cpf . '<br />';
+
+				if ( isset( $settings['rg'] ) ) {
+					$html .= '<strong>' . __( 'RG', $this->plugin_slug ) . ': </strong>' . $order->billing_rg . '<br />';
+				}
 			}
 
 			if ( 2 == $order->billing_persontype ) {
-				$html .= '<strong>' . __( 'CNPJ', $this->plugin_slug ) . ': </strong>' . $order->billing_cnpj . '<br />';
 				$html .= '<strong>' . __( 'Company Name', $this->plugin_slug ) . ': </strong>' . $order->billing_company . '<br />';
+				$html .= '<strong>' . __( 'CNPJ', $this->plugin_slug ) . ': </strong>' . $order->billing_cnpj . '<br />';
+
+				if ( isset( $settings['ie'] ) ) {
+					$html .= '<strong>' . __( 'State Registration', $this->plugin_slug ) . ': </strong>' . $order->billing_ie . '<br />';
+				}
 			}
 		} else {
 			$html .= '<strong>' . __( 'Company', $this->plugin_slug ) . ': </strong>' . $order->billing_company . '<br />';
@@ -746,6 +792,14 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			update_post_meta( $post_id, '_billing_persontype', woocommerce_clean( $_POST['_billing_persontype'] ) );
 			update_post_meta( $post_id, '_billing_cpf', woocommerce_clean( $_POST['_billing_cpf'] ) );
 			update_post_meta( $post_id, '_billing_cnpj', woocommerce_clean( $_POST['_billing_cnpj'] ) );
+
+			if ( isset( $settings['rg'] ) ) {
+				update_post_meta( $post_id, '_billing_rg', woocommerce_clean( $_POST['_billing_rg'] ) );
+			}
+
+			if ( isset( $settings['ie'] ) ) {
+				update_post_meta( $post_id, '_billing_ie', woocommerce_clean( $_POST['_billing_ie'] ) );
+			}
 		}
 
 		if ( isset( $settings['birthdate_sex'] ) ) {
@@ -787,14 +841,29 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 				'label' => __( 'CPF', $this->plugin_slug ),
 				'description' => ''
 			);
-			$fields['billing']['fields']['billing_cnpj'] = array(
-				'label' => __( 'CNPJ', $this->plugin_slug ),
-				'description' => ''
-			);
+
+			if ( isset( $settings['rg'] ) ) {
+				$fields['billing']['fields']['billing_rg'] = array(
+					'label' => __( 'RG', $this->plugin_slug ),
+					'description' => ''
+				);
+			}
+
 			$fields['billing']['fields']['billing_company'] = array(
 				'label' => __( 'Company Name', $this->plugin_slug ),
 				'description' => ''
 			);
+			$fields['billing']['fields']['billing_cnpj'] = array(
+				'label' => __( 'CNPJ', $this->plugin_slug ),
+				'description' => ''
+			);
+
+			if ( isset( $settings['ie'] ) ) {
+				$fields['billing']['fields']['billing_ie'] = array(
+					'label' => __( 'State Registration', $this->plugin_slug ),
+					'description' => ''
+				);
+			}
 		} else {
 			$fields['billing']['fields']['billing_company'] = array(
 				'label' => __( 'Company', $this->plugin_slug ),

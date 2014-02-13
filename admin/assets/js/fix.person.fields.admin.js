@@ -7,17 +7,14 @@
 	$(function () {
 
 		function personTypeFields( current ) {
-			$( '._billing_cpf_field' ).hide();
-			$( '._billing_company_field' ).hide();
-			$( '._billing_cnpj_field' ).hide();
+			$( '._billing_cpf_field, ._billing_rg_field, ._billing_company_field, ._billing_cnpj_field, ._billing_ie_field' ).hide();
 
 			if ( '1' === current ) {
-				$( '._billing_cpf_field' ).show();
+				$( '._billing_cpf_field, ._billing_rg_field' ).show();
 			}
 
 			if ( '2' === current ) {
-				$( '._billing_company_field' ).show();
-				$( '._billing_cnpj_field' ).show();
+				$( '._billing_company_field, ._billing_cnpj_field, ._billing_ie_field' ).show();
 			}
 		}
 		personTypeFields( $( '#_billing_persontype' ).val() );

@@ -43,7 +43,9 @@
 							$( 'input#_billing_neighborhood' ).val( response.billing_neighborhood );
 							$( 'input#_billing_persontype' ).val( response.billing_persontype );
 							$( 'input#_billing_cpf' ).val( response.billing_cpf );
+							$( 'input#_billing_rg' ).val( response.billing_rg );
 							$( 'input#_billing_cnpj' ).val( response.billing_cnpj );
+							$( 'input#_billing_ie' ).val( response.billing_ie );
 							$( 'input#_billing_birthdate' ).val( response.billing_birthdate );
 							$( 'input#_billing_sex' ).val( response.billing_sex );
 							$( 'input#_billing_cellphone' ).val( response.billing_cellphone );

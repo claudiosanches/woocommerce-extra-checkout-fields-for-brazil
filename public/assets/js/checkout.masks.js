@@ -11,6 +11,9 @@
 			// CPF.
 			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
 
+			// RG.
+			$( '#billing_rg' ).mask( '99.999.999-9' );
+
 			// CPNJ.
 			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
 

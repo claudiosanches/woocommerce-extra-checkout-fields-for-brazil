@@ -3,7 +3,9 @@
 	.order_data_column {
 		._billing_persontype_field,
 		._billing_cpf_field,
-		._billing_cnpj_field {
+		._billing_rg_field,
+		._billing_cnpj_field,
+		._billing_ie_field {
 			clear: both !important;
 			width: 100% !important;
 		}

@@ -244,7 +244,9 @@ class Extra_Checkout_Fields_For_Brazil {
 	private static function single_activate() {
 		$default = array(
 			'person_type'     => 1,
-			'birthdate_sex'   => 1,
+			'ie'              => 0,
+			'rg'              => 0,
+			'birthdate_sex'   => 0,
 			'cell_phone'      => 1,
 			'mailcheck'       => 1,
 			'maskedinput'     => 1,
@@ -292,7 +294,9 @@ class Extra_Checkout_Fields_For_Brazil {
 		// Billing
 		$data['billing_persontype']    = '';
 		$data['billing_cpf']           = '';
+		$data['billing_rg']            = '';
 		$data['billing_cnpj']          = '';
+		$data['billing_ie']            = '';
 		$data['billing_birthdate']     = '';
 		$data['billing_sex']           = '';
 		$data['billing_number']        = '';
@@ -384,13 +388,31 @@ class Extra_Checkout_Fields_For_Brazil {
 				)
 			);
 
-			// Billing CPF.
-			$new_fields['billing_cpf'] = array(
-				'label'       => __( 'CPF', self::$plugin_slug ),
-				'placeholder' => _x( 'CPF', 'placeholder', self::$plugin_slug ),
-				'class'       => array( 'form-row-wide' ),
-				'required'    => false
-			);
+			if ( isset( $settings['rg'] ) ) {
+				// Billing CPF.
+				$new_fields['billing_cpf'] = array(
+					'label'       => __( 'CPF', self::$plugin_slug ),
+					'placeholder' => _x( 'CPF', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-first' ),
+					'required'    => false
+				);
+
+				// Billing RG.
+				$new_fields['billing_rg'] = array(
+					'label'       => __( 'RG', self::$plugin_slug ),
+					'placeholder' => _x( 'RG', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-last' ),
+					'required'    => false
+				);
+			} else {
+				// Billing CPF.
+				$new_fields['billing_cpf'] = array(
+					'label'       => __( 'CPF', self::$plugin_slug ),
+					'placeholder' => _x( 'CPF', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-wide' ),
+					'required'    => false
+				);
+			}
 
 			// Billing Company.
 			$new_fields['billing_company'] = array(
@@ -400,13 +422,31 @@ class Extra_Checkout_Fields_For_Brazil {
 				'required'    => false
 			);
 
-			// Billing CNPJ.
-			$new_fields['billing_cnpj'] = array(
-				'label'       => __( 'CNPJ', self::$plugin_slug ),
-				'placeholder' => _x( 'CNPJ', 'placeholder', self::$plugin_slug ),
-				'class'       => array( 'form-row-wide' ),
-				'required'    => false
-			);
+			// Billing State Registration.
+			if ( isset( $settings['ie'] ) ) {
+				// Billing CNPJ.
+				$new_fields['billing_cnpj'] = array(
+					'label'       => __( 'CNPJ', self::$plugin_slug ),
+					'placeholder' => _x( 'CNPJ', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-first' ),
+					'required'    => false
+				);
+
+				$new_fields['billing_ie'] = array(
+					'label'       => __( 'State Registration', self::$plugin_slug ),
+					'placeholder' => _x( 'State Registration', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-last' ),
+					'required'    => false
+				);
+			} else {
+				// Billing CNPJ.
+				$new_fields['billing_cnpj'] = array(
+					'label'       => __( 'CNPJ', self::$plugin_slug ),
+					'placeholder' => _x( 'CNPJ', 'placeholder', self::$plugin_slug ),
+					'class'       => array( 'form-row-wide' ),
+					'required'    => false
+				);
+			}
 
 		} else {
 			// Billing Company.
@@ -771,6 +811,10 @@ class Extra_Checkout_Fields_For_Brazil {
 				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', self::$plugin_slug ), __( 'is not valid', self::$plugin_slug ) ) );
 				}
+
+				if ( isset( $settings['rg'] ) && empty( $_POST['billing_rg'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'RG', self::$plugin_slug ), __( 'is a required field', self::$plugin_slug ) ) );
+				}
 			}
 
 			// Check Company and CPNJ.
@@ -785,6 +829,10 @@ class Extra_Checkout_Fields_For_Brazil {
 
 				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', self::$plugin_slug ), __( 'is not valid', self::$plugin_slug ) ) );
+				}
+
+				if ( isset( $settings['ie'] ) && empty( $_POST['billing_ie'] ) ) {
+					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'State Registration', self::$plugin_slug ), __( 'is a required field', self::$plugin_slug ) ) );
 				}
 			}
 		}
@@ -912,7 +960,9 @@ class Extra_Checkout_Fields_For_Brazil {
 			$type_to_load . '_neighborhood' => get_user_meta( $user_id, $type_to_load . '_neighborhood', true ),
 			$type_to_load . '_persontype' => get_user_meta( $user_id, $type_to_load . '_persontype', true ),
 			$type_to_load . '_cpf' => get_user_meta( $user_id, $type_to_load . '_cpf', true ),
+			$type_to_load . '_rg' => get_user_meta( $user_id, $type_to_load . '_rg', true ),
 			$type_to_load . '_cnpj' => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
+			$type_to_load . '_ie' => get_user_meta( $user_id, $type_to_load . '_ie', true ),
 			$type_to_load . '_birthdate' => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
 			$type_to_load . '_sex' => get_user_meta( $user_id, $type_to_load . '_sex', true ),
 			$type_to_load . '_cellphone' => get_user_meta( $user_id, $type_to_load . '_cellphone', true )

@@ -7,7 +7,7 @@
 	$(function () {
 
 		function personTypeSwitch() {
-			var target = $( '.wrap form table:eq(2), .wrap form h3:eq(2)' );
+			var target = $( '.wrap form table:eq(0) tr:eq(1), .wrap form table:eq(0) tr:eq(2), .wrap form table:eq(2), .wrap form h3:eq(2)' );
 
 			if ( $( '#person_type' ).is( ':checked' ) ) {
 				target.show();
