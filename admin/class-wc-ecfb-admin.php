@@ -188,6 +188,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Plugin settings form fields.
 	 *
+	 * @since  2.9.0
+	 *
 	 * @return void.
 	 */
 	public function plugin_settings() {
@@ -422,6 +424,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Custom shop order billing fields.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @param  array $data Default order billing fields.
 	 *
@@ -753,6 +757,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Save custom fields.
 	 *
+	 * @since  2.9.0
+	 *
 	 * @param  int  $post_id Post ID.
 	 *
 	 * @return mixed
@@ -814,6 +820,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Custom user edit fields.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @param  array $fields Default fields.
 	 *

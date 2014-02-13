@@ -285,6 +285,8 @@ class Extra_Checkout_Fields_For_Brazil {
 	/**
 	 * Load order custom data.
 	 *
+	 * @since  2.9.0
+	 *
 	 * @param  array $data Default WC_Order data.
 	 *
 	 * @return array       Custom WC_Order data.
@@ -343,7 +345,9 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
-	 * New checkout billing fields
+	 * New checkout billing fields.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @param  array $fields Default fields.
 	 *
@@ -792,6 +796,8 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Valid checkout fields.
+	 *
+	 * @since  2.9.0
 	 *
 	 * @return string Displays the error message.
 	 */
