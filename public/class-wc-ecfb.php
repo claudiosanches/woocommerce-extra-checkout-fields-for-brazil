@@ -32,7 +32,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @var   string
 	 */
-	protected static $plugin_slug = 'woocommerce-extra-checkout-fields-for-brasil';
+	protected static $plugin_slug = 'woocommerce-extra-checkout-fields-for-brazil';
 
 	/**
 	 * Instance of this class.
