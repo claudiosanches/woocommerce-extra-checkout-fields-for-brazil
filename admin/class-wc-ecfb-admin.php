@@ -55,7 +55,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		// Custom shop_order details.
 		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
 		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
-		add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
 		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
 		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
 		add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
@@ -766,29 +765,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		if ( isset( $settings['cell_phone'] ) ) {
 			update_post_meta( $post_id, '_billing_cellphone', woocommerce_clean( $_POST['_billing_cellphone'] ) );
 		}
-	}
-
-	/**
-	 * Add custom fields in customer details ajax.
-	 *
-	 * @return void
-	 */
-	public function customer_details_ajax( $customer_data ) {
-		$user_id = (int) trim( stripslashes( $_POST['user_id'] ) );
-		$type_to_load = esc_attr( trim( stripslashes( $_POST['type_to_load'] ) ) );
-
-		$custom_data = array(
-			$type_to_load . '_number' => get_user_meta( $user_id, $type_to_load . '_number', true ),
-			$type_to_load . '_neighborhood' => get_user_meta( $user_id, $type_to_load . '_neighborhood', true ),
-			$type_to_load . '_persontype' => get_user_meta( $user_id, $type_to_load . '_persontype', true ),
-			$type_to_load . '_cpf' => get_user_meta( $user_id, $type_to_load . '_cpf', true ),
-			$type_to_load . '_cnpj' => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
-			$type_to_load . '_birthdate' => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
-			$type_to_load . '_sex' => get_user_meta( $user_id, $type_to_load . '_sex', true ),
-			$type_to_load . '_cellphone' => get_user_meta( $user_id, $type_to_load . '_cellphone', true )
-		);
-
-		return array_merge( $customer_data, $custom_data );
 	}
 
 	/**
