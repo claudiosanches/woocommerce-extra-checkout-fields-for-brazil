@@ -1,0 +1,468 @@
+# Copyright (C) 2014 WooCommerce Extra Checkout Fields for Brazil
+# This file is distributed under the same license as the WooCommerce Extra Checkout Fields for Brazil package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 2.9.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-extra-"
+"checkout-fields-for-brazil\n"
+"POT-Creation-Date: 2014-02-13 06:28:45+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: admin/class-wc-ecfb-admin.php:98
+msgid "WooCommerce Extra Checkout Fields for Brazil depends on %s to work!"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:148
+msgid "Load the customer extras data?"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:149
+msgid "Also copy the data of number and neighborhood?"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:169 admin/class-wc-ecfb-admin.php:170
+msgid "Checkout Fields"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:201
+msgid "Checkout Custom Fields:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:209
+msgid "Display Person Type:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:216
+msgid ""
+"If checked show the Person Type option and CPF, Company and CNPJ fields in "
+"billing options."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:223
+msgid "Display RG:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:230
+msgid "If checked show the RG field in billing options."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:237
+msgid "Display State Registration:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:244
+msgid "If checked show the State Registration field in billing options."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:251
+msgid "Display Birthdate and Sex:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:258
+msgid "If checked show the Birthdate and Sex field in billing options."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:265
+msgid "Display Cell Phone:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:272
+msgid "If checked show the Cell Phone field in billing options."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:279
+msgid "jQuery Options:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:287
+msgid "Enable Mail Check:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:294
+msgid "If checked informs typos in email to users."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:301
+msgid "Enable Input Mask:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:308
+msgid ""
+"If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
+"and Cell Phone."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:315
+msgid "Enable Address Autocomplete:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:322
+msgid ""
+"If checked automatically complete the address fields based on the zip code."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:329
+msgid "Validation:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:337
+msgid "Validate CPF:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:344
+msgid "Checks if the CPF is valid."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:351
+msgid "Validate CNPJ:"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:358
+msgid "Checks if the CNPJ is valid."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:441 admin/class-wc-ecfb-admin.php:559
+#: public/class-wc-ecfb.php:365 public/class-wc-ecfb.php:628
+msgid "First Name"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:445 admin/class-wc-ecfb-admin.php:563
+#: public/class-wc-ecfb.php:373 public/class-wc-ecfb.php:636
+msgid "Last Name"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:452 public/class-wc-ecfb.php:385
+msgid "Person type"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:454 public/class-wc-ecfb.php:389
+#: public/class-wc-ecfb.php:484
+msgid "Select"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:455 public/class-wc-ecfb.php:390
+msgid "Individuals"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:456 public/class-wc-ecfb.php:391
+msgid "Legal Person"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:460 admin/class-wc-ecfb-admin.php:665
+#: admin/class-wc-ecfb-admin.php:849 public/class-wc-ecfb.php:398
+#: public/class-wc-ecfb.php:414 public/class-wc-ecfb.php:814
+#: public/class-wc-ecfb.php:818
+msgid "CPF"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:464 admin/class-wc-ecfb-admin.php:668
+#: admin/class-wc-ecfb-admin.php:855 public/class-wc-ecfb.php:406
+#: public/class-wc-ecfb.php:822
+msgid "RG"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:468 admin/class-wc-ecfb-admin.php:673
+#: admin/class-wc-ecfb-admin.php:861 public/class-wc-ecfb.php:423
+msgid "Company Name"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:471 admin/class-wc-ecfb-admin.php:674
+#: admin/class-wc-ecfb-admin.php:865 public/class-wc-ecfb.php:433
+#: public/class-wc-ecfb.php:448 public/class-wc-ecfb.php:833
+#: public/class-wc-ecfb.php:837
+msgid "CNPJ"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:475 admin/class-wc-ecfb-admin.php:677
+#: admin/class-wc-ecfb-admin.php:871 public/class-wc-ecfb.php:440
+#: public/class-wc-ecfb.php:841
+msgid "State Registration"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:480 admin/class-wc-ecfb-admin.php:567
+#: admin/class-wc-ecfb-admin.php:681 admin/class-wc-ecfb-admin.php:877
+#: admin/class-wc-ecfb-admin.php:953 public/class-wc-ecfb.php:458
+#: public/class-wc-ecfb.php:645 public/class-wc-ecfb.php:829
+msgid "Company"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:487 admin/class-wc-ecfb-admin.php:687
+#: admin/class-wc-ecfb-admin.php:884 public/class-wc-ecfb.php:469
+msgid "Birthdate"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:490 admin/class-wc-ecfb-admin.php:690
+#: admin/class-wc-ecfb-admin.php:888 public/class-wc-ecfb.php:479
+msgid "Sex"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:495 admin/class-wc-ecfb-admin.php:571
+#: admin/class-wc-ecfb-admin.php:902 admin/class-wc-ecfb-admin.php:965
+msgid "Address 1"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:499 admin/class-wc-ecfb-admin.php:575
+#: admin/class-wc-ecfb-admin.php:906 admin/class-wc-ecfb-admin.php:969
+#: public/class-wc-ecfb.php:521 public/class-wc-ecfb.php:678
+msgid "Number"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:503 admin/class-wc-ecfb-admin.php:579
+#: admin/class-wc-ecfb-admin.php:910 admin/class-wc-ecfb-admin.php:973
+msgid "Address 2"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:507 admin/class-wc-ecfb-admin.php:583
+#: admin/class-wc-ecfb-admin.php:914 admin/class-wc-ecfb-admin.php:977
+#: public/class-wc-ecfb.php:537 public/class-wc-ecfb.php:694
+msgid "Neighborhood"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:511 admin/class-wc-ecfb-admin.php:587
+#: admin/class-wc-ecfb-admin.php:918 admin/class-wc-ecfb-admin.php:981
+#: public/class-wc-ecfb.php:545 public/class-wc-ecfb.php:702
+msgid "City"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:515 admin/class-wc-ecfb-admin.php:591
+#: admin/class-wc-ecfb-admin.php:922 admin/class-wc-ecfb-admin.php:985
+#: public/class-wc-ecfb.php:336 public/class-wc-ecfb.php:554
+#: public/class-wc-ecfb.php:711
+msgid "State"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:519 admin/class-wc-ecfb-admin.php:595
+#: admin/class-wc-ecfb-admin.php:894 admin/class-wc-ecfb-admin.php:957
+#: public/class-wc-ecfb.php:495 public/class-wc-ecfb.php:653
+msgid "Country"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:523 admin/class-wc-ecfb-admin.php:599
+msgid "Select a country&hellip;"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:527 admin/class-wc-ecfb-admin.php:603
+#: admin/class-wc-ecfb-admin.php:898 admin/class-wc-ecfb-admin.php:961
+msgid "Postcode"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:532 admin/class-wc-ecfb-admin.php:693
+#: public/class-wc-ecfb.php:565 public/class-wc-ecfb.php:593
+msgid "Phone"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:537 admin/class-wc-ecfb-admin.php:697
+#: admin/class-wc-ecfb-admin.php:932 public/class-wc-ecfb.php:573
+msgid "Cell Phone"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:542 admin/class-wc-ecfb-admin.php:700
+#: admin/class-wc-ecfb-admin.php:938 public/class-wc-ecfb.php:581
+#: public/class-wc-ecfb.php:601
+msgid "Email"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:631 admin/class-wc-ecfb-admin.php:634
+#: admin/class-wc-ecfb-admin.php:727 admin/class-wc-ecfb-admin.php:730
+#: public/class-wc-ecfb.php:513 public/class-wc-ecfb.php:670
+msgid "Address"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:631
+msgid "No billing address set."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:657
+msgid "Customer data"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:727
+msgid "No shipping address set."
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:837
+msgid "Customer Billing Address"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:839 admin/class-wc-ecfb-admin.php:945
+msgid "First name"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:843 admin/class-wc-ecfb-admin.php:949
+msgid "Last name"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:895 admin/class-wc-ecfb-admin.php:958
+msgid "2 letter Country code"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:923 admin/class-wc-ecfb-admin.php:986
+msgid "State code"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:926
+msgid "Telephone"
+msgstr ""
+
+#: admin/class-wc-ecfb-admin.php:943
+msgid "Customer Shipping Address"
+msgstr ""
+
+#: public/class-wc-ecfb.php:337
+msgid "required"
+msgstr ""
+
+#: public/class-wc-ecfb.php:366 public/class-wc-ecfb.php:629
+msgctxt "placeholder"
+msgid "First Name"
+msgstr ""
+
+#: public/class-wc-ecfb.php:374 public/class-wc-ecfb.php:637
+msgctxt "placeholder"
+msgid "Last Name"
+msgstr ""
+
+#: public/class-wc-ecfb.php:399 public/class-wc-ecfb.php:415
+msgctxt "placeholder"
+msgid "CPF"
+msgstr ""
+
+#: public/class-wc-ecfb.php:407
+msgctxt "placeholder"
+msgid "RG"
+msgstr ""
+
+#: public/class-wc-ecfb.php:424
+msgctxt "placeholder"
+msgid "Company Name"
+msgstr ""
+
+#: public/class-wc-ecfb.php:434 public/class-wc-ecfb.php:449
+msgctxt "placeholder"
+msgid "CNPJ"
+msgstr ""
+
+#: public/class-wc-ecfb.php:441
+msgctxt "placeholder"
+msgid "State Registration"
+msgstr ""
+
+#: public/class-wc-ecfb.php:459 public/class-wc-ecfb.php:646
+msgctxt "placeholder"
+msgid "Company"
+msgstr ""
+
+#: public/class-wc-ecfb.php:470
+msgctxt "placeholder"
+msgid "Birthdate"
+msgstr ""
+
+#: public/class-wc-ecfb.php:485
+msgid "Female"
+msgstr ""
+
+#: public/class-wc-ecfb.php:486
+msgid "Male"
+msgstr ""
+
+#: public/class-wc-ecfb.php:496 public/class-wc-ecfb.php:654
+msgctxt "placeholder"
+msgid "Country"
+msgstr ""
+
+#: public/class-wc-ecfb.php:504 public/class-wc-ecfb.php:661
+msgid "Post Code"
+msgstr ""
+
+#: public/class-wc-ecfb.php:505 public/class-wc-ecfb.php:662
+msgctxt "placeholder"
+msgid "Post Code"
+msgstr ""
+
+#: public/class-wc-ecfb.php:514 public/class-wc-ecfb.php:671
+msgctxt "placeholder"
+msgid "Address"
+msgstr ""
+
+#: public/class-wc-ecfb.php:522 public/class-wc-ecfb.php:679
+msgctxt "placeholder"
+msgid "Number"
+msgstr ""
+
+#: public/class-wc-ecfb.php:530 public/class-wc-ecfb.php:687
+msgid "Address line 2"
+msgstr ""
+
+#: public/class-wc-ecfb.php:531 public/class-wc-ecfb.php:688
+msgctxt "placeholder"
+msgid "Address line 2"
+msgstr ""
+
+#: public/class-wc-ecfb.php:538 public/class-wc-ecfb.php:695
+msgctxt "placeholder"
+msgid "Neighborhood"
+msgstr ""
+
+#: public/class-wc-ecfb.php:546 public/class-wc-ecfb.php:703
+msgctxt "placeholder"
+msgid "City"
+msgstr ""
+
+#: public/class-wc-ecfb.php:555 public/class-wc-ecfb.php:712
+msgctxt "placeholder"
+msgid "State"
+msgstr ""
+
+#: public/class-wc-ecfb.php:566 public/class-wc-ecfb.php:594
+msgctxt "placeholder"
+msgid "Phone"
+msgstr ""
+
+#: public/class-wc-ecfb.php:574
+msgctxt "placeholder"
+msgid "Cell Phone"
+msgstr ""
+
+#: public/class-wc-ecfb.php:582 public/class-wc-ecfb.php:602
+msgctxt "placeholder"
+msgid "Email"
+msgstr ""
+
+#: public/class-wc-ecfb.php:814 public/class-wc-ecfb.php:822
+#: public/class-wc-ecfb.php:829 public/class-wc-ecfb.php:833
+#: public/class-wc-ecfb.php:841
+msgid "is a required field"
+msgstr ""
+
+#: public/class-wc-ecfb.php:818 public/class-wc-ecfb.php:837
+msgid "is not valid"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Extra Checkout Fields for Brazil"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid ""
+"https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, "
+"Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail "
+"incorreto e auto preenchimento dos campos de endereço pelo CEP."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "claudiosanches"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://claudiosmweb.com/"
+msgstr ""
