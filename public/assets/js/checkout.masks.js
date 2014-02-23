@@ -12,14 +12,15 @@
 			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
 
 			// RG.
-			$( '#billing_rg' ).keydown(function (e) {
-				if ( $.inArray( e.keyCode, [46, 8, 13] ) !== -1 || ( e.keyCode === 65 && e.ctrlKey === true ) || ( e.keyCode >= 35 && e.keyCode <= 39 ) ) {
-					return;
+			$( '#billing_rg' ).keyup( function () {
+				var current = $( this ),
+					notNumber = new RegExp( '[^0-9]', 'g' ),
+					currentValue = current.val();
+
+				if ( currentValue.match( notNumber ) ) {
+					current.val( currentValue.replace( notNumber, '' ) );
 				}
-				if ( ( e.shiftKey || ( e.keyCode < 48 || e.keyCode > 57 ) ) && ( e.keyCode < 96 || e.keyCode > 105 ) ) {
-					e.preventDefault();
-				}
-			});
+			}).keyup();
 
 			// CPNJ.
 			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
