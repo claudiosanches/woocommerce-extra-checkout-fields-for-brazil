@@ -3,8 +3,8 @@
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout fields, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
-**Tested up to:** 3.8  
-**Stable tag:** 2.9.0  
+**Tested up to:** 3.8.1  
+**Stable tag:** 2.9.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -97,6 +97,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 2.9.1 - 23/02/2014 ###
+
+* Melhorada a máscara para telefone, agora aceita também o nono dígito.
+* Melhorada a máscara do RG, agora não limita a quantidade de caracteres e aceita apenas números.
 
 ### 2.9.0 - 13/02/2014 ###
 
@@ -209,14 +214,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 2.9.0 ###
+### 2.9.1 ###
 
-* Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
-* Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
-* Melhoria na inicialização do plugin.
-* Melhoria na compatibilidade com as novas versões do WooCommerce
-* Adicionado campo de RG.
-* Adicionado campo de Inscrição Estadual.
+* Melhorada a máscara para telefone, agora aceita também o nono dígito.
+* Melhorada a máscara do RG, agora não limita a quantidade de caracteres e aceita apenas números.
 
 ## License ##
 
