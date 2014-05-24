@@ -1,7 +1,7 @@
 {
   "name": "woocommerce-extra-checkout-fields-for-brazil",
   "description": "WooCommerce Extra Checkout Fields for Brazil",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "main": "Gruntfile.js",
   "devDependencies": {
     "grunt": "~0.4.2",

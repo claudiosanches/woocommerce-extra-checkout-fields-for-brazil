@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout fields, brazil, cpf, cpnj
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 2.9.1
+Stable tag: 2.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 2.9.2 - 24/05/2014 =
+
+* Adicionada informações sobre o método de pagamento (WooCommerce 2.1 ou superior).
 
 = 2.9.1 - 23/02/2014 =
 
@@ -204,10 +208,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 2.9.1 =
+= 2.9.2 =
 
-* Melhorada a máscara para telefone, agora aceita também o nono dígito.
-* Melhorada a máscara do RG, agora não limita a quantidade de caracteres e aceita apenas números.
+* Adicionada informações sobre o método de pagamento (WooCommerce 2.1 ou superior).
 
 == License ==
 
