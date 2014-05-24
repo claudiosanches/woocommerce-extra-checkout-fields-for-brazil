@@ -542,6 +542,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			'label' => __( 'Email', $this->plugin_slug ),
 		);
 
+
 		return apply_filters( 'wcbcf_admin_billing_fields', $billing_data );
 	}
 
@@ -700,6 +701,16 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		$html .= '<strong>' . __( 'Email', $this->plugin_slug ) . ': </strong>' . $order->billing_email . '<br />';
 
 		$html .= '</p>';
+
+		if ( $woocommerce->payment_gateways() ) {
+			$payment_gateways = $woocommerce->payment_gateways->payment_gateways();
+
+			$payment_method = ! empty( $order->payment_method ) ? $order->payment_method : '';
+
+			if ( $payment_method ) {
+				$html .= '<p><strong>' . __( 'Payment Method', $this->plugin_slug ) . ':</strong> ' . ( isset( $payment_gateways[ $payment_method ] ) ? esc_html( $payment_gateways[ $payment_method ]->get_title() ) : esc_html( $payment_method ) ) . '</p>';
+			}
+		}
 
 		$html .= '</div>';
 
