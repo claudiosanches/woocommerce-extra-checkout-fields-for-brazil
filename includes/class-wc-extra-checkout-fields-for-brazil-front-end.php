@@ -1,256 +1,49 @@
 <?php
-/**
- * WooCommerce Extra Checkout Fields for Brazil.
- *
- * @package   Extra_Checkout_Fields_For_Brazil
- * @author    Claudio Sanches <contato@claudiosmweb.com>
- * @license   GPL-2.0+
- * @copyright 2013 Claudio Sanches
- */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
- * Plugin main class.
- *
- * @package Extra_Checkout_Fields_For_Brazil
- * @author  Claudio Sanches <contato@claudiosmweb.com>
+ * Front-end actions.
  */
-class Extra_Checkout_Fields_For_Brazil {
+class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 	/**
-	 * Plugin version, used for cache-busting of style and script file references.
-	 *
-	 * @since 2.9.0
-	 *
-	 * @var   string
+	 * Initialize the front-end actions.
 	 */
-	const VERSION = '2.9.0';
-
-	/**
-	 * Instance of this class.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var   object
-	 */
-	protected static $instance = null;
-
-	/**
-	 * Initialize the plugin by setting localization and loading public scripts
-	 * and styles.
-	 *
-	 * @since 2.9.0
-	 */
-	private function __construct() {
+	public function __construct() {
 		global $woocommerce;
 
-		// Load plugin text domain.
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		// Load custom order data.
+		add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
 
-		// Activate plugin when new blog is added.
-		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
+		// Load public-facing style sheet and JavaScript.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		if ( self::has_woocommerce_active() ) {
-			// Load custom order data.
-			add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
+		// New checkout fields.
+		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ) );
+		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ) );
 
-			// Load public-facing style sheet and JavaScript.
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		// Valid checkout fields.
+		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
 
-			// New checkout fields.
-			add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ) );
-			add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ) );
+		// Found customers details ajax.
+		add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
 
-			// Valid checkout fields.
-			add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
-
-			// Found customers details ajax.
-			add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
-
-			// Custom address format.
-			if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
-				add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
-				add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
-				add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
-				add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
-				add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
-				add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
-				add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
-			}
+		// Custom address format.
+		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
+			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
+			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
+			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
+			add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
+			add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
+			add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
+			add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
 		}
-	}
-
-	/**
-	 * Return an instance of this class.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @return object A single instance of this class.
-	 */
-	public static function get_instance() {
-		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Checks if WooCommerce is active.
-	 *
-	 * @since  2.9.0
-	 *
-	 * @return bool true if WooCommerce is active, false otherwise.
-	 */
-	public static function has_woocommerce_active() {
-		if ( class_exists( 'WooCommerce' ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Fired when the plugin is activated.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @param  boolean $network_wide True if WPMU superadmin uses
-	 *                               "Network Activate" action, false if
-	 *                               WPMU is disabled or plugin is
-	 *                               activated on an individual blog.
-	 *
-	 * @return void
-	 */
-	public static function activate( $network_wide ) {
-		if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-			if ( $network_wide  ) {
-
-				// Get all blog ids
-				$blog_ids = self::get_blog_ids();
-
-				foreach ( $blog_ids as $blog_id ) {
-					switch_to_blog( $blog_id );
-					self::single_activate();
-				}
-
-				restore_current_blog();
-			} else {
-				self::single_activate();
-			}
-		} else {
-			self::single_activate();
-		}
-	}
-
-	/**
-	 * Fired when the plugin is deactivated.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @param  boolean $network_wide True if WPMU superadmin uses
-	 *                               "Network Deactivate" action, false if
-	 *                               WPMU is disabled or plugin is
-	 *                               deactivated on an individual blog.
-	 *
-	 * @return void
-	 */
-	public static function deactivate( $network_wide ) {
-		if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-			if ( $network_wide ) {
-
-				// Get all blog ids
-				$blog_ids = self::get_blog_ids();
-
-				foreach ( $blog_ids as $blog_id ) {
-					switch_to_blog( $blog_id );
-					self::single_deactivate();
-				}
-
-				restore_current_blog();
-			} else {
-				self::single_deactivate();
-			}
-		} else {
-			self::single_deactivate();
-		}
-	}
-
-	/**
-	 * Fired when a new site is activated with a WPMU environment.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @param  int $blog_id ID of the new blog.
-	 *
-	 * @return void
-	 */
-	public function activate_new_site( $blog_id ) {
-		if ( 1 !== did_action( 'wpmu_new_blog' ) ) {
-			return;
-		}
-
-		switch_to_blog( $blog_id );
-		self::single_activate();
-		restore_current_blog();
-	}
-
-	/**
-	 * Get all blog ids of blogs in the current network that are:
-	 * - not archived
-	 * - not spam
-	 * - not deleted
-	 *
-	 * @since  2.8.0
-	 *
-	 * @return array|false The blog ids, false if no matches.
-	 */
-	private static function get_blog_ids() {
-		global $wpdb;
-
-		// get an array of blog ids
-		$sql = "SELECT blog_id FROM $wpdb->blogs
-			WHERE archived = '0' AND spam = '0'
-			AND deleted = '0'";
-
-		return $wpdb->get_col( $sql );
-	}
-
-	/**
-	 * Fired for each blog when the plugin is activated.
-	 *
-	 * @since 2.8.0
-	 */
-	private static function single_activate() {
-		$default = array(
-			'person_type'     => 1,
-			'ie'              => 0,
-			'rg'              => 0,
-			'birthdate_sex'   => 0,
-			'cell_phone'      => 1,
-			'mailcheck'       => 1,
-			'maskedinput'     => 1,
-			'addresscomplete' => 1,
-			'validate_cpf'    => 1,
-			'validate_cnpj'   => 1
-		);
-
-		add_option( 'wcbcf_settings', $default );
-	}
-
-	/**
-	 * Fired for each blog when the plugin is deactivated.
-	 *
-	 * @since 2.8.0
-	 */
-	private static function single_deactivate() {
-		delete_option( 'wcbcf_settings' );
 	}
 
 	/**
 	 * Load the plugin text domain for translation.
-	 *
-	 * @since  2.8.0
 	 *
 	 * @return void
 	 */
@@ -263,8 +56,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Load order custom data.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @param  array $data Default WC_Order data.
 	 *
@@ -293,8 +84,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Register and enqueues public-facing style sheet and JavaScript files.
-	 *
-	 * @since    2.8.0
 	 */
 	public function enqueue_scripts() {
 		// Load scripts only in checkout.
@@ -307,9 +96,9 @@ class Extra_Checkout_Fields_For_Brazil {
 			wp_enqueue_script( 'jquery' );
 
 			// Fix checkout fields.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil' . '-public', plugins_url( 'assets/js/public.min.js', __FILE__ ), array( 'jquery' ), self::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), self::VERSION, true );
 			wp_localize_script(
-				'woocommerce-extra-checkout-fields-for-brazil' . '-public',
+				'woocommerce-extra-checkout-fields-for-brazil-front',
 				'wcbcf_public_params',
 				array(
 					'state'           => __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -325,8 +114,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * New checkout billing fields.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @param  array $fields Default fields.
 	 *
@@ -757,8 +544,6 @@ class Extra_Checkout_Fields_For_Brazil {
 	/**
 	 * Add error message in checkout.
 	 *
-	 * @since  2.9.0
-	 *
 	 * @param string $message Error message.
 	 *
 	 * @return string         Displays the error message.
@@ -775,8 +560,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Valid checkout fields.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @return string Displays the error message.
 	 */
@@ -830,7 +613,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array          New BR format.
 	 */
-	function localisation_address_formats( $formats ) {
+	public function localisation_address_formats( $formats ) {
 		$formats['BR'] = "{name}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
 
 		return $formats;
@@ -844,7 +627,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array               New replacements.
 	 */
-	function formatted_address_replacements( $replacements, $args ) {
+	public function formatted_address_replacements( $replacements, $args ) {
 		extract( $args );
 
 		$replacements['{number}']       = $number;
@@ -861,7 +644,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array          New address format.
 	 */
-	function order_formatted_billing_address( $address, $order ) {
+	public function order_formatted_billing_address( $address, $order ) {
 		$address['number']       = $order->billing_number;
 		$address['neighborhood'] = $order->billing_neighborhood;
 
@@ -876,7 +659,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array          New address format.
 	 */
-	function order_formatted_shipping_address( $address, $order ) {
+	public function order_formatted_shipping_address( $address, $order ) {
 		$address['number']       = $order->shipping_number;
 		$address['neighborhood'] = $order->shipping_neighborhood;
 
@@ -891,7 +674,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array          New address format.
 	 */
-	function user_column_billing_address( $address, $user_id ) {
+	public function user_column_billing_address( $address, $user_id ) {
 		$address['number']       = get_user_meta( $user_id, 'billing_number', true );
 		$address['neighborhood'] = get_user_meta( $user_id, 'billing_neighborhood', true );
 
@@ -906,7 +689,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array          New address format.
 	 */
-	function user_column_shipping_address( $address, $user_id ) {
+	public function user_column_shipping_address( $address, $user_id ) {
 		$address['number']       = get_user_meta( $user_id, 'shipping_number', true );
 		$address['neighborhood'] = get_user_meta( $user_id, 'shipping_neighborhood', true );
 
@@ -922,7 +705,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @return array            New address format.
 	 */
-	function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
+	public function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
 		$address['number']       = get_user_meta( $customer_id, $name . '_number', true );
 		$address['neighborhood'] = get_user_meta( $customer_id, $name . '_neighborhood', true );
 
@@ -931,8 +714,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 	/**
 	 * Add custom fields in customer details ajax.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @return void
 	 */
@@ -956,3 +737,5 @@ class Extra_Checkout_Fields_For_Brazil {
 		return array_merge( $customer_data, $custom_data );
 	}
 }
+
+new Extra_Checkout_Fields_For_Brazil_Front_End();

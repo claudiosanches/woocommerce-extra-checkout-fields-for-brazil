@@ -1,36 +1,17 @@
 <?php
-/**
- * WooCommerce Extra Checkout Fields for Brazil.
- *
- * Methods to make integrations with others plugins.
- *
- * @package   Extra_Checkout_Fields_For_Brazil_Plugins_Support
- * @author    Claudio Sanches <contato@claudiosmweb.com>
- * @license   GPL-2.0+
- * @copyright 2013 Claudio Sanches
- */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
- * Plugin main class.
- *
- * @package Extra_Checkout_Fields_For_Brazil_Plugins_Support
- * @author  Claudio Sanches <contato@claudiosmweb.com>
+ * Methods to make integrations with others plugins.
  */
 class Extra_Checkout_Fields_For_Brazil_Plugins_Support {
 
 	/**
-	 * Instance of this class.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var   object
-	 */
-	protected static $instance = null;
-
-	/**
 	 * Initialize integrations.
 	 */
-	private function __construct() {
+	public function __construct() {
 		add_filter( 'woocommerce_bcash_args', array( $this, 'bcash' ), 1, 2 );
 		add_filter( 'woocommerce_moip_args', array( $this, 'moip' ), 1, 2 );
 		add_filter( 'woocommerce_moip_holder_data', array( $this, 'moip_transparent_checkout' ), 1, 2 );
@@ -39,8 +20,6 @@ class Extra_Checkout_Fields_For_Brazil_Plugins_Support {
 
 	/**
 	 * Return an instance of this class.
-	 *
-	 * @since  2.8.0
 	 *
 	 * @return object A single instance of this class.
 	 */
@@ -147,3 +126,5 @@ class Extra_Checkout_Fields_For_Brazil_Plugins_Support {
 		return $xml;
 	}
 }
+
+new Extra_Checkout_Fields_For_Brazil_Plugins_Support();

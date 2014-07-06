@@ -1,13 +1,4 @@
 <?php
-/**
- * Admin options view.
- *
- * @package   Extra_Checkout_Fields_For_Brazil_Admin
- * @author    Claudio Sanches <contato@claudiosmweb.com>
- * @license   GPL-2.0+
- * @copyright 2013 Claudio Sanches
- */
-
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

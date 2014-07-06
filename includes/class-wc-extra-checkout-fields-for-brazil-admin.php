@@ -1,123 +1,50 @@
 <?php
-/**
- * WooCommerce Extra Checkout Fields for Brazil.
- *
- * @package   Extra_Checkout_Fields_For_Brazil_Admin
- * @author    Claudio Sanches <contato@claudiosmweb.com>
- * @license   GPL-2.0+
- * @copyright 2013 Claudio Sanches
- */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Plugin admin class.
- *
- * @package Extra_Checkout_Fields_For_Brazil_Admin
- * @author  Claudio Sanches <contato@claudiosmweb.com>
  */
 class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
-	 * Instance of this class.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var   object
-	 */
-	protected static $instance = null;
-
-	/**
 	 * Slug of the plugin screen.
 	 *
-	 * @since 2.9.0
-	 *
-	 * @var   string
+	 * @var string
 	 */
 	protected $plugin_screen_hook_suffix = null;
 
 	/**
-	 * Initialize the plugin by loading admin scripts & styles and adding a
-	 * settings page and menu.
-	 *
-	 * @since 2.9.0
+	 * Initialize the plugin admin.
 	 */
-	private function __construct() {
+	public function __construct() {
 		global $woocommerce;
 
-		if ( ! Extra_Checkout_Fields_For_Brazil::has_woocommerce_active() ) {
-			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
-		} else {
-			// Load admin style sheet and JavaScript.
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		// Load admin style sheet and JavaScript.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-			// Add the options page and menu item.
-			add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 59 );
+		// Add the options page and menu item.
+		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 59 );
 
-			// Init plugin options form.
-			add_action( 'admin_init', array( $this, 'plugin_settings' ) );
+		// Init plugin options form.
+		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
 
-			// Custom shop_order details.
-			add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
-			add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
-			add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
-			add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
-			add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
+		// Custom shop_order details.
+		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
+		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
+		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
+		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
+		add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
 
-			// Custom address format.
-			if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
-				add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
-			}
-		}
-	}
-
-	/**
-	 * Return an instance of this class.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @return object A single instance of this class.
-	 */
-	public static function get_instance() {
-		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * WooCommerce fallback notice.
-	 *
-	 * @since  2.8.2
-	 *
-	 * @return string Fallack notice.
-	 */
-	public function woocommerce_fallback_notice() {
-		echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>' ) . '</p></div>';
-	}
-
-	/**
-	 * Register and enqueue admin-specific style sheet.
-	 *
-	 * @since  2.8.0
-	 *
-	 * @return null Return early if no settings page is registered.
-	 */
-	public function enqueue_admin_styles() {
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
-			return;
-		}
-
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil' .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
+		// Custom address format.
+		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
+			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
 		}
 	}
 
 	/**
 	 * Register and enqueue admin-specific JavaScript.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @return null Return early if no settings page is registered.
 	 */
@@ -127,20 +54,20 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		if ( 'shop_order' == $post_type ) {
 
 			// Styles.
-			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil' . '-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
+			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-admin', plugins_url( 'assets/css/admin.css', plugin_dir_path( __FILE__ ) ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 
 			// Shop order.
 			if ( version_compare( $woocommerce->version, '2.1', '>=' ) ) {
-				$shop_order_js = plugins_url( 'assets/js/shop-order.min.js', __FILE__ );
+				$shop_order_js = plugins_url( 'assets/js/shop-order.min.js', plugin_dir_path( __FILE__ ) );
 			} else {
-				$shop_order_js = plugins_url( 'assets/js/shop-order.old.min.js', __FILE__ );
+				$shop_order_js = plugins_url( 'assets/js/shop-order.old.min.js', plugin_dir_path( __FILE__ ) );
 			}
 
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil' . '-shop-order', $shop_order_js, array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', $shop_order_js, array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 
 			// Localize strings.
 			wp_localize_script(
-				'woocommerce-extra-checkout-fields-for-brazil' . '-shop-order',
+				'woocommerce-extra-checkout-fields-for-brazil-shop-order',
 				'wcbcf_writepanel_params',
 				array(
 					'load_message' => __( 'Load the customer extras data?', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -149,15 +76,13 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			);
 		}
 
-		if ( $this->plugin_screen_hook_suffix == get_current_screen()->id ) {
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil' . '-admin-script', plugins_url( 'assets/js/admin.min.js', __FILE__ ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
+		if ( isset( $this->plugin_screen_hook_suffix ) && $this->plugin_screen_hook_suffix == get_current_screen()->id ) {
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-admin', plugins_url( 'assets/js/admin/admin.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
 		}
 	}
 
 	/**
 	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
-	 *
-	 * @since  2.8.0
 	 *
 	 * @return void
 	 */
@@ -175,18 +100,14 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Render the settings page for this plugin.
 	 *
-	 * @since 2.8.0
-	 *
 	 * @return void
 	 */
 	public function display_plugin_admin_page() {
-		include_once 'views/admin.php';
+		include_once 'views/html-admin-options.php';
 	}
 
 	/**
 	 * Plugin settings form fields.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @return void.
 	 */
@@ -423,8 +344,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Custom shop order billing fields.
 	 *
-	 * @since  2.9.0
-	 *
 	 * @param  array $data Default order billing fields.
 	 *
 	 * @return array       Custom order billing fields.
@@ -609,8 +528,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Custom billing admin fields.
 	 *
-	 * @since  2.9.0
-	 *
 	 * @param  object $order Order data.
 	 *
 	 * @return string        Custom information.
@@ -718,8 +635,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	/**
 	 * Custom billing admin fields.
 	 *
-	 * @since  2.9.0
-	 *
 	 * @param  object $order Order data.
 	 *
 	 * @return string        Custom information.
@@ -765,8 +680,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Save custom fields.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @param  int  $post_id Post ID.
 	 *
@@ -829,8 +742,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Custom user edit fields.
-	 *
-	 * @since  2.9.0
 	 *
 	 * @param  array $fields Default fields.
 	 *
@@ -1001,3 +912,5 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	}
 
 }
+
+new Extra_Checkout_Fields_For_Brazil_Admin();
