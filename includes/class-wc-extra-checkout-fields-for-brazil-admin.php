@@ -54,13 +54,13 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		if ( 'shop_order' == $post_type ) {
 
 			// Styles.
-			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-admin', plugins_url( 'assets/css/admin.css', plugin_dir_path( __FILE__ ) ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
+			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-admin', plugins_url( 'assets/css/admin/admin.css', plugin_dir_path( __FILE__ ) ), array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 
 			// Shop order.
 			if ( version_compare( $woocommerce->version, '2.1', '>=' ) ) {
-				$shop_order_js = plugins_url( 'assets/js/shop-order.min.js', plugin_dir_path( __FILE__ ) );
+				$shop_order_js = plugins_url( 'assets/js/admin/shop-order.min.js', plugin_dir_path( __FILE__ ) );
 			} else {
-				$shop_order_js = plugins_url( 'assets/js/shop-order.old.min.js', plugin_dir_path( __FILE__ ) );
+				$shop_order_js = plugins_url( 'assets/js/admin/shop-order.old.min.js', plugin_dir_path( __FILE__ ) );
 			}
 
 			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', $shop_order_js, array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );

@@ -84,7 +84,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			wp_enqueue_script( 'jquery' );
 
 			// Fix checkout fields.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-front',
 				'wcbcf_public_params',

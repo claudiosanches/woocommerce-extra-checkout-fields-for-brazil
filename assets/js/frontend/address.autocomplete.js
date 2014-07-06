@@ -1,11 +1,8 @@
 /* global wcbcf_public_params */
-/**
- * Address Autocomplete.
- */
-(function ( $ ) {
+( function ( $ ) {
 	'use strict';
 
-	$(function () {
+	$( function () {
 
 		/**
 		 * Address Autocomplete.
@@ -33,24 +30,24 @@
 						dataType: 'jsonp',
 						crossDomain: true,
 						contentType: 'application/json',
-						success: function(address) {
+						success: function ( address ) {
 
 							// Address.
 							if ( '' !== address.tipoDeLogradouro ) {
-								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro );
+								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro ).change();
 							} else {
-								$( '#' + field + '_address_1' ).val( address.logradouro );
+								$( '#' + field + '_address_1' ).val( address.logradouro ).change();
 							}
 
 							// Neighborhood.
-							$( '#' + field + '_neighborhood' ).val( address.bairro );
+							$( '#' + field + '_neighborhood' ).val( address.bairro ).change();
 
 							// City.
-							$( '#' + field + '_city' ).val( address.cidade );
+							$( '#' + field + '_city' ).val( address.cidade ).change();
 
 							// State.
-							$( '#' + field + '_state option:selected' ).attr( 'selected', false );
-							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', true );
+							$( '#' + field + '_state option:selected' ).attr( 'selected', false ).change();
+							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', true ).change();
 
 							// Chosen support.
 							$( '#' + field + '_state' ).trigger( 'liszt:updated' );
@@ -68,7 +65,7 @@
 		 * @return {void}         Autocomplete fields.
 		 */
 		function addressAutoCompleteOnChange( field ) {
-			$( '#' + field + '_postcode' ).on( 'blur', function() {
+			$( '#' + field + '_postcode' ).on( 'blur', function () {
 				addressAutoComplete( field );
 			});
 		}
@@ -85,4 +82,4 @@
 
 	});
 
-}(jQuery));
+}( jQuery ) );

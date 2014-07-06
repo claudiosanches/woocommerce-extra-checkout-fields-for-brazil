@@ -86,7 +86,7 @@ module.exports = function( grunt ) {
 						'<%= dirs.admin.js %>/write-panels.js'
 					],
 					// front
-					'<%= dirs.front.js %>/public.min.js': [
+					'<%= dirs.front.js %>/frontend.min.js': [
 						'<%= dirs.bower %>/jquery.maskedinput/jquery.maskedinput.js',
 						'<%= dirs.bower %>/mailcheck/src/mailcheck.js',
 						'<%= dirs.front.js %>/address.autocomplete.js',
