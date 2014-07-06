@@ -1,12 +1,8 @@
-/* jshint node:true */
+/*jshint node:true */
+module.exports = function( grunt ) {
 'use strict';
 
-module.exports = function( grunt ) {
-
-	// auto load grunt tasks
-	require( 'load-grunt-tasks' )( grunt );
-
-	var pluginConfig = {
+	grunt.initConfig({
 
 		// gets the package vars
 		pkg: grunt.file.readJSON( 'package.json' ),
@@ -14,18 +10,16 @@ module.exports = function( grunt ) {
 		// plugin directories
 		dirs: {
 			admin: {
-				js: 'admin/assets/js',
-				css: 'admin/assets/css',
-				sass: 'admin/assets/sass',
-				images: 'admin/assets/images',
-				fonts: 'admin/assets/fonts'
+				js: 'assets/js/admin',
+				css: 'assets/css/admin',
+				images: 'assets/images/admin',
+				fonts: 'assets/fonts/admin'
 			},
 			front: {
-				js: 'public/assets/js',
-				css: 'public/assets/css',
-				sass: 'public/assets/sass',
-				images: 'public/assets/images',
-				fonts: 'public/assets/fonts'
+				js: 'assets/js/frontend',
+				css: 'assets/css/frontend',
+				images: 'assets/images/frontend',
+				fonts: 'assets/fonts/frontend'
 			},
 			bower: 'bower_components'
 		},
@@ -38,18 +32,18 @@ module.exports = function( grunt ) {
 			exclude: [
 				'.git/',
 				'.sass-cache/',
-				'admin/assets/sass/',
-				'admin/assets/js/admin.js',
-				'admin/assets/js/fix.person.fields.admin.js',
-				'admin/assets/js/write-panels.js',
-				'admin/assets/js/write-panels.old.js',
+				'assets/css/admin/*.scss',
+				'assets/js/admin/admin.js',
+				'assets/js/admin/fix.person.fields.admin.js',
+				'assets/js/admin/write-panels.js',
+				'assets/js/admin/write-panels.old.js',
 				'bower_components/',
 				'node_modules/',
-				'public/assets/js/address.autocomplete.js',
-				'public/assets/js/checkout.masks.js',
-				'public/assets/js/fix.checkout.fields.js',
-				'public/assets/js/fix.person.fields.js',
-				'public/assets/js/mailcheck.js',
+				'assets/js/frontend/address.autocomplete.js',
+				'assets/js/frontend/checkout.masks.js',
+				'assets/js/frontend/fix.checkout.fields.js',
+				'assets/js/frontend/fix.person.fields.js',
+				'assets/js/frontend/mailcheck.js',
 				'.editorconfig',
 				'.gitignore',
 				'.jshintrc',
@@ -105,33 +99,27 @@ module.exports = function( grunt ) {
 			}
 		},
 
-		// compass and scss
-		compass: {
-			options: {
-				httpPath: '',
-				environment: 'production',
-				relativeAssets: true,
-				noLineComments: true,
-				outputStyle: 'compressed'
-			},
-			admin: {
+		// process sass files
+		sass: {
+			compile: {
 				options: {
-					sassDir: '<%= dirs.admin.sass %>',
-					cssDir: '<%= dirs.admin.css %>',
-					imagesDir: '<%= dirs.admin.images %>',
-					javascriptsDir: '<%= dirs.admin.js %>',
-					fontsDir: '<%= dirs.admin.fonts %>'
-				}
+					style: 'compressed'
+				},
+				files: [{
+					expand: true,
+					cwd: '<%= dirs.admin.css %>/',
+					src: ['*.scss'],
+					dest: '<%= dirs.admin.css %>/',
+					ext: '.css'
+				}]
 			}
 		},
 
 		// watch for changes and trigger compass, jshint and uglify
 		watch: {
-			compass: {
-				files: [
-					'<%= compass.admin.options.sassDir %>/**'
-				],
-				tasks: ['compass:admin']
+			sass: {
+				files: ['<%= dirs.admin.css %>/*.scss'],
+				tasks: ['sass']
 			},
 			js: {
 				files: [
@@ -229,19 +217,21 @@ module.exports = function( grunt ) {
 				}
 			}
 		}
-	};
+	});
 
-	// initialize grunt config
-	// --------------------------
-	grunt.initConfig( pluginConfig );
-
-	// register tasks
-	// --------------------------
+	// Load NPM tasks to be used here
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
+	grunt.loadNpmTasks( 'grunt-contrib-sass' );
+	grunt.loadNpmTasks( 'grunt-contrib-watch' );
+	grunt.loadNpmTasks( 'grunt-contrib-imagemin' );
+	grunt.loadNpmTasks( 'grunt-rsync' );
+	grunt.loadNpmTasks( 'grunt-shell' );
 
 	// default task
 	grunt.registerTask( 'default', [
+		'sass',
 		'jshint',
-		'compass',
 		'uglify'
 	] );
 
