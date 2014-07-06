@@ -19,20 +19,6 @@ class Extra_Checkout_Fields_For_Brazil_Plugins_Support {
 	}
 
 	/**
-	 * Return an instance of this class.
-	 *
-	 * @return object A single instance of this class.
-	 */
-	public static function get_instance() {
-		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
-	}
-
-	/**
 	 * Custom Bcash arguments.
 	 *
 	 * @param  array $args   Bcash default arguments.

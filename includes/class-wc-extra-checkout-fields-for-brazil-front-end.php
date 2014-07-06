@@ -43,18 +43,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
-	 * Load the plugin text domain for translation.
-	 *
-	 * @return void
-	 */
-	public function load_plugin_textdomain() {
-		$locale = apply_filters( 'plugin_locale', get_locale(), 'woocommerce-extra-checkout-fields-for-brazil' );
-
-		load_textdomain( 'woocommerce-extra-checkout-fields-for-brazil', trailingslashit( WP_LANG_DIR ) . 'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil-' . $locale . '.mo' );
-		load_plugin_textdomain( 'woocommerce-extra-checkout-fields-for-brazil', FALSE, basename( plugin_dir_path( dirname( __FILE__ ) ) ) . '/languages/' );
-	}
-
-	/**
 	 * Load order custom data.
 	 *
 	 * @param  array $data Default WC_Order data.
@@ -96,7 +84,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			wp_enqueue_script( 'jquery' );
 
 			// Fix checkout fields.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), self::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-front',
 				'wcbcf_public_params',
