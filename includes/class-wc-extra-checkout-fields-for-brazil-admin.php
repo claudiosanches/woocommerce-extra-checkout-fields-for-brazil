@@ -41,6 +41,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
 			add_filter( 'woocommerce_customer_meta_fields', array( $this, 'user_edit_fields' ) );
 		}
+
+		$this->update();
 	}
 
 	/**
@@ -771,18 +773,18 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 			if ( 1 == $settings['person_type'] || 2 == $settings['person_type'] ) {
 				update_post_meta( $post_id, '_billing_cpf', woocommerce_clean( $_POST['_billing_cpf'] ) );
+
+				if ( isset( $settings['rg'] ) ) {
+					update_post_meta( $post_id, '_billing_rg', woocommerce_clean( $_POST['_billing_rg'] ) );
+				}
 			}
 
 			if ( 1 == $settings['person_type'] || 3 == $settings['person_type'] ) {
 				update_post_meta( $post_id, '_billing_cnpj', woocommerce_clean( $_POST['_billing_cnpj'] ) );
-			}
 
-			if ( isset( $settings['rg'] ) ) {
-				update_post_meta( $post_id, '_billing_rg', woocommerce_clean( $_POST['_billing_rg'] ) );
-			}
-
-			if ( isset( $settings['ie'] ) ) {
-				update_post_meta( $post_id, '_billing_ie', woocommerce_clean( $_POST['_billing_ie'] ) );
+				if ( isset( $settings['ie'] ) ) {
+					update_post_meta( $post_id, '_billing_ie', woocommerce_clean( $_POST['_billing_ie'] ) );
+				}
 			}
 		}
 
@@ -972,6 +974,34 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		return $new_fields;
 	}
 
+	/**
+	 * Maybe install.
+	 *
+	 * @return void
+	 */
+	public function update() {
+		$version = get_option( 'wcbcf_version', '0' );
+
+		if ( version_compare( $version, Extra_Checkout_Fields_For_Brazil::VERSION, '<' ) ) {
+
+			// Update to version 3.0.0.
+			if ( version_compare( $version, '3.0.0', '<' ) ) {
+
+				if ( isset( $options['person_type'] ) ) {
+					$options['person_type'] = 1;
+				} else {
+					$options['person_type'] = 0;
+				}
+
+				error_log( print_r( $options, true ) );
+
+				update_option( 'wcbcf_settings', $options );
+			}
+
+			// Save plugin version.
+			update_option( 'wcbcf_version', Extra_Checkout_Fields_For_Brazil::VERSION );
+		}
+	}
 }
 
 new Extra_Checkout_Fields_For_Brazil_Admin();

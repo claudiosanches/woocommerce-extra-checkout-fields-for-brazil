@@ -122,6 +122,7 @@ class Extra_Checkout_Fields_For_Brazil {
 		);
 
 		add_option( 'wcbcf_settings', $default );
+		add_option( 'wcbcf_version', self::VERSION );
 	}
 
 	/**
