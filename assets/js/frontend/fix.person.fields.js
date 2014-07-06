@@ -7,7 +7,13 @@
 
 	$(function () {
 
-		// Hide and show cpf and cnpj fields
+		/**
+		 * Hide and show cpf and cnpj fields
+		 *
+		 * @param  {string}
+		 *
+		 * @return {void}
+		 */
 		function personTypeFields( current ) {
 			$( '#billing_cpf_field' ).hide();
 			$( '#billing_rg_field' ).hide();
@@ -27,20 +33,22 @@
 			}
 		}
 
-		if ( 'yes' === wcbcf_public_params.person_type ) {
+		if ( '0' !== wcbcf_public_params.person_type ) {
 			// Required fields.
 			$( '#billing_company_field label, #billing_cpf_field label, #billing_cnpj_field label, #billing_rg_field label, #billing_ie_field label' )
 				.append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 
-			personTypeFields( $( '#billing_persontype' ).val() );
+			if ( '1' === wcbcf_public_params.person_type ) {
+				personTypeFields( $( '#billing_persontype' ).val() );
 
-			$( '#billing_persontype' ).on( 'change', function () {
-				var current = $( this ).val();
+				$( '#billing_persontype' ).on( 'change', function () {
+					var current = $( this ).val();
 
-				personTypeFields( current );
-			});
+					personTypeFields( current );
+				});
+			}
 		}
 
 	});
 
-}(jQuery));
+}( jQuery ) );

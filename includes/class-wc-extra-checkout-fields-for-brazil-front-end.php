@@ -94,7 +94,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'mailcheck'       => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 					'addresscomplete' => isset( $settings['addresscomplete'] ) ? 'yes' : 'no',
-					'person_type'     => isset( $settings['person_type'] ) ? 'yes' : 'no'
+					'person_type'     => $settings['person_type']
 				)
 			);
 		}
@@ -131,79 +131,85 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'required'    => true
 		);
 
-		if ( isset( $settings['person_type'] ) ) {
+		if ( 0 != $settings['person_type'] ) {
 
 			// Billing Person Type.
-			$new_fields['billing_persontype'] = array(
-				'type'     => 'select',
-				'label'    => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'class'    => array( 'form-row-wide' ),
-				'required' => true,
-				'options'  => array(
-					'0' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' )
-				)
-			);
-
-			if ( isset( $settings['rg'] ) ) {
-				// Billing CPF.
-				$new_fields['billing_cpf'] = array(
-					'label'       => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-first' ),
-					'required'    => false
-				);
-
-				// Billing RG.
-				$new_fields['billing_rg'] = array(
-					'label'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'RG', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-last' ),
-					'required'    => false
-				);
-			} else {
-				// Billing CPF.
-				$new_fields['billing_cpf'] = array(
-					'label'       => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-wide' ),
-					'required'    => false
+			if ( 1 == $settings['person_type'] ) {
+				$new_fields['billing_persontype'] = array(
+					'type'     => 'select',
+					'label'    => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'class'    => array( 'form-row-wide' ),
+					'required' => true,
+					'options'  => array(
+						'0' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' )
+					)
 				);
 			}
 
-			// Billing Company.
-			$new_fields['billing_company'] = array(
-				'label'       => __( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'placeholder' => _x( 'Company Name', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'class'       => array( 'form-row-wide' ),
-				'required'    => false
-			);
+			if ( 1 == $settings['person_type'] || 2 == $settings['person_type'] ) {
+				if ( isset( $settings['rg'] ) ) {
+					// Billing CPF.
+					$new_fields['billing_cpf'] = array(
+						'label'       => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-first' ),
+						'required'    => false
+					);
 
-			// Billing State Registration.
-			if ( isset( $settings['ie'] ) ) {
-				// Billing CNPJ.
-				$new_fields['billing_cnpj'] = array(
-					'label'       => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-first' ),
-					'required'    => false
-				);
+					// Billing RG.
+					$new_fields['billing_rg'] = array(
+						'label'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'RG', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-last' ),
+						'required'    => false
+					);
+				} else {
+					// Billing CPF.
+					$new_fields['billing_cpf'] = array(
+						'label'       => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-wide' ),
+						'required'    => false
+					);
+				}
+			}
 
-				$new_fields['billing_ie'] = array(
-					'label'       => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'State Registration', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-last' ),
-					'required'    => false
-				);
-			} else {
-				// Billing CNPJ.
-				$new_fields['billing_cnpj'] = array(
-					'label'       => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			if ( 1 == $settings['person_type'] || 3 == $settings['person_type'] ) {
+				// Billing Company.
+				$new_fields['billing_company'] = array(
+					'label'       => __( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'placeholder' => _x( 'Company Name', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'class'       => array( 'form-row-wide' ),
 					'required'    => false
 				);
+
+				// Billing State Registration.
+				if ( isset( $settings['ie'] ) ) {
+					// Billing CNPJ.
+					$new_fields['billing_cnpj'] = array(
+						'label'       => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-first' ),
+						'required'    => false
+					);
+
+					$new_fields['billing_ie'] = array(
+						'label'       => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'State Registration', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-last' ),
+						'required'    => false
+					);
+				} else {
+					// Billing CNPJ.
+					$new_fields['billing_cnpj'] = array(
+						'label'       => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'class'       => array( 'form-row-wide' ),
+						'required'    => false
+					);
+				}
 			}
 
 		} else {
@@ -556,10 +562,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
-		if ( isset( $settings['person_type'] ) ) {
+		if ( 0 != $settings['person_type'] ) {
 
 			// Check CPF.
-			if ( 1 == $_POST['billing_persontype'] ) {
+			if ( ( 1 == $settings['person_type'] && 1 == $_POST['billing_persontype'] ) || 2 == $settings['person_type'] ) {
 				if ( empty( $_POST['billing_cpf'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
@@ -574,7 +580,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 
 			// Check Company and CPNJ.
-			if ( 2 == $_POST['billing_persontype'] ) {
+			if ( ( 1 == $settings['person_type'] && 2 == $_POST['billing_persontype'] ) || 3 == $settings['person_type'] ) {
 				if ( empty( $_POST['billing_company'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
