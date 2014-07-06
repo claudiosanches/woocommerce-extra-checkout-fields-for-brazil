@@ -993,8 +993,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 					$options['person_type'] = 0;
 				}
 
-				error_log( print_r( $options, true ) );
-
 				update_option( 'wcbcf_settings', $options );
 			}
 
