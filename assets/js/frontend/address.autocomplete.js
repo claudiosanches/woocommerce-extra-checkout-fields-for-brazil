@@ -47,10 +47,10 @@
 
 							// State.
 							$( '#' + field + '_state option:selected' ).attr( 'selected', false ).change();
-							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', true ).change();
+							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', 'selected' ).change();
 
 							// Chosen support.
-							$( '#' + field + '_state' ).trigger( 'liszt:updated' );
+							$( '#' + field + '_state' ).trigger( 'liszt:updated' ).trigger( 'chosen:updated' );
 						}
 					});
 				}
