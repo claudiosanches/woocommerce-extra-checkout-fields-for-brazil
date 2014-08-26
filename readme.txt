@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.0.1 - 25/08/2014 =
+
+* Corrigido o autopreenchimento de endereço por CEP quando esta ativada a opção "Habilitar caixas de seleção de país aprimoradas".
 
 = 3.0.0 - 06/07/2014 =
 
@@ -214,11 +218,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.0.0 =
+= 3.0.1 =
 
-* Adicionada opção para controlar os campos de "tipo de pessoa", agora é possível usar apenas como "pessoa física" ou apenas como "pessoa jurídica".
-* Removido script para integrar com o WooCommerce PagSeguro, a partir da versão 2.5.0 do WooCommerce PagSeguro o suporte é feito direto, sem necessidade de código extra.
-* Melhorado o script que faz preenchimento automático dos campos de endereço com base no CEP.
+* Corrigido o autopreenchimento de endereço por CEP quando esta ativada a opção "Habilitar caixas de seleção de país aprimoradas".
 
 == License ==
 
