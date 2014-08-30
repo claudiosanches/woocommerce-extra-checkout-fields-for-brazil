@@ -91,6 +91,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	private function includes() {
 		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-front-end.php';
 		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-plugins-support.php';
+		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-api.php';
 	}
 
 	/**
