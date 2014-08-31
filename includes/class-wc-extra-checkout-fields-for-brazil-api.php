@@ -75,6 +75,11 @@ class Extra_Checkout_Fields_For_Brazil_Api {
 			$order_data['billing_address']['cellphone']    = $order->billing_cellphone;
 		}
 
+		if ( isset( $order_data['shipping_address'] ) ) {
+			$order_data['shipping_address']['number']       = $order->shipping_number;
+			$order_data['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
+		}
+
 		return $order_data;
 	}
 }
