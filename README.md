@@ -83,19 +83,19 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 ## Screenshots ##
 
 ### 1. Página de Checkout ###
-![1. Página de Checkout](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-1.png)
+![1. Página de Checkout](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
 
 ### 2. Página de edição de endereço ###
-![2. Página de edição de endereço](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-2.png)
+![2. Página de edição de endereço](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
 
 ### 3. Página de dados do pedido ###
-![3. Página de dados do pedido](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-3.png)
+![3. Página de dados do pedido](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
 
 ### 4. Configurações do plugin ###
-![4. Configurações do plugin](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-4.png)
+![4. Configurações do plugin](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
 
 ### 5. Sugestão de e-mail ###
-![5. Sugestão de e-mail](http://s.wordpress.org/extend/plugins/woocommerce-extra-checkout-fields-for-brazil/screenshot-5.png)
+![5. Sugestão de e-mail](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
 
 
 ## Changelog ##
