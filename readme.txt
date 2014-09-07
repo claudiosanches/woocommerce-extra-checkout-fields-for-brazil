@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
-Tested up to: 3.9.1
-Stable tag: 3.0.1
+Tested up to: 4.0
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,8 @@ You can contribute to the source code in our [GitHub](https://github.com/claudio
 Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
 
 É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
+
+A partir da versão 3.1.0 é feita integração também com a [API](http://docs.woothemes.com/document/woocommerce-rest-api/) de pedidos e de clientes do WooCommerce.
 
 #### Compatibilidade: ####
 
@@ -87,6 +89,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.1.0 - 07/09/2014 =
+
+* Adicionada integração com a API de pedidos e clientes do WooCommerce.
 
 = 3.0.1 - 25/08/2014 =
 
@@ -218,9 +224,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.0.1 =
+= 3.1.0 =
 
-* Corrigido o autopreenchimento de endereço por CEP quando esta ativada a opção "Habilitar caixas de seleção de país aprimoradas".
+* Adicionada integração com a API de pedidos e clientes do WooCommerce.
 
 == License ==
 
