@@ -13,6 +13,7 @@ class Extra_Checkout_Fields_For_Brazil_Api {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_api_order_response', array( $this, 'orders' ), 100, 4 );
+		add_filter( 'woocommerce_api_customer_response', array( $this, 'customer' ), 100, 4 );
 	}
 
 	/**
@@ -85,45 +86,72 @@ class Extra_Checkout_Fields_For_Brazil_Api {
 	 */
 	public function orders( $order_data, $order, $fields, $server ) {
 
-		if ( isset( $order_data['billing_address'] ) || $order_data['customer'] ) {
-			$order_data['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
-			$order_data['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
-			$order_data['billing_address']['rg']           = $this->format_number( $order->billing_rg );
-			$order_data['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
-			$order_data['billing_address']['ie']           = $this->format_number( $order->billing_ie );
-			$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate( $order->billing_birthdate, $server );
-			$order_data['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
-			$order_data['billing_address']['number']       = $order->billing_number;
-			$order_data['billing_address']['neighborhood'] = $order->billing_neighborhood;
-			$order_data['billing_address']['cellphone']    = $order->billing_cellphone;
-		}
+		// Billing fields.
+		$order_data['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
+		$order_data['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
+		$order_data['billing_address']['rg']           = $this->format_number( $order->billing_rg );
+		$order_data['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
+		$order_data['billing_address']['ie']           = $this->format_number( $order->billing_ie );
+		$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate( $order->billing_birthdate, $server );
+		$order_data['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
+		$order_data['billing_address']['number']       = $order->billing_number;
+		$order_data['billing_address']['neighborhood'] = $order->billing_neighborhood;
+		$order_data['billing_address']['cellphone']    = $order->billing_cellphone;
 
-		if ( isset( $order_data['shipping_address'] ) ) {
-			$order_data['shipping_address']['number']       = $order->shipping_number;
-			$order_data['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
-		}
+		// Shipping fields.
+		$order_data['shipping_address']['number']       = $order->shipping_number;
+		$order_data['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
 
-		if ( 0 == $order->customer_user ) {
-			if ( isset( $order_data['customer']['billing_address'] ) ) {
-				$order_data['customer']['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
-				$order_data['customer']['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
-				$order_data['customer']['billing_address']['rg']           = $this->format_number( $order->billing_rg );
-				$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
-				$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->billing_ie );
-				$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate( $order->billing_birthdate, $server );
-				$order_data['customer']['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
-				$order_data['customer']['billing_address']['number']       = $order->billing_number;
-				$order_data['customer']['billing_address']['neighborhood'] = $order->billing_neighborhood;
-				$order_data['customer']['billing_address']['cellphone']    = $order->billing_cellphone;
-			}
+		// Customer fields.
+		if ( 0 == $order->customer_user && isset( $order_data['customer'] ) ) {
+			// Customer billing fields.
+			$order_data['customer']['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
+			$order_data['customer']['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
+			$order_data['customer']['billing_address']['rg']           = $this->format_number( $order->billing_rg );
+			$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
+			$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->billing_ie );
+			$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate( $order->billing_birthdate, $server );
+			$order_data['customer']['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
+			$order_data['customer']['billing_address']['number']       = $order->billing_number;
+			$order_data['customer']['billing_address']['neighborhood'] = $order->billing_neighborhood;
+			$order_data['customer']['billing_address']['cellphone']    = $order->billing_cellphone;
 
-			if ( isset( $order_data['customer']['shipping_address'] ) ) {
-				$order_data['customer']['shipping_address']['number']       = $order->shipping_number;
-				$order_data['customer']['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
-			}
+			// Customer shipping fields.
+			$order_data['customer']['shipping_address']['number']       = $order->shipping_number;
+			$order_data['customer']['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
 		}
 
 		return $order_data;
+	}
+
+	/**
+	 * Add extra fields in customer API.
+	 *
+	 * @param  array         $customer_data
+	 * @param  WC_Order      $customer
+	 * @param  array         $fields
+	 * @param  WC_API_Server $server
+	 *
+	 * @return array
+	 */
+	public function customer( $customer_data, $customer, $fields, $server ) {
+		// Billing fields.
+		$customer_data['billing_address']['persontype']   = $this->get_person_type( $customer->billing_persontype );
+		$customer_data['billing_address']['cpf']          = $this->format_number( $customer->billing_cpf );
+		$customer_data['billing_address']['rg']           = $this->format_number( $customer->billing_rg );
+		$customer_data['billing_address']['cnpj']         = $this->format_number( $customer->billing_cnpj );
+		$customer_data['billing_address']['ie']           = $this->format_number( $customer->billing_ie );
+		$customer_data['billing_address']['birthdate']    = $this->get_formatted_birthdate( $customer->billing_birthdate, $server );
+		$customer_data['billing_address']['sex']          = substr( $customer->billing_sex, 0, 1 );
+		$customer_data['billing_address']['number']       = $customer->billing_number;
+		$customer_data['billing_address']['neighborhood'] = $customer->billing_neighborhood;
+		$customer_data['billing_address']['cellphone']    = $customer->billing_cellphone;
+
+		// Shipping fields.
+		$customer_data['shipping_address']['number']       = $customer->shipping_number;
+		$customer_data['shipping_address']['neighborhood'] = $customer->shipping_neighborhood;
+
+		return $customer_data;
 	}
 }
 
