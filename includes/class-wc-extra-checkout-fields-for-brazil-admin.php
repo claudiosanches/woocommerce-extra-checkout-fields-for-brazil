@@ -667,13 +667,15 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 		$html .= '</p>';
 
-		if ( $woocommerce->payment_gateways() ) {
-			$payment_gateways = $woocommerce->payment_gateways->payment_gateways();
+		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1.12', '<=' ) ) {
+			if ( $woocommerce->payment_gateways() ) {
+				$payment_gateways = $woocommerce->payment_gateways->payment_gateways();
 
-			$payment_method = ! empty( $order->payment_method ) ? $order->payment_method : '';
+				$payment_method = ! empty( $order->payment_method ) ? $order->payment_method : '';
 
-			if ( $payment_method ) {
-				$html .= '<p><strong>' . __( 'Payment Method', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong> ' . ( isset( $payment_gateways[ $payment_method ] ) ? esc_html( $payment_gateways[ $payment_method ]->get_title() ) : esc_html( $payment_method ) ) . '</p>';
+				if ( $payment_method ) {
+					$html .= '<p><strong>' . __( 'Payment Method', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong> ' . ( isset( $payment_gateways[ $payment_method ] ) ? esc_html( $payment_gateways[ $payment_method ]->get_title() ) : esc_html( $payment_method ) ) . '</p>';
+				}
 			}
 		}
 
@@ -690,7 +692,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 * @return string        Custom information.
 	 */
 	public function order_data_after_shipping_address( $order ) {
-		global $woocommerce;
+		global $post, $woocommerce;
 
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
@@ -721,6 +723,10 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			}
 
 			$html .= '</p>';
+		}
+
+		if ( apply_filters( 'woocommerce_enable_order_notes_field', 'yes' == get_option( 'woocommerce_enable_order_comments', 'yes' ) ) && $post->post_excerpt ) {
+			$html .= '<p><strong>' . __( 'Customer Note', 'woocommerce' ) . ':</strong><br />' . nl2br( esc_html( $post->post_excerpt ) ) . '</p>';
 		}
 
 		$html .= '</div>';
