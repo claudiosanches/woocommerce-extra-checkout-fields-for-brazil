@@ -40,6 +40,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
 			add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
 		}
+
+		// Save the order date in WooCommerce 2.2 or later.
+		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_order_data' ), 10, 2 );
 	}
 
 	/**
@@ -729,6 +732,51 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		);
 
 		return array_merge( $customer_data, $custom_data );
+	}
+
+	/**
+	 * Get a posted address field after sanitization and validation.
+	 *
+	 * @param  string $key
+	 * @param  string $type billing for shipping
+	 *
+	 * @return string
+	 */
+	public function get_posted_address_data( $key, $posted, $type = 'billing' ) {
+		if ( 'billing' === $type || false === $posted['ship_to_different_address'] ) {
+			$return = isset( $posted[ 'billing_' . $key ] ) ? $posted[ 'billing_' . $key ] : '';
+		} else {
+			$return = isset( $posted[ 'shipping_' . $key ] ) ? $posted[ 'shipping_' . $key ] : '';
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Save order data.
+	 *
+	 * @param  int   $order_id
+	 * @param  array $posted
+	 *
+	 * @return void
+	 */
+	public function save_order_data( $order_id, $posted ) {
+
+		// Billing.
+		update_post_meta( $order_id, '_billing_persontype', $this->get_posted_address_data( 'persontype', $posted ) );
+		update_post_meta( $order_id, '_billing_cpf', $this->get_posted_address_data( 'cpf', $posted ) );
+		update_post_meta( $order_id, '_billing_rg', $this->get_posted_address_data( 'rg', $posted ) );
+		update_post_meta( $order_id, '_billing_cnpj', $this->get_posted_address_data( 'cnpj', $posted ) );
+		update_post_meta( $order_id, '_billing_ie', $this->get_posted_address_data( 'ie', $posted ) );
+		update_post_meta( $order_id, '_billing_birthdate', $this->get_posted_address_data( 'birthdate', $posted ) );
+		update_post_meta( $order_id, '_billing_sex', $this->get_posted_address_data( 'sex', $posted ) );
+		update_post_meta( $order_id, '_billing_number', $this->get_posted_address_data( 'number', $posted ) );
+		update_post_meta( $order_id, '_billing_neighborhood', $this->get_posted_address_data( 'neighborhood', $posted ) );
+		update_post_meta( $order_id, '_billing_cellphone', $this->get_posted_address_data( 'cellphone', $posted ) );
+
+		// Shipping.
+		update_post_meta( $order_id, '_shipping_number', $this->get_posted_address_data( 'number', $posted, 'shipping' ) );
+		update_post_meta( $order_id, '_shipping_neighborhood', $this->get_posted_address_data( 'neighborhood', $posted, 'shipping' ) );
 	}
 }
 
