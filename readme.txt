@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.2.0 - 07/09/2014 =
+
+* Melhorada a integração com o WooCommerce 2.2.
+* Adicionada a exibição da nota do cliente na página de detalhes do pedido.
 
 = 3.1.0 - 07/09/2014 =
 
@@ -224,9 +229,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.1.0 =
+= 3.2.0 =
 
 * Adicionada integração com a API de pedidos e clientes do WooCommerce.
+* Melhorada a integração com o WooCommerce 2.2.
+* Adicionada a exibição da nota do cliente na página de detalhes do pedido.
 
 == License ==
 
