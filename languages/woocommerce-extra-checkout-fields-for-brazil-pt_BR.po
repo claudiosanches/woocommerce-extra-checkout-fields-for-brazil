@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v3.0.0\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil v3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-06 03:39:38+0000\n"
+"PO-Revision-Date: 2014-09-08 00:44:55+0000\n"
 "Last-Translator: Claudio Sanches <contato@claudiosmweb.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: woocommerce-extra-checkout-fields-for-brazil.php:134
+#: woocommerce-extra-checkout-fields-for-brazil.php:135
 #, php-format
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "WooCommerce Extra Checkout Fields for Brazil depends on %s to work!"
@@ -134,71 +134,71 @@ msgstr "Verifica se o CNPJ é válido."
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:399
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:527
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:119
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:388
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:122
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:391
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "First Name"
 msgstr "Nome"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:403
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:531
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:127
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:396
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:130
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:399
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Last Name"
 msgstr "Sobrenome"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:411
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:140
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:143
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Person type"
 msgstr "Tipo de Pessoa"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:413
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:144
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:244
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:147
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:247
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Select"
 msgstr "Selecionar"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:414
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:145
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:148
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Individuals"
 msgstr "Pessoa Física"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:415
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:146
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:149
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Legal Person"
 msgstr "Pessoa Jurídica"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:422
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:631
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:829
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:155
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:171
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:570
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:574
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:835
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:158
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:174
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:573
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:577
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "CPF"
 msgstr "CPF"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:433
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:639
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:843
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:182
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:849
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:185
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Company Name"
 msgstr "Razão Social"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:436
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:640
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:847
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:192
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:207
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:589
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:593
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:853
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:195
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:210
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:592
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:596
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "CNPJ"
 msgstr "CNPJ"
@@ -206,94 +206,94 @@ msgstr "CNPJ"
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:447
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:535
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:647
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:860
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:936
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:218
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:405
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:585
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:866
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:942
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:221
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:408
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:588
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Company"
 msgstr "Empresa"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:454
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:653
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:867
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:229
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:873
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:232
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Birthdate"
 msgstr "Data de Nascimento"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:457
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:656
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:871
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:239
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:877
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:242
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Sex"
 msgstr "Sexo"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:462
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:539
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:885
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:948
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:891
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:954
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Address 1"
 msgstr "Endereço"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:466
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:543
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:889
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:952
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:281
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:438
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:895
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:958
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:284
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:441
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Number"
 msgstr "Número"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:470
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:547
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:893
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:956
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:899
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:962
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Address 2"
 msgstr "Complemento"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:474
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:551
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:897
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:960
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:297
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:454
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:903
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:966
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:300
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:457
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Neighborhood"
 msgstr "Bairro"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:478
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:555
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:901
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:964
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:305
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:462
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:907
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:970
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:308
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:465
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "City"
 msgstr "Cidade"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:482
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:559
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:905
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:968
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:92
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:314
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:471
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:911
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:974
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:95
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:317
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:474
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "State"
 msgstr "Estado"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:486
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:563
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:877
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:940
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:255
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:413
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:883
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:946
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:258
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:416
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Country"
 msgstr "País"
@@ -306,43 +306,43 @@ msgstr "Selecionar País&hellip;"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:494
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:571
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:881
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:944
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:887
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:950
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Postcode"
 msgstr "CEP"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:499
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:659
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:325
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:353
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:328
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:356
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Phone"
 msgstr "Telefone"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:504
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:663
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:915
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:333
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:921
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:336
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Cell Phone"
 msgstr "Celular"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:509
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:666
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:921
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:341
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:361
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:927
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:344
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:364
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Email"
 msgstr "E-mail"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:597
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:600
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:701
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:704
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:273
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:430
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:703
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:706
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:276
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:433
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Address"
 msgstr "Endereço"
@@ -357,211 +357,211 @@ msgstr "Nenhum endereço de pagamento foi definido."
 msgid "Customer data"
 msgstr "Informações do cliente"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:701
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:703
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "No shipping address set."
 msgstr "Nenhum endereço de entrega foi definido."
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:815
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:821
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Customer Billing Address"
 msgstr "Endereço de Cobrança do Cliente"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:817
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:928
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:823
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:934
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "First name"
 msgstr "Nome"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:821
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:932
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:827
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:938
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Last name"
 msgstr "Sobrenome"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:878
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:941
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:884
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:947
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "2 letter Country code"
 msgstr "Código de duas letras"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:906
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:969
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:912
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:975
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "State code"
 msgstr "UF"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:909
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:915
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Telephone"
 msgstr "Telefone"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:926
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:932
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Customer Shipping Address"
 msgstr "Endereço de Envio do Cliente"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:93
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:96
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "required"
 msgstr "obrigatório"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:120
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:389
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:123
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:392
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "First Name"
 msgstr "Nome"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:128
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:397
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:131
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:400
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Last Name"
 msgstr "Sobrenome"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:156
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:172
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:159
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:175
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "CPF"
 msgstr "CPF"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:183
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:186
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Company Name"
 msgstr "Razão Social"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:193
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:208
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:196
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:211
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "CNPJ"
 msgstr "CNPJ"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:219
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:406
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:222
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:409
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Company"
 msgstr "Empresa"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:230
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:233
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Birthdate"
 msgstr "Data de Nascimento"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:245
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:248
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Female"
 msgstr "Feminino"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:246
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:249
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Male"
 msgstr "Masculino"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:256
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:414
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:259
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:417
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Country"
 msgstr "País"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:264
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:421
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:267
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:424
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Post Code"
 msgstr "CEP"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:265
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:422
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:268
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:425
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Post Code"
 msgstr "CEP"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:274
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:431
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:277
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:434
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Address"
 msgstr "Endereço"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:282
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:439
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:285
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:442
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Number"
 msgstr "Número"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:290
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:447
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:293
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:450
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Address line 2"
 msgstr "Complemento"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:291
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:448
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:294
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:451
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Address line 2"
 msgstr "Complemento"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:298
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:455
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:301
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:458
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Neighborhood"
 msgstr "Bairro"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:306
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:463
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:309
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:466
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "City"
 msgstr "Cidade"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:315
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:472
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:318
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:475
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "State"
 msgstr "Estado"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:326
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:354
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:329
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:357
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Phone"
 msgstr "Telefone"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:334
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:337
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Cell Phone"
 msgstr "Celular"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:342
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:362
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:345
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:365
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "Email"
 msgstr "E-mail"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:570
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:578
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:585
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:589
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:597
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:573
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:581
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:588
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:592
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:600
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "is a required field"
 msgstr "é um campo obrigatório"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:574
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:593
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:577
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:596
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "is not valid"
 msgstr "é inválido"
@@ -618,35 +618,35 @@ msgstr "Caso esteja marcado exibe o campo de Inscrição Estadual nas informaç�
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:426
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:634
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:835
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:163
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:578
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:841
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:166
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:581
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "RG"
 msgstr "RG"
 
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:440
 #: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:643
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:853
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:199
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:597
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:859
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:202
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:600
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "State Registration"
 msgstr "Inscrição Estadual"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:164
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:167
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "RG"
 msgstr "RG"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:200
+#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:203
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgctxt "placeholder"
 msgid "State Registration"
 msgstr "Inscrição Estadual"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:676
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:677
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "Payment Method"
 msgstr "Método de pagamento"
@@ -676,14 +676,19 @@ msgstr "Pessoa Física apenas"
 msgid "Legal Person only"
 msgstr "Pessoa Jurídica apenas"
 
-#. translators: plugin header field 'Version'
-#: woocommerce-extra-checkout-fields-for-brazil.php:0
-#@ woocommerce-extra-checkout-fields-for-brazil
-msgid "3.0.0"
-msgstr "3.0.0"
-
-#: woocommerce-extra-checkout-fields-for-brazil.php:134
+#: woocommerce-extra-checkout-fields-for-brazil.php:135
 #@ woocommerce-extra-checkout-fields-for-brazil
 msgid "WooCommerce"
 msgstr "WooCommerce"
+
+#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:729
+#@ woocommerce-extra-checkout-fields-for-brazil
+msgid "Customer Note"
+msgstr "Nota do cliente"
+
+#. translators: plugin header field 'Version'
+#: woocommerce-extra-checkout-fields-for-brazil.php:0
+#@ woocommerce-extra-checkout-fields-for-brazil
+msgid "3.2.0"
+msgstr "3.2.0"
 

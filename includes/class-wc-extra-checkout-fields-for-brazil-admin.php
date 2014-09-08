@@ -726,7 +726,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		}
 
 		if ( apply_filters( 'woocommerce_enable_order_notes_field', 'yes' == get_option( 'woocommerce_enable_order_comments', 'yes' ) ) && $post->post_excerpt ) {
-			$html .= '<p><strong>' . __( 'Customer Note', 'woocommerce' ) . ':</strong><br />' . nl2br( esc_html( $post->post_excerpt ) ) . '</p>';
+			$html .= '<p><strong>' . __( 'Customer Note', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong><br />' . nl2br( esc_html( $post->post_excerpt ) ) . '</p>';
 		}
 
 		$html .= '</div>';
