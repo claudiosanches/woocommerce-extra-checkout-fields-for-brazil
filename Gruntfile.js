@@ -103,6 +103,7 @@ module.exports = function( grunt ) {
 		sass: {
 			compile: {
 				options: {
+					sourcemap: 'none',
 					style: 'compressed'
 				},
 				files: [{
