@@ -35,6 +35,8 @@
 
 		if ( '0' !== wcbcf_public_params.person_type ) {
 			// Required fields.
+			$( '#billing_company_field, #billing_cpf_field, #billing_cnpj_field, #billing_rg_field, #billing_ie_field' ).addClass( 'validate-required' );
+
 			$( '#billing_company_field label, #billing_cpf_field label, #billing_cnpj_field label, #billing_rg_field label, #billing_ie_field label' )
 				.append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 
