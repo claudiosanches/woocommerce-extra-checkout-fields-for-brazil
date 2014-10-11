@@ -11,17 +11,6 @@
 			// CPF.
 			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
 
-			// RG.
-			$( '#billing_rg' ).keyup( function () {
-				var current = $( this ),
-					notNumber = new RegExp( '[^0-9]', 'g' ),
-					currentValue = current.val();
-
-				if ( currentValue.match( notNumber ) ) {
-					current.val( currentValue.replace( notNumber, '' ) );
-				}
-			}).keyup();
-
 			// CPNJ.
 			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
 
