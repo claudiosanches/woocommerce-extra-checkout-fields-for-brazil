@@ -5,8 +5,6 @@
 	$(function () {
 
 		function personTypeSwitch( option ) {
-			console.log( option );
-
 			var rg            = $( '.wrap form .form-table:eq(0) tr:eq(1)' ),
 				ie            = $( '.wrap form .form-table:eq(0) tr:eq(2)' ),
 				validate      = $( '.wrap form h3:eq(2), .wrap form .form-table:eq(2)' ),
