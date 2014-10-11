@@ -35,7 +35,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'shop_order_shipping_fields' ) );
 		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'order_data_after_billing_address' ) );
 		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'order_data_after_shipping_address' ) );
-		add_action( 'save_post', array( $this, 'save_shop_data_fields' ) );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_custom_shop_data' ) );
 
 		// Custom address format.
 		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
@@ -588,9 +588,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
-		// Use nonce for verification.
-		wp_nonce_field( basename( __FILE__ ), 'wcbcf_meta_fields' );
-
 		$html = '<div class="wcbcf-address">';
 
 		if ( ! $order->get_formatted_billing_address() ) {
@@ -735,34 +732,13 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	}
 
 	/**
-	 * Save custom fields.
+	 * Save custom shop data fields.
 	 *
 	 * @param  int  $post_id Post ID.
 	 *
 	 * @return mixed
 	 */
-	public function save_shop_data_fields( $post_id ) {
-		global $post_type;
-
-		if ( 'shop_order' != $post_type ) {
-			return $post_id;
-		}
-
-		// Verify nonce.
-		if ( ! isset( $_POST['wcbcf_meta_fields'] ) || ! wp_verify_nonce( $_POST['wcbcf_meta_fields'], basename( __FILE__ ) ) ) {
-			return $post_id;
-		}
-
-		// Verify if this is an auto save routine.
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post_id;
-		}
-
-		// Verify current user.
-		if ( ! current_user_can( 'edit_pages', $post_id ) ) {
-			return $post_id;
-		}
-
+	public function save_custom_shop_data( $post_id ) {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
