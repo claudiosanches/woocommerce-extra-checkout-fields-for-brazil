@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * API integration.
  */
-class Extra_Checkout_Fields_For_Brazil_Api {
+class Extra_Checkout_Fields_For_Brazil_API {
 
 	/**
 	 * Initialize integrations.
@@ -155,4 +155,4 @@ class Extra_Checkout_Fields_For_Brazil_Api {
 	}
 }
 
-new Extra_Checkout_Fields_For_Brazil_Api();
+new Extra_Checkout_Fields_For_Brazil_API();
