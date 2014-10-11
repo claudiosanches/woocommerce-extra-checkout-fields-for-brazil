@@ -27,22 +27,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// Valid checkout fields.
 		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
 
-		// Found customers details ajax.
-		add_filter( 'woocommerce_found_customer_details', array( $this, 'customer_details_ajax' ) );
-
 		// Custom address format.
-		if ( version_compare( $woocommerce->version, '2.0.6', '>=' ) ) {
-			add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
-			add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
-			add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
-			add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
-			add_filter( 'woocommerce_user_column_billing_address', array( $this, 'user_column_billing_address' ), 1, 2 );
-			add_filter( 'woocommerce_user_column_shipping_address', array( $this, 'user_column_shipping_address' ), 1, 2 );
-			add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
-		}
-
-		// Save the order date in WooCommerce 2.2 or later.
-		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_order_data' ), 10, 2 );
+		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
+		add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
+		add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
+		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
+		add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
 	}
 
 	/**
@@ -482,63 +472,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
-	 * Checks if the CPF is valid.
-	 *
-	 * @param  string $cpf
-	 *
-	 * @return bool
-	 */
-	protected function is_cpf( $cpf ) {
-		$cpf = preg_replace( '/[^0-9]/', '', $cpf );
-
-		if ( 11 != strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
-			return false;
-		}
-
-		$digit = substr( $cpf, 0, 9 );
-
-		for ( $j = 10; $j <= 11; $j++ ) {
-			$sum = 0;
-
-			for( $i = 0; $i< $j-1; $i++ ) {
-				$sum += ( $j - $i ) * ( (int) $digit[ $i ] );
-			}
-
-			$summod11 = $sum % 11;
-			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
-		}
-
-		return $digit[9] == ( (int) $cpf[9] ) && $digit[10] == ( (int) $cpf[10] );
-	}
-
-	/**
-	 * Checks if the CNPJ is valid.
-	 *
-	 * @param  string $cnpj
-	 *
-	 * @return bool
-	 */
-	protected function is_cnpj( $cnpj ) {
-		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
-
-		if ( 14 != ( strlen( $cnpj ) ) || ( 0 == intval( substr( $cnpj, -4 ) ) ) ) {
-			return false;
-		}
-
-		for ( $t = 11; $t < 13; ) {
-			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
-				$d += $cnpj[ $c ] * $p;
-			}
-
-			if ( $cnpj[ ++$t ] != ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * Add error message in checkout.
 	 *
 	 * @param string $message Error message.
@@ -573,7 +506,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
 
-				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! $this->is_cpf( $_POST['billing_cpf'] ) ) {
+				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $_POST['billing_cpf'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
 
@@ -592,7 +525,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
 
-				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! $this->is_cnpj( $_POST['billing_cnpj'] ) ) {
+				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $_POST['billing_cnpj'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
 
@@ -664,36 +597,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
-	 * Custom user column billing address information.
-	 *
-	 * @param  array $address Default address.
-	 * @param  int $user_id   User id.
-	 *
-	 * @return array          New address format.
-	 */
-	public function user_column_billing_address( $address, $user_id ) {
-		$address['number']       = get_user_meta( $user_id, 'billing_number', true );
-		$address['neighborhood'] = get_user_meta( $user_id, 'billing_neighborhood', true );
-
-		return $address;
-	}
-
-	/**
-	 * Custom user column shipping address information.
-	 *
-	 * @param  array $address Default address.
-	 * @param  int $user_id   User id.
-	 *
-	 * @return array          New address format.
-	 */
-	public function user_column_shipping_address( $address, $user_id ) {
-		$address['number']       = get_user_meta( $user_id, 'shipping_number', true );
-		$address['neighborhood'] = get_user_meta( $user_id, 'shipping_neighborhood', true );
-
-		return $address;
-	}
-
-	/**
 	 * Custom my address formatted address.
 	 *
 	 * @param  array $address   Default address.
@@ -707,76 +610,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$address['neighborhood'] = get_user_meta( $customer_id, $name . '_neighborhood', true );
 
 		return $address;
-	}
-
-	/**
-	 * Add custom fields in customer details ajax.
-	 *
-	 * @return void
-	 */
-	public function customer_details_ajax( $customer_data ) {
-		$user_id = (int) trim( stripslashes( $_POST['user_id'] ) );
-		$type_to_load = esc_attr( trim( stripslashes( $_POST['type_to_load'] ) ) );
-
-		$custom_data = array(
-			$type_to_load . '_number' => get_user_meta( $user_id, $type_to_load . '_number', true ),
-			$type_to_load . '_neighborhood' => get_user_meta( $user_id, $type_to_load . '_neighborhood', true ),
-			$type_to_load . '_persontype' => get_user_meta( $user_id, $type_to_load . '_persontype', true ),
-			$type_to_load . '_cpf' => get_user_meta( $user_id, $type_to_load . '_cpf', true ),
-			$type_to_load . '_rg' => get_user_meta( $user_id, $type_to_load . '_rg', true ),
-			$type_to_load . '_cnpj' => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
-			$type_to_load . '_ie' => get_user_meta( $user_id, $type_to_load . '_ie', true ),
-			$type_to_load . '_birthdate' => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
-			$type_to_load . '_sex' => get_user_meta( $user_id, $type_to_load . '_sex', true ),
-			$type_to_load . '_cellphone' => get_user_meta( $user_id, $type_to_load . '_cellphone', true )
-		);
-
-		return array_merge( $customer_data, $custom_data );
-	}
-
-	/**
-	 * Get a posted address field after sanitization and validation.
-	 *
-	 * @param  string $key
-	 * @param  string $type billing for shipping
-	 *
-	 * @return string
-	 */
-	public function get_posted_address_data( $key, $posted, $type = 'billing' ) {
-		if ( 'billing' === $type || false === $posted['ship_to_different_address'] ) {
-			$return = isset( $posted[ 'billing_' . $key ] ) ? $posted[ 'billing_' . $key ] : '';
-		} else {
-			$return = isset( $posted[ 'shipping_' . $key ] ) ? $posted[ 'shipping_' . $key ] : '';
-		}
-
-		return $return;
-	}
-
-	/**
-	 * Save order data.
-	 *
-	 * @param  int   $order_id
-	 * @param  array $posted
-	 *
-	 * @return void
-	 */
-	public function save_order_data( $order_id, $posted ) {
-
-		// Billing.
-		update_post_meta( $order_id, '_billing_persontype', $this->get_posted_address_data( 'persontype', $posted ) );
-		update_post_meta( $order_id, '_billing_cpf', $this->get_posted_address_data( 'cpf', $posted ) );
-		update_post_meta( $order_id, '_billing_rg', $this->get_posted_address_data( 'rg', $posted ) );
-		update_post_meta( $order_id, '_billing_cnpj', $this->get_posted_address_data( 'cnpj', $posted ) );
-		update_post_meta( $order_id, '_billing_ie', $this->get_posted_address_data( 'ie', $posted ) );
-		update_post_meta( $order_id, '_billing_birthdate', $this->get_posted_address_data( 'birthdate', $posted ) );
-		update_post_meta( $order_id, '_billing_sex', $this->get_posted_address_data( 'sex', $posted ) );
-		update_post_meta( $order_id, '_billing_number', $this->get_posted_address_data( 'number', $posted ) );
-		update_post_meta( $order_id, '_billing_neighborhood', $this->get_posted_address_data( 'neighborhood', $posted ) );
-		update_post_meta( $order_id, '_billing_cellphone', $this->get_posted_address_data( 'cellphone', $posted ) );
-
-		// Shipping.
-		update_post_meta( $order_id, '_shipping_number', $this->get_posted_address_data( 'number', $posted, 'shipping' ) );
-		update_post_meta( $order_id, '_shipping_neighborhood', $this->get_posted_address_data( 'neighborhood', $posted, 'shipping' ) );
 	}
 }
 

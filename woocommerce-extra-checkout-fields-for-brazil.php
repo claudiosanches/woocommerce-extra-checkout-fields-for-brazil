@@ -72,6 +72,15 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
+	 * Get assets url.
+	 *
+	 * @return string
+	 */
+	public static function get_assets_url() {
+		return plugins_url( 'assets/', __FILE__ );
+	}
+
+	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @return void
@@ -89,9 +98,10 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @return void
 	 */
 	private function includes() {
-		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-front-end.php';
-		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-plugins-support.php';
-		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-api.php';
+		include_once 'includes/class-wc-ecfb-formatting.php';
+		include_once 'includes/class-wc-ecfb-front-end.php';
+		include_once 'includes/class-wc-ecfb-plugins-support.php';
+		include_once 'includes/class-wc-ecfb-api.php';
 	}
 
 	/**
@@ -100,30 +110,10 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @return void
 	 */
 	private function admin_includes() {
-		include_once 'includes/class-wc-extra-checkout-fields-for-brazil-admin.php';
-	}
-
-	/**
-	 * Fired for each blog when the plugin is activated.
-	 *
-	 * @return void
-	 */
-	public static function activate() {
-		$default = array(
-			'person_type'     => 1,
-			'ie'              => 0,
-			'rg'              => 0,
-			'birthdate_sex'   => 0,
-			'cell_phone'      => 1,
-			'mailcheck'       => 1,
-			'maskedinput'     => 1,
-			'addresscomplete' => 1,
-			'validate_cpf'    => 1,
-			'validate_cnpj'   => 1
-		);
-
-		add_option( 'wcbcf_settings', $default );
-		add_option( 'wcbcf_version', self::VERSION );
+		include_once 'includes/admin/class-wc-ecfb-admin.php';
+		include_once 'includes/admin/class-wc-ecfb-settings.php';
+		include_once 'includes/admin/class-wc-ecfb-order.php';
+		include_once 'includes/admin/class-wc-ecfb-customer.php';
 	}
 
 	/**
@@ -135,11 +125,6 @@ class Extra_Checkout_Fields_For_Brazil {
 		echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">' . __( 'WooCommerce', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>' ) . '</p></div>';
 	}
 }
-
-/**
- * Activate method.
- */
-register_activation_hook( __FILE__, array( 'Extra_Checkout_Fields_For_Brazil', 'activate' ) );
 
 /**
  * Initialize the plugin.
