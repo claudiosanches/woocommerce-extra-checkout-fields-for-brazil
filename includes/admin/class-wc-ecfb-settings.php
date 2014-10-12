@@ -87,7 +87,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'only_brazil',
-				'label' => __( 'If checked the "Individuals" and "Legal Person" options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked the Individuals and Legal Person options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
 

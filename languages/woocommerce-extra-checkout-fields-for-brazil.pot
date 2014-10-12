@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the WooCommerce Extra Checkout Fields for Brazil package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.0.0\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.3.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-extra-"
 "checkout-fields-for-brazil\n"
-"POT-Creation-Date: 2014-07-06 03:35:49+00:00\n"
+"POT-Creation-Date: 2014-10-12 02:41:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,539 +13,555 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:78
+#: includes/admin/class-wc-ecfb-admin.php:53
 msgid "Load the customer extras data?"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:79
+#: includes/admin/class-wc-ecfb-admin.php:54
 msgid "Also copy the data of number and neighborhood?"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:98
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:99
+#: includes/admin/class-wc-ecfb-customer.php:34
+msgid "Customer Billing Address"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:36
+#: includes/admin/class-wc-ecfb-customer.php:147
+msgid "First name"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:40
+#: includes/admin/class-wc-ecfb-customer.php:151
+msgid "Last name"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:48
+#: includes/admin/class-wc-ecfb-order.php:60
+#: includes/admin/class-wc-ecfb-order.php:291
+#: includes/class-wc-ecfb-front-end.php:149
+#: includes/class-wc-ecfb-front-end.php:165
+#: includes/class-wc-ecfb-front-end.php:515
+#: includes/class-wc-ecfb-front-end.php:519
+msgid "CPF"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:54
+#: includes/admin/class-wc-ecfb-order.php:64
+#: includes/admin/class-wc-ecfb-order.php:294
+#: includes/class-wc-ecfb-front-end.php:157
+#: includes/class-wc-ecfb-front-end.php:523
+msgid "RG"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:62
+#: includes/admin/class-wc-ecfb-order.php:71
+#: includes/admin/class-wc-ecfb-order.php:299
+#: includes/class-wc-ecfb-front-end.php:176
+msgid "Company Name"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:66
+#: includes/admin/class-wc-ecfb-order.php:74
+#: includes/admin/class-wc-ecfb-order.php:300
+#: includes/class-wc-ecfb-front-end.php:186
+#: includes/class-wc-ecfb-front-end.php:201
+#: includes/class-wc-ecfb-front-end.php:534
+#: includes/class-wc-ecfb-front-end.php:538
+msgid "CNPJ"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:72
+#: includes/admin/class-wc-ecfb-order.php:78
+#: includes/admin/class-wc-ecfb-order.php:303
+#: includes/class-wc-ecfb-front-end.php:193
+#: includes/class-wc-ecfb-front-end.php:542
+msgid "State Registration"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:79
+#: includes/admin/class-wc-ecfb-customer.php:155
+#: includes/admin/class-wc-ecfb-order.php:85
+#: includes/admin/class-wc-ecfb-order.php:173
+#: includes/admin/class-wc-ecfb-order.php:307
+#: includes/class-wc-ecfb-front-end.php:212
+#: includes/class-wc-ecfb-front-end.php:399
+#: includes/class-wc-ecfb-front-end.php:530
+msgid "Company"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:86
+#: includes/admin/class-wc-ecfb-order.php:92
+#: includes/admin/class-wc-ecfb-order.php:313
+#: includes/class-wc-ecfb-front-end.php:223
+msgid "Birthdate"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:90
+#: includes/admin/class-wc-ecfb-order.php:95
+#: includes/admin/class-wc-ecfb-order.php:316
+#: includes/class-wc-ecfb-front-end.php:233
+msgid "Sex"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:96
+#: includes/admin/class-wc-ecfb-customer.php:159
+#: includes/admin/class-wc-ecfb-order.php:124
+#: includes/admin/class-wc-ecfb-order.php:201
+#: includes/class-wc-ecfb-front-end.php:249
+#: includes/class-wc-ecfb-front-end.php:407
+msgid "Country"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:97
+#: includes/admin/class-wc-ecfb-customer.php:160
+msgid "2 letter Country code"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:100
+#: includes/admin/class-wc-ecfb-customer.php:163
+#: includes/admin/class-wc-ecfb-order.php:132
+#: includes/admin/class-wc-ecfb-order.php:209
+msgid "Postcode"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:104
+#: includes/admin/class-wc-ecfb-customer.php:167
+#: includes/admin/class-wc-ecfb-order.php:100
+#: includes/admin/class-wc-ecfb-order.php:177
+msgid "Address 1"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:108
+#: includes/admin/class-wc-ecfb-customer.php:171
+#: includes/admin/class-wc-ecfb-order.php:104
+#: includes/admin/class-wc-ecfb-order.php:181
+#: includes/class-wc-ecfb-front-end.php:275
+#: includes/class-wc-ecfb-front-end.php:432
+msgid "Number"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:112
+#: includes/admin/class-wc-ecfb-customer.php:175
+#: includes/admin/class-wc-ecfb-order.php:108
+#: includes/admin/class-wc-ecfb-order.php:185
+msgid "Address 2"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:116
+#: includes/admin/class-wc-ecfb-customer.php:179
+#: includes/admin/class-wc-ecfb-order.php:112
+#: includes/admin/class-wc-ecfb-order.php:189
+#: includes/class-wc-ecfb-front-end.php:291
+#: includes/class-wc-ecfb-front-end.php:448
+msgid "Neighborhood"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:120
+#: includes/admin/class-wc-ecfb-customer.php:183
+#: includes/admin/class-wc-ecfb-order.php:116
+#: includes/admin/class-wc-ecfb-order.php:193
+#: includes/class-wc-ecfb-front-end.php:299
+#: includes/class-wc-ecfb-front-end.php:456
+msgid "City"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:124
+#: includes/admin/class-wc-ecfb-customer.php:187
+#: includes/admin/class-wc-ecfb-order.php:120
+#: includes/admin/class-wc-ecfb-order.php:197
+#: includes/class-wc-ecfb-front-end.php:85
+#: includes/class-wc-ecfb-front-end.php:308
+#: includes/class-wc-ecfb-front-end.php:465
+msgid "State"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:125
+#: includes/admin/class-wc-ecfb-customer.php:188
+msgid "State code"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:128
+msgid "Telephone"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:134
+#: includes/admin/class-wc-ecfb-order.php:142
+#: includes/admin/class-wc-ecfb-order.php:323
+#: includes/class-wc-ecfb-front-end.php:327
+msgid "Cell Phone"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:140
+#: includes/admin/class-wc-ecfb-order.php:147
+#: includes/admin/class-wc-ecfb-order.php:326
+#: includes/class-wc-ecfb-front-end.php:335
+#: includes/class-wc-ecfb-front-end.php:355
+msgid "Email"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-customer.php:145
+msgid "Customer Shipping Address"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:37
+#: includes/admin/class-wc-ecfb-order.php:165
+#: includes/class-wc-ecfb-front-end.php:113
+#: includes/class-wc-ecfb-front-end.php:382
+msgid "First Name"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:41
+#: includes/admin/class-wc-ecfb-order.php:169
+#: includes/class-wc-ecfb-front-end.php:121
+#: includes/class-wc-ecfb-front-end.php:390
+msgid "Last Name"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:49
+#: includes/class-wc-ecfb-front-end.php:134
+#: includes/class-wc-ecfb-front-end.php:509
+msgid "Person type"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:51
+#: includes/class-wc-ecfb-front-end.php:138
+#: includes/class-wc-ecfb-front-end.php:238
+msgid "Select"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:52
+#: includes/class-wc-ecfb-front-end.php:139
+msgid "Individuals"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:53
+#: includes/class-wc-ecfb-front-end.php:140
+msgid "Legal Person"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:128
+#: includes/admin/class-wc-ecfb-order.php:205
+msgid "Select a country&hellip;"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:137
+#: includes/admin/class-wc-ecfb-order.php:319
+#: includes/class-wc-ecfb-front-end.php:319
+#: includes/class-wc-ecfb-front-end.php:347
+msgid "Phone"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:257
+#: includes/admin/class-wc-ecfb-order.php:260
+#: includes/admin/class-wc-ecfb-order.php:363
+#: includes/admin/class-wc-ecfb-order.php:366
+#: includes/class-wc-ecfb-front-end.php:267
+#: includes/class-wc-ecfb-front-end.php:424
+msgid "Address"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:257
+msgid "No billing address set."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:283
+msgid "Customer data"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:337
+msgid "Payment Method"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:363
+msgid "No shipping address set."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-order.php:389
+msgid "Customer Note"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:27
+#: includes/admin/class-wc-ecfb-settings.php:28
 msgid "Checkout Fields"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:126
+#: includes/admin/class-wc-ecfb-settings.php:55
 msgid "Checkout Custom Fields:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:134
+#: includes/admin/class-wc-ecfb-settings.php:63
 msgid "Display Person Type:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:141
+#: includes/admin/class-wc-ecfb-settings.php:70
 msgid "Individuals enables CPF field and Legal Person enables CNPJ field."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:143
+#: includes/admin/class-wc-ecfb-settings.php:72
 msgid "None"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:144
+#: includes/admin/class-wc-ecfb-settings.php:73
 msgid "Individuals and Legal Person"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:145
+#: includes/admin/class-wc-ecfb-settings.php:74
 msgid "Individuals only"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:146
+#: includes/admin/class-wc-ecfb-settings.php:75
 msgid "Legal Person only"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:154
+#: includes/admin/class-wc-ecfb-settings.php:83
+msgid "Person Type is requered only in Brazil?"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:90
+msgid ""
+"If checked the \"Individuals\" and \"Legal Person\" options will be "
+"mandatory only in Brazil."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:97
 msgid "Display RG:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:161
+#: includes/admin/class-wc-ecfb-settings.php:104
 msgid "If checked show the RG field in billing options."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:168
+#: includes/admin/class-wc-ecfb-settings.php:111
 msgid "Display State Registration:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:175
+#: includes/admin/class-wc-ecfb-settings.php:118
 msgid "If checked show the State Registration field in billing options."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:182
+#: includes/admin/class-wc-ecfb-settings.php:125
 msgid "Display Birthdate and Sex:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:189
+#: includes/admin/class-wc-ecfb-settings.php:132
 msgid "If checked show the Birthdate and Sex field in billing options."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:196
+#: includes/admin/class-wc-ecfb-settings.php:139
 msgid "Display Cell Phone:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:203
+#: includes/admin/class-wc-ecfb-settings.php:146
 msgid "If checked show the Cell Phone field in billing options."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:210
+#: includes/admin/class-wc-ecfb-settings.php:153
 msgid "jQuery Options:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:218
+#: includes/admin/class-wc-ecfb-settings.php:161
 msgid "Enable Mail Check:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:225
+#: includes/admin/class-wc-ecfb-settings.php:168
 msgid "If checked informs typos in email to users."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:232
+#: includes/admin/class-wc-ecfb-settings.php:175
 msgid "Enable Input Mask:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:239
+#: includes/admin/class-wc-ecfb-settings.php:182
 msgid ""
 "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
 "and Cell Phone."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:246
+#: includes/admin/class-wc-ecfb-settings.php:189
 msgid "Enable Address Autocomplete:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:253
+#: includes/admin/class-wc-ecfb-settings.php:196
 msgid ""
 "If checked automatically complete the address fields based on the zip code."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:260
+#: includes/admin/class-wc-ecfb-settings.php:203
 msgid "Validation:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:268
+#: includes/admin/class-wc-ecfb-settings.php:211
 msgid "Validate CPF:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:275
+#: includes/admin/class-wc-ecfb-settings.php:218
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:282
+#: includes/admin/class-wc-ecfb-settings.php:225
 msgid "Validate CNPJ:"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:289
+#: includes/admin/class-wc-ecfb-settings.php:232
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:399
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:527
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:119
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:388
-msgid "First Name"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:403
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:531
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:127
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:396
-msgid "Last Name"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:411
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:140
-msgid "Person type"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:413
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:144
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:244
-msgid "Select"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:414
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:145
-msgid "Individuals"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:415
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:146
-msgid "Legal Person"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:422
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:631
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:829
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:155
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:171
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:570
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:574
-msgid "CPF"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:426
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:634
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:835
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:163
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:578
-msgid "RG"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:433
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:639
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:843
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:182
-msgid "Company Name"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:436
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:640
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:847
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:192
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:207
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:589
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:593
-msgid "CNPJ"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:440
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:643
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:853
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:199
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:597
-msgid "State Registration"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:447
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:535
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:647
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:860
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:936
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:218
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:405
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:585
-msgid "Company"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:454
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:653
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:867
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:229
-msgid "Birthdate"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:457
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:656
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:871
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:239
-msgid "Sex"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:462
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:539
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:885
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:948
-msgid "Address 1"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:466
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:543
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:889
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:952
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:281
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:438
-msgid "Number"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:470
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:547
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:893
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:956
-msgid "Address 2"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:474
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:551
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:897
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:960
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:297
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:454
-msgid "Neighborhood"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:478
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:555
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:901
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:964
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:305
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:462
-msgid "City"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:482
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:559
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:905
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:968
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:92
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:314
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:471
-msgid "State"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:486
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:563
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:877
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:940
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:255
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:413
-msgid "Country"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:490
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:567
-msgid "Select a country&hellip;"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:494
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:571
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:881
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:944
-msgid "Postcode"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:499
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:659
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:325
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:353
-msgid "Phone"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:504
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:663
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:915
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:333
-msgid "Cell Phone"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:509
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:666
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:921
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:341
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:361
-msgid "Email"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:597
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:600
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:701
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:704
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:273
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:430
-msgid "Address"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:597
-msgid "No billing address set."
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:623
-msgid "Customer data"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:676
-msgid "Payment Method"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:701
-msgid "No shipping address set."
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:815
-msgid "Customer Billing Address"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:817
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:928
-msgid "First name"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:821
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:932
-msgid "Last name"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:878
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:941
-msgid "2 letter Country code"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:906
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:969
-msgid "State code"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:909
-msgid "Telephone"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-admin.php:926
-msgid "Customer Shipping Address"
-msgstr ""
-
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:93
+#: includes/class-wc-ecfb-front-end.php:86
 msgid "required"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:120
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:389
+#: includes/class-wc-ecfb-front-end.php:114
+#: includes/class-wc-ecfb-front-end.php:383
 msgctxt "placeholder"
 msgid "First Name"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:128
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:397
+#: includes/class-wc-ecfb-front-end.php:122
+#: includes/class-wc-ecfb-front-end.php:391
 msgctxt "placeholder"
 msgid "Last Name"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:156
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:172
+#: includes/class-wc-ecfb-front-end.php:150
+#: includes/class-wc-ecfb-front-end.php:166
 msgctxt "placeholder"
 msgid "CPF"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:164
+#: includes/class-wc-ecfb-front-end.php:158
 msgctxt "placeholder"
 msgid "RG"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:183
+#: includes/class-wc-ecfb-front-end.php:177
 msgctxt "placeholder"
 msgid "Company Name"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:193
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:208
+#: includes/class-wc-ecfb-front-end.php:187
+#: includes/class-wc-ecfb-front-end.php:202
 msgctxt "placeholder"
 msgid "CNPJ"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:200
+#: includes/class-wc-ecfb-front-end.php:194
 msgctxt "placeholder"
 msgid "State Registration"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:219
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:406
+#: includes/class-wc-ecfb-front-end.php:213
+#: includes/class-wc-ecfb-front-end.php:400
 msgctxt "placeholder"
 msgid "Company"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:230
+#: includes/class-wc-ecfb-front-end.php:224
 msgctxt "placeholder"
 msgid "Birthdate"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:245
+#: includes/class-wc-ecfb-front-end.php:239
 msgid "Female"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:246
+#: includes/class-wc-ecfb-front-end.php:240
 msgid "Male"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:256
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:414
+#: includes/class-wc-ecfb-front-end.php:250
+#: includes/class-wc-ecfb-front-end.php:408
 msgctxt "placeholder"
 msgid "Country"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:264
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:421
+#: includes/class-wc-ecfb-front-end.php:258
+#: includes/class-wc-ecfb-front-end.php:415
 msgid "Post Code"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:265
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:422
+#: includes/class-wc-ecfb-front-end.php:259
+#: includes/class-wc-ecfb-front-end.php:416
 msgctxt "placeholder"
 msgid "Post Code"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:274
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:431
+#: includes/class-wc-ecfb-front-end.php:268
+#: includes/class-wc-ecfb-front-end.php:425
 msgctxt "placeholder"
 msgid "Address"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:282
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:439
+#: includes/class-wc-ecfb-front-end.php:276
+#: includes/class-wc-ecfb-front-end.php:433
 msgctxt "placeholder"
 msgid "Number"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:290
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:447
+#: includes/class-wc-ecfb-front-end.php:284
+#: includes/class-wc-ecfb-front-end.php:441
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:291
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:448
+#: includes/class-wc-ecfb-front-end.php:285
+#: includes/class-wc-ecfb-front-end.php:442
 msgctxt "placeholder"
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:298
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:455
+#: includes/class-wc-ecfb-front-end.php:292
+#: includes/class-wc-ecfb-front-end.php:449
 msgctxt "placeholder"
 msgid "Neighborhood"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:306
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:463
+#: includes/class-wc-ecfb-front-end.php:300
+#: includes/class-wc-ecfb-front-end.php:457
 msgctxt "placeholder"
 msgid "City"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:315
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:472
+#: includes/class-wc-ecfb-front-end.php:309
+#: includes/class-wc-ecfb-front-end.php:466
 msgctxt "placeholder"
 msgid "State"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:326
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:354
+#: includes/class-wc-ecfb-front-end.php:320
+#: includes/class-wc-ecfb-front-end.php:348
 msgctxt "placeholder"
 msgid "Phone"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:334
+#: includes/class-wc-ecfb-front-end.php:328
 msgctxt "placeholder"
 msgid "Cell Phone"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:342
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:362
+#: includes/class-wc-ecfb-front-end.php:336
+#: includes/class-wc-ecfb-front-end.php:356
 msgctxt "placeholder"
 msgid "Email"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:570
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:578
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:585
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:589
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:597
+#: includes/class-wc-ecfb-front-end.php:509
+#: includes/class-wc-ecfb-front-end.php:515
+#: includes/class-wc-ecfb-front-end.php:523
+#: includes/class-wc-ecfb-front-end.php:530
+#: includes/class-wc-ecfb-front-end.php:534
+#: includes/class-wc-ecfb-front-end.php:542
 msgid "is a required field"
 msgstr ""
 
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:574
-#: includes/class-wc-extra-checkout-fields-for-brazil-front-end.php:593
+#: includes/class-wc-ecfb-front-end.php:519
+#: includes/class-wc-ecfb-front-end.php:538
 msgid "is not valid"
 msgstr ""
 
-#: woocommerce-extra-checkout-fields-for-brazil.php:134
+#: woocommerce-extra-checkout-fields-for-brazil.php:125
 msgid "WooCommerce Extra Checkout Fields for Brazil depends on %s to work!"
 msgstr ""
 
-#: woocommerce-extra-checkout-fields-for-brazil.php:134
+#: woocommerce-extra-checkout-fields-for-brazil.php:125
 msgid "WooCommerce"
 msgstr ""
 
