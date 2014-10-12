@@ -87,7 +87,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'mailcheck'       => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 					'addresscomplete' => isset( $settings['addresscomplete'] ) ? 'yes' : 'no',
-					'person_type'     => $settings['person_type']
+					'person_type'     => $settings['person_type'],
+					'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
 				)
 			);
 		}
@@ -131,8 +132,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				$new_fields['billing_persontype'] = array(
 					'type'     => 'select',
 					'label'    => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'    => array( 'form-row-wide' ),
-					'required' => true,
+					'class'    => array( 'form-row-wide', 'person-type-field' ),
+					'required' => false,
 					'options'  => array(
 						'0' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -496,12 +497,20 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function valid_checkout_fields() {
 
 		// Get plugin settings.
-		$settings = get_option( 'wcbcf_settings' );
+		$settings           = get_option( 'wcbcf_settings' );
+		$only_brazil        = isset( $settings['only_brazil'] ) ? true : false;
+		$billing_persontype = isset( $_POST['billing_persontype'] ) ? $_POST['billing_persontype'] : 0;
 
-		if ( 0 != $settings['person_type'] ) {
+		if ( $only_brazil && 'BR' != $_POST['billing_country'] || 0 == $settings['person_type'] ) {
+			return;
+		}
+
+		if ( 0 == $billing_persontype && 1 == $settings['person_type'] ) {
+			$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
+		} else {
 
 			// Check CPF.
-			if ( ( 1 == $settings['person_type'] && 1 == $_POST['billing_persontype'] ) || 2 == $settings['person_type'] ) {
+			if ( ( 1 == $settings['person_type'] && 1 == $billing_persontype ) || 2 == $settings['person_type'] ) {
 				if ( empty( $_POST['billing_cpf'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}
@@ -516,7 +525,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 
 			// Check Company and CPNJ.
-			if ( ( 1 == $settings['person_type'] && 2 == $_POST['billing_persontype'] ) || 3 == $settings['person_type'] ) {
+			if ( ( 1 == $settings['person_type'] && 2 == $billing_persontype ) || 3 == $settings['person_type'] ) {
 				if ( empty( $_POST['billing_company'] ) ) {
 					$this->add_error( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
 				}

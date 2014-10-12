@@ -70,28 +70,27 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	public function maybe_install() {
 		if ( $version = get_option( 'wcbcf_version' ) ) {
 			if ( version_compare( $version, Extra_Checkout_Fields_For_Brazil::VERSION, '<' ) ) {
+				$options = get_option( 'wcbcf_settings' );
 
 				// Update to version 3.0.0.
 				if ( version_compare( $version, '3.0.0', '<' ) ) {
-
 					if ( isset( $options['person_type'] ) ) {
 						$options['person_type'] = 1;
 					} else {
 						$options['person_type'] = 0;
 					}
-
-					update_option( 'wcbcf_settings', $options );
 				}
 
-				// Save plugin version.
+				update_option( 'wcbcf_settings', $options );
 				update_option( 'wcbcf_version', Extra_Checkout_Fields_For_Brazil::VERSION );
 			}
 		} else {
 			$default = array(
 				'person_type'     => 1,
-				'ie'              => 0,
-				'rg'              => 0,
-				'birthdate_sex'   => 0,
+				// 'only_brazil'     => 0,
+				// 'ie'              => 0,
+				// 'rg'              => 0,
+				// 'birthdate_sex'   => 0,
 				'cell_phone'      => 1,
 				'mailcheck'       => 1,
 				'maskedinput'     => 1,

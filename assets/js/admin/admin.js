@@ -3,43 +3,41 @@
 	'use strict';
 
 	$(function () {
+		$( '#person_type' ).on( 'change', function () {
+			var onlyBrazil   = $( '.wrap form .form-table:eq(0) tr:eq(1)' ),
+				rg           = $( '.wrap form .form-table:eq(0) tr:eq(2)' ),
+				ie           = $( '.wrap form .form-table:eq(0) tr:eq(3)' ),
+				validate     = $( '.wrap form h3:eq(2), .wrap form .form-table:eq(2)' ),
+				validateCPF  = $( '.wrap form .form-table:eq(2) tr:eq(0)' ),
+				validateCNPJ = $( '.wrap form .form-table:eq(2) tr:eq(1)' ),
+				selected     = $( this ).val();
 
-		function personTypeSwitch( option ) {
-			var rg            = $( '.wrap form .form-table:eq(0) tr:eq(1)' ),
-				ie            = $( '.wrap form .form-table:eq(0) tr:eq(2)' ),
-				validate      = $( '.wrap form h3:eq(2), .wrap form .form-table:eq(2)' ),
-				validate_cpf  = $( '.wrap form .form-table:eq(2) tr:eq(0)' ),
-				validate_cnpj = $( '.wrap form .form-table:eq(2) tr:eq(1)' );
-
+			onlyBrazil.hide();
 			rg.hide();
 			ie.hide();
 			validate.hide();
-			validate_cpf.hide();
-			validate_cnpj.hide();
+			validateCPF.hide();
+			validateCNPJ.hide();
 
-			if ( '1' === option ) {
+			if ( '1' === selected ) {
+				onlyBrazil.show();
 				rg.show();
 				ie.show();
 				validate.show();
-				validate_cpf.show();
-				validate_cnpj.show();
-			} else if ( '2' === option ) {
+				validateCPF.show();
+				validateCNPJ.show();
+			} else if ( '2' === selected ) {
+				onlyBrazil.show();
 				rg.show();
 				validate.show();
-				validate_cpf.show();
-			} else if ( '3' === option ) {
+				validateCPF.show();
+			} else if ( '3' === selected ) {
+				onlyBrazil.show();
 				ie.show();
 				validate.show();
-				validate_cnpj.show();
+				validateCNPJ.show();
 			}
-		}
-
-		personTypeSwitch( $( '#person_type' ).val() );
-
-		$( '#person_type' ).on( 'change', function () {
-			personTypeSwitch( $( this ).val() );
-		});
-
+		}).change();
 	});
 
 }(jQuery));

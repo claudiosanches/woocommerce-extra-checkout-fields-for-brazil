@@ -77,6 +77,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Person Type is Required option.
+		add_settings_field(
+			'only_brazil',
+			__( 'Person Type is requered only in Brazil?', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'only_brazil',
+				'label' => __( 'If checked the "Individuals" and "Legal Person" options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' )
+			)
+		);
+
 		// RG option.
 		add_settings_field(
 			'rg',
@@ -85,8 +99,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'rg',
+				'menu'  => $option,
+				'id'    => 'rg',
 				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -99,8 +113,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'ie',
+				'menu'  => $option,
+				'id'    => 'ie',
 				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -113,8 +127,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'birthdate_sex',
+				'menu'  => $option,
+				'id'    => 'birthdate_sex',
 				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -127,8 +141,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'cell_phone',
+				'menu'  => $option,
+				'id'    => 'cell_phone',
 				'label' => __( 'If checked show the Cell Phone field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -149,8 +163,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'jquery_section',
 			array(
-				'menu' => $option,
-				'id' => 'mailcheck',
+				'menu'  => $option,
+				'id'    => 'mailcheck',
 				'label' => __( 'If checked informs typos in email to users.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -163,8 +177,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'jquery_section',
 			array(
-				'menu' => $option,
-				'id' => 'maskedinput',
+				'menu'  => $option,
+				'id'    => 'maskedinput',
 				'label' => __( 'If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -177,8 +191,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'jquery_section',
 			array(
-				'menu' => $option,
-				'id' => 'addresscomplete',
+				'menu'  => $option,
+				'id'    => 'addresscomplete',
 				'label' => __( 'If checked automatically complete the address fields based on the zip code.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -199,8 +213,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'validation_section',
 			array(
-				'menu' => $option,
-				'id' => 'validate_cpf',
+				'menu'  => $option,
+				'id'    => 'validate_cpf',
 				'label' => __( 'Checks if the CPF is valid.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
@@ -213,8 +227,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'validation_section',
 			array(
-				'menu' => $option,
-				'id' => 'validate_cnpj',
+				'menu'  => $option,
+				'id'    => 'validate_cnpj',
 				'label' => __( 'Checks if the CNPJ is valid.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);

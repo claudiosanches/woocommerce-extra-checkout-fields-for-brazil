@@ -35,8 +35,22 @@
 
 		if ( '0' !== wcbcf_public_params.person_type ) {
 			// Required fields.
-			$( '.person-type-field' ).addClass( 'validate-required' );
-			$( '.person-type-field label' ).append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
+			if ( 'no' === wcbcf_public_params.only_brazil ) {
+				$( '.person-type-field' ).addClass( 'validate-required' );
+				$( '.person-type-field label' ).append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
+			} else {
+				$( '#billing_country' ).on( 'change', function () {
+					var current = $( this ).val();
+
+					if ( 'BR' === current ) {
+						$( '.person-type-field' ).addClass( 'validate-required' );
+						$( '.person-type-field label' ).append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
+					} else {
+						$( '.person-type-field' ).removeClass( 'validate-required' );
+						$( '.person-type-field label abbr' ).remove();
+					}
+				}).change();
+			}
 
 			if ( '1' === wcbcf_public_params.person_type ) {
 				personTypeFields( $( '#billing_persontype' ).val() );
