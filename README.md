@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
 **Tested up to:** 4.0  
-**Stable tag:** 3.2.0  
+**Stable tag:** 3.3.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -12,25 +12,13 @@ Adds Brazilian checkout fields in WooCommerce
 
 ## Description ##
 
-### Adds Brazilian checkout fields in WooCommerce ###
-
-This plugin adds Brazilian checkout fields in WooCommerce.
-
-Please notice that [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) must be installed and active.
-
-#### Contribute ####
-
-You can contribute to the source code in our [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil) page.
-
-### Descrição em Português: ###
-
 Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
 
 É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
 
 A partir da versão 3.1.0 é feita integração também com a [API](http://docs.woothemes.com/document/woocommerce-rest-api/) de pedidos e de clientes do WooCommerce.
 
-#### Compatibilidade: ####
+### Compatibilidade ###
 
 Funciona com os plugins:
 
@@ -38,7 +26,14 @@ Funciona com os plugins:
 * [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
 * [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
 
-#### Créditos: ####
+### Dúvidas? ###
+
+Você pode esclarecer suas dúvidas usando:
+
+* Utilizando o nosso [fórum no Github](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil/issues).
+* Criando um tópico no [fórum de ajuda do WordPress](https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil).
+
+### Créditos ###
 
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
@@ -46,7 +41,7 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 * [Masked Input jQuery](https://github.com/digitalBush/jquery.maskedinput).
 * [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
-#### Coloborar ####
+### Coloborar ###
 
 Você pode contribuir com código-fonte em nossa página no [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
 
@@ -61,16 +56,6 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Ative o plugin.
 
 ## Frequently Asked Questions ##
-
-### What is the plugin license? ###
-
-* This plugin is released under a GPL license.
-
-### What is needed to use this plugin? ###
-
-* WooCommerce installed and active
-
-### FAQ em Português: ###
 
 ### Qual é a licença do plugin? ###
 
@@ -99,6 +84,12 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.3.0 - 11/10/2014 ###
+
+* Adicionada opção para não tornar os campos de Pessoa Física ou Jurídica obrigatórios quando o cliente é estrangeiro.
+* Removida máscara numerica para o campo de RG. Alguns RG antigos possuem também letras.
+* Corrigida a validação com javascript dos campos de Pessoa Física e Jurídica.
 
 ### 3.2.0 - 07/09/2014 ###
 
