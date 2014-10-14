@@ -100,7 +100,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			);
 
 			add_option( 'wcbcf_settings', $default );
-			add_option( 'wcbcf_version', self::VERSION );
+			add_option( 'wcbcf_version', Extra_Checkout_Fields_For_Brazil::VERSION );
 		}
 	}
 }
