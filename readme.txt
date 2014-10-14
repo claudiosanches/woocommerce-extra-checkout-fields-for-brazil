@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.3.1 - 13/10/2014 =
+
+* Corrigido o método de instalação e atualização do plugin.
 
 = 3.3.0 - 11/10/2014 =
 
@@ -220,11 +224,12 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.2.0 =
+= 3.3.1 =
 
-* Adicionada integração com a API de pedidos e clientes do WooCommerce.
-* Melhorada a integração com o WooCommerce 2.2.
-* Adicionada a exibição da nota do cliente na página de detalhes do pedido.
+* Adicionada opção para não tornar os campos de Pessoa Física ou Jurídica obrigatórios quando o cliente é estrangeiro.
+* Removida máscara numerica para o campo de RG. Alguns RG antigos possuem também letras.
+* Corrigida a validação com javascript dos campos de Pessoa Física e Jurídica.
+* Corrigido o método de instalação e atualização do plugin.
 
 == License ==
 
