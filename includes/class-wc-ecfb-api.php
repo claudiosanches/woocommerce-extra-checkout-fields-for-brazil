@@ -121,6 +121,10 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			$order_data['customer']['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
 		}
 
+		if ( $fields ) {
+			$order_data = WC()->api->WC_API_Customers->filter_response_fields( $order_data, $order, $fields );
+		}
+
 		return $order_data;
 	}
 
@@ -150,6 +154,10 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		// Shipping fields.
 		$customer_data['shipping_address']['number']       = $customer->shipping_number;
 		$customer_data['shipping_address']['neighborhood'] = $customer->shipping_neighborhood;
+
+		if ( $fields ) {
+			$customer_data = WC()->api->WC_API_Customers->filter_response_fields( $customer_data, $customer, $fields );
+		}
 
 		return $customer_data;
 	}
