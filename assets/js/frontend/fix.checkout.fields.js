@@ -3,8 +3,6 @@ jQuery(document).ready(function($) {
 
     /**
      * Fix checkout fields.
-     *
-     * @return {void}
      */
     function fix_checkout_fields() {
         // Billing.
