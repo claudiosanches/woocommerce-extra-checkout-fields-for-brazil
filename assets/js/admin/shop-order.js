@@ -1,18 +1,34 @@
-/* global wcbcf_writepanel_params, woocommerce_admin_meta_boxes */
+/* global wcbcf_shop_order_params, woocommerce_admin_meta_boxes */
+
 /**
- * WooCommerce write panels/shop order scripts to WooCommerce 2.1 or later.
+ * Plugin settings.
  */
 (function ( $ ) {
 	'use strict';
 
-	$(function () {
+	$( function () {
 
-		$( 'button.load_customer_billing' ).on( 'click', function () {
-			var answer = window.confirm( wcbcf_writepanel_params.load_message ),
-				userId = $( '#customer_user' ).val(),
+		if ( '1' === wcbcf_shop_order_params.person_type ) {
+			$( '#_billing_persontype' ).on( 'change', function () {
+				var current = $( this ).val();
+
+				$( '._billing_cpf_field, ._billing_rg_field, ._billing_company_field, ._billing_cnpj_field, ._billing_ie_field' ).hide();
+
+				if ( '1' === current ) {
+					$( '._billing_cpf_field, ._billing_rg_field' ).show();
+				}
+
+				if ( '2' === current ) {
+					$( '._billing_company_field, ._billing_cnpj_field, ._billing_ie_field' ).show();
+				}
+			}).change();
+		}
+
+		$( '.load_customer_billing' ).on( 'click', function () {
+			var userId = $( '#customer_user' ).val(),
 				data;
 
-			if ( answer ) {
+			if ( window.confirm( wcbcf_shop_order_params.load_message ) ) {
 				if ( ! userId ) {
 					window.alert( woocommerce_admin_meta_boxes.no_customer_selected );
 					return false;
@@ -59,12 +75,11 @@
 			return false;
 		});
 
-		$( 'button.load_customer_shipping' ).on( 'click', function () {
-			var answer = window.confirm( wcbcf_writepanel_params.load_message ),
-				userId = $( '#customer_user' ).val(),
+		$( '.load_customer_shipping' ).on( 'click', function () {
+			var userId = $( '#customer_user' ).val(),
 				data;
 
-			if ( answer ) {
+			if ( window.confirm( wcbcf_shop_order_params.load_message ) ) {
 
 				if ( ! userId ) {
 					window.alert( woocommerce_admin_meta_boxes.no_customer_selected );
@@ -105,9 +120,7 @@
 		});
 
 		$( 'button.billing-same-as-shipping' ).on( 'click', function () {
-			var answer = window.confirm( wcbcf_writepanel_params.copy_message );
-
-			if ( answer ) {
+			if ( window.confirm( wcbcf_shop_order_params.copy_message ) ) {
 				$( 'input#_shipping_number' ).val( $( 'input#_billing_number' ).val() );
 				$( 'input#_shipping_neighborhood' ).val( $( 'input#_billing_neighborhood' ).val() );
 			}
@@ -117,4 +130,4 @@
 
 	});
 
-}(jQuery));
+}( jQuery ) );

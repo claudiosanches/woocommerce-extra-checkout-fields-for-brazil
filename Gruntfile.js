@@ -33,9 +33,6 @@ module.exports = function( grunt ) {
 				'.git/',
 				'.sass-cache/',
 				'assets/css/admin/*.scss',
-				'assets/js/admin/admin.js',
-				'assets/js/admin/fix.person.fields.admin.js',
-				'assets/js/admin/write-panels.js',
 				'bower_components/',
 				'node_modules/',
 				'assets/js/frontend/address.autocomplete.js',
@@ -77,8 +74,7 @@ module.exports = function( grunt ) {
 						'<%= dirs.admin.js %>/admin.js'
 					],
 					'<%= dirs.admin.js %>/shop-order.min.js': [
-						'<%= dirs.admin.js %>/fix.person.fields.admin.js',
-						'<%= dirs.admin.js %>/write-panels.js'
+						'<%= dirs.admin.js %>/shop-order.js'
 					],
 					// front
 					'<%= dirs.front.js %>/frontend.min.js': [

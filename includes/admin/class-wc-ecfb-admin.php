@@ -28,6 +28,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 		if ( 'shop_order' == $screen->id ) {
 
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 			// Get plugin settings.
 			$settings = get_option( 'wcbcf_settings' );
 
@@ -35,22 +37,22 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'css/admin/admin.css', array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 
 			// Shop order.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/shop-order.min.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/shop-order' . $suffix .'.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 
 			// Localize strings.
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-shop-order',
-				'wcbcf_writepanel_params',
+				'wcbcf_shop_order_params',
 				array(
-					'load_message' => __( 'Load the customer extras data?', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'copy_message' => __( 'Also copy the data of number and neighborhood?', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'person_type'  => $settings['person_type']
+					'load_message' => esc_js( __( 'Load the customer extras data?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+					'copy_message' => esc_js( __( 'Also copy the data of number and neighborhood?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+					'person_type'  => absint( $settings['person_type'] )
 				)
 			);
 		}
 
 		if ( 'woocommerce_page_woocommerce-extra-checkout-fields-for-brazil' == $screen->id ) {
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/admin.min.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/admin' . $suffix .'.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
 		}
 	}
 

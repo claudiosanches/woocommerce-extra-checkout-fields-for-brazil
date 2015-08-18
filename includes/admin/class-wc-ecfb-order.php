@@ -245,7 +245,8 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
-		$html = '<div class="wcbcf-address">';
+		$html = '<div class="clear"></div>';
+		$html .= '<div class="wcbcf-address">';
 
 		if ( ! $order->get_formatted_billing_address() ) {
 			$html .= '<p class="none_set"><strong>' . __( 'Address', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong> ' . __( 'No billing address set.', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</p>';
@@ -321,7 +322,8 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
-		$html = '<div class="wcbcf-address">';
+		$html = '<div class="clear"></div>';
+		$html .= '<div class="wcbcf-address">';
 
 		if ( ! $order->get_formatted_shipping_address() ) {
 			$html .= '<p class="none_set"><strong>' . __( 'Address', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong> ' . __( 'No shipping address set.', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</p>';
