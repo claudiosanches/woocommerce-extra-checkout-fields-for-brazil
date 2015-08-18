@@ -64,15 +64,27 @@ module.exports = function( grunt ) {
 
 		// uglify to concat and minify
 		uglify: {
-			dist: {
+			admin: {
 				files: [{
 					expand: true,
-					cwd: '<%= dirs.js %>/*/',
+					cwd: '<%= dirs.admin.js %>',
 					src: [
 						'*.js',
 						'!*.min.js'
 					],
-					dest: '<%= dirs.js %>/*/',
+					dest: '<%= dirs.admin.js %>',
+					ext: '.min.js'
+				}]
+			},
+			frontend: {
+				files: [{
+					expand: true,
+					cwd: '<%= dirs.front.js %>',
+					src: [
+						'*.js',
+						'!*.min.js'
+					],
+					dest: '<%= dirs.front.js %>',
 					ext: '.min.js'
 				}]
 			}
