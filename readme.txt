@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
-Tested up to: 4.0
-Stable tag: 3.3.1
+Tested up to: 4.3
+Stable tag: 3.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,8 @@ Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo
 A partir da versão 3.1.0 é feita integração também com a [API](http://docs.woothemes.com/document/woocommerce-rest-api/) de pedidos e de clientes do WooCommerce.
 
 = Compatibilidade =
+
+Compatível com as versões 2.2.x, 2.3.x e 2.4.x do WooCommerce.
 
 Funciona com os plugins:
 
@@ -75,45 +77,51 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
-= 3.3.1 - 13/10/2014 =
+= 3.4.0 - 2015/08/18 =
+
+* Adicionado suporte para WooCommerce 2.4.
+* Removido suporte para WooCommerce 2.0 e 2.1.
+* Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
+
+= 3.3.1 - 2014/10/13 =
 
 * Corrigido o método de instalação e atualização do plugin.
 
-= 3.3.0 - 11/10/2014 =
+= 3.3.0 - 2014/10/11 =
 
 * Adicionada opção para não tornar os campos de Pessoa Física ou Jurídica obrigatórios quando o cliente é estrangeiro.
 * Removida máscara numerica para o campo de RG. Alguns RG antigos possuem também letras.
 * Corrigida a validação com javascript dos campos de Pessoa Física e Jurídica.
 
-= 3.2.0 - 07/09/2014 =
+= 3.2.0 - 2014/09/07 =
 
 * Melhorada a integração com o WooCommerce 2.2.
 * Adicionada a exibição da nota do cliente na página de detalhes do pedido.
 
-= 3.1.0 - 07/09/2014 =
+= 3.1.0 - 2014/09/07 =
 
 * Adicionada integração com a API de pedidos e clientes do WooCommerce.
 
-= 3.0.1 - 25/08/2014 =
+= 3.0.1 - 2014/08/25 =
 
 * Corrigido o autopreenchimento de endereço por CEP quando esta ativada a opção "Habilitar caixas de seleção de país aprimoradas".
 
-= 3.0.0 - 06/07/2014 =
+= 3.0.0 - 2014/07/06 =
 
 * Adicionada opção para controlar os campos de "tipo de pessoa", agora é possível usar apenas como "pessoa física" ou apenas como "pessoa jurídica".
 * Removido script para integrar com o WooCommerce PagSeguro, a partir da versão 2.5.0 do WooCommerce PagSeguro o suporte é feito direto, sem necessidade de código extra.
 * Melhorado o script que faz preenchimento automático dos campos de endereço com base no CEP.
 
-= 2.9.2 - 24/05/2014 =
+= 2.9.2 - 2014/05/24 =
 
 * Adicionada informações sobre o método de pagamento (WooCommerce 2.1 ou superior).
 
-= 2.9.1 - 23/02/2014 =
+= 2.9.1 - 2014/02/23 =
 
 * Melhorada a máscara para telefone, agora aceita também o nono dígito.
 * Melhorada a máscara do RG, agora não limita a quantidade de caracteres e aceita apenas números.
 
-= 2.9.0 - 13/02/2014 =
+= 2.9.0 - 2014/02/13 =
 
 * Correção do campo "tipo de pessoa" na página de edição do pedido no admin.
 * Correção do carregamento das informações do cliente para pagamento e envio na tela de edição do pedido no admin.
@@ -122,53 +130,53 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Adicionado campo de RG.
 * Adicionado campo de Inscrição Estadual.
 
-= 2.8.2 - 05/01/2014 =
+= 2.8.2 - 2014/01/05 =
 
 * Correção da mensagem que avisa sobre a falta do WooCommerce na instalação.
 
-= 2.8.1 - 05/01/2014 =
+= 2.8.1 - 2014/01/05 =
 
 * Corrigido os ganchos e filtros da classe `Extra_Checkout_Fields_For_Brazil`.
 
-= 2.8.0 - 21/12/2013 =
+= 2.8.0 - 2013/12/21 =
 
 * Melhorada a compatibilidade com o WooCommerce 2.1.
 * Correção nas traduções.
 * Melhoria em todo o código PHP, JavaScript e CSS.
 
-= 2.7.1 - 06/09/2013 =
+= 2.7.1 - 2013/09/06 =
 
 * Adicionado suporte para a versão 2.1 do WooCommerce.
 * Correção de standards de código.
 
-= 2.7.0 - 19/09/2013 =
+= 2.7.0 - 2013/09/19 =
 
 * Adicionado script para corrigir a posição do campo de CEP.
 * Melhorado o script de auto preenchimento de endereço quando não existe opções de endereço de entrega.
 
-= 2.6.1 - 11/09/2013 =
+= 2.6.1 - 2013/09/11 =
 
 * Adicionada condição para não auto completar o endereço caso ele já esteja preenchido.
 
-= 2.6.0 - 11/09/2013 =
+= 2.6.0 - 2013/09/11 =
 
 * Adicionada nova api de busca de CEP: [Correios RESTful API](http://correiosapi.apphb.com/).
 * Correção do erro causado ao buscar CEP utilizando HTTPS/SSL.
 
-= 2.5.0 - 30/08/2013 =
+= 2.5.0 - 2013/08/30 =
 
 * Melhoria no auto preenchimento de endereços. Agora preenche os dados ao carregar a janela.
 * Adicionado suporte ao Chosen no auto preenchimento de endereços.
 
-= 2.4.1 - 19/08/2013 =
+= 2.4.1 - 2013/08/19 =
 
 * Melhorada a compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
 
-= 2.4.0 - 18/08/2013 =
+= 2.4.0 - 2013/08/18 =
 
 * Adicionado suporte ao [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) 2.0.0.
 
-= 2.3.0 - 26/07/2013 =
+= 2.3.0 - 2013/07/26 =
 
 * Melhorada a integração com o [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/).
 * Melhorada a integração com o [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/).
@@ -176,7 +184,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Adicionada integração com o Checkout Transparente do [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/).
 * Corrigido um bug na validação de CPF e CNPJ.
 
-= 2.2.0 - 24/06/2013 =
+= 2.2.0 - 2013/06/24 =
 
 * Adicionado suporte para o WooCommerce 2.1 ou superior.
 * Adicionada opção para validar CPF.
@@ -185,19 +193,19 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Removido o método `shop_order_head` em favor da função `wp_localize_script`.
 * Melhorada a tradução.
 
-= 2.1.1 - 26/04/2013 =
+= 2.1.1 - 2013/04/26 =
 
 * Correção da formatação de endereços para o WooCommerce 1.6.6 ou anterior.
 
-= 2.1 - 13/04/2013 =
+= 2.1 - 2013/04/13 =
 
 * Adicionada nova formatação de endereços (funciona para o WooCommerce 2.0.6 ou superior).
 
-= 2.0.1 - 01/04/2013 =
+= 2.0.1 - 2013/04/01 =
 
 * Correção da compatibilidade com o [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/).
 
-= 2.0 - 10/03/2013 =
+= 2.0 - 2013/03/10 =
 
 * Compatível com o WooCommerce 2.0.0 ou superior.
 * Adicionado campo de **número**.
@@ -206,11 +214,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 * Adicionado campos personalizados na página de edição do perfil do cliente.
 * Correção da página de detalhes do pedido.
 
-= 1.2.1 - 10/12/2012 =
+= 1.2.1 - 2012/12/10 =
 
 * Corrigida a máscara do campo *Data de Nascimento*.
 
-= 1.2 - 10/12/2012 =
+= 1.2 - 2012/12/10 =
 
 * Adicionadas máscaras para campos de CEP.
 
@@ -224,12 +232,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.3.1 =
+= 3.4.0 =
 
-* Adicionada opção para não tornar os campos de Pessoa Física ou Jurídica obrigatórios quando o cliente é estrangeiro.
-* Removida máscara numerica para o campo de RG. Alguns RG antigos possuem também letras.
-* Corrigida a validação com javascript dos campos de Pessoa Física e Jurídica.
-* Corrigido o método de instalação e atualização do plugin.
+* Adicionado suporte para WooCommerce 2.4.
+* Removido suporte para WooCommerce 2.0 e 2.1.
+* Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
 
 == License ==
 
