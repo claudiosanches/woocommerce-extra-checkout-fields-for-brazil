@@ -20,8 +20,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Admin scripts
-	 *
-	 * @return void
 	 */
 	public function admin_scripts() {
 		$screen = get_current_screen();
@@ -58,8 +56,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 	/**
 	 * Maybe install.
-	 *
-	 * @return void
 	 */
 	public function maybe_install() {
 		if ( $version = get_option( 'wcbcf_version' ) ) {

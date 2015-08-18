@@ -211,8 +211,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 
 	/**
 	 * Add custom fields in customer details ajax.
-	 *
-	 * @return void
 	 */
 	public function customer_details_ajax( $customer_data ) {
 		$user_id      = (int) trim( stripslashes( $_POST['user_id'] ) );

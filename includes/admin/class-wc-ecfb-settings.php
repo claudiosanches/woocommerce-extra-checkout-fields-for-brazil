@@ -18,9 +18,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Add the settings page.
-	 *
-	 * @return void
-	 */
+	*/
 	public function settings_menu() {
 		add_submenu_page(
 			'woocommerce',
@@ -34,17 +32,13 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Render the settings page for this plugin.
-	 *
-	 * @return void
-	 */
+	*/
 	public function html_settings_page() {
 		include_once 'views/html-settings-page.php';
 	}
 
 	/**
 	 * Plugin settings form fields.
-	 *
-	 * @return void.
 	 */
 	public function plugin_settings() {
 		$option = 'wcbcf_settings';
@@ -239,8 +233,6 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Section null fallback.
-	 *
-	 * @return void.
 	 */
 	public function section_options_callback() {
 
