@@ -28,8 +28,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	 * @return array       Custom order billing fields.
 	 */
 	public function shop_order_billing_fields( $data ) {
-		global $woocommerce;
-
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
@@ -126,7 +124,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			'type'    => 'select',
 			'options' => array(
 				'' => __( 'Select a country&hellip;', 'woocommerce-extra-checkout-fields-for-brazil' )
-			) + $woocommerce->countries->get_allowed_countries()
+			) + WC()->countries->get_allowed_countries()
 		);
 		$billing_data['postcode'] = array(
 			'label' => __( 'Postcode', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -159,8 +157,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	 * @return array       Custom order shipping fields.
 	 */
 	public function shop_order_shipping_fields( $data ) {
-		global $woocommerce;
-
 		$shipping_data['first_name'] = array(
 			'label' => __( 'First Name', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'show'  => false
@@ -203,7 +199,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			'type'    => 'select',
 			'options' => array(
 				'' => __( 'Select a country&hellip;', 'woocommerce-extra-checkout-fields-for-brazil' )
-			) + $woocommerce->countries->get_allowed_countries()
+			) + WC()->countries->get_allowed_countries()
 		);
 		$shipping_data['postcode'] = array(
 			'label' => __( 'Postcode', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -246,8 +242,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	 * @return string        Custom information.
 	 */
 	public function order_data_after_billing_address( $order ) {
-		global $woocommerce;
-
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
@@ -258,25 +252,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		} else {
 
 			$html .= '<p><strong>' . __( 'Address', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong><br />';
-			if ( version_compare( $woocommerce->version, '2.0.5', '<=' ) ) {
-				$html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
-				$html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
-				$html .= $order->billing_address_2 . '<br />';
-				$html .= $order->billing_neighborhood . '<br />';
-				$html .= $order->billing_city . '<br />';
-				if ( $woocommerce->countries->states[ $order->billing_country ] ) {
-					$html .= $woocommerce->countries->states[ $order->billing_country ][ $order->billing_state ] . '<br />';
-				} else {
-					$html .= $order->billing_state . '<br />';
-				}
-
-				$html .= $order->billing_postcode . '<br />';
-				$html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
-
-			} else {
 				$html .= $order->get_formatted_billing_address();
-			}
-
 			$html .= '</p>';
 		}
 
@@ -327,18 +303,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 
 		$html .= '</p>';
 
-		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '2.1.12', '<=' ) ) {
-			if ( $woocommerce->payment_gateways() ) {
-				$payment_gateways = $woocommerce->payment_gateways->payment_gateways();
-
-				$payment_method = ! empty( $order->payment_method ) ? $order->payment_method : '';
-
-				if ( $payment_method ) {
-					$html .= '<p><strong>' . __( 'Payment Method', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong> ' . ( isset( $payment_gateways[ $payment_method ] ) ? esc_html( $payment_gateways[ $payment_method ]->get_title() ) : esc_html( $payment_method ) ) . '</p>';
-				}
-			}
-		}
-
 		$html .= '</div>';
 
 		echo $html;
@@ -352,7 +316,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	 * @return string        Custom information.
 	 */
 	public function order_data_after_shipping_address( $order ) {
-		global $post, $woocommerce;
+		global $post;
 
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
@@ -364,24 +328,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		} else {
 
 			$html .= '<p><strong>' . __( 'Address', 'woocommerce-extra-checkout-fields-for-brazil' ) . ':</strong><br />';
-			if ( version_compare( $woocommerce->version, '2.0.5', '<=' ) ) {
-				$html .= $order->billing_first_name . ' ' . $order->billing_last_name . '<br />';
-				$html .= $order->billing_address_1 . ', ' . $order->billing_number . '<br />';
-				$html .= $order->billing_address_2 . '<br />';
-				$html .= $order->billing_neighborhood . '<br />';
-				$html .= $order->billing_city . '<br />';
-				if ( $woocommerce->countries->states[ $order->billing_country ] ) {
-					$html .= $woocommerce->countries->states[ $order->billing_country ][ $order->billing_state ] . '<br />';
-				} else {
-					$html .= $order->billing_state . '<br />';
-				}
-
-				$html .= $order->billing_postcode . '<br />';
-				$html .= $woocommerce->countries->countries[$order->billing_country] . '<br />';
-			} else {
 				$html .= $order->get_formatted_shipping_address();
-			}
-
 			$html .= '</p>';
 		}
 
