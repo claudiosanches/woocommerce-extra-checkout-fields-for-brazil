@@ -65,27 +65,30 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register and enqueues public-facing style sheet and JavaScript files.
 	 */
 	public function enqueue_scripts() {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_register_script( 'jquery-maskedinput', plugins_url( 'assets/js/jquery-maskedinput/jquery.maskedinput' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.4.1', true );
+
+		wp_register_script( 'mailcheck', plugins_url( 'assets/js/mailcheck/mailcheck' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
+
 		// Load scripts only in checkout.
 		if ( is_checkout() || is_account_page() ) {
 
 			// Get plugin settings.
 			$settings = get_option( 'wcbcf_settings' );
 
-			// Call jQuery.
-			wp_enqueue_script( 'jquery' );
-
 			// Fix checkout fields.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend/frontend.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend/frontend' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'jquery-maskedinput', 'mailcheck' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-front',
 				'wcbcf_public_params',
 				array(
-					'state'           => __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'required'        => __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'state'           => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+					'required'        => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 					'mailcheck'       => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 					'addresscomplete' => isset( $settings['addresscomplete'] ) ? 'yes' : 'no',
-					'person_type'     => $settings['person_type'],
+					'person_type'     => absint( $settings['person_type'] ),
 					'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
 				)
 			);

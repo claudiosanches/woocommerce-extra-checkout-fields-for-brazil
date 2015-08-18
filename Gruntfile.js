@@ -20,8 +20,7 @@ module.exports = function( grunt ) {
 				css: 'assets/css/frontend',
 				images: 'assets/images/frontend',
 				fonts: 'assets/fonts/frontend'
-			},
-			bower: 'bower_components'
+			}
 		},
 
 		// svn settings
@@ -33,7 +32,6 @@ module.exports = function( grunt ) {
 				'.git/',
 				'.sass-cache/',
 				'assets/css/admin/*.scss',
-				'bower_components/',
 				'node_modules/',
 				'assets/js/frontend/address.autocomplete.js',
 				'assets/js/frontend/checkout.masks.js',
@@ -45,7 +43,6 @@ module.exports = function( grunt ) {
 				'.jshintrc',
 				'Gruntfile.js',
 				'README.md',
-				'bower.json',
 				'package.json',
 				'*.zip'
 			]
@@ -68,25 +65,16 @@ module.exports = function( grunt ) {
 		// uglify to concat and minify
 		uglify: {
 			dist: {
-				files: {
-					// admin
-					'<%= dirs.admin.js %>/admin.min.js': [
-						'<%= dirs.admin.js %>/admin.js'
+				files: [{
+					expand: true,
+					cwd: '<%= dirs.js %>/*/',
+					src: [
+						'*.js',
+						'!*.min.js'
 					],
-					'<%= dirs.admin.js %>/shop-order.min.js': [
-						'<%= dirs.admin.js %>/shop-order.js'
-					],
-					// front
-					'<%= dirs.front.js %>/frontend.min.js': [
-						'<%= dirs.bower %>/jquery.maskedinput/jquery.maskedinput.js',
-						'<%= dirs.bower %>/mailcheck/src/mailcheck.js',
-						'<%= dirs.front.js %>/address.autocomplete.js',
-						'<%= dirs.front.js %>/checkout.masks.js',
-						'<%= dirs.front.js %>/fix.checkout.fields.js',
-						'<%= dirs.front.js %>/fix.person.fields.js',
-						'<%= dirs.front.js %>/mailcheck.js'
-					]
-				}
+					dest: '<%= dirs.js %>/*/',
+					ext: '.min.js'
+				}]
 			}
 		},
 
