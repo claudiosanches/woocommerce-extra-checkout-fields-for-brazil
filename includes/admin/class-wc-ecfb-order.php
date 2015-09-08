@@ -263,42 +263,42 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 
 			// Person type information.
 			if ( ( 1 == $order->billing_persontype && 1 == $settings['person_type'] ) || 2 == $settings['person_type'] ) {
-				$html .= '<strong>' . __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_cpf . '<br />';
+				$html .= '<strong>' . __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_cpf ) . '<br />';
 
 				if ( isset( $settings['rg'] ) ) {
-					$html .= '<strong>' . __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_rg . '<br />';
+					$html .= '<strong>' . __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_rg ) . '<br />';
 				}
 			}
 
 			if ( ( 2 == $order->billing_persontype && 1 == $settings['person_type'] ) || 3 == $settings['person_type'] ) {
-				$html .= '<strong>' . __( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_company . '<br />';
-				$html .= '<strong>' . __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_cnpj . '<br />';
+				$html .= '<strong>' . __( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_company ) . '<br />';
+				$html .= '<strong>' . __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_cnpj ) . '<br />';
 
 				if ( isset( $settings['ie'] ) ) {
-					$html .= '<strong>' . __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_ie . '<br />';
+					$html .= '<strong>' . __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_ie ) . '<br />';
 				}
 			}
 		} else {
-			$html .= '<strong>' . __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_company . '<br />';
+			$html .= '<strong>' . __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_company ) . '<br />';
 		}
 
 		if ( isset( $settings['birthdate_sex'] ) ) {
 
 			// Birthdate information.
-			$html .= '<strong>' . __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_birthdate . '<br />';
+			$html .= '<strong>' . __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_birthdate ) . '<br />';
 
 			// Sex Information.
-			$html .= '<strong>' . __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_sex . '<br />';
+			$html .= '<strong>' . __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_sex ) . '<br />';
 		}
 
-		$html .= '<strong>' . __( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_phone . '<br />';
+		$html .= '<strong>' . __( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_phone ) . '<br />';
 
 		// Cell Phone Information.
-		if ( isset( $settings['cell_phone'] ) ) {
-			$html .= '<strong>' . __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_cellphone . '<br />';
+		if ( ! empty( $order->billing_cellphone ) ) {
+			$html .= '<strong>' . __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_cellphone ) . '<br />';
 		}
 
-		$html .= '<strong>' . __( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . $order->billing_email . '<br />';
+		$html .= '<strong>' . __( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . make_clickable( esc_html( $order->billing_email ) ) . '<br />';
 
 		$html .= '</p>';
 
