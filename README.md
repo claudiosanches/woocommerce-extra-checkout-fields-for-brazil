@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
 **Tested up to:** 4.3  
-**Stable tag:** 3.4.0  
+**Stable tag:** 3.4.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -86,6 +86,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.4.1 - 2015/09/07 ###
+
+* Corrigido erros na tela de configurações do plugin.
+* Corrigido os campos de estado e país na tela de edição de usuário no administrador do WordPress.
 
 ### 3.4.0 - 2015/08/18 ###
 
@@ -242,11 +247,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.4.0 ###
+### 3.4.1 ###
 
-* Adicionado suporte para WooCommerce 2.4.
-* Removido suporte para WooCommerce 2.0 e 2.1.
-* Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
+* Corrigido erros na tela de configurações do plugin.
+* Corrigido os campos de estado e país na tela de edição de usuário no administrador do WordPress.
 
 ## License ##
 
