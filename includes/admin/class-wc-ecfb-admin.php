@@ -23,11 +23,9 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 */
 	public function admin_scripts() {
 		$screen = get_current_screen();
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		if ( 'shop_order' == $screen->id ) {
-
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
 			// Get plugin settings.
 			$settings = get_option( 'wcbcf_settings' );
 
