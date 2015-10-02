@@ -74,7 +74,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Person Type is Required option.
 		add_settings_field(
 			'only_brazil',
-			__( 'Person Type is requered only in Brazil?', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Person Type is required only in Brazil?', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
