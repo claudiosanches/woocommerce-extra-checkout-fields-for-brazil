@@ -310,7 +310,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'placeholder' => _x( 'State', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'       => array( 'form-row-last', 'address-field' ),
 			'clear'       => true,
-			'required'    => true
+			'required'    => false
 		);
 
 		if ( isset( $settings['cell_phone'] ) ) {
@@ -484,6 +484,13 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$settings           = get_option( 'wcbcf_settings' );
 		$only_brazil        = isset( $settings['only_brazil'] ) ? true : false;
 		$billing_persontype = isset( $_POST['billing_persontype'] ) ? $_POST['billing_persontype'] : 0;
+		$countries_nostate  = array("AF", "AT", "AX", "BD", "BI", "CZ", "DE", "DK", "EE", "FI", "FR", "IS", "IL", "KR", "NZ", "NO", "PL", "PT", "RO", "SG", "SK", "SI", "LK", "SE", "VN");
+
+		if (!in_array($_POST['billing_country'], $countries_nostate)) { 
+			if ( empty( $_POST['billing_state'] ) ) {
+				wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+			}
+		}
 
 		if ( $only_brazil && 'BR' != $_POST['billing_country'] || 0 == $settings['person_type'] ) {
 			return;
