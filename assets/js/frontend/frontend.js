@@ -6,25 +6,67 @@ jQuery( function( $ ) {
 	 * Frontend actions
 	 */
 	var wc_ecfb_frontned = {
-
+		
+		/**
+		* Mask patterns for diverse countries.
+		*/
+		mask_patterns: {
+			zip:{
+				'BR': 'ddddd-ddd',
+				'DK': 'dddd',
+				'FR': 'ddddd',
+				'DE': 'ddddd',
+				'PT': 'dddd-ddd',
+				'ES': 'ddddd',
+				'CH': 'dddd',
+				'GB': 'aadd daa',
+				'US': 'ddddd-dddd'
+			},
+			phone:{
+				'BR': [12, '+55 (dd) ddddd-ddd?d', '+55 (dd) dddd-dddd?d'],
+				'FR': '+33 d dd dd dd dd',
+				'DE': '+49 (ddd) dddddd?ddd',
+				'PT': '+351 (ddd) dddd ddd?dd',
+				'ES': [12, '+34 (dd) ddddd-ddd?dd', '+34 (dd) dddd-ddd?dd'],
+				'CH': '+41 dd ddd dd dd?dd',
+				'GB': [12, '+44 (dddd) dddd ddd?dd', '+44 (dddd) ddd ddd?dd'],
+				'US': '+1 (ddd) ddddddd?dd'
+			},
+			date:{
+				'BR': 'dd/dd/dddd',
+				'DK': 'dddd-dd-dd',
+				'FR': 'dd-dd-dddd',
+				'DE': 'dd.dd.dddd',
+				'PT': 'dd/dd/dddd',
+				'ES': 'dd/dd/dddd',
+				'CH': 'dd.dd.dddd',
+				'GB': 'dd/dd/dddd',
+				'US': 'dd/dd/dddd'
+			},
+		},
+		
 		/**
 		 * Initialize frontend actions
 		 */
 		init: function() {
+			document.__frontend_actions = this;
+			$.mask.definitions['9'] = '';
+			$.mask.definitions['d'] = '[0-9]';
+			
 			$( document.body ).on( 'country_to_state_changing', this.country_to_state_changing );
 
 			if ( '0' !== wcbcf_public_params.person_type ) {
 				this.person_type_fields();
 			}
-
+			
 			if ( 'yes' === wcbcf_public_params.maskedinput ) {
 				this.masks();
 			}
-
+			
 			if ( 'yes' === wcbcf_public_params.mailcheck ) {
 				this.emailCheck();
 			}
-
+			
 			if ( 'yes' === wcbcf_public_params.addresscomplete ) {
 				// Auto complete billing address.
 				this.addressAutoComplete( 'billing' );
@@ -35,12 +77,15 @@ jQuery( function( $ ) {
 				this.addressAutoCompleteOnChange( 'shipping' );
 			}
 		},
-
+		
 		/**
 		 * Country to state changing.
 		 * Fix the fields order.
 		 */
-		country_to_state_changing: function() {
+		country_to_state_changing: function() {			
+			// UPDATE MASKS
+			if ( 'yes' === wcbcf_public_params.maskedinput ) document.__frontend_actions.masks();
+			
 			// Billing.
 			$( '#billing_state_field label' ).html( wcbcf_public_params.state + ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 			$( '#billing_postcode_field' ).insertAfter( '#billing_country_field' );
@@ -51,7 +96,7 @@ jQuery( function( $ ) {
 				$( '#shipping_postcode_field' ).insertAfter( '#shipping_country_field' );
 			}
 		},
-
+		
 		person_type_fields: function() {
 			// Required fields.
 			if ( 'no' === wcbcf_public_params.only_brazil ) {
@@ -70,7 +115,7 @@ jQuery( function( $ ) {
 					}
 				}).change();
 			}
-
+			
 			if ( '1' === wcbcf_public_params.person_type ) {
 				$( '#billing_persontype' ).on( 'change', function () {
 					var current = $( this ).val();
@@ -94,34 +139,34 @@ jQuery( function( $ ) {
 				}).change();
 			}
 		},
-
+		
 		masks: function() {
+			// Country Code
+			var countryCode = jQuery("#billing_country").val();
+			
 			// CPF.
-			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
-
+			$( '#billing_cpf, #credit-card-cpf' ).unmask().mask( 'ddd.ddd.ddd-dd' );
+			
 			// CPNJ.
-			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
-
+			$( '#billing_cnpj' ).unmask().mask( 'dd.ddd.ddd/dddd-dd' );
+			
 			// Cell phone.
-			$( '#billing_phone, #billing_cellphone, #credit-card-phone' ).focusout( function () {
+			var scope = this;
+			$( '#billing_phone, #billing_cellphone, #credit-card-phone' ).off( "focusout" ).focusout( function () {
 				var phone, element;
 				element = $( this );
 				element.unmask();
 				phone = element.val().replace( /\D/g, '' );
-
-				if ( phone.length > 10 ) {
-					element.mask( '(99) 99999-999?9' );
-				} else {
-					element.mask( '(99) 9999-9999?9' );
-				}
+				
+				element.mask( scope.getPhoneMask(jQuery("#billing_country").val(), phone.length) );
 			}).trigger( 'focusout' );
-
+			
 			// Birth Date.
-			$( '#billing_birthdate' ).mask( '99/99/9999' );
-
+			$( '#billing_birthdate' ).unmask().mask( this.getDateMask(countryCode) );
+			
 			// Zip Code.
-			$( '#billing_postcode' ).mask( '99999-999' );
-			$( '#shipping_postcode' ).mask( '99999-999' );
+			$( '#billing_postcode' ).unmask().mask( this.getPostalCodeMask(countryCode) );
+			$( '#shipping_postcode' ).unmask().mask( this.getPostalCodeMask(countryCode) );
 		},
 
 		emailCheck: function() {
@@ -143,7 +188,7 @@ jQuery( function( $ ) {
 				fontSize: 'small'
 			});
 		},
-
+		
 		addressAutoComplete: function( field ) {
 			// Checks with *_postcode field exist.
 			if ( $( '#' + field + '_postcode' ).length ) {
@@ -194,6 +239,28 @@ jQuery( function( $ ) {
 			$( '#' + field + '_postcode' ).on( 'blur', function () {
 				wc_ecfb_frontned.addressAutoComplete( field );
 			});
+		},
+		
+		getPhoneMask: function($countryCode, $phoneLength){
+			var phoneLength = $phoneLength || 0;
+			var mask = this.mask_patterns.phone[$countryCode];
+
+			if(mask && mask.constructor === Array){
+				if ( phoneLength > mask[0] ) mask = mask[1];
+				else mask = mask[2];
+			}
+			
+			return mask || '';
+		},
+		
+		getDateMask: function($countryCode){
+			var mask = this.mask_patterns.date[$countryCode];
+			return mask || '';
+		},
+		
+		getPostalCodeMask: function($countryCode){
+			var mask = this.mask_patterns.zip[$countryCode];
+			return mask || '';
 		}
 	};
 

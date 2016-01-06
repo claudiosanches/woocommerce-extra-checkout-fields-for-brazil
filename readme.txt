@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 4.3
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.4.2 - 2016/01/06 =
+
+* Corrigido o erro das mascaras de data, cep e telefone quando o país não for o Brasil.
 
 = 3.4.1 - 2015/09/07 =
 
