@@ -173,10 +173,6 @@ module.exports = function( grunt ) {
 			dist: {
 				options: {
 					type: 'wp-plugin',
-					potHeaders: {
-						'report-msgid-bugs-to': 'https://wordpress.org/plugins/woocommerce-domination/',
-						'language-team': 'LANGUAGE <EMAIL@ADDRESS>'
-					}
 				}
 			}
 		},
