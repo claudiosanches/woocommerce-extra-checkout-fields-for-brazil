@@ -3,7 +3,7 @@
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
-**Tested up to:** 4.3  
+**Tested up to:** 4.4  
 **Stable tag:** 3.4.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -20,7 +20,7 @@ A partir da versão 3.1.0 é feita integração também com a [API](http://docs.
 
 ### Compatibilidade ###
 
-Compatível com as versões 2.2.x, 2.3.x e 2.4.x do WooCommerce.
+Compatível com as versões 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
 
 Funciona com os plugins:
 
