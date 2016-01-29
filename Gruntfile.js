@@ -174,7 +174,7 @@ module.exports = function( grunt ) {
 		makepot: {
 			dist: {
 				options: {
-					type: 'wp-plugin',
+					type: 'wp-plugin'
 				}
 			}
 		},
