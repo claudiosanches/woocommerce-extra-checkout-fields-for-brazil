@@ -479,6 +479,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return string Displays the error message.
 	 */
 	public function valid_checkout_fields() {
+		if ( apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
+			return;
+		}
 
 		// Get plugin settings.
 		$settings           = get_option( 'wcbcf_settings' );
