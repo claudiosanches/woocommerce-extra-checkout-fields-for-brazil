@@ -14,6 +14,8 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	public function __construct() {
 		add_filter( 'woocommerce_api_order_response', array( $this, 'orders' ), 100, 4 );
 		add_filter( 'woocommerce_api_customer_response', array( $this, 'customer' ), 100, 4 );
+		add_filter( 'woocommerce_api_customer_billing_address', array( $this, 'address' ), 100, 1 );
+		add_filter( 'woocommerce_api_customer_shipping_address', array( $this, 'address' ), 100, 1 );
 	}
 
 	/**
@@ -160,6 +162,23 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		}
 
 		return $customer_data;
+	}
+
+
+	/**
+	 * Add the number and neighborhood extra fields to the API responses/updates related
+	 * to customer
+	 *
+	 * @method address
+	 * @param  array  $address
+	 *
+	 * @return array
+	 */
+	public function address($address) {
+		return array_merge($address, array(
+			'neighborhood',
+			'number'
+		));
 	}
 }
 
