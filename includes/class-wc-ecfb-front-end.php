@@ -31,6 +31,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'order_formatted_billing_address' ), 1, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'order_formatted_shipping_address' ), 1, 2 );
 		add_filter( 'woocommerce_my_account_my_address_formatted_address', array( $this, 'my_account_my_address_formatted_address' ), 1, 3 );
+
+		// Orders.
+		add_filter( 'woocommerce_get_order_address', array( $this, 'order_address' ), 10, 3 );
 	}
 
 	/**
@@ -604,6 +607,24 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
 		$address['number']       = get_user_meta( $customer_id, $name . '_number', true );
 		$address['neighborhood'] = get_user_meta( $customer_id, $name . '_neighborhood', true );
+
+		return $address;
+	}
+
+	/**
+	 * Order address.
+	 *
+	 * @param  array $address
+	 * @param  string $type
+	 * @param  WC_Order $order
+	 * @return array
+	 */
+	public function order_address( $address, $type, $order ) {
+		$number       = $type . '_number';
+		$neighborhood = $type . 'neighborhood';
+
+		$address['number']       = $this->$number;
+		$address['neighborhood'] = $this->$neighborhood;
 
 		return $address;
 	}
