@@ -5,7 +5,7 @@ jQuery( function( $ ) {
 	/**
 	 * Frontend actions
 	 */
-	var wc_ecfb_frontned = {
+	var wc_ecfb_frontend = {
 
 		/**
 		 * Initialize frontend actions
@@ -18,7 +18,23 @@ jQuery( function( $ ) {
 			}
 
 			if ( 'yes' === wcbcf_public_params.maskedinput ) {
-				this.masks();
+				$( document.body ).on( 'change', '#billing_country', function() {
+					if ( 'BR' === $( this ).val() ) {
+						wc_ecfb_frontend.maskBilling();
+					} else {
+						wc_ecfb_frontend.unmaskBilling();
+					}
+				});
+
+				$( document.body ).on( 'change', '#shipping_country', function() {
+					if ( 'BR' === $( this ).val() ) {
+						wc_ecfb_frontend.maskShipping();
+					} else {
+						wc_ecfb_frontend.unmaskShipping();
+					}
+				});
+
+				this.maskGeneral();
 			}
 
 			if ( 'yes' === wcbcf_public_params.mailcheck ) {
@@ -95,33 +111,45 @@ jQuery( function( $ ) {
 			}
 		},
 
-		masks: function() {
-			// CPF.
-			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
-
-			// CPNJ.
-			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
-
-			// Cell phone.
-			$( '#billing_phone, #billing_cellphone, #credit-card-phone' ).focusout( function () {
-				var phone, element;
-				element = $( this );
-				element.unmask();
-				phone = element.val().replace( /\D/g, '' );
-
-				if ( phone.length > 10 ) {
-					element.mask( '(99) 99999-999?9' );
-				} else {
-					element.mask( '(99) 9999-9999?9' );
-				}
-			}).trigger( 'focusout' );
-
-			// Birth Date.
+		maskBilling: function() {
+			$( '#billing_phone, #billing_cellphone' )
+				.focusout( wc_ecfb_frontend.maskPhone )
+				.trigger( 'focusout' );
 			$( '#billing_birthdate' ).mask( '99/99/9999' );
-
-			// Zip Code.
 			$( '#billing_postcode' ).mask( '99999-999' );
+		},
+
+		unmaskBilling: function() {
+			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).unmask();
+		},
+
+		maskShipping: function() {
 			$( '#shipping_postcode' ).mask( '99999-999' );
+		},
+
+		unmaskShipping: function() {
+			$( '#shipping_postcode' ).unmask();
+		},
+
+		maskGeneral: function() {
+			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
+			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
+			$( '#credit-card-phone' )
+				.focusout( wc_ecfb_frontend.maskPhone )
+					.trigger( 'focusout' );
+		},
+
+		maskPhone: function() {
+			var phone, element;
+			element = $( this );
+			element.unmask();
+			phone = element.val().replace( /\D/g, '' );
+
+			if ( phone.length > 10 ) {
+				element.mask( '(99) 99999-999?9' );
+			} else {
+				element.mask( '(99) 9999-9999?9' );
+			}
 		},
 
 		emailCheck: function() {
@@ -192,10 +220,10 @@ jQuery( function( $ ) {
 
 		addressAutoCompleteOnChange: function( field ) {
 			$( '#' + field + '_postcode' ).on( 'blur', function () {
-				wc_ecfb_frontned.addressAutoComplete( field );
+				wc_ecfb_frontend.addressAutoComplete( field );
 			});
 		}
 	};
 
-	wc_ecfb_frontned.init();
+	wc_ecfb_frontend.init();
 });
