@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 4.4
-Stable tag: 3.4.2
+Stable tag: 3.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +43,7 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 * [Masked Input jQuery](https://github.com/digitalBush/jquery.maskedinput).
 * [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
-= Coloborar =
+= Colaborar =
 
 Você pode contribuir com código-fonte em nossa página no [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
 
@@ -77,6 +77,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 3.4.3 - 2016/03/20 =
+
+* Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
+* Incluídos os campos de bairro e número no método `WC_Order::get_order_address()`.
+
 = 3.4.2 - 2016/02/10 =
 
 * Adicionado o filtro `wcbcf_disable_checkout_validation` para suportar o plugin [WooCommerce Digital Goods Checkout](https://wordpress.org/plugins/wc-digital-goods-checkout/).
@@ -94,6 +99,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.4.1 =
+= 3.4.3 =
 
-* Adicionado o filtro `wcbcf_disable_checkout_validation` para suportar o plugin WooCommerce Digital Goods Checkout.
+* Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
+* Incluídos os campos de bairro e número no método WC_Order::get_order_address().
