@@ -337,6 +337,7 @@ msgstr ""
 msgid "Enable Input Mask:"
 msgstr ""
 
+#: includes/admin/class-wc-ecfb-settings.php:190
 msgid ""
 "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
 "and Cell Phone."
