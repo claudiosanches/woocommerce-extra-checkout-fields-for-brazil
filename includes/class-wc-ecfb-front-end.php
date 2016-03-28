@@ -92,7 +92,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 					'addresscomplete' => class_exists( 'WC_Autofill_Brazilian_Addresses' ) ? false : $autofill,
 					'person_type'     => absint( $settings['person_type'] ),
-					'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
+					'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
+					'state_required'  => isset( $settings['state_required'] ) ? 'yes' : 'no'
 				)
 			);
 		}
@@ -313,7 +314,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'placeholder' => _x( 'State', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'       => array( 'form-row-last', 'address-field' ),
 			'clear'       => true,
-			'required'    => true
+			'required'    => isset( $settings['state_required'] )
 		);
 
 		if ( isset( $settings['cell_phone'] ) ) {
@@ -470,7 +471,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'placeholder' => _x( 'State', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'       => array( 'form-row-last', 'address-field' ),
 			'clear'       => true,
-			'required'    => true
+			'required'    => isset( $settings['state_required'] )
 		);
 
 		return apply_filters( 'wcbcf_shipping_fields', $new_fields );

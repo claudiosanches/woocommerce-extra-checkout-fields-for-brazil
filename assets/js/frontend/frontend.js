@@ -58,12 +58,12 @@ jQuery( function( $ ) {
 		 */
 		country_to_state_changing: function() {
 			// Billing.
-			$( '#billing_state_field label' ).html( wcbcf_public_params.state + ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
+			$( '#billing_state_field label' ).html( wcbcf_public_params.state + ( 'yes' === wcbcf_public_params.state_required ? ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' : '' ) );
 			$( '#billing_postcode_field' ).insertAfter( '#billing_country_field' );
 
 			// Shipping.
 			if ( $( '#shipping_state_field' ).length ) {
-				$( '#shipping_state_field label' ).html( wcbcf_public_params.state + ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
+				$( '#shipping_state_field label' ).html( wcbcf_public_params.state + ( 'yes' === wcbcf_public_params.state_required ? ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' : '' ) );
 				$( '#shipping_postcode_field' ).insertAfter( '#shipping_country_field' );
 			}
 		},

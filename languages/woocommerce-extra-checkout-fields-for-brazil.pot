@@ -1,4 +1,4 @@
-# Copyright (C) 2016 Claudio Sanches
+﻿# Copyright (C) 2016 Claudio Sanches
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
@@ -314,52 +314,60 @@ msgid "If checked show the Cell Phone field in billing options."
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-settings.php:147
+msgid "State is required?"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:154
+msgid "If checked the State field will be mandatory."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:161
 msgid "jQuery Options:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:155
+#: includes/admin/class-wc-ecfb-settings.php:169
 msgid "Enable Mail Check:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:162
+#: includes/admin/class-wc-ecfb-settings.php:176
 msgid "If checked informs typos in email to users."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:169
+#: includes/admin/class-wc-ecfb-settings.php:183
 msgid "Enable Input Mask:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:176
+#: includes/admin/class-wc-ecfb-settings.php:190
 msgid ""
 "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
 "and Cell Phone."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:183
+#: includes/admin/class-wc-ecfb-settings.php:197
 msgid "Enable Address Autocomplete:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:190
+#: includes/admin/class-wc-ecfb-settings.php:204
 msgid "If checked automatically complete the address fields based on the zip code."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:197
+#: includes/admin/class-wc-ecfb-settings.php:211
 msgid "Validation:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:205
+#: includes/admin/class-wc-ecfb-settings.php:219
 msgid "Validate CPF:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:212
+#: includes/admin/class-wc-ecfb-settings.php:226
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:219
+#: includes/admin/class-wc-ecfb-settings.php:233
 msgid "Validate CNPJ:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:226
+#: includes/admin/class-wc-ecfb-settings.php:240
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 

@@ -80,6 +80,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 				// 'rg'              => 0,
 				// 'birthdate_sex'   => 0,
 				'cell_phone'      => 1,
+				'state_required'  => 1,
 				'mailcheck'       => 1,
 				'maskedinput'     => 1,
 				'addresscomplete' => 1,
