@@ -141,6 +141,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Person Type is Required option.
+		add_settings_field(
+			'state_required',
+			__( 'State is required?', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'state_required',
+				'label' => __( 'If checked the State field will be mandatory.', 'woocommerce-extra-checkout-fields-for-brazil' )
+			)
+		);
+
 		// Set Custom Fields cection.
 		add_settings_section(
 			'jquery_section',

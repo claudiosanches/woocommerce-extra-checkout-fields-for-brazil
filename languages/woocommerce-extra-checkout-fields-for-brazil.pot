@@ -314,6 +314,14 @@ msgid "If checked show the Cell Phone field in billing options."
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-settings.php:147
+msgid "State is required?"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:154
+msgid "If checked the State field will be mandatory."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:147
 msgid "jQuery Options:"
 msgstr ""
 
