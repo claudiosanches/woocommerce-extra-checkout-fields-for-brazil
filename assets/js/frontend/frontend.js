@@ -219,7 +219,7 @@ jQuery( function( $ ) {
 		},
 
 		addressAutoCompleteOnChange: function( field ) {
-			$( '#' + field + '_postcode' ).on( 'blur', function () {
+			$( document.body ).on( 'blur', '#' + field + '_postcode', function() {
 				wc_ecfb_frontend.addressAutoComplete( field );
 			});
 		}
