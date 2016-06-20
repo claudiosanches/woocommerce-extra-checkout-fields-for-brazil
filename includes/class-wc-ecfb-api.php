@@ -277,7 +277,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			'context'     => array( 'view', 'edit' ),
 		);
 		$properties['billing']['properties']['cnpj'] = array(
-			'description' => __( 'CPNJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
