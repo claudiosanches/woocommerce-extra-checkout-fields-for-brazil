@@ -621,10 +621,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 */
 	public function order_address( $address, $type, $order ) {
 		$number       = $type . '_number';
-		$neighborhood = $type . 'neighborhood';
+		$neighborhood = $type . '_neighborhood';
 
-		$address['number']       = $this->$number;
-		$address['neighborhood'] = $this->$neighborhood;
+		$address['number']       = $order->$number;
+		$address['neighborhood'] = $order->$neighborhood;
 
 		return $address;
 	}
