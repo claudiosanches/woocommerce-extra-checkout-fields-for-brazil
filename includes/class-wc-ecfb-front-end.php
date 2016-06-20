@@ -90,7 +90,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'required'        => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 					'mailcheck'       => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 					'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-					'addresscomplete' => class_exists( 'WC_Autofill_Brazilian_Addresses' ) ? false : $autofill,
+					'addresscomplete' => apply_filters( 'woocommerce_correios_enable_autofill_addresses', false ) ? false : $autofill,
 					'person_type'     => absint( $settings['person_type'] ),
 					'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
 				)
