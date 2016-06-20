@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
 **Tested up to:** 4.4  
-**Stable tag:** 3.4.3  
+**Stable tag:** 3.4.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -20,7 +20,7 @@ A partir da versão 3.1.0 é feita integração também com a [API](http://docs.
 
 ### Compatibilidade ###
 
-Compatível com as versões 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
+Compatível desde a versão 2.2.x até 2.6.x do WooCommerce.
 
 Funciona com os plugins:
 
@@ -86,6 +86,13 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.4.4 - 2016/06/20 ###
+
+* Adicionado suporte a nova API REST do WooCommerce.
+* Corrigido localização do campo de CEP na página de editar endereços.
+* Corrigido os campos de bairro e número no método `WC_Order::get_order_address()`.
+* Adicionada compatibilidade com o WooCommerce Correios 3.0.0.
 
 ### 3.4.3 - 2016/03/20 ###
 

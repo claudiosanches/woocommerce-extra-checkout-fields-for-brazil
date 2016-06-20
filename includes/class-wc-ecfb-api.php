@@ -206,7 +206,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['cnpj']         = $this->format_number( $customer->billing_cnpj );
 		$response->data['billing']['ie']           = $this->format_number( $customer->billing_ie );
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->billing_birthdate );
-		$response->data['billing']['gender']       = substr( $customer->billing_sex, 0, 1 );
+		$response->data['billing']['sex']          = substr( $customer->billing_sex, 0, 1 );
 		$response->data['billing']['cellphone']    = $customer->billing_cellphone;
 
 		// Shipping fields.
@@ -234,7 +234,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['cnpj']         = $this->format_number( get_post_meta( $post->ID, '_billing_cnpj', true ) );
 		$response->data['billing']['ie']           = $this->format_number( get_post_meta( $post->ID, '_billing_ie', true ) );
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( get_post_meta( $post->ID, '_billing_birthdate', true ) );
-		$response->data['billing']['gender']       = substr( get_post_meta( $post->ID, '_billing_sex', true ), 0, 1 );
+		$response->data['billing']['sex']          = substr( get_post_meta( $post->ID, '_billing_sex', true ), 0, 1 );
 		$response->data['billing']['cellphone']    = get_post_meta( $post->ID, '_billing_cellphone', true );
 
 		// Shipping fields.
@@ -291,7 +291,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['gender'] = array(
+		$properties['billing']['properties']['sex'] = array(
 			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
