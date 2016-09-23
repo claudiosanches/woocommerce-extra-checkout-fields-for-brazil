@@ -18,7 +18,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Add the settings page.
-	*/
+	 */
 	public function settings_menu() {
 		add_submenu_page(
 			'woocommerce',
@@ -32,7 +32,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Render the settings page for this plugin.
-	*/
+	 */
 	public function html_settings_page() {
 		include_once 'views/html-settings-page.php';
 	}
@@ -59,10 +59,10 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'person_type',
+				'menu'        => $option,
+				'id'          => 'person_type',
 				'description' => __( 'Individuals enables CPF field and Legal Person enables CNPJ field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'options' => array(
+				'options'     => array(
 					0 => __( 'None', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					1 => __( 'Individuals and Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					2 => __( 'Individuals only', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -177,6 +177,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Input Mask option.
+		add_settings_field(
+			'maskedinput_alternative',
+			__( 'Enable Input Mask alternative:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'jquery_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'maskedinput_alternative',
+				'label' => __( 'If checked will use alternative source to work in mobile.', 'woocommerce-extra-checkout-fields-for-brazil' )
+			)
+		);
+
 		// Address Autocomplete option.
 		if ( ! apply_filters( 'woocommerce_correios_enable_autofill_addresses', false ) ) {
 			add_settings_field(
@@ -186,9 +200,9 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 				$option,
 				'jquery_section',
 				array(
-					'menu'     => $option,
-					'id'       => 'addresscomplete',
-					'label'    => __( 'If checked automatically complete the address fields based on the zip code.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'menu'  => $option,
+					'id'    => 'addresscomplete',
+					'label' => __( 'If checked automatically complete the address fields based on the zip code.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				)
 			);
 		}
@@ -286,9 +300,9 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		}
 
 		$html = '<select id="' . $id . '" name="' . $menu . '[' . $id . ']">';
-			foreach ( $args['options'] as $key => $value ) {
-				$html .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $current, $key, false ), $value );
-			}
+		foreach ( $args['options'] as $key => $value ) {
+			$html .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $current, $key, false ), $value );
+		}
 		$html .= '</select>';
 
 		if ( isset( $args['description'] ) ) {
