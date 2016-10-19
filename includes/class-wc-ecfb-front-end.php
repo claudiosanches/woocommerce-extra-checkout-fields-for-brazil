@@ -70,6 +70,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
+		if ( ! is_checkout() ) {
+			return;
+		}
+
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_register_script( 'jquery-maskedinput', plugins_url( 'assets/js/jquery-maskedinput/jquery.maskedinput' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.4.1', true );
@@ -77,16 +81,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		wp_register_script( 'mailcheck', plugins_url( 'assets/js/mailcheck/mailcheck' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
 
 		wp_register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend/frontend' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'jquery-maskedinput', 'mailcheck' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
-	}
 
-	/**
-	 * Load scripts.
-	 */
-	public function load_scripts() {
 		$settings = get_option( 'wcbcf_settings' );
 		$autofill = isset( $settings['addresscomplete'] ) ? 'yes' : 'no';
-
-		wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'wcbcf_public_params',
@@ -100,6 +97,13 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
 			)
 		);
+	}
+
+	/**
+	 * Load scripts.
+	 */
+	public function load_scripts() {
+		wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 	}
 
 	/**
