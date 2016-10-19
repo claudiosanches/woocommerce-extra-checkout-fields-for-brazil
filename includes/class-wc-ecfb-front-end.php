@@ -221,7 +221,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'clear'       => true,
 				'required'    => true,
 				'options'     => array(
-					'0'                     => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )   => __( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )
 				)
