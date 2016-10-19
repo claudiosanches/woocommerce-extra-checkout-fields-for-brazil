@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
-Tested up to: 4.5
-Stable tag: 3.4.4
+Tested up to: 4.6
+Stable tag: 3.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 3.4.5 - 2016/10/09 =
+
+* Melhorada validação do campo "sexo".
+* Melhorado o registro e carregamento dos scripts do plugin.
+
 = 3.4.4 - 2016/06/20 =
 
 * Adicionado suporte a nova API REST do WooCommerce.
@@ -106,7 +111,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.4.3 =
+= 3.4.5 =
 
-* Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
-* Incluídos os campos de bairro e número no método WC_Order::get_order_address().
+* Melhorada validação do campo "sexo".
+* Melhorado o registro e carregamento dos scripts do plugin.
