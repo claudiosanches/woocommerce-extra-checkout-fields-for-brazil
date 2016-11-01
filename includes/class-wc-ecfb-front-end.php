@@ -70,9 +70,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
-		if ( ! is_checkout() ) {
-			return;
-		}
+		
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
@@ -103,6 +101,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Load scripts.
 	 */
 	public function load_scripts() {
+		if ( ! is_checkout() ) {
+			return;
+		}
+		
 		wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 	}
 
