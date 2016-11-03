@@ -70,10 +70,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
-		if ( ! is_checkout() ) {
-			return;
-		}
-
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_register_script( 'jquery-maskedinput', plugins_url( 'assets/js/jquery-maskedinput/jquery.maskedinput' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.4.1', true );
