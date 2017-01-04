@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
-Tested up to: 4.6
-Stable tag: 3.4.5
+Tested up to: 4.7
+Stable tag: 3.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,41 +77,45 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 3.4.6 - 2017/01/04 =
+
+- Corrigido alinhamento do campo de CEP na página de edição de endereços em "Minha conta".
+
 = 3.4.5 - 2016/10/09 =
 
-* Melhorada validação do campo "sexo".
-* Melhorado o registro e carregamento dos scripts do plugin.
+- Melhorada validação do campo "sexo".
+- Melhorado o registro e carregamento dos scripts do plugin.
 
 = 3.4.4 - 2016/06/20 =
 
-* Adicionado suporte a nova API REST do WooCommerce.
-* Corrigido localização do campo de CEP na página de editar endereços.
-* Corrigido os campos de bairro e número no método `WC_Order::get_order_address()`.
-* Adicionada compatibilidade com o WooCommerce Correios 3.0.0.
+- Adicionado suporte a nova API REST do WooCommerce.
+- Corrigido localização do campo de CEP na página de editar endereços.
+- Corrigido os campos de bairro e número no método `WC_Order::get_order_address()`.
+- Adicionada compatibilidade com o WooCommerce Correios 3.0.0.
 
 = 3.4.3 - 2016/03/20 =
 
-* Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
-* Incluídos os campos de bairro e número no método `WC_Order::get_order_address()`.
+- Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
+- Incluídos os campos de bairro e número no método `WC_Order::get_order_address()`.
 
 = 3.4.2 - 2016/02/10 =
 
-* Adicionado o filtro `wcbcf_disable_checkout_validation` para suportar o plugin [WooCommerce Digital Goods Checkout](https://wordpress.org/plugins/wc-digital-goods-checkout/).
+- Adicionado o filtro `wcbcf_disable_checkout_validation` para suportar o plugin [WooCommerce Digital Goods Checkout](https://wordpress.org/plugins/wc-digital-goods-checkout/).
 
 = 3.4.1 - 2015/09/07 =
 
-* Corrigido erros na tela de configurações do plugin.
-* Corrigido os campos de estado e país na tela de edição de usuário no administrador do WordPress.
+- Corrigido erros na tela de configurações do plugin.
+- Corrigido os campos de estado e país na tela de edição de usuário no administrador do WordPress.
 
 = 3.4.0 - 2015/08/18 =
 
-* Adicionado suporte para WooCommerce 2.4.
-* Removido suporte para WooCommerce 2.0 e 2.1.
-* Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
+- Adicionado suporte para WooCommerce 2.4.
+- Removido suporte para WooCommerce 2.0 e 2.1.
+- Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
 
 == Upgrade Notice ==
 
 = 3.4.5 =
 
-* Melhorada validação do campo "sexo".
-* Melhorado o registro e carregamento dos scripts do plugin.
+- Melhorada validação do campo "sexo".
+- Melhorado o registro e carregamento dos scripts do plugin.

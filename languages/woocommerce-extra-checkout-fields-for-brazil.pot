@@ -1,16 +1,16 @@
-# Copyright (C) 2016 Claudio Sanches
+# Copyright (C) 2017 Claudio Sanches
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.4.5\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.4.6\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-"
 "brazil\n"
-"POT-Creation-Date: 2016-10-19 22:21:13+00:00\n"
+"POT-Creation-Date: 2017-01-04 14:46:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.5.3\n"
@@ -30,50 +30,50 @@ msgstr ""
 #: includes/admin/class-wc-ecfb-customer.php:40
 #: includes/admin/class-wc-ecfb-order.php:58
 #: includes/admin/class-wc-ecfb-order.php:266
-#: includes/class-wc-ecfb-front-end.php:150
-#: includes/class-wc-ecfb-front-end.php:164
+#: includes/class-wc-ecfb-front-end.php:146
+#: includes/class-wc-ecfb-front-end.php:160
+#: includes/class-wc-ecfb-front-end.php:421
 #: includes/class-wc-ecfb-front-end.php:425
-#: includes/class-wc-ecfb-front-end.php:429
 msgid "CPF"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:46
 #: includes/admin/class-wc-ecfb-order.php:62
 #: includes/admin/class-wc-ecfb-order.php:269
-#: includes/class-wc-ecfb-front-end.php:157
-#: includes/class-wc-ecfb-front-end.php:433
+#: includes/class-wc-ecfb-front-end.php:153
+#: includes/class-wc-ecfb-front-end.php:429
 msgid "RG"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:55
 #: includes/admin/class-wc-ecfb-order.php:72
 #: includes/admin/class-wc-ecfb-order.php:275
-#: includes/class-wc-ecfb-front-end.php:182
-#: includes/class-wc-ecfb-front-end.php:196
+#: includes/class-wc-ecfb-front-end.php:178
+#: includes/class-wc-ecfb-front-end.php:192
+#: includes/class-wc-ecfb-front-end.php:440
 #: includes/class-wc-ecfb-front-end.php:444
-#: includes/class-wc-ecfb-front-end.php:448
 msgid "CNPJ"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:61
 #: includes/admin/class-wc-ecfb-order.php:76
 #: includes/admin/class-wc-ecfb-order.php:278
-#: includes/class-wc-ecfb-front-end.php:189
-#: includes/class-wc-ecfb-front-end.php:452
+#: includes/class-wc-ecfb-front-end.php:185
+#: includes/class-wc-ecfb-front-end.php:448
 msgid "State Registration"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:72
 #: includes/admin/class-wc-ecfb-order.php:90
 #: includes/admin/class-wc-ecfb-order.php:288
-#: includes/class-wc-ecfb-front-end.php:214
+#: includes/class-wc-ecfb-front-end.php:210
 msgid "Birthdate"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:76
 #: includes/admin/class-wc-ecfb-order.php:93
 #: includes/admin/class-wc-ecfb-order.php:291
-#: includes/class-wc-ecfb-front-end.php:223
+#: includes/class-wc-ecfb-front-end.php:219
 msgid "Sex"
 msgstr ""
 
@@ -81,8 +81,8 @@ msgstr ""
 #: includes/admin/class-wc-ecfb-customer.php:113
 #: includes/admin/class-wc-ecfb-order.php:102
 #: includes/admin/class-wc-ecfb-order.php:177
-#: includes/class-wc-ecfb-front-end.php:251
-#: includes/class-wc-ecfb-front-end.php:364
+#: includes/class-wc-ecfb-front-end.php:247
+#: includes/class-wc-ecfb-front-end.php:360
 msgid "Number"
 msgstr ""
 
@@ -90,15 +90,15 @@ msgstr ""
 #: includes/admin/class-wc-ecfb-customer.php:118
 #: includes/admin/class-wc-ecfb-order.php:110
 #: includes/admin/class-wc-ecfb-order.php:185
-#: includes/class-wc-ecfb-front-end.php:266
-#: includes/class-wc-ecfb-front-end.php:379
+#: includes/class-wc-ecfb-front-end.php:262
+#: includes/class-wc-ecfb-front-end.php:375
 msgid "Neighborhood"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:99
 #: includes/admin/class-wc-ecfb-order.php:140
 #: includes/admin/class-wc-ecfb-order.php:298
-#: includes/class-wc-ecfb-front-end.php:292
+#: includes/class-wc-ecfb-front-end.php:288
 msgid "Cell Phone"
 msgstr ""
 
@@ -117,24 +117,24 @@ msgid "Last Name"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:47
-#: includes/class-wc-ecfb-front-end.php:136
-#: includes/class-wc-ecfb-front-end.php:419
+#: includes/class-wc-ecfb-front-end.php:132
+#: includes/class-wc-ecfb-front-end.php:415
 msgid "Person type"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:49
-#: includes/class-wc-ecfb-front-end.php:140
-#: includes/class-wc-ecfb-front-end.php:228
+#: includes/class-wc-ecfb-front-end.php:136
+#: includes/class-wc-ecfb-front-end.php:224
 msgid "Select"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:50
-#: includes/class-wc-ecfb-front-end.php:141
+#: includes/class-wc-ecfb-front-end.php:137
 msgid "Individuals"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:51
-#: includes/class-wc-ecfb-front-end.php:142
+#: includes/class-wc-ecfb-front-end.php:138
 msgid "Legal Person"
 msgstr ""
 
@@ -146,7 +146,7 @@ msgstr ""
 #: includes/admin/class-wc-ecfb-order.php:83
 #: includes/admin/class-wc-ecfb-order.php:169
 #: includes/admin/class-wc-ecfb-order.php:282
-#: includes/class-wc-ecfb-front-end.php:440
+#: includes/class-wc-ecfb-front-end.php:436
 msgid "Company"
 msgstr ""
 
@@ -167,7 +167,7 @@ msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:118
 #: includes/admin/class-wc-ecfb-order.php:193
-#: includes/class-wc-ecfb-front-end.php:91
+#: includes/class-wc-ecfb-front-end.php:87
 msgid "State"
 msgstr ""
 
@@ -384,34 +384,34 @@ msgstr ""
 msgid "Cell Phone."
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:92
+#: includes/class-wc-ecfb-front-end.php:88
 msgid "required"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:229
+#: includes/class-wc-ecfb-front-end.php:225
 msgid "Female"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:230
+#: includes/class-wc-ecfb-front-end.php:226
 msgid "Male"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:260
-#: includes/class-wc-ecfb-front-end.php:373
+#: includes/class-wc-ecfb-front-end.php:256
+#: includes/class-wc-ecfb-front-end.php:369
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:419
-#: includes/class-wc-ecfb-front-end.php:425
-#: includes/class-wc-ecfb-front-end.php:433
+#: includes/class-wc-ecfb-front-end.php:415
+#: includes/class-wc-ecfb-front-end.php:421
+#: includes/class-wc-ecfb-front-end.php:429
+#: includes/class-wc-ecfb-front-end.php:436
 #: includes/class-wc-ecfb-front-end.php:440
-#: includes/class-wc-ecfb-front-end.php:444
-#: includes/class-wc-ecfb-front-end.php:452
+#: includes/class-wc-ecfb-front-end.php:448
 msgid "is a required field"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:429
-#: includes/class-wc-ecfb-front-end.php:448
+#: includes/class-wc-ecfb-front-end.php:425
+#: includes/class-wc-ecfb-front-end.php:444
 msgid "is not valid"
 msgstr ""
 
@@ -446,46 +446,46 @@ msgstr ""
 msgid "http://claudiosmweb.com/"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:151
-#: includes/class-wc-ecfb-front-end.php:165
+#: includes/class-wc-ecfb-front-end.php:147
+#: includes/class-wc-ecfb-front-end.php:161
 msgctxt "placeholder"
 msgid "CPF"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:158
+#: includes/class-wc-ecfb-front-end.php:154
 msgctxt "placeholder"
 msgid "RG"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:183
-#: includes/class-wc-ecfb-front-end.php:197
+#: includes/class-wc-ecfb-front-end.php:179
+#: includes/class-wc-ecfb-front-end.php:193
 msgctxt "placeholder"
 msgid "CNPJ"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:190
+#: includes/class-wc-ecfb-front-end.php:186
 msgctxt "placeholder"
 msgid "State Registration"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:215
+#: includes/class-wc-ecfb-front-end.php:211
 msgctxt "placeholder"
 msgid "Birthdate"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:252
-#: includes/class-wc-ecfb-front-end.php:365
+#: includes/class-wc-ecfb-front-end.php:248
+#: includes/class-wc-ecfb-front-end.php:361
 msgctxt "placeholder"
 msgid "Number"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:267
-#: includes/class-wc-ecfb-front-end.php:380
+#: includes/class-wc-ecfb-front-end.php:263
+#: includes/class-wc-ecfb-front-end.php:376
 msgctxt "placeholder"
 msgid "Neighborhood"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:293
+#: includes/class-wc-ecfb-front-end.php:289
 msgctxt "placeholder"
 msgid "Cell Phone"
 msgstr ""

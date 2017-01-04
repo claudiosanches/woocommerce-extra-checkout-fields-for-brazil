@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Extra Checkout Fields for Brazil
  * Plugin URI: https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil
  * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
- * Version: 3.4.5
+ * Version: 3.4.6
  * Author: Claudio Sanches
  * Author URI: http://claudiosmweb.com/
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
@@ -28,7 +28,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.4.5';
+	const VERSION = '3.4.6';
 
 	/**
 	 * Instance of this class.
