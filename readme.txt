@@ -40,7 +40,7 @@ Você pode esclarecer suas dúvidas usando:
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
-* [Masked Input jQuery](https://github.com/digitalBush/jquery.maskedinput).
+* [jQuery Mask Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin).
 * [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
 = Colaborar =
