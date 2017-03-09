@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
 **Tested up to:** 4.7  
-**Stable tag:** 3.4.6  
+**Stable tag:** 3.5.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -86,6 +86,12 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.5.0 - 2017/01/09 ###
+
+- Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin).
+- Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário.
+- Alterados os tipos dos campos telefone, celular, cep, cpf, cnpj para tipo `tel` e e-mail para `email`.
 
 ### 3.4.6 - 2017/01/04 ###
 

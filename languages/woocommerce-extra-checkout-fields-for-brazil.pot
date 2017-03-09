@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.4.6\n"
+"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.5.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-"
 "brazil\n"
