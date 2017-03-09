@@ -140,16 +140,17 @@ jQuery( function( $ ) {
 		},
 
 		maskPhone: function() {
-			var phone, element;
-			element = $( this );
-			element.unmask();
-			phone = element.val().replace( /\D/g, '' );
+			var element = $( this ),
+					MaskBehavior = function(val) {
+						return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+					},
+					maskOptions = {
+						onKeyPress: function(val, e, field, options) {
+							field.mask(MaskBehavior.apply({}, arguments), options);
+						}
+					};
 
-			if ( phone.length > 10 ) {
-				element.mask( '(99) 99999-999?9' );
-			} else {
-				element.mask( '(99) 9999-9999?9' );
-			}
+			element.mask(MaskBehavior, maskOptions);
 		},
 
 		emailCheck: function() {
