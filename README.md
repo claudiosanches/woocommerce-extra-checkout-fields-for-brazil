@@ -91,7 +91,8 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 - Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin).
 - Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário.
-- Alterados os tipos dos campos telefone, celular, cep, cpf, cnpj para tipo `tel` e e-mail para `email`.
+- Alterados os tipos dos campos telefone, celular, cep, data de nascimento para `tel` quando o país selecionado for BR.
+- Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`.
 
 ### 3.4.6 - 2017/01/04 ###
 
