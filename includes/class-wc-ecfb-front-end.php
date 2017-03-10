@@ -154,8 +154,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'label'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'placeholder' => _x( 'RG', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-last', 'person-type-field' ),
-						'required'    => false,
-						'type'        => 'tel'
+						'required'    => false
 					);
 				} else {
 					$new_fields['billing_cpf'] = array(
