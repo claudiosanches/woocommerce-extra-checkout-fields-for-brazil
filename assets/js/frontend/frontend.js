@@ -112,35 +112,32 @@ jQuery( function( $ ) {
 		},
 
 		maskBilling: function() {
-			$( '#billing_phone, #billing_cellphone' )
-				.focusout( wc_ecfb_frontend.maskPhone )
-				.trigger( 'focusout' );
+			wc_ecfb_frontend.maskPhone( '#billing_phone, #billing_cellphone' );
 			$( '#billing_birthdate' ).mask( '00/00/0000' );
 			$( '#billing_postcode' ).mask( '00000-000' );
+			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).attr( 'type', 'tel' );
 		},
 
 		unmaskBilling: function() {
-			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).unmask();
+			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).unmask().attr( 'type', 'text' );
 		},
 
 		maskShipping: function() {
-			$( '#shipping_postcode' ).mask( '00000-000' );
+			$( '#shipping_postcode' ).mask( '00000-000' ).attr( 'type', 'tel' );
 		},
 
 		unmaskShipping: function() {
-			$( '#shipping_postcode' ).unmask();
+			$( '#shipping_postcode' ).unmask().attr( 'type', 'text' );
 		},
 
 		maskGeneral: function() {
 			$( '#billing_cpf, #credit-card-cpf' ).mask( '000.000.000-00' );
 			$( '#billing_cnpj' ).mask( '00.000.000/0000-00' );
-			$( '#credit-card-phone' )
-				.focusout( wc_ecfb_frontend.maskPhone )
-					.trigger( 'focusout' );
+			wc_ecfb_frontend.maskPhone( '#credit-card-phone' );
 		},
 
-		maskPhone: function() {
-			var element = $( this ),
+		maskPhone: function(selector) {
+			var $element = $(selector),
 					MaskBehavior = function(val) {
 						return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
 					},
@@ -150,7 +147,7 @@ jQuery( function( $ ) {
 						}
 					};
 
-			element.mask(MaskBehavior, maskOptions);
+			$element.mask(MaskBehavior, maskOptions);
 		},
 
 		emailCheck: function() {
