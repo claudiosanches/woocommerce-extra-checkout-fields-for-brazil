@@ -205,7 +205,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			$new_fields['billing_birthdate'] = array(
 				'label'       => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'placeholder' => _x( 'Birthdate', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -213,7 +213,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'clear'       => false,
 				'required'    => true
 			);
+		}
 
+		if ( isset( $settings['sex'] ) ) {
 			$new_fields['billing_sex'] = array(
 				'type'        => 'select',
 				'label'       => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -243,13 +245,15 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$new_fields['billing_address_1']['class'] = array( 'form-row-first', 'address-field' );
 		}
 
-		$new_fields['billing_number'] = array(
-			'label'       => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'placeholder' => _x( 'Number', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'       => array( 'form-row-last', 'address-field' ),
-			'clear'       => true,
-			'required'    => true
-		);
+		if ( !isset( $settings['nonumber'] ) ) {
+			$new_fields['billing_number'] = array(
+				'label'       => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'placeholder' => _x( 'Number', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'class'       => array( 'form-row-last', 'address-field' ),
+				'clear'       => true,
+				'required'    => true
+			);
+		}
 
 		if ( isset( $fields['billing_address_2'] ) ) {
 			$new_fields['billing_address_2'] = $fields['billing_address_2'];

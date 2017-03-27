@@ -85,10 +85,13 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			);
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			$billing_data['birthdate'] = array(
 				'label' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' )
 			);
+		}
+
+		if ( isset( $settings['sex'] ) ) {
 			$billing_data['sex'] = array(
 				'label' => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' )
 			);
@@ -282,11 +285,12 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			$html .= '<strong>' . __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_company ) . '<br />';
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
-
+		if ( isset( $settings['birthdate'] ) ) {
 			// Birthdate information.
 			$html .= '<strong>' . __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_birthdate ) . '<br />';
+		}
 
+		if ( isset( $settings['sex'] ) ) {
 			// Sex Information.
 			$html .= '<strong>' . __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ) . ': </strong>' . esc_html( $order->billing_sex ) . '<br />';
 		}
@@ -353,7 +357,9 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		$settings = get_option( 'wcbcf_settings' );
 
 		// Update options.
-		update_post_meta( $post_id, '_billing_number', woocommerce_clean( $_POST['_billing_number'] ) );
+		if ( !isset( $settings['nonumber'] ) ) {
+			update_post_meta( $post_id, '_billing_number', woocommerce_clean( $_POST['_billing_number'] ) );
+		}
 		update_post_meta( $post_id, '_billing_neighborhood', woocommerce_clean( $_POST['_billing_neighborhood'] ) );
 		update_post_meta( $post_id, '_shipping_number', woocommerce_clean( $_POST['_shipping_number'] ) );
 		update_post_meta( $post_id, '_shipping_neighborhood', woocommerce_clean( $_POST['_shipping_neighborhood'] ) );
@@ -380,8 +386,11 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			}
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			update_post_meta( $post_id, '_billing_birthdate', woocommerce_clean( $_POST['_billing_birthdate'] ) );
+		}
+
+		if ( isset( $settings['sex'] ) ) {
 			update_post_meta( $post_id, '_billing_sex', woocommerce_clean( $_POST['_billing_sex'] ) );
 		}
 

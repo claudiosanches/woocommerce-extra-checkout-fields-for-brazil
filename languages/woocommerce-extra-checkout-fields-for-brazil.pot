@@ -6,14 +6,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-"
 "brazil\n"
-"POT-Creation-Date: 2017-01-04 14:46:02+00:00\n"
+"POT-Creation-Date: 2017-03-18 04:24:48+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n 0.5.3\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
 
 #: includes/admin/class-wc-ecfb-admin.php:43
 msgid "Load the customer extras data?"
@@ -29,102 +29,102 @@ msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:40
 #: includes/admin/class-wc-ecfb-order.php:58
-#: includes/admin/class-wc-ecfb-order.php:266
+#: includes/admin/class-wc-ecfb-order.php:269
 #: includes/class-wc-ecfb-front-end.php:146
 #: includes/class-wc-ecfb-front-end.php:160
-#: includes/class-wc-ecfb-front-end.php:421
 #: includes/class-wc-ecfb-front-end.php:425
+#: includes/class-wc-ecfb-front-end.php:429
 msgid "CPF"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:46
 #: includes/admin/class-wc-ecfb-order.php:62
-#: includes/admin/class-wc-ecfb-order.php:269
+#: includes/admin/class-wc-ecfb-order.php:272
 #: includes/class-wc-ecfb-front-end.php:153
-#: includes/class-wc-ecfb-front-end.php:429
+#: includes/class-wc-ecfb-front-end.php:433
 msgid "RG"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:55
 #: includes/admin/class-wc-ecfb-order.php:72
-#: includes/admin/class-wc-ecfb-order.php:275
+#: includes/admin/class-wc-ecfb-order.php:278
 #: includes/class-wc-ecfb-front-end.php:178
 #: includes/class-wc-ecfb-front-end.php:192
-#: includes/class-wc-ecfb-front-end.php:440
 #: includes/class-wc-ecfb-front-end.php:444
+#: includes/class-wc-ecfb-front-end.php:448
 msgid "CNPJ"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:61
 #: includes/admin/class-wc-ecfb-order.php:76
-#: includes/admin/class-wc-ecfb-order.php:278
+#: includes/admin/class-wc-ecfb-order.php:281
 #: includes/class-wc-ecfb-front-end.php:185
-#: includes/class-wc-ecfb-front-end.php:448
+#: includes/class-wc-ecfb-front-end.php:452
 msgid "State Registration"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-customer.php:72
 #: includes/admin/class-wc-ecfb-order.php:90
-#: includes/admin/class-wc-ecfb-order.php:288
+#: includes/admin/class-wc-ecfb-order.php:290
 #: includes/class-wc-ecfb-front-end.php:210
 msgid "Birthdate"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-customer.php:76
-#: includes/admin/class-wc-ecfb-order.php:93
-#: includes/admin/class-wc-ecfb-order.php:291
-#: includes/class-wc-ecfb-front-end.php:219
+#: includes/admin/class-wc-ecfb-customer.php:79
+#: includes/admin/class-wc-ecfb-order.php:96
+#: includes/admin/class-wc-ecfb-order.php:295
+#: includes/class-wc-ecfb-front-end.php:221
 msgid "Sex"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-customer.php:83
-#: includes/admin/class-wc-ecfb-customer.php:113
-#: includes/admin/class-wc-ecfb-order.php:102
-#: includes/admin/class-wc-ecfb-order.php:177
-#: includes/class-wc-ecfb-front-end.php:247
-#: includes/class-wc-ecfb-front-end.php:360
+#: includes/admin/class-wc-ecfb-customer.php:87
+#: includes/admin/class-wc-ecfb-customer.php:118
+#: includes/admin/class-wc-ecfb-order.php:105
+#: includes/admin/class-wc-ecfb-order.php:180
+#: includes/class-wc-ecfb-front-end.php:250
+#: includes/class-wc-ecfb-front-end.php:364
 msgid "Number"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-customer.php:88
-#: includes/admin/class-wc-ecfb-customer.php:118
-#: includes/admin/class-wc-ecfb-order.php:110
-#: includes/admin/class-wc-ecfb-order.php:185
-#: includes/class-wc-ecfb-front-end.php:262
-#: includes/class-wc-ecfb-front-end.php:375
+#: includes/admin/class-wc-ecfb-customer.php:93
+#: includes/admin/class-wc-ecfb-customer.php:123
+#: includes/admin/class-wc-ecfb-order.php:113
+#: includes/admin/class-wc-ecfb-order.php:188
+#: includes/class-wc-ecfb-front-end.php:266
+#: includes/class-wc-ecfb-front-end.php:379
 msgid "Neighborhood"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-customer.php:99
-#: includes/admin/class-wc-ecfb-order.php:140
-#: includes/admin/class-wc-ecfb-order.php:298
-#: includes/class-wc-ecfb-front-end.php:288
+#: includes/admin/class-wc-ecfb-customer.php:104
+#: includes/admin/class-wc-ecfb-order.php:143
+#: includes/admin/class-wc-ecfb-order.php:302
+#: includes/class-wc-ecfb-front-end.php:292
 msgid "Cell Phone"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-customer.php:107
+#: includes/admin/class-wc-ecfb-customer.php:112
 msgid "Customer Shipping Address"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:35
-#: includes/admin/class-wc-ecfb-order.php:161
+#: includes/admin/class-wc-ecfb-order.php:164
 msgid "First Name"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:39
-#: includes/admin/class-wc-ecfb-order.php:165
+#: includes/admin/class-wc-ecfb-order.php:168
 msgid "Last Name"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:47
 #: includes/class-wc-ecfb-front-end.php:132
-#: includes/class-wc-ecfb-front-end.php:415
+#: includes/class-wc-ecfb-front-end.php:419
 msgid "Person type"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:49
 #: includes/class-wc-ecfb-front-end.php:136
-#: includes/class-wc-ecfb-front-end.php:224
+#: includes/class-wc-ecfb-front-end.php:226
 msgid "Select"
 msgstr ""
 
@@ -139,83 +139,83 @@ msgid "Legal Person"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:69
-#: includes/admin/class-wc-ecfb-order.php:274
+#: includes/admin/class-wc-ecfb-order.php:277
 msgid "Company Name"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-order.php:83
-#: includes/admin/class-wc-ecfb-order.php:169
-#: includes/admin/class-wc-ecfb-order.php:282
-#: includes/class-wc-ecfb-front-end.php:436
+#: includes/admin/class-wc-ecfb-order.php:172
+#: includes/admin/class-wc-ecfb-order.php:285
+#: includes/class-wc-ecfb-front-end.php:440
 msgid "Company"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:98
-#: includes/admin/class-wc-ecfb-order.php:173
+#: includes/admin/class-wc-ecfb-order.php:101
+#: includes/admin/class-wc-ecfb-order.php:176
 msgid "Address 1"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:106
-#: includes/admin/class-wc-ecfb-order.php:181
+#: includes/admin/class-wc-ecfb-order.php:109
+#: includes/admin/class-wc-ecfb-order.php:184
 msgid "Address 2"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:114
-#: includes/admin/class-wc-ecfb-order.php:189
+#: includes/admin/class-wc-ecfb-order.php:117
+#: includes/admin/class-wc-ecfb-order.php:192
 msgid "City"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:118
-#: includes/admin/class-wc-ecfb-order.php:193
+#: includes/admin/class-wc-ecfb-order.php:121
+#: includes/admin/class-wc-ecfb-order.php:196
 #: includes/class-wc-ecfb-front-end.php:87
 msgid "State"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:122
-#: includes/admin/class-wc-ecfb-order.php:197
+#: includes/admin/class-wc-ecfb-order.php:125
+#: includes/admin/class-wc-ecfb-order.php:200
 msgid "Country"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:126
-#: includes/admin/class-wc-ecfb-order.php:201
+#: includes/admin/class-wc-ecfb-order.php:129
+#: includes/admin/class-wc-ecfb-order.php:204
 msgid "Select a country&hellip;"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:130
-#: includes/admin/class-wc-ecfb-order.php:205
+#: includes/admin/class-wc-ecfb-order.php:133
+#: includes/admin/class-wc-ecfb-order.php:208
 msgid "Postcode"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:135
-#: includes/admin/class-wc-ecfb-order.php:294
+#: includes/admin/class-wc-ecfb-order.php:138
+#: includes/admin/class-wc-ecfb-order.php:298
 msgid "Phone"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:145
-#: includes/admin/class-wc-ecfb-order.php:301
+#: includes/admin/class-wc-ecfb-order.php:148
+#: includes/admin/class-wc-ecfb-order.php:305
 msgid "Email"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:250
 #: includes/admin/class-wc-ecfb-order.php:253
-#: includes/admin/class-wc-ecfb-order.php:327
-#: includes/admin/class-wc-ecfb-order.php:330
+#: includes/admin/class-wc-ecfb-order.php:256
+#: includes/admin/class-wc-ecfb-order.php:331
+#: includes/admin/class-wc-ecfb-order.php:334
 msgid "Address"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:250
+#: includes/admin/class-wc-ecfb-order.php:253
 msgid "No billing address set."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:258
+#: includes/admin/class-wc-ecfb-order.php:261
 msgid "Customer data"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:327
+#: includes/admin/class-wc-ecfb-order.php:331
 msgid "No shipping address set."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-order.php:336
+#: includes/admin/class-wc-ecfb-order.php:340
 msgid "Customer Note"
 msgstr ""
 
@@ -279,68 +279,84 @@ msgid "If checked show the State Registration field in billing options."
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-settings.php:119
-msgid "Display Birthdate and Sex:"
+msgid "Display Birthdate:"
 msgstr ""
 
 #: includes/admin/class-wc-ecfb-settings.php:126
-msgid "If checked show the Birthdate and Sex field in billing options."
+msgid "If checked show the Birthdate field in billing options."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:133
+#: includes/admin/class-wc-ecfb-settings.php:132
+msgid "Display Sex:"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:139
+msgid "If checked show the Sex field in billing options."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:145
+msgid "Ignore Number:"
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:152
+msgid "If checked the Number field will be ignored."
+msgstr ""
+
+#: includes/admin/class-wc-ecfb-settings.php:159
 msgid "Display Cell Phone:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:140
+#: includes/admin/class-wc-ecfb-settings.php:166
 msgid "If checked show the Cell Phone field in billing options."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:147
+#: includes/admin/class-wc-ecfb-settings.php:173
 msgid "jQuery Options:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:155
+#: includes/admin/class-wc-ecfb-settings.php:181
 msgid "Enable Mail Check:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:162
+#: includes/admin/class-wc-ecfb-settings.php:188
 msgid "If checked informs typos in email to users."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:169
+#: includes/admin/class-wc-ecfb-settings.php:195
 msgid "Enable Input Mask:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:176
+#: includes/admin/class-wc-ecfb-settings.php:202
 msgid ""
 "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
 "and Cell Phone."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:184
+#: includes/admin/class-wc-ecfb-settings.php:210
 msgid "Enable Address Autocomplete:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:191
+#: includes/admin/class-wc-ecfb-settings.php:217
 msgid "If checked automatically complete the address fields based on the zip code."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:199
+#: includes/admin/class-wc-ecfb-settings.php:225
 msgid "Validation:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:207
+#: includes/admin/class-wc-ecfb-settings.php:233
 msgid "Validate CPF:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:214
+#: includes/admin/class-wc-ecfb-settings.php:240
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:221
+#: includes/admin/class-wc-ecfb-settings.php:247
 msgid "Validate CNPJ:"
 msgstr ""
 
-#: includes/admin/class-wc-ecfb-settings.php:228
+#: includes/admin/class-wc-ecfb-settings.php:254
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
@@ -388,30 +404,30 @@ msgstr ""
 msgid "required"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:225
+#: includes/class-wc-ecfb-front-end.php:227
 msgid "Female"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:226
+#: includes/class-wc-ecfb-front-end.php:228
 msgid "Male"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:256
-#: includes/class-wc-ecfb-front-end.php:369
+#: includes/class-wc-ecfb-front-end.php:260
+#: includes/class-wc-ecfb-front-end.php:373
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:415
-#: includes/class-wc-ecfb-front-end.php:421
-#: includes/class-wc-ecfb-front-end.php:429
-#: includes/class-wc-ecfb-front-end.php:436
+#: includes/class-wc-ecfb-front-end.php:419
+#: includes/class-wc-ecfb-front-end.php:425
+#: includes/class-wc-ecfb-front-end.php:433
 #: includes/class-wc-ecfb-front-end.php:440
-#: includes/class-wc-ecfb-front-end.php:448
+#: includes/class-wc-ecfb-front-end.php:444
+#: includes/class-wc-ecfb-front-end.php:452
 msgid "is a required field"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:425
-#: includes/class-wc-ecfb-front-end.php:444
+#: includes/class-wc-ecfb-front-end.php:429
+#: includes/class-wc-ecfb-front-end.php:448
 msgid "is not valid"
 msgstr ""
 
@@ -473,19 +489,19 @@ msgctxt "placeholder"
 msgid "Birthdate"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:248
-#: includes/class-wc-ecfb-front-end.php:361
+#: includes/class-wc-ecfb-front-end.php:251
+#: includes/class-wc-ecfb-front-end.php:365
 msgctxt "placeholder"
 msgid "Number"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:263
-#: includes/class-wc-ecfb-front-end.php:376
+#: includes/class-wc-ecfb-front-end.php:267
+#: includes/class-wc-ecfb-front-end.php:380
 msgctxt "placeholder"
 msgid "Neighborhood"
 msgstr ""
 
-#: includes/class-wc-ecfb-front-end.php:289
+#: includes/class-wc-ecfb-front-end.php:293
 msgctxt "placeholder"
 msgid "Cell Phone"
 msgstr ""

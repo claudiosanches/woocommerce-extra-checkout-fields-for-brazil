@@ -113,17 +113,45 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// Birthdate and Sex option.
+		// Birthdate option.
 		add_settings_field(
-			'birthdate_sex',
-			__( 'Display Birthdate and Sex:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'birthdate',
+			__( 'Display Birthdate:', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
-				'id'    => 'birthdate_sex',
-				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'id'    => 'birthdate',
+				'label' => __( 'If checked show the Birthdate field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+			)
+		);
+
+		// Sex option.
+		add_settings_field(
+			'sex',
+			__( 'Display Sex:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'sex',
+				'label' => __( 'If checked show the Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+			)
+		);
+
+		// Ignore field 'number' (to use with legacy wordpress versions).
+		add_settings_field(
+			'nonumber',
+			__( 'Ignore Number:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'nonumber',
+				'label' => __( 'If checked the Number field will be ignored.', 'woocommerce-extra-checkout-fields-for-brazil' )
 			)
 		);
 

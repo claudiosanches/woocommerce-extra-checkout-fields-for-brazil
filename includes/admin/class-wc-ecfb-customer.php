@@ -67,11 +67,14 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 			$new_fields['billing']['fields']['billing_company'] = $fields['billing']['fields']['billing_company'];
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			$new_fields['billing']['fields']['billing_birthdate'] = array(
 				'label' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => ''
 			);
+		}
+
+		if ( isset( $settings['sex'] ) ) {
 			$new_fields['billing']['fields']['billing_sex'] = array(
 				'label' => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => ''
@@ -79,10 +82,12 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 		}
 
 		$new_fields['billing']['fields']['billing_address_1'] = $fields['billing']['fields']['billing_address_1'];
-		$new_fields['billing']['fields']['billing_number'] = array(
-			'label' => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'description' => ''
-		);
+		if ( !isset( $settings['nonumber'] ) ) {
+			$new_fields['billing']['fields']['billing_number'] = array(
+				'label' => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => ''
+			);
+		}
 		$new_fields['billing']['fields']['billing_address_2'] = $fields['billing']['fields']['billing_address_2'];
 		$new_fields['billing']['fields']['billing_neighborhood'] = array(
 			'label' => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -137,7 +142,9 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 	 * @return array          New address format.
 	 */
 	public function user_column_billing_address( $address, $user_id ) {
-		$address['number']       = get_user_meta( $user_id, 'billing_number', true );
+		if ( !isset( $settings['nonumber'] ) ) {
+			$address['number']       = get_user_meta( $user_id, 'billing_number', true );
+		}
 		$address['neighborhood'] = get_user_meta( $user_id, 'billing_neighborhood', true );
 
 		return $address;
