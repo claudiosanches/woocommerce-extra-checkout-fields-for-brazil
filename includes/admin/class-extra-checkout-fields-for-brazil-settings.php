@@ -40,7 +40,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 * Render the settings page for this plugin.
 	 */
 	public function html_settings_page() {
-		include_once 'views/html-settings-page.php';
+		include dirname( __FILE__ ) . '/views/html-settings-page.php';
 	}
 
 	/**
