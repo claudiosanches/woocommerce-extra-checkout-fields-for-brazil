@@ -1,10 +1,16 @@
 <?php
+/**
+ * Extra checkout fields admin settings.
+ *
+ * @package Extra_Checkout_Fields_For_Brazil/Admin/Settings
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Plugin settings class.
+ * Extra_Checkout_Fields_For_Brazil_Settings class.
  */
 class Extra_Checkout_Fields_For_Brazil_Settings {
 
@@ -18,7 +24,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Add the settings page.
-	*/
+	 */
 	public function settings_menu() {
 		add_submenu_page(
 			'woocommerce',
@@ -32,7 +38,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 	/**
 	 * Render the settings page for this plugin.
-	*/
+	 */
 	public function html_settings_page() {
 		include_once 'views/html-settings-page.php';
 	}
@@ -67,7 +73,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 					1 => __( 'Individuals and Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					2 => __( 'Individuals only', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					3 => __( 'Legal Person only', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				)
+				),
 			)
 		);
 
@@ -81,7 +87,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'only_brazil',
-				'label' => __( 'If checked the Individuals and Legal Person options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked the Individuals and Legal Person options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -95,7 +101,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'rg',
-				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -109,7 +115,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'ie',
-				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -123,7 +129,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'birthdate_sex',
-				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -137,7 +143,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'cell_phone',
-				'label' => __( 'If checked show the Cell Phone field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked show the Cell Phone field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -159,7 +165,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'mailcheck',
-				'label' => __( 'If checked informs typos in email to users.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked informs typos in email to users.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -173,7 +179,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'maskedinput',
-				'label' => __( 'If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -211,7 +217,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'validate_cpf',
-				'label' => __( 'Checks if the CPF is valid.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'Checks if the CPF is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -225,7 +231,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			array(
 				'menu'  => $option,
 				'id'    => 'validate_cnpj',
-				'label' => __( 'Checks if the CNPJ is valid.', 'woocommerce-extra-checkout-fields-for-brazil' )
+				'label' => __( 'Checks if the CNPJ is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -243,7 +249,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	/**
 	 * Checkbox element fallback.
 	 *
-	 * @return string Checkbox field.
+	 * @param array $args Callback arguments.
 	 */
 	public function checkbox_element_callback( $args ) {
 		$menu    = $args['menu'];
@@ -256,23 +262,13 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 
-		$html = '<input type="checkbox" id="' . $id . '" name="' . $menu . '[' . $id . ']" value="1"' . checked( 1, $current, false ) . '/>';
-
-		if ( isset( $args['label'] ) ) {
-			$html .= ' <label for="' . $id . '">' . $args['label'] . '</label>';
-		}
-
-		if ( isset( $args['description'] ) ) {
-			$html .= '<p class="description">' . $args['description'] . '</p>';
-		}
-
-		echo $html;
+		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
 
 	/**
 	 * Select element fallback.
 	 *
-	 * @return string Select field.
+	 * @param array $args Callback arguments.
 	 */
 	public function select_element_callback( $args ) {
 		$menu    = $args['menu'];
@@ -285,17 +281,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$current = isset( $args['default'] ) ? $args['default'] : 0;
 		}
 
-		$html = '<select id="' . $id . '" name="' . $menu . '[' . $id . ']">';
-			foreach ( $args['options'] as $key => $value ) {
-				$html .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $current, $key, false ), $value );
-			}
-		$html .= '</select>';
-
-		if ( isset( $args['description'] ) ) {
-			$html .= '<p class="description">' . $args['description'] . '</p>';
-		}
-
-		echo $html;
+		include dirname( __FILE__ ) . '/views/html-select-field.php';
 	}
 
 	/**
