@@ -1,15 +1,30 @@
 <?php
 /**
  * Plugin Name: WooCommerce Extra Checkout Fields for Brazil
- * Plugin URI: https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil
- * Description: Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
- * Version: 3.5.0
- * Author: Claudio Sanches
- * Author URI: http://claudiosmweb.com/
+ * Plugin URI:  https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil
+ * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
+ * Author:      Claudio Sanches
+ * Author URI:  https://claudiosanches.com
+ * Version:     3.5.0
+ * License:     GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /languages
+ *
+ * WooCommerce Extra Checkout Fields for Brazil is free software: you can
+ * redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation,
+ * either version 2 of the License, or any later version.
+ *
+ * WooCommerce Extra Checkout Fields for Brazil is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WooCommerce Extra Checkout Fields for Brazil. If not, see
+ * <https://www.gnu.org/licenses/gpl-2.0.txt>.
+ *
+ * @package Extra_Checkout_Fields_For_Brazil
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
