@@ -111,7 +111,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	private function includes() {
 		include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil-formatting.php';
 		include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil-front-end.php';
-		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-plugins-support.php';
+		include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil-integrations.php';
 		include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil-api.php';
 	}
 
