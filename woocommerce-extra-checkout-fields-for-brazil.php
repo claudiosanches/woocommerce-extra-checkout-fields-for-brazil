@@ -109,20 +109,20 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Includes.
 	 */
 	private function includes() {
-		include_once 'includes/class-wc-ecfb-formatting.php';
-		include_once 'includes/class-wc-ecfb-front-end.php';
-		include_once 'includes/class-wc-ecfb-plugins-support.php';
-		include_once 'includes/class-wc-ecfb-api.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-formatting.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-front-end.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-plugins-support.php';
+		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-api.php';
 	}
 
 	/**
 	 * Admin includes.
 	 */
 	private function admin_includes() {
-		include_once 'includes/admin/class-wc-ecfb-admin.php';
-		include_once 'includes/admin/class-wc-ecfb-settings.php';
-		include_once 'includes/admin/class-wc-ecfb-order.php';
-		include_once 'includes/admin/class-wc-ecfb-customer.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-admin.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-settings.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-order.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-customer.php';
 	}
 
 	/**
