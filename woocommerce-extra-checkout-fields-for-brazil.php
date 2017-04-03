@@ -109,7 +109,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Includes.
 	 */
 	private function includes() {
-		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-formatting.php';
+		include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil-formatting.php';
 		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-front-end.php';
 		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-plugins-support.php';
 		include_once dirname( __FILE__ ) . '/includes/class-wc-ecfb-api.php';
