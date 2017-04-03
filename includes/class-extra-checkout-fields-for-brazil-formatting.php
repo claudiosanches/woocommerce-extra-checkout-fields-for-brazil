@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Formatting class.
+ * Extra_Checkout_Fields_For_Brazil_Formatting class.
  */
 class Extra_Checkout_Fields_For_Brazil_Formatting {
 

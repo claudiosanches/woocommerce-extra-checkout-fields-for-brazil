@@ -1,10 +1,16 @@
 <?php
+/**
+ * Extra checkout fields frontend actions.
+ *
+ * @package Extra_Checkout_Fields_For_Brazil/Frontend
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Front-end actions.
+ * Extra_Checkout_Fields_For_Brazil_Front_End class.
  */
 class Extra_Checkout_Fields_For_Brazil_Front_End {
 
@@ -12,9 +18,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Initialize the front-end actions.
 	 */
 	public function __construct() {
-		// Load custom order data.
-		add_filter( 'woocommerce_load_order_data', array( $this, 'load_order_data' ) );
-
 		// Load public-facing scripts.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'woocommerce_after_edit_account_address_form', array( $this, 'load_scripts' ) );
@@ -39,40 +42,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
-	 * Load order custom data.
-	 *
-	 * @param  array $data Default WC_Order data.
-	 *
-	 * @return array       Custom WC_Order data.
-	 */
-	public function load_order_data( $data ) {
-
-		// Billing
-		$data['billing_persontype']    = '';
-		$data['billing_cpf']           = '';
-		$data['billing_rg']            = '';
-		$data['billing_cnpj']          = '';
-		$data['billing_ie']            = '';
-		$data['billing_birthdate']     = '';
-		$data['billing_sex']           = '';
-		$data['billing_number']        = '';
-		$data['billing_neighborhood']  = '';
-		$data['billing_cellphone']     = '';
-
-		// Shipping
-		$data['shipping_number']       = '';
-		$data['shipping_neighborhood'] = '';
-
-		return $data;
-	}
-
-	/**
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_register_script( 'jquery.mask', plugins_url( 'assets/js/jquery.mask/jquery.mask' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.14.10', true );
+		wp_register_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask/jquery.mask' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.14.10', true );
 
 		wp_register_script( 'mailcheck', plugins_url( 'assets/js/mailcheck/mailcheck' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
 
@@ -90,7 +65,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'maskedinput'     => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 				'addresscomplete' => apply_filters( 'woocommerce_correios_enable_autofill_addresses', false ) ? false : $autofill,
 				'person_type'     => absint( $settings['person_type'] ),
-				'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no'
+				'only_brazil'     => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 			)
 		);
 	}
@@ -113,7 +88,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$new_fields = array();
 
 		// Get plugin settings.
-		$settings = get_option( 'wcbcf_settings' );
+		$settings    = get_option( 'wcbcf_settings' );
+		$person_type = intval( $settings['person_type'] );
 
 		if ( isset( $fields['billing_first_name'] ) ) {
 			$new_fields['billing_first_name'] = $fields['billing_first_name'];
@@ -125,8 +101,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$new_fields['billing_last_name']['class'] = array( 'form-row-last' );
 		}
 
-		if ( 0 != $settings['person_type'] ) {
-			if ( 1 == $settings['person_type'] ) {
+		if ( 0 !== $person_type ) {
+			if ( 1 === $person_type ) {
 				$new_fields['billing_persontype'] = array(
 					'type'     => 'select',
 					'label'    => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -135,26 +111,26 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'options'  => array(
 						'0' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' )
-					)
+						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					),
 				);
 			}
 
-			if ( 1 == $settings['person_type'] || 2 == $settings['person_type'] ) {
+			if ( 1 === $person_type || 2 === $person_type ) {
 				if ( isset( $settings['rg'] ) ) {
 					$new_fields['billing_cpf'] = array(
 						'label'       => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-first', 'person-type-field' ),
 						'required'    => false,
-						'type'        => 'tel'
+						'type'        => 'tel',
 					);
 
 					$new_fields['billing_rg'] = array(
 						'label'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'placeholder' => _x( 'RG', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-last', 'person-type-field' ),
-						'required'    => false
+						'required'    => false,
 					);
 				} else {
 					$new_fields['billing_cpf'] = array(
@@ -162,12 +138,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'placeholder' => _x( 'CPF', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-wide', 'person-type-field' ),
 						'required'    => false,
-						'type'        => 'tel'
+						'type'        => 'tel',
 					);
 				}
 			}
 
-			if ( 1 == $settings['person_type'] || 3 == $settings['person_type'] ) {
+			if ( 1 === $person_type || 3 === $person_type ) {
 				if ( isset( $fields['billing_company'] ) ) {
 					$new_fields['billing_company'] = $fields['billing_company'];
 					$new_fields['billing_company']['class'] = array( 'form-row-wide' );
@@ -181,14 +157,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-first', 'person-type-field' ),
 						'required'    => false,
-						'type'        => 'tel'
+						'type'        => 'tel',
 					);
 
 					$new_fields['billing_ie'] = array(
 						'label'       => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'placeholder' => _x( 'State Registration', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-last', 'person-type-field' ),
-						'required'    => false
+						'required'    => false,
 					);
 				} else {
 					$new_fields['billing_cnpj'] = array(
@@ -196,18 +172,17 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'placeholder' => _x( 'CNPJ', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'       => array( 'form-row-wide', 'person-type-field' ),
 						'required'    => false,
-						'type'        => 'tel'
+						'type'        => 'tel',
 					);
 				}
 			}
-
 		} else {
 			if ( isset( $fields['billing_company'] ) ) {
 				$new_fields['billing_company'] = $fields['billing_company'];
 				$new_fields['billing_company']['class'] = array( 'form-row-wide' );
 				$new_fields['billing_company']['clear'] = true;
 			}
-		}
+		} // End if().
 
 		if ( isset( $settings['birthdate_sex'] ) ) {
 			$new_fields['billing_birthdate'] = array(
@@ -215,7 +190,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'placeholder' => _x( 'Birthdate', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'       => array( 'form-row-first' ),
 				'clear'       => false,
-				'required'    => true
+				'required'    => true,
 			);
 
 			$new_fields['billing_sex'] = array(
@@ -227,8 +202,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'options'     => array(
 					'' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					__( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )   => __( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )
-				)
+					__( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )   => __( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
 			);
 		}
 
@@ -252,7 +227,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'placeholder' => _x( 'Number', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'       => array( 'form-row-last', 'address-field' ),
 			'clear'       => true,
-			'required'    => true
+			'required'    => true,
 		);
 
 		if ( isset( $fields['billing_address_2'] ) ) {
@@ -292,7 +267,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'label'       => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'placeholder' => _x( 'Cell Phone', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'       => array( 'form-row-last' ),
-				'clear'       => true
+				'clear'       => true,
 			);
 
 			if ( isset( $fields['billing_email'] ) ) {
@@ -301,7 +276,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				$new_fields['billing_email']['clear'] = true;
 				$new_fields['billing_email']['type'] = 'email';
 			}
-
 		} else {
 			if ( isset( $fields['billing_phone'] ) ) {
 				$new_fields['billing_phone'] = $fields['billing_phone'];
@@ -315,7 +289,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				$new_fields['billing_email']['clear'] = true;
 				$new_fields['billing_email']['type'] = 'email';
 			}
-
 		}
 
 		return apply_filters( 'wcbcf_billing_fields', $new_fields );
@@ -367,7 +340,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'placeholder' => _x( 'Number', 'placeholder', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'       => array( 'form-row-last', 'address-field' ),
 			'clear'       => true,
-			'required'    => true
+			'required'    => true,
 		);
 
 		if ( isset( $fields['shipping_address_2'] ) ) {
@@ -410,19 +383,20 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		// Get plugin settings.
 		$settings           = get_option( 'wcbcf_settings' );
+		$person_type        = intval( $settings['person_type'] );
 		$only_brazil        = isset( $settings['only_brazil'] ) ? true : false;
-		$billing_persontype = isset( $_POST['billing_persontype'] ) ? $_POST['billing_persontype'] : 0;
+		$billing_persontype = isset( $_POST['billing_persontype'] ) ? intval( wp_unslash( $_POST['billing_persontype'] ) ) : 0;
 
-		if ( $only_brazil && 'BR' != $_POST['billing_country'] || 0 == $settings['person_type'] ) {
+		if ( $only_brazil && 'BR' !== wp_unslash( $_POST['billing_country'] ) || 0 === $person_type ) {
 			return;
 		}
 
-		if ( 0 == $billing_persontype && 1 == $settings['person_type'] ) {
+		if ( 0 === $billing_persontype && 1 === $person_type ) {
 			wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 		} else {
 
 			// Check CPF.
-			if ( ( 1 == $settings['person_type'] && 1 == $billing_persontype ) || 2 == $settings['person_type'] ) {
+			if ( ( 1 === $person_type && 1 === $billing_persontype ) || 2 === $person_type ) {
 				if ( empty( $_POST['billing_cpf'] ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
@@ -437,7 +411,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 
 			// Check Company and CPNJ.
-			if ( ( 1 == $settings['person_type'] && 2 == $billing_persontype ) || 3 == $settings['person_type'] ) {
+			if ( ( 1 === $person_type && 2 === $billing_persontype ) || 3 === $person_type ) {
 				if ( empty( $_POST['billing_company'] ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
@@ -446,7 +420,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
-				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $_POST['billing_cnpj'] ) ) {
+				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( wp_unslash( $_POST['billing_cnpj'] ) ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
@@ -454,7 +428,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 			}
-		}
+		} // End if().
 	}
 
 	/**
@@ -479,10 +453,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array               New replacements.
 	 */
 	public function formatted_address_replacements( $replacements, $args ) {
-		extract( $args );
-
-		$replacements['{number}']       = $number;
-		$replacements['{neighborhood}'] = $neighborhood;
+		$replacements['{number}']       = $args['number'];
+		$replacements['{neighborhood}'] = $args['neighborhood'];
 
 		return $replacements;
 	}
@@ -490,14 +462,20 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Custom order formatted billing address.
 	 *
-	 * @param  array $address Default address.
-	 * @param  object $order  Order data.
+	 * @param  array  $address Default address.
+	 * @param  object $order   Order data.
 	 *
-	 * @return array          New address format.
+	 * @return array           New address format.
 	 */
 	public function order_formatted_billing_address( $address, $order ) {
-		$address['number']       = $order->billing_number;
-		$address['neighborhood'] = $order->billing_neighborhood;
+		// WooCommerce 3.0 or later.
+		if ( method_exists( $order, 'get_meta' ) ) {
+			$address['number']       = $order->get_meta( '_billing_number' );
+			$address['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
+		} else {
+			$address['number']       = $order->billing_number;
+			$address['neighborhood'] = $order->billing_neighborhood;
+		}
 
 		return $address;
 	}
@@ -505,14 +483,20 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Custom order formatted shipping address.
 	 *
-	 * @param  array $address Default address.
-	 * @param  object $order  Order data.
+	 * @param  array  $address Default address.
+	 * @param  object $order   Order data.
 	 *
-	 * @return array          New address format.
+	 * @return array           New address format.
 	 */
 	public function order_formatted_shipping_address( $address, $order ) {
-		$address['number']       = $order->shipping_number;
-		$address['neighborhood'] = $order->shipping_neighborhood;
+		// WooCommerce 3.0 or later.
+		if ( method_exists( $order, 'get_meta' ) ) {
+			$address['number']       = $order->get_meta( '_shipping_number' );
+			$address['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
+		} else {
+			$address['number']       = $order->shipping_number;
+			$address['neighborhood'] = $order->shipping_neighborhood;
+		}
 
 		return $address;
 	}
@@ -520,11 +504,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Custom my address formatted address.
 	 *
-	 * @param  array $address   Default address.
-	 * @param  int $customer_id Customer ID.
-	 * @param  string $name     Field name (billing or shipping).
+	 * @param  array  $address     Default address.
+	 * @param  int    $customer_id Customer ID.
+	 * @param  string $name        Field name (billing or shipping).
 	 *
-	 * @return array            New address format.
+	 * @return array               New address format.
 	 */
 	public function my_account_my_address_formatted_address( $address, $customer_id, $name ) {
 		$address['number']       = get_user_meta( $customer_id, $name . '_number', true );
@@ -536,17 +520,23 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Order address.
 	 *
-	 * @param  array $address
-	 * @param  string $type
-	 * @param  WC_Order $order
+	 * @param  array    $address Address data.
+	 * @param  string   $type    Address type.
+	 * @param  WC_Order $order   Order object.
 	 * @return array
 	 */
 	public function order_address( $address, $type, $order ) {
 		$number       = $type . '_number';
 		$neighborhood = $type . '_neighborhood';
 
-		$address['number']       = $order->$number;
-		$address['neighborhood'] = $order->$neighborhood;
+		// WooCommerce 3.0 or later.
+		if ( method_exists( $order, 'get_meta' ) ) {
+			$address['number']       = $order->get_meta( '_' . $number );
+			$address['neighborhood'] = $order->get_meta( '_' . $neighborhood );
+		} else {
+			$address['number']       = $order->$number;
+			$address['neighborhood'] = $order->$neighborhood;
+		}
 
 		return $address;
 	}
