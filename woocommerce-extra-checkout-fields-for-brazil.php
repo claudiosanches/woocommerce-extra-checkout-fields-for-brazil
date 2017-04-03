@@ -66,6 +66,7 @@ class Extra_Checkout_Fields_For_Brazil {
 			}
 
 			$this->includes();
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
 		}
@@ -122,6 +123,20 @@ class Extra_Checkout_Fields_For_Brazil {
 		include_once 'includes/admin/class-wc-ecfb-settings.php';
 		include_once 'includes/admin/class-wc-ecfb-order.php';
 		include_once 'includes/admin/class-wc-ecfb-customer.php';
+	}
+
+	/**
+	 * Action links.
+	 *
+	 * @param  array $links Default plugin links.
+	 *
+	 * @return array
+	 */
+	public function plugin_action_links( $links ) {
+		$plugin_links   = array();
+		$plugin_links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=woocommerce-extra-checkout-fields-for-brazil' ) ) . '">' . __( 'Settings', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
+
+		return array_merge( $plugin_links, $links );
 	}
 
 	/**
