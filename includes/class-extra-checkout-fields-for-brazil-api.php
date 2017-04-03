@@ -187,7 +187,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 				$order_data['customer']['shipping_address']['number']       = $order->shipping_number;
 				$order_data['customer']['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
 			}
-		}
+		} // End if().
 
 		if ( $fields ) {
 			$order_data = WC()->api->WC_API_Customers->filter_response_fields( $order_data, $order, $fields );
@@ -337,7 +337,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * Add extra fields in orders response.
 	 *
 	 * @param WP_REST_Response $response The response object.
-	 * @param WP_Post          $post     Post object.
+	 * @param WC_Order         $order    Order object.
 	 *
 	 * @return WP_REST_Response
 	 */
