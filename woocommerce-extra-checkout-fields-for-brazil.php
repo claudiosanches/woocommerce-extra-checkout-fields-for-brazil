@@ -119,10 +119,10 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Admin includes.
 	 */
 	private function admin_includes() {
-		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-admin.php';
-		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-settings.php';
-		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-order.php';
-		include_once dirname( __FILE__ ) . '/includes/admin/class-wc-ecfb-customer.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-extra-checkout-fields-for-brazil-admin.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-extra-checkout-fields-for-brazil-settings.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-extra-checkout-fields-for-brazil-order.php';
+		include_once dirname( __FILE__ ) . '/includes/admin/class-extra-checkout-fields-for-brazil-customer.php';
 	}
 
 	/**
