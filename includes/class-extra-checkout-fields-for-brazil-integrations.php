@@ -44,7 +44,7 @@ class Extra_Checkout_Fields_For_Brazil_Integrations {
 
 				if ( 2 === $person_type ) {
 					$args['cliente_cnpj']         = str_replace( array( '-', '.' ), '', $order->get_meta( '_billing_cnpj' ) );
-					$args['cliente_razao_social'] = $order->get_meta( '_billing_company' );
+					$args['cliente_razao_social'] = $order->get_billing_company();
 				}
 			}
 		} else {

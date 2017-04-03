@@ -14,17 +14,7 @@
 		._billing_number_field,
 		._shipping_number_field {
 			float: right !important;
-		}
-	}
-
-	&.panel {
-		.order_data_column .address {
-			display: none;
-		}
-
-		/* To WooCommerce 1.6.6 or earlier */
-		.order_data .address {
-			display: none;
+			clear: right !important;
 		}
 	}
 }
