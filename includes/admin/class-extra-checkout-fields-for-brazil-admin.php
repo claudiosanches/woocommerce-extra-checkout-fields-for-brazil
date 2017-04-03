@@ -54,6 +54,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		}
 
 		if ( 'woocommerce_page_woocommerce-extra-checkout-fields-for-brazil' === $screen->id ) {
+			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-settings', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'css/admin/settings.css', array(), Extra_Checkout_Fields_For_Brazil::VERSION );
 			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/admin' . $suffix . '.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION );
 		}
 	}

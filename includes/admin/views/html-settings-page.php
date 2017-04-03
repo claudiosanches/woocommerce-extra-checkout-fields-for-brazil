@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
 	<?php settings_errors(); ?>
+
+	<?php include dirname( __FILE__ ) . '/html-admin-help-message.php'; ?>
 	<form method="post" action="options.php">
 		<?php
 			settings_fields( 'wcbcf_settings' );
