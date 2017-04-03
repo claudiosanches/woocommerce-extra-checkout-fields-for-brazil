@@ -112,44 +112,42 @@ jQuery( function( $ ) {
 		},
 
 		maskBilling: function() {
-			$( '#billing_phone, #billing_cellphone' )
-				.focusout( wc_ecfb_frontend.maskPhone )
-				.trigger( 'focusout' );
-			$( '#billing_birthdate' ).mask( '99/99/9999' );
-			$( '#billing_postcode' ).mask( '99999-999' );
+			wc_ecfb_frontend.maskPhone( '#billing_phone, #billing_cellphone' );
+			$( '#billing_birthdate' ).mask( '00/00/0000' );
+			$( '#billing_postcode' ).mask( '00000-000' );
+			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).attr( 'type', 'tel' );
 		},
 
 		unmaskBilling: function() {
-			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).unmask();
+			$( '#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode' ).unmask().attr( 'type', 'text' );
 		},
 
 		maskShipping: function() {
-			$( '#shipping_postcode' ).mask( '99999-999' );
+			$( '#shipping_postcode' ).mask( '00000-000' ).attr( 'type', 'tel' );
 		},
 
 		unmaskShipping: function() {
-			$( '#shipping_postcode' ).unmask();
+			$( '#shipping_postcode' ).unmask().attr( 'type', 'text' );
 		},
 
 		maskGeneral: function() {
-			$( '#billing_cpf, #credit-card-cpf' ).mask( '999.999.999-99' );
-			$( '#billing_cnpj' ).mask( '99.999.999/9999-99' );
-			$( '#credit-card-phone' )
-				.focusout( wc_ecfb_frontend.maskPhone )
-					.trigger( 'focusout' );
+			$( '#billing_cpf, #credit-card-cpf' ).mask( '000.000.000-00' );
+			$( '#billing_cnpj' ).mask( '00.000.000/0000-00' );
+			wc_ecfb_frontend.maskPhone( '#credit-card-phone' );
 		},
 
-		maskPhone: function() {
-			var phone, element;
-			element = $( this );
-			element.unmask();
-			phone = element.val().replace( /\D/g, '' );
+		maskPhone: function(selector) {
+			var $element = $(selector),
+					MaskBehavior = function(val) {
+						return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+					},
+					maskOptions = {
+						onKeyPress: function(val, e, field, options) {
+							field.mask(MaskBehavior.apply({}, arguments), options);
+						}
+					};
 
-			if ( phone.length > 10 ) {
-				element.mask( '(99) 99999-999?9' );
-			} else {
-				element.mask( '(99) 9999-9999?9' );
-			}
+			$element.mask(MaskBehavior, maskOptions);
 		},
 
 		emailCheck: function() {

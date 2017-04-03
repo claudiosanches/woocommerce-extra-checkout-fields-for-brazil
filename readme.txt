@@ -4,7 +4,7 @@ Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 3.4.6
+Stable tag: 3.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,7 @@ Você pode esclarecer suas dúvidas usando:
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
-* [Masked Input jQuery](https://github.com/digitalBush/jquery.maskedinput).
+* [jQuery Mask Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin).
 * [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
 = Colaborar =
@@ -76,6 +76,13 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.5.0 - 2017/01/09 =
+
+- Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin).
+- Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário.
+- Alterados os tipos dos campos telefone, celular, cep, data de nascimento para `tel` quando o país selecionado for BR.
+- Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`.
 
 = 3.4.6 - 2017/01/04 =
 
