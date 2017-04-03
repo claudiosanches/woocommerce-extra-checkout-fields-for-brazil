@@ -11,7 +11,9 @@ jQuery( function( $ ) {
 		 * Initialize frontend actions
 		 */
 		init: function() {
-			$( document.body ).on( 'country_to_state_changing', this.country_to_state_changing );
+			if ( '0' === wcbcf_public_params.sort_state_country ) {
+				$( document.body ).on( 'country_to_state_changing', this.country_to_state_changing );
+			}
 
 			if ( '0' !== wcbcf_public_params.person_type ) {
 				this.person_type_fields();
