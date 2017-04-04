@@ -1,5 +1,5 @@
 # WooCommerce Extra Checkout Fields for Brazil #
-**Contributors:** claudiosanches  
+**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)  
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
@@ -16,11 +16,9 @@ Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo
 
 É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
 
-A partir da versão 3.1.0 é feita integração também com a [API](http://docs.woothemes.com/document/woocommerce-rest-api/) de pedidos e de clientes do WooCommerce.
-
 ### Compatibilidade ###
 
-Compatível desde a versão 2.2.x até 2.6.x do WooCommerce.
+Compatível desde a versão 2.2.x até 3.0.x do WooCommerce.
 
 Funciona com os plugins:
 
@@ -47,16 +45,6 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 Você pode contribuir com código-fonte em nossa página no [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
 
-## Installation ##
-
-* Upload plugin files to your plugins folder, or install using WordPress built-in Add New Plugin installer;
-* Activate the plugin.
-
-### Instalação e configuração em Português: ###
-
-* Envie os arquivos do plugin para a pasta wp-content/plugins ou usando o instalador de plugins do WordPress.
-* Ative o plugin.
-
 ## Frequently Asked Questions ##
 
 ### Qual é a licença do plugin? ###
@@ -70,69 +58,33 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 ## Screenshots ##
 
 ### 1. Página de Checkout ###
-![1. Página de Checkout](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
+![Página de Checkout](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
 
 ### 2. Página de edição de endereço ###
-![2. Página de edição de endereço](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
+![Página de edição de endereço](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
 
 ### 3. Página de dados do pedido ###
-![3. Página de dados do pedido](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
+![Página de dados do pedido](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
 
 ### 4. Configurações do plugin ###
-![4. Configurações do plugin](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
+![Configurações do plugin](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
 
 ### 5. Sugestão de e-mail ###
-![5. Sugestão de e-mail](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
+![Sugestão de e-mail](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
 
 
 ## Changelog ##
 
-### 3.5.0 - 2017/01/09 ###
+### 3.5.0 - 2017/03/04 ###
 
-- Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin).
-- Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário.
-- Alterados os tipos dos campos telefone, celular, cep, data de nascimento para `tel` quando o país selecionado for BR.
-- Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`.
-
-### 3.4.6 - 2017/01/04 ###
-
-- Corrigido alinhamento do campo de CEP na página de edição de endereços em "Minha conta".
-
-### 3.4.5 - 2016/10/09 ###
-
-- Melhorada validação do campo "sexo".
-- Melhorado o registro e carregamento dos scripts do plugin.
-
-### 3.4.4 - 2016/06/20 ###
-
-- Adicionado suporte a nova API REST do WooCommerce.
-- Corrigido localização do campo de CEP na página de editar endereços.
-- Corrigido os campos de bairro e número no método `WC_Order::get_order_address()`.
-- Adicionada compatibilidade com o WooCommerce Correios 3.0.0.
-
-### 3.4.3 - 2016/03/20 ###
-
-- Corrigida as mascaras quando não esta preenchendo um endereço brasileiro.
-- Incluídos os campos de bairro e número no método `WC_Order::get_order_address()`.
-
-### 3.4.2 - 2016/02/10 ###
-
-- Adicionado o filtro `wcbcf_disable_checkout_validation` para suportar o plugin [WooCommerce Digital Goods Checkout](https://wordpress.org/plugins/wc-digital-goods-checkout/).
-
-### 3.4.1 - 2015/09/07 ###
-
-- Corrigido erros na tela de configurações do plugin.
-- Corrigido os campos de estado e país na tela de edição de usuário no administrador do WordPress.
-
-### 3.4.0 - 2015/08/18 ###
-
-- Adicionado suporte para WooCommerce 2.4.
-- Removido suporte para WooCommerce 2.0 e 2.1.
-- Corrigida integração com a API do WooCommerce quando é usado filtros para campos.
+- Adicionado suporte ao WooCommerce 3.0.
+- Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin). (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
+- Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
+- Alterados os tipos dos campos telefone, celular, cep, data de nascimento para `tel` quando o país selecionado for BR. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
+- Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
 
 ## Upgrade Notice ##
 
-### 3.4.5 ###
+### 3.5.0 ###
 
-- Melhorada validação do campo "sexo".
-- Melhorado o registro e carregamento dos scripts do plugin.
+- Suporte ao WooCommerce 3.0, correção das máscaras no mobile e outras correções. 
