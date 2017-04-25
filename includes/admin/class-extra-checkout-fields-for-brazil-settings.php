@@ -298,7 +298,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		foreach ( $input as $key => $value ) {
 			// Check to see if the current option has a value. If so, process it.
 			if ( isset( $input[ $key ] ) ) {
-				$output[ $key ] = woocommerce_clean( $input[ $key ] );
+				$output[ $key ] = sanitize_text_field( $input[ $key ] );
 			}
 		}
 
