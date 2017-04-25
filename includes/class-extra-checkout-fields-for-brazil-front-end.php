@@ -26,6 +26,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// New checkout fields.
 		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ), 10 );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ), 10 );
+		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
 
 		// Valid checkout fields.
 		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
@@ -386,6 +387,22 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		return apply_filters( 'wcbcf_shipping_fields', $new_fields );
+	}
+
+	/**
+	 * Update address fields priority.
+	 *
+	 * @param  array $locales Default WooCommerce locales.
+	 * @return array
+	 */
+	public function address_fields_priority( $locales ) {
+		$locales['BR'] = array(
+			'postcode' => array(
+				'priority' => 45,
+			),
+		);
+
+		return $locales;
 	}
 
 	/**
