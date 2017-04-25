@@ -63,7 +63,7 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 				$d += $cnpj[ $c ] * $p;
 			}
 
-			if ( $cnpj[ ++$t ] !== ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
+			if ( intval( $cnpj[ ++$t ] ) !== ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
 				return false;
 			}
 		}
