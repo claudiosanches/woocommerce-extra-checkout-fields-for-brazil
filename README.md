@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj, rg, ie  
 **Requires at least:** 3.5  
 **Tested up to:** 4.7  
-**Stable tag:** 3.5.0  
+**Stable tag:** 3.5.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -75,6 +75,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
+### 3.5.1 - 2017/04/26 ###
+
+- Corrigido o posicionamento do campo de CEP.
+- Corrigida a validação de CPNJ.
+
 ### 3.5.0 - 2017/03/04 ###
 
 - Adicionado suporte ao WooCommerce 3.0.
@@ -85,6 +90,6 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.5.0 ###
+### 3.5.1 ###
 
-- Suporte ao WooCommerce 3.0, correção das máscaras no mobile e outras correções. 
+- Suporte ao WooCommerce 3.0, correção das máscaras no mobile e outras correções.
