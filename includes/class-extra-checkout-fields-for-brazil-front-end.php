@@ -29,7 +29,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
 
 		// Valid checkout fields.
-		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ) );
+		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ), 10 );
 
 		// Custom address format.
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
