@@ -1,10 +1,10 @@
 === WooCommerce Extra Checkout Fields for Brazil ===
 Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
-Tags: woocommerce, checkout, brazil, cpf, cpnj, rg, ie
+Tags: woocommerce, checkout, brazil, cpf, cpnj
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 3.5.1
+Stable tag: 3.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,13 +57,17 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Screenshots ==
 
-1. Página de Checkout
-2. Página de edição de endereço
+1. Página de checkout usando o tema Storefront
+2. Página de edição de endereço de entrega usando o tema Storefront
 3. Página de dados do pedido
 4. Configurações do plugin
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.6.0 - 2017/05/12 =
+
+- Modificada a posição de todos os campos do formulário para funcionar melhor com temas que ainda não são totalmente compatíveis com o WooCommerce 3.0.
 
 = 3.5.1 - 2017/04/26 =
 
@@ -80,6 +84,6 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.5.1 =
+= 3.6.0 =
 
-- Suporte ao WooCommerce 3.0, correção das máscaras no mobile e outras correções.
+- Modificada a posição de todos os campos do formulário para funcionar melhor com temas que ainda não são totalmente compatíveis com o WooCommerce 3.0.
