@@ -52,6 +52,11 @@ jQuery( function( $ ) {
 				this.addressAutoComplete( 'shipping' );
 				this.addressAutoCompleteOnChange( 'shipping' );
 			}
+
+			// Check if select2 exists.
+			if ( $().select2 ) {
+				$( '.wc-ecfb-select' ).select2();
+			}
 		},
 
 		/**
