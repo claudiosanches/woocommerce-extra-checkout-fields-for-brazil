@@ -49,7 +49,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	public function plugin_settings() {
 		$option = 'wcbcf_settings';
 
-		// Set Custom Fields cection.
+		// Set Custom Fields section.
 		add_settings_section(
 			'options_section',
 			__( 'Checkout Custom Fields:', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -147,7 +147,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// Set Custom Fields cection.
+		// Set Custom Fields section.
 		add_settings_section(
 			'jquery_section',
 			__( 'jQuery Options:', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -199,7 +199,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			);
 		}
 
-		// Set Custom Fields cection.
+		// Set Custom Fields section.
 		add_settings_section(
 			'validation_section',
 			__( 'Validation:', 'woocommerce-extra-checkout-fields-for-brazil' ),
