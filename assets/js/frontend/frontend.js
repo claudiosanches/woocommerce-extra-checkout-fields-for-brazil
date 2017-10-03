@@ -192,18 +192,14 @@ jQuery( function( $ ) {
 					// Gets the address.
 					$.ajax({
 						type: 'GET',
-						url: '//correiosapi.apphb.com/cep/' + cep,
+						url: '//api.postmon.com.br/v1/cep/' + cep,
 						dataType: 'jsonp',
 						crossDomain: true,
 						contentType: 'application/json',
 						success: function ( address ) {
 
-							// Address.
-							if ( '' !== address.tipoDeLogradouro ) {
-								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro ).change();
-							} else {
-								$( '#' + field + '_address_1' ).val( address.logradouro ).change();
-							}
+							// Address - Already comes with the type.
+							$( '#' + field + '_address_1' ).val( address.logradouro ).change();
 
 							// Neighborhood.
 							$( '#' + field + '_neighborhood' ).val( address.bairro ).change();
