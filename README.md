@@ -39,7 +39,7 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
 * [jQuery Mask Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin).
-* [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
+* [Postmon por CodingForChange](http://postmon.com.br/).
 
 ### Colaborar ###
 
