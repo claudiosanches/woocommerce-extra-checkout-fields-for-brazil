@@ -1,0 +1,9 @@
+#billing_persontype_field,
+#billing_cnpj_field,
+#billing_ie_field,
+#billing_cpf_field,
+#billing_rg_field {
+    .optional {
+        display: none;
+    }
+}

@@ -67,7 +67,7 @@ module.exports = function( grunt ) {
 
 		// Process sass files.
 		sass: {
-			compile: {
+			admin: {
 				options: {
 					sourcemap: 'none',
 					style: 'compressed'
@@ -79,13 +79,26 @@ module.exports = function( grunt ) {
 					dest: '<%= dirs.admin.css %>/',
 					ext: '.css'
 				}]
+            },
+			frontend: {
+				options: {
+					sourcemap: 'none',
+					style: 'compressed'
+				},
+				files: [{
+					expand: true,
+					cwd: '<%= dirs.front.css %>/',
+					src: ['*.scss'],
+					dest: '<%= dirs.front.css %>/',
+					ext: '.css'
+				}]
 			}
 		},
 
 		// Watch for changes and trigger compass, jshint and uglify.
 		watch: {
 			sass: {
-				files: ['<%= dirs.admin.css %>/*.scss'],
+				files: ['<%= dirs.admin.css %>/*.scss', '<%= dirs.front.css %>/*.scss'],
 				tasks: ['sass']
 			},
 			js: {

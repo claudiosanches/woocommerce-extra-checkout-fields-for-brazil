@@ -78,6 +78,7 @@ jQuery( function( $ ) {
 		person_type_fields: function() {
 			// Required fields.
 			if ( 'no' === wcbcf_public_params.only_brazil ) {
+                $( '.person-type-field label .required' ).remove();
 				$( '.person-type-field' ).addClass( 'validate-required' );
 				$( '.person-type-field label' ).append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 			} else {
@@ -85,11 +86,12 @@ jQuery( function( $ ) {
 					var current = $( this ).val();
 
 					if ( 'BR' === current ) {
+                        $( '.person-type-field label .required' ).remove();
 						$( '.person-type-field' ).addClass( 'validate-required' );
 						$( '.person-type-field label' ).append( ' <abbr class="required" title="' + wcbcf_public_params.required + '">*</abbr>' );
 					} else {
 						$( '.person-type-field' ).removeClass( 'validate-required' );
-						$( '.person-type-field label abbr' ).remove();
+						$( '.person-type-field label .required' ).remove();
 					}
 				}).change();
 			}

@@ -46,7 +46,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+        $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+        
+        wp_register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/css/frontend/frontend.css', plugin_dir_path( __FILE__ ) ), array(), Extra_Checkout_Fields_For_Brazil::VERSION, 'all' );
 
 		wp_register_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask/jquery.mask' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.14.10', true );
 
@@ -77,6 +79,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 */
 	public function load_scripts() {
 		wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-front' );
+		wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 	}
 
 	/**
@@ -151,7 +154,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_company'] = $fields['billing_company'];
 					$new_fields['billing_company']['class'] = array( 'form-row-wide' );
 					$new_fields['billing_company']['clear'] = true;
-					$new_fields['billing_company']['required'] = false;
 					$new_fields['billing_company']['priority'] = 25;
 				}
 
