@@ -3,8 +3,8 @@ Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj
 Requires at least: 3.5
-Tested up to: 4.7
-Stable tag: 3.6.0
+Tested up to: 4.9
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo
 
 = Compatibilidade =
 
-Compatível desde a versão 2.2.x até 3.0.x do WooCommerce.
+Compatível desde a versão 3.0.x do WooCommerce.
 
 Funciona com os plugins:
 
@@ -65,6 +65,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 3.6.1 - 2018/05/24 =
+
+- Correção de mensagens dizendo que alguns campos eram opcionais, mesmo quando marcados como obrigatórios.
+
 = 3.6.0 - 2017/05/12 =
 
 - Modificada a posição de todos os campos do formulário para funcionar melhor com temas que ainda não são totalmente compatíveis com o WooCommerce 3.0.
@@ -84,6 +88,6 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.6.0 =
+= 3.6.1 =
 
-- Modificada a posição de todos os campos do formulário para funcionar melhor com temas que ainda não são totalmente compatíveis com o WooCommerce 3.0.
+- Correção de mensagens dizendo que alguns campos eram opcionais, mesmo quando marcados como obrigatórios.
