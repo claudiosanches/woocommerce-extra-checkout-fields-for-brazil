@@ -210,6 +210,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' )   => __( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					__( 'LGBT', 'woocommerce-extra-checkout-fields-for-brazil' )   => __( 'LGBT', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 				'priority'    => 32,
 			);
