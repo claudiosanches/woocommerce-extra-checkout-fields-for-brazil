@@ -249,6 +249,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'    => array( 'form-row-first', 'address-field' ),
 			'clear'    => true,
+			'required' => true,
 			'priority' => 65,
 		);
 
