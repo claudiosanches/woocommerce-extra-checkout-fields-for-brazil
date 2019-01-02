@@ -475,8 +475,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array               New replacements.
 	 */
 	public function formatted_address_replacements( $replacements, $args ) {
-		$replacements['{number}']       = $args['number'];
-		$replacements['{neighborhood}'] = $args['neighborhood'];
+		$replacements['{number}']       = isset( $args['number'] ) ? $args['number'] : '';
+		$replacements['{neighborhood}'] = isset( $args['neighborhood'] ) ? $args['neighborhood'] : '';
 
 		return $replacements;
 	}
