@@ -194,28 +194,24 @@ jQuery( function( $ ) {
 					// Gets the address.
 					$.ajax({
 						type: 'GET',
-						url: '//correiosapi.apphb.com/cep/' + cep,
+						url: '//viacep.com.br/ws/' + cep + '/json/',
 						dataType: 'jsonp',
 						crossDomain: true,
 						contentType: 'application/json',
 						success: function ( address ) {
 
 							// Address.
-							if ( '' !== address.tipoDeLogradouro ) {
-								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro ).change();
-							} else {
-								$( '#' + field + '_address_1' ).val( address.logradouro ).change();
-							}
+							$( '#' + field + '_address_1' ).val( address.logradouro ).change();
 
 							// Neighborhood.
 							$( '#' + field + '_neighborhood' ).val( address.bairro ).change();
 
 							// City.
-							$( '#' + field + '_city' ).val( address.cidade ).change();
+							$( '#' + field + '_city' ).val( address.localidade ).change();
 
 							// State.
 							$( '#' + field + '_state option:selected' ).attr( 'selected', false ).change();
-							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', 'selected' ).change();
+							$( '#' + field + '_state option[value="' + address.uf + '"]' ).attr( 'selected', 'selected' ).change();
 
 							// Chosen support.
 							$( '#' + field + '_state' ).trigger( 'liszt:updated' ).trigger( 'chosen:updated' );
