@@ -475,6 +475,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array               New replacements.
 	 */
 	public function formatted_address_replacements( $replacements, $args ) {
+		$args = wp_parse_args( $args, array(
+			'number'       => '',
+			'neighborhood' => '',
+		) );
+
 		$replacements['{number}']       = $args['number'];
 		$replacements['{neighborhood}'] = $args['neighborhood'];
 
