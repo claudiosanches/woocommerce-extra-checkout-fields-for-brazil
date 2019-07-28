@@ -189,20 +189,20 @@ jQuery( function( $ ) {
 					address_1 = $( '#' + field + '_address_1' ).val();
 
 				// Check country is BR.
-				if ( cep !== '' && 8 === cep.length && 'BR' === country && 0 === address_1.length ) {
+				if ( cep !== '' && 8 === cep.length && 'BR' === country) {
 
 					// Gets the address.
 					$.ajax({
 						type: 'GET',
-						url: '//correiosapi.apphb.com/cep/' + cep,
+						url: 'https://viacep.com.br/ws/' + cep+'/json/',
 						dataType: 'jsonp',
 						crossDomain: true,
 						contentType: 'application/json',
 						success: function ( address ) {
 
 							// Address.
-							if ( '' !== address.tipoDeLogradouro ) {
-								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro ).change();
+							if ( '' !== address.complemento ) {
+								$( '#' + field + '_address_1' ).val( address.complemento + ' ' + address.complemento ).change();
 							} else {
 								$( '#' + field + '_address_1' ).val( address.logradouro ).change();
 							}
@@ -211,12 +211,12 @@ jQuery( function( $ ) {
 							$( '#' + field + '_neighborhood' ).val( address.bairro ).change();
 
 							// City.
-							$( '#' + field + '_city' ).val( address.cidade ).change();
+							$( '#' + field + '_city' ).val( address.localidade ).change();
 
 							// State.
 							$( '#' + field + '_state option:selected' ).attr( 'selected', false ).change();
-							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', 'selected' ).change();
-
+							$( '#' + field + '_state option[value="' + address.uf + '"]' ).attr( 'selected', 'selected' ).change();
+							
 							// Chosen support.
 							$( '#' + field + '_state' ).trigger( 'liszt:updated' ).trigger( 'chosen:updated' );
 						}
