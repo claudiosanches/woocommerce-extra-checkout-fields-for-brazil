@@ -57,6 +57,9 @@ jQuery( function( $ ) {
 			if ( $().select2 ) {
 				$( '.wc-ecfb-select' ).select2();
 			}
+			if ($('#billing_country').val() === 'BR' ) {
+				wc_ecfb_frontend.maskBilling();
+			}
 		},
 
 		/**
