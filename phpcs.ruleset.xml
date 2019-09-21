@@ -6,9 +6,24 @@
 	<!-- Set a description for this ruleset. -->
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
-	<!-- Include the WordPress ruleset, with exclusions. -->
-	<rule ref="WordPress">
-		<exclude name="WordPress.VIP" />
-		<exclude name="WordPress.CSRF.NonceVerification.NoNonceVerification" />
+	<config name="minimum_supported_wp_version" value="5.0" />
+	<config name="testVersion" value="5.6-" />
+
+	<!-- Include the WordPress ruleset. -->
+	<rule ref="WordPress" />
+
+	<!-- Set text domain. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="woocommerce-extra-checkout-fields-for-brazil" />
+		</properties>
+	</rule>
+
+	<!-- Disable rules for PSR-4. -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>src/</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+		<exclude-pattern>src/</exclude-pattern>
 	</rule>
 </ruleset>

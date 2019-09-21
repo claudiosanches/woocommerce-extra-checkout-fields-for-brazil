@@ -1,21 +1,66 @@
 {
-  "name": "woocommerce-extra-checkout-fields-for-brazil",
-  "description": "Brazilian Market on WooCommerce",
-  "version": "3.6.0",
-  "main": "Gruntfile.js",
-  "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-checktextdomain": "^1.0.0",
-    "grunt-contrib-imagemin": "^3.1.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-sass": "^1.0.0",
-    "grunt-contrib-uglify": "^2.2.1",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-wp-i18n": "^1.0.0",
-    "grunt-wp-readme-to-markdown": "^2.0.1"
-  },
-  "engines": {
-    "node": ">=0.8.0",
-    "npm": ">=1.1.0"
-  }
+	"name": "@claudiosanches/brazilian-market-on-woocommerce",
+	"description": "Brazilian Market on WooCommerce",
+	"version": "4.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil.git"
+	},
+	"license": "GPL-3.0+",
+	"main": "Gruntfile.js",
+	"scripts": {
+		"build": "grunt build",
+		"build:watch": "grunt watch",
+		"lint:js": "eslint assets/js --ext=js",
+		"makepot": "grunt makepot"
+	},
+	"devDependencies": {
+		"@wordpress/eslint-plugin": "3.1.0",
+		"eslint": "6.4.0",
+		"grunt": "1.0.4",
+		"grunt-checktextdomain": "1.0.1",
+		"grunt-contrib-imagemin": "3.1.0",
+		"grunt-contrib-uglify": "4.0.1",
+		"grunt-contrib-watch": "1.1.0",
+		"grunt-sass": "3.1.0",
+		"grunt-wp-i18n": "1.0.3",
+		"grunt-wp-readme-to-markdown": "2.0.1",
+		"husky": "3.0.5",
+		"lint-staged": "9.2.5",
+		"stylelint": "10.0.0",
+		"stylelint-config-wordpress": "14.0.0"
+	},
+	"engines": {
+		"node": ">=10.15.0",
+		"npm": ">=6.4.1"
+	},
+	"stylelint": {
+		"extends": [
+			"stylelint-config-wordpress"
+		]
+	},
+	"eslintConfig": {
+		"extends": [
+			"plugin:@wordpress/eslint-plugin/recommended"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.php": [
+			"php -d display_errors=1 -l",
+			"composer run-script phpcs-pre-commit"
+		],
+		"*.scss": [
+			"stylelint --syntax=scss --fix",
+			"git add"
+		],
+		"*.js": [
+			"eslint --fix",
+			"git add"
+		]
+	}
 }
