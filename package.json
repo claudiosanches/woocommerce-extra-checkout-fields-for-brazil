@@ -1,41 +1,54 @@
 {
 	"name": "@claudiosanches/brazilian-market-on-woocommerce",
-	"description": "Brazilian Market on WooCommerce",
 	"version": "4.0.0",
+	"description": "Brazilian Market on WooCommerce",
+	"author": {
+		"name": "Claudio Sanches",
+		"url": "https://claudiosanches.com"
+	},
+	"license": "GPL-3.0+",
+	"keywords": [
+		"wordpress",
+		"woocommerce",
+		"wordpress-plugin"
+	],
+	"homepage": "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil.git"
 	},
-	"license": "GPL-3.0+",
-	"main": "Gruntfile.js",
-	"scripts": {
-		"build": "grunt build",
-		"build:watch": "grunt watch",
-		"lint:js": "eslint --ignore-pattern \"*.min.js\" assets/js/frontend assets/js/admin",
-		"lint:js:fix": "npm run lint:js -- --fix",
-		"uglify:js": "uglifyjs assets/js/frontend assets/js/admin --compress --mangle",
-		"makepot": "grunt makepot"
-	},
-	"devDependencies": {
-		"@wordpress/eslint-plugin": "3.1.0",
-		"eslint": "6.4.0",
-		"grunt": "1.0.4",
-		"grunt-checktextdomain": "1.0.1",
-		"grunt-contrib-imagemin": "3.1.0",
-		"grunt-contrib-uglify": "4.0.1",
-		"grunt-contrib-watch": "1.1.0",
-		"grunt-sass": "3.1.0",
-		"grunt-wp-i18n": "1.0.3",
-		"grunt-wp-readme-to-markdown": "2.0.1",
-		"husky": "3.0.5",
-		"lint-staged": "9.2.5",
-		"stylelint": "10.0.0",
-		"stylelint-config-wordpress": "14.0.0",
-		"uglify-js": "^3.6.0"
+	"bugs": {
+		"url": "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil/issues"
 	},
 	"engines": {
 		"node": ">=10.15.0",
 		"npm": ">=6.4.1"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^5.0.0",
+		"acorn": "^7.0.0",
+		"cpy-cli": "^2.0.0",
+		"del-cli": "^3.0.0",
+		"grunt-wp-i18n": "1.0.3",
+		"grunt-wp-readme-to-markdown": "2.0.1",
+		"husky": "3.0.5",
+		"lint-staged": "9.2.5",
+		"node-sass": "^4.12.0",
+		"npm-run-all": "^4.1.5"
+	},
+	"scripts": {
+		"build": "del build && run-s -s build:js:* build:*",
+		"build:css": "node-sass src/css --output=build/css --output-style=compressed",
+		"build:js:admin": "wp-scripts build src/js/admin/admin.js --output-path=build/js/admin",
+		"build:js:frontend": "wp-scripts build src/js/frontend/frontend.js --output-path=build/js/frontend",
+		"build:js:orders": "wp-scripts build src/js/admin/shop-order.js --output-path=build/js/admin",
+		"build:js:libs": "cpy 'jquery.mask' 'mailcheck' ../../build/js --parents --cwd=src/js",
+		"check-licenses": "wp-scripts check-licenses",
+		"lint": "run-s -s lint:*",
+		"lint:css": "wp-scripts lint-style src",
+		"lint:js": "wp-scripts lint-js src/js/admin src/js/frontend",
+		"lint:js:fix": "npm run lint:js --silent -- --fix",
+		"lint:pkg-json": "wp-scripts lint-pkg-json"
 	},
 	"stylelint": {
 		"extends": [
@@ -46,6 +59,19 @@
 		"extends": [
 			"plugin:@wordpress/eslint-plugin/recommended"
 		]
+	},
+	"npmPackageJsonLintConfig": {
+		"extends": [
+			"@wordpress/npm-package-json-lint-config"
+		],
+		"rules": {
+			"valid-values-license": [
+				"error",
+				[
+					"GPL-3.0+"
+				]
+			]
+		}
 	},
 	"husky": {
 		"hooks": {
@@ -61,7 +87,11 @@
 			"stylelint --syntax=scss --fix",
 			"git add"
 		],
-		"*.js": [
+		"src/admin/*.js": [
+			"eslint --fix",
+			"git add"
+		],
+		"src/frontend/*.js": [
 			"eslint --fix",
 			"git add"
 		]

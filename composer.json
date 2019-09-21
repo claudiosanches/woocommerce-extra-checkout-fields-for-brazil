@@ -16,7 +16,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"ClaudioSanches\\BrazilianMarket\\": "src/"
+			"ClaudioSanches\\BrazilianMarket\\": "includes/"
 		}
 	},
 	"scripts": {
