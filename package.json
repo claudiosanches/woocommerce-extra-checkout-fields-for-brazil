@@ -11,7 +11,9 @@
 	"scripts": {
 		"build": "grunt build",
 		"build:watch": "grunt watch",
-		"lint:js": "eslint assets/js --ext=js",
+		"lint:js": "eslint --ignore-pattern \"*.min.js\" assets/js/frontend assets/js/admin",
+		"lint:js:fix": "npm run lint:js -- --fix",
+		"uglify:js": "uglifyjs assets/js/frontend assets/js/admin --compress --mangle",
 		"makepot": "grunt makepot"
 	},
 	"devDependencies": {
@@ -28,7 +30,8 @@
 		"husky": "3.0.5",
 		"lint-staged": "9.2.5",
 		"stylelint": "10.0.0",
-		"stylelint-config-wordpress": "14.0.0"
+		"stylelint-config-wordpress": "14.0.0",
+		"uglify-js": "^3.6.0"
 	},
 	"engines": {
 		"node": ">=10.15.0",
