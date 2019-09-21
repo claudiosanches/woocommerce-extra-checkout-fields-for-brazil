@@ -1,10 +1,10 @@
-# WooCommerce Extra Checkout Fields for Brazil #
+# Brazilian Market on WooCommerce #
 **Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)  
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
-**Tested up to:** 4.9  
-**Stable tag:** 3.6.1  
+**Tested up to:** 5.2  
+**Stable tag:** 3.7.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -12,9 +12,11 @@ Adds Brazilian checkout fields in WooCommerce
 
 ## Description ##
 
-Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos, aviso de e-mail incorreto e auto preenchimento dos campos de endereço pelo CEP.
+Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos e aviso de e-mail incorreto.
 
-É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o WooCommerce Extra Checkout Fields for Brazil funcione.
+Em breve serão integradas mais novidades para o mercado brasileiro, como poder fazer login por CPF/CNPJ, ocultar alguns campos no carrinho, aguardem!
+
+É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o Brazilian Market on WooCommerce funcione.
 
 ### Compatibilidade ###
 
@@ -22,9 +24,9 @@ Compatível desde a versão 3.0.x do WooCommerce.
 
 Funciona com os plugins:
 
-* [WooCommerce Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
-* [WooCommerce Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
-* [WooCommerce PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
+* [Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
+* [Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
+* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
 
 ### Dúvidas? ###
 
@@ -39,7 +41,6 @@ Foram utilizados os seguintes scripts/serviços de terceiros:
 
 * [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
 * [jQuery Mask Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin).
-* [Correios RESTful API por Emerson Soares](http://correiosapi.apphb.com/).
 
 ### Colaborar ###
 
@@ -75,6 +76,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
+### 3.7.0 - 2019/09/20 ###
+
+- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
+- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
+
 ### 3.6.1 - 2018/05/24 ###
 
 - Correção de mensagens dizendo que alguns campos eram opcionais, mesmo quando marcados como obrigatórios.
@@ -98,6 +104,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.6.1 ###
+### 3.7.0 ###
 
-- Correção de mensagens dizendo que alguns campos eram opcionais, mesmo quando marcados como obrigatórios.
+- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
+- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".

@@ -1,27 +1,27 @@
 <?php
 /**
- * Plugin Name: WooCommerce Extra Checkout Fields for Brazil
+ * Plugin Name: Brazilian Market on WooCommerce
  * Plugin URI:  https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil
  * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
  * Author:      Claudio Sanches
  * Author URI:  https://claudiosanches.com
- * Version:     3.6.1
+ * Version:     3.7.0
  * License:     GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
  *
- * WooCommerce Extra Checkout Fields for Brazil is free software: you can
+ * Brazilian Market on WooCommerce is free software: you can
  * redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * either version 2 of the License, or any later version.
  *
- * WooCommerce Extra Checkout Fields for Brazil is distributed in the hope
+ * Brazilian Market on WooCommerce is distributed in the hope
  * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with WooCommerce Extra Checkout Fields for Brazil. If not, see
+ * along with Brazilian Market on WooCommerce. If not, see
  * <https://www.gnu.org/licenses/gpl-2.0.txt>.
  *
  * @package Extra_Checkout_Fields_For_Brazil
@@ -43,7 +43,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.6.1';
+	const VERSION = '3.7.0';
 
 	/**
 	 * Instance of this class.
@@ -145,7 +145,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * @return string Fallack notice.
 	 */
 	public function woocommerce_fallback_notice() {
-		echo '<div class="error"><p>' . sprintf( __( 'WooCommerce Extra Checkout Fields for Brazil depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">' . __( 'WooCommerce', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>' ) . '</p></div>';
+		echo '<div class="error"><p>' . sprintf( __( 'Brazilian Market on WooCommerce depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ), '<a href="http://wordpress.org/extend/plugins/woocommerce/">' . __( 'WooCommerce', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>' ) . '</p></div>';
 	}
 }
 

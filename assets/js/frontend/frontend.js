@@ -43,16 +43,6 @@ jQuery( function( $ ) {
 				this.emailCheck();
 			}
 
-			if ( 'yes' === wcbcf_public_params.addresscomplete ) {
-				// Auto complete billing address.
-				this.addressAutoComplete( 'billing' );
-				this.addressAutoCompleteOnChange( 'billing' );
-
-				// Auto complete shipping address.
-				this.addressAutoComplete( 'shipping' );
-				this.addressAutoCompleteOnChange( 'shipping' );
-			}
-
 			// Check if select2 exists.
 			if ( $().select2 ) {
 				$( '.wc-ecfb-select' ).select2();
@@ -179,58 +169,6 @@ jQuery( function( $ ) {
 			$( '#wcbcf-mailsuggest' ).css({
 				color: '#c00',
 				fontSize: 'small'
-			});
-		},
-
-		addressAutoComplete: function( field ) {
-			// Checks with *_postcode field exist.
-			if ( $( '#' + field + '_postcode' ).length ) {
-
-				// Valid CEP.
-				var cep       = $( '#' + field + '_postcode' ).val().replace( '.', '' ).replace( '-', '' ),
-					country   = $( '#' + field + '_country' ).val(),
-					address_1 = $( '#' + field + '_address_1' ).val();
-
-				// Check country is BR.
-				if ( cep !== '' && 8 === cep.length && 'BR' === country && 0 === address_1.length ) {
-
-					// Gets the address.
-					$.ajax({
-						type: 'GET',
-						url: '//correiosapi.apphb.com/cep/' + cep,
-						dataType: 'jsonp',
-						crossDomain: true,
-						contentType: 'application/json',
-						success: function ( address ) {
-
-							// Address.
-							if ( '' !== address.tipoDeLogradouro ) {
-								$( '#' + field + '_address_1' ).val( address.tipoDeLogradouro + ' ' + address.logradouro ).change();
-							} else {
-								$( '#' + field + '_address_1' ).val( address.logradouro ).change();
-							}
-
-							// Neighborhood.
-							$( '#' + field + '_neighborhood' ).val( address.bairro ).change();
-
-							// City.
-							$( '#' + field + '_city' ).val( address.cidade ).change();
-
-							// State.
-							$( '#' + field + '_state option:selected' ).attr( 'selected', false ).change();
-							$( '#' + field + '_state option[value="' + address.estado + '"]' ).attr( 'selected', 'selected' ).change();
-
-							// Chosen support.
-							$( '#' + field + '_state' ).trigger( 'liszt:updated' ).trigger( 'chosen:updated' );
-						}
-					});
-				}
-			}
-		},
-
-		addressAutoCompleteOnChange: function( field ) {
-			$( document.body ).on( 'blur', '#' + field + '_postcode', function() {
-				wc_ecfb_frontend.addressAutoComplete( field );
 			});
 		}
 	};
