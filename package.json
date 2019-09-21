@@ -87,11 +87,11 @@
 			"stylelint --syntax=scss --fix",
 			"git add"
 		],
-		"src/admin/*.js": [
+		"src/js/admin/*.js": [
 			"eslint --fix",
 			"git add"
 		],
-		"src/frontend/*.js": [
+		"src/js/frontend/*.js": [
 			"eslint --fix",
 			"git add"
 		]
