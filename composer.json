@@ -24,10 +24,10 @@
 			"phpunit"
 		],
 		"phpcs": [
-			"phpcs -s -p"
+			"phpcs -sp --standard=./phpcs.ruleset.xml"
 		],
 		"phpcs-pre-commit": [
-			"phpcs -s -p -n"
+			"phpcs -spn --standard=./phpcs.ruleset.xml"
 		],
 		"phpcbf": [
 			"phpcbf -p"
