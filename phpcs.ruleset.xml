@@ -22,8 +22,24 @@
 	<!-- Disable rules for PSR-4. -->
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>src/</exclude-pattern>
+		<exclude-pattern>tests/php/</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
 		<exclude-pattern>src/</exclude-pattern>
+		<exclude-pattern>tests/php/</exclude-pattern>
+	</rule>
+
+	<!-- Disable rules for tests-->
+	<rule ref="Generic.Files.EndFileNewline.NotFound">
+		<exclude-pattern>tests/php/Fixture/views</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<exclude-pattern>tests/php/Fixture/views</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Security.EscapeOutput.OutputNotEscaped">
+		<exclude-pattern>tests/php/Fixture/views</exclude-pattern>
+	</rule>
+	<rule ref="Internal.NoCodeFound">
+		<exclude-pattern>tests/php/Fixture/views</exclude-pattern>
 	</rule>
 </ruleset>

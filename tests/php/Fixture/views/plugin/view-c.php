@@ -1,0 +1,1 @@
+<p>View C comes from plugin.</p>

@@ -1,0 +1,1 @@
+<p>View C comes from child theme.</p>

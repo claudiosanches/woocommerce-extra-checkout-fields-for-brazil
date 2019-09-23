@@ -1,0 +1,1 @@
+partial C from plugin - <?php echo $this->render_partial( 'partial-d' ); ?>

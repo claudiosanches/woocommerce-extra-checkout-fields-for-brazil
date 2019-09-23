@@ -1,0 +1,1 @@
+<p>Rendering works with partials: <?php $this->render_partial( 'partial' ); ?>.</p>

@@ -1,0 +1,1 @@
+partial A from plugin - <?php echo $this->render_partial( 'partial-b' ); ?>

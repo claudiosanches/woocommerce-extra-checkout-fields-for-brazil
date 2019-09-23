@@ -1,0 +1,1 @@
+partial B from parent theme - <?php echo $this->render_partial( 'partial-c' ); ?>

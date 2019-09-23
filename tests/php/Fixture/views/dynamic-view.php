@@ -1,0 +1,1 @@
+<p>Rendering works with context: <?php $this->some_value; ?>.</p>

@@ -19,6 +19,11 @@
 			"ClaudioSanches\\BrazilianMarket\\": "src/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"ClaudioSanches\\BrazilianMarket\\Tests\\": "tests/php/"
+		}
+	},
 	"scripts": {
 		"test": [
 			"phpunit"

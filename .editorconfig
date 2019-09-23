@@ -15,6 +15,13 @@ trim_trailing_whitespace = false
 
 [*.txt]
 trim_trailing_whitespace = false
+end_of_line = crlf
 
 [*.json]
+insert_final_newline = false
+
+[views/**/*]
+insert_final_newline = false
+
+[tests/php/Fixture/views/**/*]
 insert_final_newline = false

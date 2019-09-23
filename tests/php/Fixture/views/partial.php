@@ -1,0 +1,1 @@
+<span><?php $this->some_value; ?></span>

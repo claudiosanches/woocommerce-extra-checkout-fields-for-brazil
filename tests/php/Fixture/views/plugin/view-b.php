@@ -1,0 +1,1 @@
+<p>View B comes from plugin.</p>
