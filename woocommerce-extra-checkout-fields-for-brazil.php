@@ -64,3 +64,39 @@ if ( version_compare( PHP_VERSION, '5.6.0', '<' ) ) {
 	add_action( 'admin_notices', 'cs_brazilian_market_unsupported_php_version_notice' );
 	return;
 }
+
+// Load plugin classes.
+$composer_autoloader = __DIR__ . '/vendor/autoload.php';
+
+if ( is_readable( $composer_autoloader ) ) {
+	require $composer_autoloader;
+}
+
+if ( ! class_exists( 'ClaudioSanches\\BrazilianMarket\\PluginFactory' ) ) {
+	// Composer autoloader apparently was not found, so fall back to our bundled
+	// autoloader.
+	require_once __DIR__ . '/src/Infrastructure/Autoloader.php';
+
+	( new ClaudioSanches\BrazilianMarket\Infrastructure\Autoloader() )
+		->add_namespace( 'ClaudioSanches\\BrazilianMarket', __DIR__ . '/src' )
+		->register();
+}
+
+// Initialize plugin.
+$cs_brazilian_market = ClaudioSanches\BrazilianMarket\PluginFactory::create();
+
+\register_activation_hook(
+	__FILE__,
+	function() use ( $cs_brazilian_market ) {
+		$cs_brazilian_market->activate();
+	}
+);
+
+\register_deactivation_hook(
+	__FILE__,
+	function () use ( $cs_brazilian_market ) {
+		$cs_brazilian_market->deactivate();
+	}
+);
+
+$cs_brazilian_market->register();
