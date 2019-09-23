@@ -1,1 +1,1 @@
-<p>Rendering works with context: <?php $this->some_value; ?>.</p>
+<p>Rendering works with context: <?php echo $this->some_value; ?>.</p>

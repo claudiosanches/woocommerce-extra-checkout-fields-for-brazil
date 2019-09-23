@@ -46,8 +46,7 @@ final class SimpleInjectorTest extends TestCase {
 	 * @return void
 	 */
 	public function test_it_can_instantiate_a_concrete_class() {
-		$object = ( new SimpleInjector() )
-			->make( Fixture\DummyClass::class );
+		$object = ( new SimpleInjector() )->make( Fixture\DummyClass::class );
 
 		$this->assertInstanceOf( Fixture\DummyClass::class, $object );
 	}

@@ -1,1 +1,1 @@
-<p>Rendering works with partials: <?php $this->render_partial( 'tests/php/Fixture/views/partial' ); ?>.</p>
+<p>Rendering works with partials: <?php echo $this->render_partial( 'tests/php/Fixture/views/partial' ); ?>.</p>

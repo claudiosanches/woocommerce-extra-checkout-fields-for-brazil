@@ -1,1 +1,1 @@
-<span><?php $this->some_value; ?></span>
+<span><?php echo $this->some_value; ?></span>

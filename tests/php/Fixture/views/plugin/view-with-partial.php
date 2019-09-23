@@ -1,1 +1,1 @@
-<p>Rendering works with partials: <?php $this->render_partial( 'partial' ); ?>.</p>
+<p>Rendering works with partials: <?php echo $this->render_partial( 'partial' ); ?>.</p>
