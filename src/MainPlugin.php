@@ -14,7 +14,7 @@ use ClaudioSanches\BrazilianMarket\Infrastructure\View\TemplatedViewFactory;
 use ClaudioSanches\BrazilianMarket\Infrastructure\View\ViewFactory;
 
 /**
- * The BasicScaffoldPlugin class is the composition root of the plugin.
+ * The MainPlugin class is the composition root of the plugin.
  *
  * In here we assemble our infrastructure, configure it for the specific use
  * case the plugin is meant to solve and then kick off the services so that they
@@ -28,8 +28,8 @@ final class MainPlugin extends ServiceBasedPlugin {
 	 * These are provided so that if multiple plugins use the same boilerplate
 	 * code, there hooks and service identifiers are scoped and don't clash.
 	 */
-	protected const HOOK_PREFIX    = 'mwpd.basic_scaffold.';
-	protected const SERVICE_PREFIX = 'mwpd.basic_scaffold.';
+	protected const HOOK_PREFIX    = 'cs.brazilian_market.';
+	protected const SERVICE_PREFIX = 'cs.brazilian_market.';
 
 	/*
 	 * Service identifiers we know about.
@@ -37,9 +37,7 @@ final class MainPlugin extends ServiceBasedPlugin {
 	 * These can be used from outside code as well to directly refer to a
 	 * service when talking to the service container.
 	 */
-	public const VIEW_FACTORY_ID           = self::SERVICE_PREFIX . 'view-factory';
-	public const SAMPLE_BACKEND_SERVICE_ID = self::SERVICE_PREFIX . 'sample-subsystem.sample-backend-service';
-	public const SAMPLE_LOOP_SERVICE_ID    = self::SERVICE_PREFIX . 'sample-subsystem.sample-loop-service';
+	public const VIEW_FACTORY_ID = self::SERVICE_PREFIX . 'view-factory';
 
 	// 1. Define the services that make up this plugin.
 
