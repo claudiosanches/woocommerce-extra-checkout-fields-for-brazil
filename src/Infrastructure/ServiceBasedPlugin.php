@@ -82,7 +82,7 @@ abstract class ServiceBasedPlugin implements Plugin {
 		 */
 
 		$this->enable_filters    = $enable_filters;
-		$this->injector          = $injector ? $injector : new Injector\SimpleInjector( new Injector\FallbackInjector() );
+		$this->injector          = $injector ? $injector : new Injector\SimpleInjector();
 		$this->injector          = $this->configure_injector( $this->injector );
 		$this->service_container = $service_container ? $service_container : new ServiceContainer\SimpleServiceContainer();
 	}
