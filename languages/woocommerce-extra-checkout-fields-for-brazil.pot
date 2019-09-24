@@ -1,19 +1,31 @@
-# Copyright (C) 2018 Claudio Sanches
+# Copyright (C) 2019 Claudio Sanches
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Extra Checkout Fields for Brazil 3.6.1\n"
+"Project-Id-Version: Brazilian Market on WooCommerce 3.7.1\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-"
 "brazil\n"
-"POT-Creation-Date: 2018-05-24 15:50:55+00:00\n"
+"POT-Creation-Date: 2019-09-24 15:11:13+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n1.0.2\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: .legacy.php:105 woocommerce-extra-checkout-fields-for-brazil.php:137
+msgid "Settings"
+msgstr ""
+
+#: .legacy.php:116 woocommerce-extra-checkout-fields-for-brazil.php:148
+msgid "Brazilian Market on WooCommerce depends on %s to work!"
+msgstr ""
+
+#: .legacy.php:116 woocommerce-extra-checkout-fields-for-brazil.php:148
+msgid "WooCommerce"
+msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:49
 msgid "Load the customer extras data?"
@@ -33,8 +45,8 @@ msgstr ""
 #: includes/admin/views/html-order-billing-data.php:22
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:128
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:143
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:423
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:427
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:424
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:428
 msgid "CPF"
 msgstr ""
 
@@ -43,7 +55,7 @@ msgstr ""
 #: includes/admin/views/html-legacy-order-billing-data.php:24
 #: includes/admin/views/html-order-billing-data.php:24
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:136
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:431
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:432
 msgid "RG"
 msgstr ""
 
@@ -53,8 +65,8 @@ msgstr ""
 #: includes/admin/views/html-order-billing-data.php:30
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:162
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:177
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:442
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:446
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:443
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:447
 msgid "CNPJ"
 msgstr ""
 
@@ -63,7 +75,7 @@ msgstr ""
 #: includes/admin/views/html-legacy-order-billing-data.php:33
 #: includes/admin/views/html-order-billing-data.php:33
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:170
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:450
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:451
 msgid "State Registration"
 msgstr ""
 
@@ -115,7 +127,7 @@ msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:54
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:113
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:417
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:418
 msgid "Person type"
 msgstr ""
 
@@ -143,7 +155,7 @@ msgstr ""
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:95
 #: includes/admin/views/html-legacy-order-billing-data.php:37
 #: includes/admin/views/html-order-billing-data.php:37
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:438
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:439
 msgid "Company"
 msgstr ""
 
@@ -244,31 +256,23 @@ msgid ""
 "and Cell Phone."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:190
-msgid "Enable Address Autocomplete:"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:197
-msgid "If checked automatically complete the address fields based on the zip code."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:205
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:189
 msgid "Validation:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:213
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:197
 msgid "Validate CPF:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:220
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:204
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:227
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
 msgid "Validate CNPJ:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:234
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
@@ -279,7 +283,7 @@ msgid ""
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "WooCommerce Extra Checkout Fields for Brazil"
+msgid "Brazilian Market on WooCommerce"
 msgstr ""
 
 #: includes/admin/views/html-admin-help-message.php:15
@@ -368,30 +372,18 @@ msgstr ""
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:417
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:423
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:431
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:438
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:442
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:450
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:418
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:424
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:432
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:439
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:443
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:451
 msgid "is a required field"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:427
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:446
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:428
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:447
 msgid "is not valid"
-msgstr ""
-
-#: woocommerce-extra-checkout-fields-for-brazil.php:137
-msgid "Settings"
-msgstr ""
-
-#: woocommerce-extra-checkout-fields-for-brazil.php:148
-msgid "WooCommerce Extra Checkout Fields for Brazil depends on %s to work!"
-msgstr ""
-
-#: woocommerce-extra-checkout-fields-for-brazil.php:148
-msgid "WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
