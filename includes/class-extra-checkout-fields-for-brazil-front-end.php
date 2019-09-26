@@ -517,7 +517,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array           New address format.
 	 */
 	public function order_formatted_shipping_address( $address, $order ) {
-		$address = (array) $address;
+		if ( ! is_array( $address ) ) {
+			return $address;
+		}
 
 		// WooCommerce 3.0 or later.
 		if ( method_exists( $order, 'get_meta' ) ) {
