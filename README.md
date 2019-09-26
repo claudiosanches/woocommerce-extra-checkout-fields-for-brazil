@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
 **Tested up to:** 5.2  
-**Stable tag:** 3.7.1  
+**Stable tag:** 3.7.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -76,6 +76,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
+### 3.7.2 - 2019/09/26 ###
+
+- Correção de um bug no WooCommerce gerando a palavra "Array" na lista de endereço de entrega.
+
 ### 3.7.1 - 2019/09/24 ###
 
 - Corrigido bug causado pelo WooCommerce na exibição do endereço de entrega na lista de pedidos no painel admininstrativo.
@@ -108,7 +112,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.7.1 ###
+### 3.7.2 ###
 
 - Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
 - Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
