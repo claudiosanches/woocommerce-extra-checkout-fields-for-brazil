@@ -3,10 +3,12 @@
 **Donate link:** http://claudiosmweb.com/doacoes/  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 3.5  
-**Tested up to:** 5.2  
-**Stable tag:** 3.7.2  
+**Tested up to:** 5.4  
+**Stable tag:** 3.7.3  
 **License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+**WC requires at least:** 3.0
+**WC tested up to:**  4.2  
 
 Adds Brazilian checkout fields in WooCommerce
 

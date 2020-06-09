@@ -5,10 +5,13 @@
  * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
  * Author:      Claudio Sanches
  * Author URI:  https://claudiosanches.com
- * Version:     3.7.2
+ * Version:     3.7.3
  * License:     GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
+ * Tested up to: 5.4
+ * WC requires at least: 3.0
+ * WC tested up to: 4.2
  *
  * Brazilian Market on WooCommerce is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -43,7 +46,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.7.2';
+	const VERSION = '3.7.3';
 
 	/**
 	 * Instance of this class.
