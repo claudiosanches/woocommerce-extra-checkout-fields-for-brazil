@@ -36,11 +36,16 @@ jQuery( function( $ ) {
 					}
 				});
 
-				this.maskGeneral();
 
 				if ( 'BR' === $('#billing_country').val() ) {
 					wc_ecfb_frontend.maskBilling();
 				}
+
+				if ( 'BR' === $('#shipping_country').val() ) {
+					wc_ecfb_frontend.maskShipping();
+				}
+
+				this.maskGeneral();
 			}
 
 			if ( 'yes' === wcbcf_public_params.mailcheck ) {
