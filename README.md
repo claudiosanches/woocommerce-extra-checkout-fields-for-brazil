@@ -1,12 +1,14 @@
 # Brazilian Market on WooCommerce #
-**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)  
-**Donate link:** http://claudiosmweb.com/doacoes/  
-**Tags:** woocommerce, checkout, brazil, cpf, cpnj  
-**Requires at least:** 3.5  
-**Tested up to:** 5.2  
-**Stable tag:** 3.7.2  
-**License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)
+**Donate link:** http://claudiosmweb.com/doacoes/
+**Tags:** woocommerce, checkout, brazil, cpf, cpnj
+**Requires at least:** 3.5
+**Tested up to:** 5.2
+**Stable tag:** 3.7.2
+**License:** GPLv2 or later
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+
+## CHANGE: Neighborhood is now required because module [itau shopline](https://github.com/claudiosanches/wc-itau-shopline) need it
 
 Adds Brazilian checkout fields in WooCommerce
 
