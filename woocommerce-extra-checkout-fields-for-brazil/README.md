@@ -1,5 +1,3 @@
-## CHANGE: Neighborhood is now required because module [itau shopline](https://github.com/claudiosanches/wc-itau-shopline) need it
-
 # Brazilian Market on WooCommerce #
 **Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)
 **Donate link:** http://claudiosmweb.com/doacoes/
@@ -10,6 +8,7 @@
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
+## CHANGE: Neighborhood is now required because module [itau shopline](https://github.com/claudiosanches/wc-itau-shopline) need it
 
 Adds Brazilian checkout fields in WooCommerce
 
