@@ -202,18 +202,18 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	 * @return array
 	 */
 	public function ajax_get_customer_details( $data, $customer ) {
-		$data['billing_number']        = $customer->get_meta( 'billing_number' );
-		$data['billing_neighborhood']  = $customer->get_meta( 'billing_neighborhood' );
-		$data['billing_persontype']    = $customer->get_meta( 'billing_persontype' );
-		$data['billing_cpf']           = $customer->get_meta( 'billing_cpf' );
-		$data['billing_rg']            = $customer->get_meta( 'billing_rg' );
-		$data['billing_cnpj']          = $customer->get_meta( 'billing_cnpj' );
-		$data['billing_ie']            = $customer->get_meta( 'billing_ie' );
-		$data['billing_birthdate']     = $customer->get_meta( 'billing_birthdate' );
-		$data['billing_sex']           = $customer->get_meta( 'billing_sex' );
-		$data['billing_cellphone']     = $customer->get_meta( 'billing_cellphone' );
-		$data['shipping_number']       = $customer->get_meta( 'shipping_number' );
-		$data['shipping_neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
+		$data['billing']['number']        = $customer->get_meta( 'billing_number' );
+		$data['billing']['neighborhood']  = $customer->get_meta( 'billing_neighborhood' );
+		$data['billing']['persontype']    = $customer->get_meta( 'billing_persontype' );
+		$data['billing']['cpf']           = $customer->get_meta( 'billing_cpf' );
+		$data['billing']['rg']            = $customer->get_meta( 'billing_rg' );
+		$data['billing']['cnpj']          = $customer->get_meta( 'billing_cnpj' );
+		$data['billing']['ie']            = $customer->get_meta( 'billing_ie' );
+		$data['billing']['birthdate']     = $customer->get_meta( 'billing_birthdate' );
+		$data['billing']['sex']           = $customer->get_meta( 'billing_sex' );
+		$data['billing']['cellphone']     = $customer->get_meta( 'billing_cellphone' );
+		$data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
+		$data['shipping']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
 
 		return $data;
 	}
