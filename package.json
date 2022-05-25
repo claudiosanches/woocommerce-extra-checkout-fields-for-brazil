@@ -4,7 +4,7 @@
   "version": "3.6.0",
   "main": "Gruntfile.js",
   "devDependencies": {
-    "grunt": "^1.0.1",
+    "grunt": "^1.5.3",
     "grunt-checktextdomain": "^1.0.0",
     "grunt-contrib-imagemin": "^3.1.0",
     "grunt-contrib-jshint": "^1.1.0",
