@@ -145,7 +145,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 				'id'    => 'cell_phone',
 				'options' => array(
 					1 => __( 'If checked show the Cell Phone field as optional.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					2 => __( 'If checked show the Cell Phone field as reqiored.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					2 => __( 'If checked show the Cell Phone field as required.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					-1 => __( 'If checked change the label of Phone field to "Cell Phone".', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					0 => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
