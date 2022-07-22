@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<strong><?php esc_html_e( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->billing_sex ); ?><br />
 		<?php endif; ?>
 
-		<strong><?php esc_html_e( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->billing_phone ); ?><br />
+		<strong><?php echo esc_html( $phone_label ); ?>: </strong><?php echo esc_html( $order->billing_phone ); ?><br />
 
 		<?php if ( ! empty( $order->billing_cellphone ) ) : ?>
 			<strong><?php esc_html_e( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) ?>: </strong><?php echo esc_html( $order->billing_cellphone ); ?><br />
