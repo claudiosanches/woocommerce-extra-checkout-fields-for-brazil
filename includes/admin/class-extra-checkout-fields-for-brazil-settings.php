@@ -250,6 +250,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
+		
+		$current = intval( $current );
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
@@ -267,8 +269,10 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		if ( isset( $options[ $id ] ) ) {
 			$current = $options[ $id ];
 		} else {
-			$current = isset( $args['default'] ) ? $args['default'] : '';
+			$current = isset( $args['default'] ) ? $args['default'] : 0;
 		}
+		
+		$current = intval( $current );
 
 		include dirname( __FILE__ ) . '/views/html-radio-field.php';
 	}
