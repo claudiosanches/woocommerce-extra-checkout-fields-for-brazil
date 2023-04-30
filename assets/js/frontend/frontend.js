@@ -36,6 +36,15 @@ jQuery( function( $ ) {
 					}
 				});
 
+
+				if ( 'BR' === $('#billing_country').val() ) {
+					wc_ecfb_frontend.maskBilling();
+				}
+
+				if ( 'BR' === $('#shipping_country').val() ) {
+					wc_ecfb_frontend.maskShipping();
+				}
+
 				this.maskGeneral();
 			}
 
@@ -46,9 +55,6 @@ jQuery( function( $ ) {
 			// Check if select2 exists.
 			if ( $().select2 ) {
 				$( '.wc-ecfb-select' ).select2();
-			}
-			if ($('#billing_country').val() === 'BR' ) {
-				wc_ecfb_frontend.maskBilling();
 			}
 		},
 
