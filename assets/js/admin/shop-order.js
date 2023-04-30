@@ -1,14 +1,6 @@
 /* global bmwShopOrderParams, woocommerce_admin_meta_boxes */
 /* eslint-disable no-alert */
-
-/**
- * Plugin settings.
- *
- * @param {Object} $
- */
 (function ($) {
-	'use strict';
-
 	$(function () {
 		if ('1' === bmwShopOrderParams.person_type) {
 			$('#_billing_persontype')
@@ -34,7 +26,6 @@
 
 		$('.load_customer_billing').on('click', function () {
 			const userId = $('#customer_user').val();
-			let data;
 
 			if (window.confirm(bmwShopOrderParams.load_message)) {
 				if (!userId) {
@@ -43,14 +34,6 @@
 					);
 					return false;
 				}
-
-				data = {
-					user_id: userId,
-					type_to_load: 'billing',
-					action: 'woocommerce_get_customer_details',
-					security:
-						woocommerce_admin_meta_boxes.get_customer_details_nonce, // eslint-disable-line camelcase
-				};
 
 				$(this)
 					.closest('.edit_address')
@@ -67,7 +50,13 @@
 
 				$.ajax({
 					url: woocommerce_admin_meta_boxes.ajax_url, // eslint-disable-line camelcase
-					data,
+					data: {
+						user_id: userId,
+						type_to_load: 'billing',
+						action: 'woocommerce_get_customer_details',
+						security:
+							woocommerce_admin_meta_boxes.get_customer_details_nonce, // eslint-disable-line camelcase
+					},
 					type: 'POST',
 					success(response) {
 						if (response) {
@@ -103,7 +92,6 @@
 
 		$('.load_customer_shipping').on('click', function () {
 			const userId = $('#customer_user').val();
-			let data;
 
 			if (window.confirm(bmwShopOrderParams.load_message)) {
 				if (!userId) {
@@ -112,14 +100,6 @@
 					);
 					return false;
 				}
-
-				data = {
-					user_id: userId,
-					type_to_load: 'shipping',
-					action: 'woocommerce_get_customer_details',
-					security:
-						woocommerce_admin_meta_boxes.get_customer_details_nonce, // eslint-disable-line camelcase
-				};
 
 				$(this)
 					.closest('.edit_address')
@@ -136,7 +116,13 @@
 
 				$.ajax({
 					url: woocommerce_admin_meta_boxes.ajax_url, // eslint-disable-line camelcase
-					data,
+					data: {
+						user_id: userId,
+						type_to_load: 'shipping',
+						action: 'woocommerce_get_customer_details',
+						security:
+							woocommerce_admin_meta_boxes.get_customer_details_nonce, // eslint-disable-line camelcase
+					},
 					type: 'POST',
 					success(response) {
 						if (response) {

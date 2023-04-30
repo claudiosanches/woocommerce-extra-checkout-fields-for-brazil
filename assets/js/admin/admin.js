@@ -1,7 +1,4 @@
-/*jshint devel: true */
 (function ($) {
-	'use strict';
-
 	$(function () {
 		$('#person_type')
 			.on('change', function () {

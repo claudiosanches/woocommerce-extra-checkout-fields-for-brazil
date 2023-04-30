@@ -1,0 +1,7 @@
+#bmw-settings {
+	display: block;
+
+	@media screen and (min-width: 783px) {
+		display: flex;
+	}
+}
