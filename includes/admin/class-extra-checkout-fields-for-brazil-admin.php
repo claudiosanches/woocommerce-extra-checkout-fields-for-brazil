@@ -87,7 +87,6 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 				'cell_phone'      => 1,
 				'mailcheck'       => 1,
 				'maskedinput'     => 1,
-				'addresscomplete' => 1,
 				'validate_cpf'    => 1,
 				'validate_cnpj'   => 1,
 			);
