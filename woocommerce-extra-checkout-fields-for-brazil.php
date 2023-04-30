@@ -5,7 +5,7 @@
  * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
  * Author:      Claudio Sanches
  * Author URI:  https://claudiosanches.com
- * Version:     3.7.2
+ * Version:     3.7.2.1
  * License:     GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
@@ -45,7 +45,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.7.2';
+	const VERSION = '3.7.2.1';
 
 	/**
 	 * Instance of this class.

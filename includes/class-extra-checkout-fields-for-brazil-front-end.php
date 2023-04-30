@@ -170,6 +170,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( 'form-row-last', 'person-type-field' ),
 						'required' => false,
+						'default'  => 'ISENTO',
 						'priority' => 27,
 					);
 				} else {
