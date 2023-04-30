@@ -12,10 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="clear"></div>
 
+<h3><?php esc_html_e( 'Customer data', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></h3>
 <div class="wcbcf-address">
-
-	<h4><?php esc_html_e( 'Customer data', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></h4>
-
 	<p>
 		<?php if ( 0 !== $person_type ) : ?>
 			<?php if ( ( 1 === intval( $order->get_meta( '_billing_persontype' ) ) && 1 === $person_type ) || 2 === $person_type ) : ?>
