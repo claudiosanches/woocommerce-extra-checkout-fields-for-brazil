@@ -44,7 +44,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			// Localize strings.
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-shop-order',
-				'wcbcf_shop_order_params',
+				'bmwShopOrderParams',
 				array(
 					'load_message' => esc_js( __( 'Load the customer extras data?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 					'copy_message' => esc_js( __( 'Also copy the data of number and neighborhood?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),

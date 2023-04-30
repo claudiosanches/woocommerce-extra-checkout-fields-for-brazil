@@ -60,7 +60,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$autofill = isset( $settings['addresscomplete'] ) ? 'yes' : 'no';
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-front',
-			'wcbcf_public_params',
+			'bmwPublicParams',
 			array(
 				'state'              => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 				'required'           => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
