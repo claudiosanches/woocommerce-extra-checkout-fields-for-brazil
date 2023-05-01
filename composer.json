@@ -15,6 +15,9 @@
     "scripts": {
         "phpcs": [
             "phpcs --standard=phpcs.ruleset.xml"
+        ],
+        "makepot": [
+            "wp i18n make-pot . languages/woocommerce-extra-checkout-fields-for-brazil.pot --exclude=vendor/node_modules"
         ]
     },
     "config": {
