@@ -1,1 +1,1 @@
-#bmw-settings{display:block}@media screen and (min-width: 783px){#bmw-settings{display:flex}}
+#bmw-settings{display:block}@media screen and (min-width: 783px){#bmw-settings{display:grid;grid-template-columns:repeat(2, 1fr)}}
