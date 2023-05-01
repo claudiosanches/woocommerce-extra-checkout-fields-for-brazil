@@ -1,9 +1,9 @@
 # Brazilian Market on WooCommerce #
-**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches)  
-**Donate link:** http://claudiosmweb.com/doacoes/  
+**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches/)  
+**Donate link:** https://apoia.se/claudiosanches  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
-**Requires at least:** 3.5  
-**Tested up to:** 5.2  
+**Requires at least:** 4.0  
+**Tested up to:** 6.2  
 **Stable tag:** 3.7.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -20,13 +20,13 @@ Em breve serão integradas mais novidades para o mercado brasileiro, como poder 
 
 ### Compatibilidade ###
 
-Compatível desde a versão 3.0.x do WooCommerce.
+Compatível desde a versão 5.0.x do WooCommerce.
 
 Funciona com os plugins:
 
+* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
 * [Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
 * [Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
-* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
 
 ### Dúvidas? ###
 
@@ -59,26 +59,35 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 ## Screenshots ##
 
 ### 1. Página de checkout usando o tema Storefront ###
-![Página de checkout usando o tema Storefront](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
+![Página de checkout usando o tema Storefront](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
 
 ### 2. Página de edição de endereço de entrega usando o tema Storefront ###
-![Página de edição de endereço de entrega usando o tema Storefront](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
+![Página de edição de endereço de entrega usando o tema Storefront](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
 
 ### 3. Página de dados do pedido ###
-![Página de dados do pedido](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
+![Página de dados do pedido](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
 
 ### 4. Configurações do plugin ###
-![Configurações do plugin](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
+![Configurações do plugin](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
 
 ### 5. Sugestão de e-mail ###
-![Sugestão de e-mail](http://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
+![Sugestão de e-mail](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
 
 
 ## Changelog ##
 
+### 3.8.0 - 2013/05/01 ###
+
+- Adicionado suporte para versões atuais do WooCommerce.
+- Removido suporte a versões anteriores a 3.0 do WooCommerce.
+- Corrida aplicação de máscaras no checkout.
+- Corrido retorno dos resultados para o hook `woocommerce_ajax_get_customer_details`. 
+
 ### 3.7.2 - 2019/09/26 ###
 
-- Correção de um bug no WooCommerce gerando a palavra "Array" na lista de endereço de entrega.
+- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
+- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
+- Corrigido bug causado pelo WooCommerce na exibição do endereço de entrega na lista de pedidos no painel admininstrativo.
 
 ### 3.7.1 - 2019/09/24 ###
 
@@ -114,6 +123,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ### 3.7.2 ###
 
-- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
-- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
-- Corrigido bug causado pelo WooCommerce na exibição do endereço de entrega na lista de pedidos no painel admininstrativo.
+- Adicionado suporte para versões atuais do WooCommerce.
+- Removido suporte a versões anteriores a 3.0 do WooCommerce.
+- Corrida aplicação de máscaras no checkout.
+- Corrido retorno dos resultados para o hook `woocommerce_ajax_get_customer_details`. 
