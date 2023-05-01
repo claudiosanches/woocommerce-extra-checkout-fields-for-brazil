@@ -9,7 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( apply_filters( 'wcbcf_support_this_plugin', true ) ) :
 ?>
 	<div class="support-us postbox">
 		<div class="inside">
@@ -25,4 +24,4 @@ if ( apply_filters( 'wcbcf_support_this_plugin', true ) ) :
 		</div>
 	</div>
 <?php
-endif;
+

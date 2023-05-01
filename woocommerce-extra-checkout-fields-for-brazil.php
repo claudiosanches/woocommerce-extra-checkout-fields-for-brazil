@@ -137,6 +137,8 @@ class Extra_Checkout_Fields_For_Brazil {
 	public function plugin_action_links( $links ) {
 		$plugin_links   = array();
 		$plugin_links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=woocommerce-extra-checkout-fields-for-brazil' ) ) . '">' . __( 'Settings', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
+		$plugin_links[] = '<a href="https://apoia.se/claudiosanches" target="_blank" rel="noopener noreferrer">' . __( 'Premium Support', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
+		$plugin_links[] = '<a href="https://apoia.se/claudiosanches" target="_blank" rel="noopener noreferrer">' . __( 'Contribute', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
 
 		return array_merge( $plugin_links, $links );
 	}
