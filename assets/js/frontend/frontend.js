@@ -159,6 +159,7 @@ jQuery(function ($) {
 		},
 
 		emailCheck() {
+			const text = bmwPublicParams.suggest_text;
 			if ($('#wcbcf-mailsuggest').length < 1) {
 				$('#billing_email').after('<div id="wcbcf-mailsuggest"></div>');
 			}
@@ -168,7 +169,7 @@ jQuery(function ($) {
 				$(this).mailcheck({
 					suggested(element, suggestion) {
 						$('#wcbcf-mailsuggest').html(
-							'Você quis dizer: ' + suggestion.full + '?'
+							text.replace('%hint%', suggestion.full)
 						);
 					},
 				});
