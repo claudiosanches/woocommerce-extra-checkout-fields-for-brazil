@@ -434,7 +434,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				}
 			}
 
-			// Check Company and CPNJ.
+			// Check Company and CNPJ.
 			if ( ( 1 === $person_type && 2 === $billing_persontype ) || 3 === $person_type ) {
 				if ( empty( $_POST['billing_company'] ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );

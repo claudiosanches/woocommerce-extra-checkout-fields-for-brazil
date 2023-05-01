@@ -118,7 +118,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 ### 3.5.1 - 2017/04/26 ###
 
 - Corrigido o posicionamento do campo de CEP.
-- Corrigida a validação de CPNJ.
+- Corrigida a validação de CNPJ.
 
 ### 3.5.0 - 2017/03/04 ###
 
