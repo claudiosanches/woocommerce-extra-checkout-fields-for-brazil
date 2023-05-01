@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 4.0  
 **Tested up to:** 6.2  
-**Stable tag:** 3.8.1  
+**Stable tag:** 3.8.2  
 **Requires PHP:** 5.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -77,11 +77,15 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Changelog ##
 
-### 3.8.1 - 2013/05/01 ###
+### 3.8.2 - 2023/05/01 ###
+
+- Sugestão de e-mail agora pode ser traduzida.
+
+### 3.8.1 - 2023/05/01 ###
 
 - Atualizado arquivo de tradução.
 
-### 3.8.0 - 2013/05/01 ###
+### 3.8.0 - 2023/05/01 ###
 
 - Adicionado suporte para versões atuais do WooCommerce.
 - Removido suporte a versões anteriores a 3.0 do WooCommerce.
@@ -133,3 +137,4 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 - Corrida aplicação de máscaras no checkout.
 - Corrido retorno dos resultados para o hook `woocommerce_ajax_get_customer_details`. 
 - Atualizado arquivo de tradução.
+- Sugestão de e-mail agora pode ser traduzida.
