@@ -65,10 +65,10 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'person_type',
+				'menu'        => $option,
+				'id'          => 'person_type',
 				'description' => __( 'Individuals enables CPF field and Legal Person enables CNPJ field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'options' => array(
+				'options'     => array(
 					0 => __( 'None', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					1 => __( 'Individuals and Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					2 => __( 'Individuals only', 'woocommerce-extra-checkout-fields-for-brazil' ),

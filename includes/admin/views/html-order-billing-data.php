@@ -43,10 +43,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<strong><?php esc_html_e( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_phone() ); ?><br />
 
 		<?php if ( '' !== $order->get_meta( '_billing_cellphone' ) ) : ?>
-			<strong><?php esc_html_e( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cellphone' ) ); ?><br />
+			<strong><?php esc_html_e( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cellphone' ) ); ?><br />
 		<?php endif; ?>
 
-		<strong><?php esc_html_e( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ) ?>: </strong><?php echo wp_kses_post( make_clickable( $order->get_billing_email() ) ); ?><br />
+		<strong><?php esc_html_e( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo wp_kses_post( make_clickable( $order->get_billing_email() ) ); ?><br />
 	</p>
 
 </div>

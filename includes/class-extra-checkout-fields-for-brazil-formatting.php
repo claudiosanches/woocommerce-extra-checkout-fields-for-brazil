@@ -37,7 +37,7 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 				$sum += ( $j - $i ) * intval( $digit[ $i ] );
 			}
 
-			$summod11 = $sum % 11;
+			$summod11        = $sum % 11;
 			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
 		}
 
@@ -63,7 +63,8 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 				$d += $cnpj[ $c ] * $p;
 			}
 
-			if ( intval( $cnpj[ ++$t ] ) !== ( $d = ( ( 10 * $d ) % 11 ) % 10 ) ) {
+			$d = ( ( 10 * $d ) % 11 ) % 10;
+			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
 				return false;
 			}
 		}

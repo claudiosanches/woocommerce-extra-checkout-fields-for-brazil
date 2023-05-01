@@ -87,17 +87,17 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$settings = get_option( 'wcbcf_settings' );
 
 		switch ( intval( $settings['person_type'] ) ) {
-			case 1 :
+			case 1:
 				$persontype = intval( $type ) === 2 ? 'J' : 'F';
 				break;
-			case 2 :
+			case 2:
 				$persontype = 'F';
 				break;
-			case 3 :
+			case 3:
 				$persontype = 'J';
 				break;
 
-			default :
+			default:
 				$persontype = '';
 				break;
 		}
@@ -272,57 +272,57 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return array
 	 */
 	public function addresses_schema( $properties ) {
-		$properties['billing']['properties']['number'] = array(
+		$properties['billing']['properties']['number']        = array(
 			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['neighborhood'] = array(
+		$properties['billing']['properties']['neighborhood']  = array(
 			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['persontype'] = array(
+		$properties['billing']['properties']['persontype']    = array(
 			'description' => __( 'Person type.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cpf'] = array(
+		$properties['billing']['properties']['cpf']           = array(
 			'description' => __( 'CPF.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['rg'] = array(
+		$properties['billing']['properties']['rg']            = array(
 			'description' => __( 'RG.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cnpj'] = array(
+		$properties['billing']['properties']['cnpj']          = array(
 			'description' => __( 'CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['ie'] = array(
+		$properties['billing']['properties']['ie']            = array(
 			'description' => __( 'IE.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['birthdate'] = array(
+		$properties['billing']['properties']['birthdate']     = array(
 			'description' => __( 'Birthdate.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['sex'] = array(
+		$properties['billing']['properties']['sex']           = array(
 			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cellphone'] = array(
+		$properties['billing']['properties']['cellphone']     = array(
 			'description' => __( 'Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['shipping']['properties']['number'] = array(
+		$properties['shipping']['properties']['number']       = array(
 			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
