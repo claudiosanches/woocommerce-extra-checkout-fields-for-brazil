@@ -9,7 +9,7 @@
  * License:     GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
- * WC requires at least: 3.0
+ * WC requires at least: 5.0
  * WC tested up to: 7.6
  *
  * Brazilian Market on WooCommerce is free software: you can

@@ -2,7 +2,7 @@
 Contributors: claudiosanches
 Donate link: http://claudiosmweb.com/doacoes/
 Tags: woocommerce, checkout, brazil, cpf, cpnj
-Requires at least: 3.5
+Requires at least: 4.0
 Tested up to: 6.2
 Stable tag: 3.7.2
 License: GPLv2 or later
@@ -20,7 +20,7 @@ Em breve serão integradas mais novidades para o mercado brasileiro, como poder 
 
 = Compatibilidade =
 
-Compatível desde a versão 3.0.x do WooCommerce.
+Compatível desde a versão 5.0.x do WooCommerce.
 
 Funciona com os plugins:
 

@@ -116,78 +116,40 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return array
 	 */
 	public function legacy_orders_response( $order_data, $order, $fields, $server ) {
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $order, 'get_meta' ) ) {
-			// Billing fields.
-			$order_data['billing_address']['persontype']   = $this->get_person_type( $order->get_meta( '_billing_persontype' ) );
-			$order_data['billing_address']['cpf']          = $this->format_number( $order->get_meta( '_billing_cpf' ) );
-			$order_data['billing_address']['rg']           = $this->format_number( $order->get_meta( '_billing_rg' ) );
-			$order_data['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
-			$order_data['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
-			$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
-			$order_data['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
-			$order_data['billing_address']['number']       = $order->get_meta( '_billing_number' );
-			$order_data['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
-			$order_data['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
+		// Billing fields.
+		$order_data['billing_address']['persontype']   = $this->get_person_type( $order->get_meta( '_billing_persontype' ) );
+		$order_data['billing_address']['cpf']          = $this->format_number( $order->get_meta( '_billing_cpf' ) );
+		$order_data['billing_address']['rg']           = $this->format_number( $order->get_meta( '_billing_rg' ) );
+		$order_data['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
+		$order_data['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
+		$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
+		$order_data['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
+		$order_data['billing_address']['number']       = $order->get_meta( '_billing_number' );
+		$order_data['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
+		$order_data['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
-			// Shipping fields.
-			$order_data['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
-			$order_data['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
+		// Shipping fields.
+		$order_data['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
+		$order_data['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
 
-			// Customer fields.
-			if ( 0 === intval( $order->customer_user ) && isset( $order_data['customer'] ) ) {
-				// Customer billing fields.
-				$order_data['customer']['billing_address']['persontype']   = $this->get_person_type( $order->get_meta( '_billing_persontype' ) );
-				$order_data['customer']['billing_address']['cpf']          = $this->format_number( $order->get_meta( '_billing_cpf' ) );
-				$order_data['customer']['billing_address']['rg']           = $this->format_number( $order->get_meta( '_billing_rg' ) );
-				$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
-				$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
-				$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
-				$order_data['customer']['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
-				$order_data['customer']['billing_address']['number']       = $order->get_meta( '_billing_number' );
-				$order_data['customer']['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
-				$order_data['customer']['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
+		// Customer fields.
+		if ( 0 === intval( $order->customer_user ) && isset( $order_data['customer'] ) ) {
+			// Customer billing fields.
+			$order_data['customer']['billing_address']['persontype']   = $this->get_person_type( $order->get_meta( '_billing_persontype' ) );
+			$order_data['customer']['billing_address']['cpf']          = $this->format_number( $order->get_meta( '_billing_cpf' ) );
+			$order_data['customer']['billing_address']['rg']           = $this->format_number( $order->get_meta( '_billing_rg' ) );
+			$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
+			$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
+			$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
+			$order_data['customer']['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
+			$order_data['customer']['billing_address']['number']       = $order->get_meta( '_billing_number' );
+			$order_data['customer']['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
+			$order_data['customer']['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
-				// Customer shipping fields.
-				$order_data['customer']['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
-				$order_data['customer']['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
-			}
-		} else {
-			// Billing fields.
-			$order_data['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
-			$order_data['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
-			$order_data['billing_address']['rg']           = $this->format_number( $order->billing_rg );
-			$order_data['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
-			$order_data['billing_address']['ie']           = $this->format_number( $order->billing_ie );
-			$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->billing_birthdate, $server );
-			$order_data['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
-			$order_data['billing_address']['number']       = $order->billing_number;
-			$order_data['billing_address']['neighborhood'] = $order->billing_neighborhood;
-			$order_data['billing_address']['cellphone']    = $order->billing_cellphone;
-
-			// Shipping fields.
-			$order_data['shipping_address']['number']       = $order->shipping_number;
-			$order_data['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
-
-			// Customer fields.
-			if ( 0 === intval( $order->customer_user ) && isset( $order_data['customer'] ) ) {
-				// Customer billing fields.
-				$order_data['customer']['billing_address']['persontype']   = $this->get_person_type( $order->billing_persontype );
-				$order_data['customer']['billing_address']['cpf']          = $this->format_number( $order->billing_cpf );
-				$order_data['customer']['billing_address']['rg']           = $this->format_number( $order->billing_rg );
-				$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->billing_cnpj );
-				$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->billing_ie );
-				$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->billing_birthdate, $server );
-				$order_data['customer']['billing_address']['sex']          = substr( $order->billing_sex, 0, 1 );
-				$order_data['customer']['billing_address']['number']       = $order->billing_number;
-				$order_data['customer']['billing_address']['neighborhood'] = $order->billing_neighborhood;
-				$order_data['customer']['billing_address']['cellphone']    = $order->billing_cellphone;
-
-				// Customer shipping fields.
-				$order_data['customer']['shipping_address']['number']       = $order->shipping_number;
-				$order_data['customer']['shipping_address']['neighborhood'] = $order->shipping_neighborhood;
-			}
-		} // End if().
+			// Customer shipping fields.
+			$order_data['customer']['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
+			$order_data['customer']['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
+		}
 
 		if ( $fields ) {
 			$order_data = WC()->api->WC_API_Customers->filter_response_fields( $order_data, $order, $fields );
@@ -207,40 +169,21 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return array
 	 */
 	public function legacy_customers_response( $customer_data, $customer, $fields, $server ) {
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $customer, 'get_meta' ) ) {
-			// Billing fields.
-			$customer_data['billing_address']['persontype']   = $this->get_person_type( $customer->get_meta( 'billing_persontype' ) );
-			$customer_data['billing_address']['cpf']          = $this->format_number( $customer->get_meta( 'billing_cpf' ) );
-			$customer_data['billing_address']['rg']           = $this->format_number( $customer->get_meta( 'billing_rg' ) );
-			$customer_data['billing_address']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
-			$customer_data['billing_address']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
-			$customer_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $customer->get_meta( 'billing_birthdate' ), $server );
-			$customer_data['billing_address']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
-			$customer_data['billing_address']['number']       = $customer->get_meta( 'billing_number' );
-			$customer_data['billing_address']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
-			$customer_data['billing_address']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
+		// Billing fields.
+		$customer_data['billing_address']['persontype']   = $this->get_person_type( $customer->get_meta( 'billing_persontype' ) );
+		$customer_data['billing_address']['cpf']          = $this->format_number( $customer->get_meta( 'billing_cpf' ) );
+		$customer_data['billing_address']['rg']           = $this->format_number( $customer->get_meta( 'billing_rg' ) );
+		$customer_data['billing_address']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
+		$customer_data['billing_address']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
+		$customer_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $customer->get_meta( 'billing_birthdate' ), $server );
+		$customer_data['billing_address']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
+		$customer_data['billing_address']['number']       = $customer->get_meta( 'billing_number' );
+		$customer_data['billing_address']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
+		$customer_data['billing_address']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
 
-			// Shipping fields.
-			$customer_data['shipping_address']['number']       = $customer->get_meta( 'shipping_number' );
-			$customer_data['shipping_address']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
-		} else {
-			// Billing fields.
-			$customer_data['billing_address']['persontype']   = $this->get_person_type( $customer->billing_persontype );
-			$customer_data['billing_address']['cpf']          = $this->format_number( $customer->billing_cpf );
-			$customer_data['billing_address']['rg']           = $this->format_number( $customer->billing_rg );
-			$customer_data['billing_address']['cnpj']         = $this->format_number( $customer->billing_cnpj );
-			$customer_data['billing_address']['ie']           = $this->format_number( $customer->billing_ie );
-			$customer_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $customer->billing_birthdate, $server );
-			$customer_data['billing_address']['sex']          = substr( $customer->billing_sex, 0, 1 );
-			$customer_data['billing_address']['number']       = $customer->billing_number;
-			$customer_data['billing_address']['neighborhood'] = $customer->billing_neighborhood;
-			$customer_data['billing_address']['cellphone']    = $customer->billing_cellphone;
-
-			// Shipping fields.
-			$customer_data['shipping_address']['number']       = $customer->shipping_number;
-			$customer_data['shipping_address']['neighborhood'] = $customer->shipping_neighborhood;
-		}
+		// Shipping fields.
+		$customer_data['shipping_address']['number']       = $customer->get_meta( 'shipping_number' );
+		$customer_data['shipping_address']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
 
 		if ( $fields ) {
 			$customer_data = WC()->api->WC_API_Customers->filter_response_fields( $customer_data, $customer, $fields );
@@ -260,40 +203,21 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	public function customers_response( $response, $user ) {
 		$customer = new WC_Customer( $user->ID );
 
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $customer, 'get_meta' ) ) {
-			// Billing fields.
-			$response->data['billing']['number']       = $customer->get_meta( 'billing_number' );
-			$response->data['billing']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
-			$response->data['billing']['persontype']   = $this->get_person_type( $customer->get_meta( 'billing_persontype' ) );
-			$response->data['billing']['cpf']          = $this->format_number( $customer->get_meta( 'billing_cpf' ) );
-			$response->data['billing']['rg']           = $this->format_number( $customer->get_meta( 'billing_rg' ) );
-			$response->data['billing']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
-			$response->data['billing']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
-			$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->get_meta( 'billing_birthdate' ) );
-			$response->data['billing']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
-			$response->data['billing']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
+		// Billing fields.
+		$response->data['billing']['number']       = $customer->get_meta( 'billing_number' );
+		$response->data['billing']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
+		$response->data['billing']['persontype']   = $this->get_person_type( $customer->get_meta( 'billing_persontype' ) );
+		$response->data['billing']['cpf']          = $this->format_number( $customer->get_meta( 'billing_cpf' ) );
+		$response->data['billing']['rg']           = $this->format_number( $customer->get_meta( 'billing_rg' ) );
+		$response->data['billing']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
+		$response->data['billing']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
+		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->get_meta( 'billing_birthdate' ) );
+		$response->data['billing']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
+		$response->data['billing']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
 
-			// Shipping fields.
-			$response->data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
-			$response->data['shipping']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
-		} else {
-			// Billing fields.
-			$response->data['billing']['number']       = $customer->billing_number;
-			$response->data['billing']['neighborhood'] = $customer->billing_neighborhood;
-			$response->data['billing']['persontype']   = $this->get_person_type( $customer->billing_persontype );
-			$response->data['billing']['cpf']          = $this->format_number( $customer->billing_cpf );
-			$response->data['billing']['rg']           = $this->format_number( $customer->billing_rg );
-			$response->data['billing']['cnpj']         = $this->format_number( $customer->billing_cnpj );
-			$response->data['billing']['ie']           = $this->format_number( $customer->billing_ie );
-			$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->billing_birthdate );
-			$response->data['billing']['sex']          = substr( $customer->billing_sex, 0, 1 );
-			$response->data['billing']['cellphone']    = $customer->billing_cellphone;
-
-			// Shipping fields.
-			$response->data['shipping']['number']       = $customer->shipping_number;
-			$response->data['shipping']['neighborhood'] = $customer->shipping_neighborhood;
-		}
+		// Shipping fields.
+		$response->data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
+		$response->data['shipping']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
 
 		return $response;
 	}
@@ -309,28 +233,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	public function orders_v1_response( $response, $post ) {
 		$order = wc_get_order( $post->ID );
 
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $order, 'get_meta' ) ) {
-			return $this->orders_response( $response, $order );
-		} else {
-			// Billing fields.
-			$response->data['billing']['number']       = $order->billing_number;
-			$response->data['billing']['neighborhood'] = $order->billing_neighborhood;
-			$response->data['billing']['persontype']   = $this->get_person_type( $order->billing_persontype );
-			$response->data['billing']['cpf']          = $this->format_number( $order->billing_cpf );
-			$response->data['billing']['rg']           = $this->format_number( $order->billing_rg );
-			$response->data['billing']['cnpj']         = $this->format_number( $order->billing_cnpj );
-			$response->data['billing']['ie']           = $this->format_number( $order->billing_ie );
-			$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $order->billing_birthdate );
-			$response->data['billing']['sex']          = substr( $order->billing_sex, 0, 1 );
-			$response->data['billing']['cellphone']    = $order->billing_cellphone;
-
-			// Shipping fields.
-			$response->data['shipping']['number']       = $order->shipping_number;
-			$response->data['shipping']['neighborhood'] = $order->shipping_neighborhood;
-		}
-
-		return $response;
+		return $this->orders_response( $response, $order );
 	}
 
 	/**

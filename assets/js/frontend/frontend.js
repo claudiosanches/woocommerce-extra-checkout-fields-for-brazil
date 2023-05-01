@@ -8,13 +8,6 @@ jQuery(function ($) {
 		 * Initialize frontend actions
 		 */
 		init() {
-			if ('0' === bmwPublicParams.sort_state_country) {
-				$(document.body).on(
-					'country_to_state_changing',
-					this.country_to_state_changing
-				);
-			}
-
 			if ('0' !== bmwPublicParams.person_type) {
 				this.person_type_fields();
 			}
@@ -54,34 +47,6 @@ jQuery(function ($) {
 			// Check if select2 exists.
 			if ($().select2) {
 				$('.wc-ecfb-select').select2();
-			}
-		},
-
-		/**
-		 * Country to state changing.
-		 * Fix the fields order.
-		 */
-		country_to_state_changing() {
-			// Billing.
-			$('#billing_state_field label').html(
-				bmwPublicParams.state +
-					' <abbr class="required" title="' +
-					bmwPublicParams.required +
-					'">*</abbr>'
-			);
-			$('#billing_postcode_field').insertAfter('#billing_country_field');
-
-			// Shipping.
-			if ($('#shipping_state_field').length) {
-				$('#shipping_state_field label').html(
-					bmwPublicParams.state +
-						' <abbr class="required" title="' +
-						bmwPublicParams.required +
-						'">*</abbr>'
-				);
-				$('#shipping_postcode_field').insertAfter(
-					'#shipping_country_field'
-				);
 			}
 		},
 

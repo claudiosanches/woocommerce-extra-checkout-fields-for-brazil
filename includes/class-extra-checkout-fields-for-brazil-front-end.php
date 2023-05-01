@@ -62,13 +62,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'bmwPublicParams',
 			array(
-				'state'              => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'required'           => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'mailcheck'          => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
-				'maskedinput'        => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-				'person_type'        => absint( $settings['person_type'] ),
-				'only_brazil'        => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
-				'sort_state_country' => version_compare( WC_VERSION, '3.0', '>=' ),
+				'state'       => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'required'    => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'mailcheck'   => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+				'maskedinput' => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+				'person_type' => absint( $settings['person_type'] ),
+				'only_brazil' => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 			)
 		);
 	}
@@ -495,14 +494,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array           New address format.
 	 */
 	public function order_formatted_billing_address( $address, $order ) {
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $order, 'get_meta' ) ) {
-			$address['number']       = $order->get_meta( '_billing_number' );
-			$address['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
-		} else {
-			$address['number']       = $order->billing_number;
-			$address['neighborhood'] = $order->billing_neighborhood;
-		}
+		$address['number']       = $order->get_meta( '_billing_number' );
+		$address['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 
 		return $address;
 	}
@@ -520,14 +513,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			return $address;
 		}
 
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $order, 'get_meta' ) ) {
-			$address['number']       = $order->get_meta( '_shipping_number' );
-			$address['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
-		} else {
-			$address['number']       = $order->shipping_number;
-			$address['neighborhood'] = $order->shipping_neighborhood;
-		}
+		$address['number']       = $order->get_meta( '_shipping_number' );
+		$address['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
 
 		return $address;
 	}
@@ -557,17 +544,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array
 	 */
 	public function order_address( $address, $type, $order ) {
-		$number       = $type . '_number';
-		$neighborhood = $type . '_neighborhood';
-
-		// WooCommerce 3.0 or later.
-		if ( method_exists( $order, 'get_meta' ) ) {
-			$address['number']       = $order->get_meta( '_' . $number );
-			$address['neighborhood'] = $order->get_meta( '_' . $neighborhood );
-		} else {
-			$address['number']       = $order->$number;
-			$address['neighborhood'] = $order->$neighborhood;
-		}
+		$address['number']       = $order->get_meta( '_' . $type . '_number' );
+		$address['neighborhood'] = $order->get_meta( '_' . $type . '_neighborhood' );
 
 		return $address;
 	}
