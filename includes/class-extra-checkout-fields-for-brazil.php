@@ -19,7 +19,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	*
 	* @var string
 	*/
-	const VERSION = '3.8.2';
+	const VERSION = '3.9.0';
 
 	/**
 	 * Instance of this class.
@@ -42,6 +42,9 @@ class Extra_Checkout_Fields_For_Brazil {
 
 			$this->includes();
 			add_filter( 'plugin_action_links_' . plugin_basename( CSBMW_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
+
+			// Add HPOS compatibility
+            add_action('before_woocommerce_init', array($this, 'hposCompatibility'));
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
 		}
@@ -130,4 +133,15 @@ class Extra_Checkout_Fields_For_Brazil {
 			)
 		) . '</p></div>';
 	}
+
+	/**
+	 * Mark the plugin as compatible with the HPOS feature
+	 *
+	 * @return void
+	 */
+	function hposCompatibility(): void {
+		if(class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class))
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', 'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php', true);
+	}
+
 }
