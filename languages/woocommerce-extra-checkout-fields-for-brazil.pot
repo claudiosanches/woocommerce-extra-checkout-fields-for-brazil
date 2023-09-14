@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Brazilian Market on WooCommerce 3.8.2\n"
+"Project-Id-Version: Brazilian Market on WooCommerce 3.8.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-05-01T19:23:13+00:00\n"
+"POT-Creation-Date: 2023-09-13T21:34:48-03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -270,28 +270,28 @@ msgstr ""
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:16
+#: includes/admin/views/html-admin-support.php:20
 msgid "Support this plugin's author"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:17
+#: includes/admin/views/html-admin-support.php:21
 msgid "Apoia.se"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:18
+#: includes/admin/views/html-admin-support.php:22
 msgid "Be a member of Apoia.se and help in the development of many free plugins for WooCommerce, including the Brazilian Market on WooCommerce, depending on the amount of your support you can report bugs and vote on what will be prioritized in monthly releases and updates, in addition to having access to an exclusive support system for supporters that I intend to answer during working days between 12:00 and 19:00."
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:19
+#: includes/admin/views/html-admin-support.php:23
 msgid "Become a member at Apoia.se"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:20
-#: includes/admin/views/html-admin-support.php:22
+#: includes/admin/views/html-admin-support.php:24
+#: includes/admin/views/html-admin-support.php:26
 msgid "Make a review"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:21
+#: includes/admin/views/html-admin-support.php:25
 msgid "Help this plugin by rating with &#9733;&#9733;&#9733;&#9733;&#9733; on WordPress.org."
 msgstr ""
 
@@ -389,23 +389,23 @@ msgstr ""
 msgid "is not valid"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:109
+#: includes/class-extra-checkout-fields-for-brazil.php:128
 msgid "Settings"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:110
+#: includes/class-extra-checkout-fields-for-brazil.php:129
 msgid "Premium Support"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:111
+#: includes/class-extra-checkout-fields-for-brazil.php:130
 msgid "Contribute"
 msgstr ""
 
 #. translators: %s: woocommerce link
-#: includes/class-extra-checkout-fields-for-brazil.php:123
+#: includes/class-extra-checkout-fields-for-brazil.php:142
 msgid "Brazilian Market on WooCommerce depends on %s to work!"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:124
+#: includes/class-extra-checkout-fields-for-brazil.php:143
 msgid "WooCommerce"
 msgstr ""
