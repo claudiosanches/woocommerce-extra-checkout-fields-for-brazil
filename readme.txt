@@ -4,7 +4,7 @@ Donate link: https://apoia.se/claudiosanches
 Tags: woocommerce, checkout, brazil, cpf, cpnj
 Requires at least: 4.0
 Tested up to: 6.3
-Stable tag: 3.8.3
+Stable tag: 3.8.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -67,6 +67,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Changelog ==
 
+= 3.8.4 - 2023/09/25 =
+
+- Adicionado suporte para WooCommerce 8.1+.
+
 = 3.8.3 - 2023/09/13 =
 
 - Adicionado suporte para WooCommerce HPOS.
@@ -124,6 +128,7 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.8.3 =
+= 3.8.4 =
 
 - Adicionado suporte para WooCommerce HPOS.
+- Adicionado suporte para WooCommerce 8.1+.
