@@ -55,7 +55,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return void
 	 */
 	public function maybe_ignore_company_required( $data, &$errors ) {
-	    if ( '1' == $data['billing_persontype'] ) {
+	    if ( '1' === $data['billing_persontype'] ) {
 	        $errors->remove( 'billing_company_required' );
 	    }
 	}
