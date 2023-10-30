@@ -32,7 +32,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ), 10 );
 
 		// Prevents billing company field to be required for CPF, aka billing_person_type 1.
-		add_action( 'woocommerce_after_checkout_validation', array( $this, 'gr_maybe_not_error_for_company' ), 10, 2 );
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_ignore_company_required' ), 10, 2 );
 
 		// Custom address format.
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
@@ -47,14 +47,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 	
 	/**
-	 * Maybe not error for required billing company when using Pessoa física CPF.
+	 * Maybe ignore missing company field error when only CPF is required.
 	 *
 	 * @param  array $data    Checkout posted data.
 	 * @param  object $errors Checkout errors.
 	 *
 	 * @return void
 	 */
-	public function gr_maybe_not_error_for_company( $data, &$errors ) {
+	public function maybe_ignore_company_required( $data, &$errors ) {
 	    if ( '1' == $data['billing_persontype'] ) {
 	        $errors->remove( 'billing_company_required' );
 	    }
