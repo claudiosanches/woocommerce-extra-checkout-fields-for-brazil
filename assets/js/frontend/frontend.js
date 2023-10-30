@@ -51,100 +51,132 @@ jQuery(function ($) {
 		},
 
 		person_type_fields() {
+			/**
+			 * Control person type fields
+			 *
+			 * @param {string}  personType
+			 * @param {boolean} checkCountry
+			 */
+			const handleFields = function (personType, checkCountry = false) {
+				let country = 'BR';
+
+				if (checkCountry) {
+					country = $('#billing_country').val();
+				}
+
+				$('.person-type-field')
+					.hide()
+					.removeClass(
+						'validate-required is-active woocommerce-validated'
+					);
+				$('#billing_persontype_field').show().addClass('is-active');
+
+				if ('1' === personType) {
+					if ('BR' === country) {
+						$('#billing_cpf_field')
+							.addClass(
+								'validate-required is-active woocommerce-validated'
+							)
+							.show();
+						$('#billing_rg_field')
+							.addClass(
+								'validate-required is-active woocommerce-validated'
+							)
+							.show();
+					} else {
+						$('#billing_cpf_field').show().addClass('is-active');
+						$('#billing_rg_field').show().addClass('is-active');
+					}
+				}
+
+				if ('2' === personType) {
+					if ('BR' === country) {
+						$('#billing_company_field')
+							.addClass(
+								'validate-required is-active woocommerce-validated'
+							)
+							.show();
+						$('#billing_cnpj_field')
+							.addClass(
+								'validate-required is-active woocommerce-validated'
+							)
+							.show();
+						$('#billing_ie_field')
+							.addClass(
+								'validate-required is-active woocommerce-validated'
+							)
+							.show();
+					} else {
+						$('#billing_company_field')
+							.addClass('is-active')
+							.show();
+						$('#billing_cnpj_field').addClass('is-active').show();
+						$('#billing_ie_field').addClass('is-active').show();
+					}
+				}
+
+				if ('BR' === country) {
+					$('.person-type-field label .required').remove();
+					$('.person-type-field label').append(
+						' <abbr class="required" title="' +
+							bmwPublicParams.required +
+							'">*</abbr>'
+					);
+				}
+			};
+
+			/**
+			 * Maybe run handle fields
+			 *
+			 * @param {boolean} checkCountry
+			 * @return {void}
+			 */
+			const maybeRunHandleFields = function (checkCountry = false) {
+				if ('1' === bmwPublicParams.person_type) {
+					$('#billing_persontype')
+						.on('change', function () {
+							const personType = $(this).val();
+
+							handleFields(personType, checkCountry);
+						})
+						.change();
+				}
+			};
+
 			// Required fields.
 			if ('no' === bmwPublicParams.only_brazil) {
 				$('.person-type-field label .required').remove();
-				$('.person-type-field').addClass('validate-required');
 				$('.person-type-field label').append(
 					' <abbr class="required" title="' +
 						bmwPublicParams.required +
 						'">*</abbr>'
 				);
+
+				maybeRunHandleFields();
 			} else {
+				$('.person-type-field').removeClass(
+					'validate-required is-active woocommerce-validated'
+				);
+				$('.person-type-field label .required').remove();
+				maybeRunHandleFields(true);
+
 				$('#billing_country')
 					.on('change', function () {
 						const current = $(this).val();
 
 						if ('BR' === current) {
-							$('.person-type-field label .required').remove();
-							$('.person-type-field').addClass(
-								'validate-required'
-							);
-							$('.person-type-field label').append(
-								' <abbr class="required" title="' +
-									bmwPublicParams.required +
-									'">*</abbr>'
-							);
+							if ('1' === bmwPublicParams.person_type) {
+								const personType = $(
+									'#billing_persontype'
+								).val();
+
+								handleFields(personType);
+							}
 						} else {
 							$('.person-type-field').removeClass(
-								'validate-required'
+								'validate-required is-active woocommerce-validated'
 							);
 							$('.person-type-field label .required').remove();
-						}
-					})
-					.change();
-			}
-
-			if ('1' === bmwPublicParams.person_type) {
-				$('#billing_persontype')
-					.on('change', function () {
-						const current = $(this).val();
-
-						$('#billing_cpf_field')
-							.hide()
-							.removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-						$('#billing_rg_field')
-							.hide()
-							.removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-						$('#billing_company_field')
-							.hide()
-							.removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-						$('#billing_cnpj_field')
-							.hide()
-							.removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-						$('#billing_ie_field')
-							.hide()
-							.removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-
-						if ('1' === current) {
-							$('#billing_cpf_field')
-								.show()
-								.addClass(
-									'validate-required is-active woocommerce-validated'
-								);
-							$('#billing_rg_field')
-								.show()
-								.addClass(
-									'validate-required is-active woocommerce-validated'
-								);
-						}
-
-						if ('2' === current) {
-							$('#billing_company_field')
-								.show()
-								.addClass(
-									'validate-required is-active woocommerce-validated'
-								);
-							$('#billing_cnpj_field')
-								.show()
-								.addClass(
-									'validate-required is-active woocommerce-validated'
-								);
-							$('#billing_ie_field')
-								.show()
-								.addClass(
-									'validate-required is-active woocommerce-validated'
-								);
 						}
 					})
 					.change();
