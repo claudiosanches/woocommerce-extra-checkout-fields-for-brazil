@@ -18,9 +18,58 @@ class Extra_Checkout_Fields_For_Brazil_Integrations {
 	 * Initialize integrations.
 	 */
 	public function __construct() {
+		// Check if Flux Checkout for WooCommerce is active.
+		if ( defined( 'FLUX_PLUGIN_VERSION' ) ) {
+			add_filter( 'woocommerce_billing_fields', array( $this, 'flux_billing_fields' ), 100 );
+			add_filter( 'woocommerce_shipping_fields', array( $this, 'flux_shipping_fields' ), 100 );
+		}
+
 		add_filter( 'woocommerce_bcash_args', array( $this, 'bcash' ), 1, 2 );
 		add_filter( 'woocommerce_moip_args', array( $this, 'moip' ), 1, 2 );
 		add_filter( 'woocommerce_moip_holder_data', array( $this, 'moip_transparent_checkout' ), 1, 2 );
+	}
+
+	/**
+	 * Custom Flux Checkout for WooCommerce billing fields.
+	 *
+	 * @param  array $fields Checkout fields.
+	 *
+	 * @return array         New fields.
+	 */
+	public function flux_billing_fields( $fields ) {
+		// Set correct priority and form-row-wide class.
+		$fields['billing_number']['class']          = array( 'form-row-wide', 'address-field' );
+		$fields['billing_number']['priority']       = 65;
+		$fields['billing_neighborhood']['class']    = array( 'form-row-wide', 'address-field' );
+		$fields['billing_neighborhood']['priority'] = 80;
+		$fields['billing_cellphone']['class']       = array( 'form-row-wide' );
+
+		// Remove tel type to avoid a phone icon.
+		if ( isset( $fields['billing_cpf'] ) ) {
+			$fields['billing_cpf']['type'] = 'text';
+		}
+		if ( isset( $fields['billing_cnpj'] ) ) {
+			$fields['billing_cnpj']['type'] = 'text';
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Custom Flux Checkout for WooCommerce shipping fields.
+	 *
+	 * @param  array $fields Checkout fields.
+	 *
+	 * @return array         New fields.
+	 */
+	public function flux_shipping_fields( $fields ) {
+		// Set correct priority and form-row-wide class.
+		$fields['shipping_number']['class']          = array( 'form-row-wide', 'address-field' );
+		$fields['shipping_number']['priority']       = 140;
+		$fields['shipping_neighborhood']['class']    = array( 'form-row-wide', 'address-field' );
+		$fields['shipping_neighborhood']['priority'] = 160;
+
+		return $fields;
 	}
 
 	/**
