@@ -308,7 +308,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 		} else {
 			if ( isset( $fields['billing_phone'] ) ) {
-				$new_fields['billing_phone'] = $fields['billing_phone'];
+				$new_fields['billing_phone']          = $fields['billing_phone'];
 				$new_fields['billing_phone']['class'] = array( 'form-row-wide' );
 				$new_fields['billing_phone']['clear'] = true;
 

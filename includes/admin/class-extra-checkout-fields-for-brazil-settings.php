@@ -65,10 +65,10 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu' => $option,
-				'id' => 'person_type',
+				'menu'        => $option,
+				'id'          => 'person_type',
 				'description' => __( 'Individuals enables CPF field and Legal Person enables CNPJ field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'options' => array(
+				'options'     => array(
 					0 => __( 'None', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					1 => __( 'Individuals and Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					2 => __( 'Individuals only', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -119,17 +119,17 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// Birthdate and Sex option.
+		// Birthdate and Gender option.
 		add_settings_field(
 			'birthdate_sex',
-			__( 'Display Birthdate and Sex:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display Birthdate and Gender:', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'birthdate_sex',
-				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked show the Birthdate and Gender field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -149,6 +149,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 					-1 => __( 'If checked change the label of Phone field to "Cell Phone".', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					0 => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
+			)
+		);
+
+		// Neighborhood is required option.
+		add_settings_field(
+			'neighborhood_required',
+			__( 'Display Neighborhood as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'neighborhood_required',
+				'label' => __( 'If checked show the Neighborhood field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 

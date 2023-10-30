@@ -12,10 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="clear"></div>
 
+<h3><?php esc_html_e( 'Customer data', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></h3>
 <div class="wcbcf-address">
-
-	<h4><?php esc_html_e( 'Customer data', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></h4>
-
 	<p>
 		<?php if ( 0 !== $person_type ) : ?>
 			<?php if ( ( 1 === intval( $order->get_meta( '_billing_persontype' ) ) && 1 === $person_type ) || 2 === $person_type ) : ?>
@@ -39,16 +37,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php if ( isset( $settings['birthdate_sex'] ) ) : ?>
 			<strong><?php esc_html_e( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_birthdate' ) ); ?><br />
-			<strong><?php esc_html_e( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_sex' ) ); ?><br />
+			<strong><?php esc_html_e( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_sex' ) ); ?><br />
 		<?php endif; ?>
 
 		<strong><?php echo esc_html( $phone_label ); ?>: </strong><?php echo esc_html( $order->get_billing_phone() ); ?><br />
 
 		<?php if ( '' !== $order->get_meta( '_billing_cellphone' ) ) : ?>
-			<strong><?php esc_html_e( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ) ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cellphone' ) ); ?><br />
+			<strong><?php esc_html_e( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cellphone' ) ); ?><br />
 		<?php endif; ?>
 
-		<strong><?php esc_html_e( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ) ?>: </strong><?php echo wp_kses_post( make_clickable( $order->get_billing_email() ) ); ?><br />
+		<strong><?php esc_html_e( 'Email', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo wp_kses_post( make_clickable( $order->get_billing_email() ) ); ?><br />
 	</p>
 
 </div>

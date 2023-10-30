@@ -15,13 +15,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php settings_errors(); ?>
 
-	<?php include dirname( __FILE__ ) . '/html-admin-help-message.php'; ?>
-	<form method="post" action="options.php">
-		<?php
-			settings_fields( 'wcbcf_settings' );
-			do_settings_sections( 'wcbcf_settings' );
-			submit_button();
-		?>
+	<form id="bmw-settings" method="post" action="options.php">
+		<div class="box">
+			<?php
+				settings_fields( 'wcbcf_settings' );
+				do_settings_sections( 'wcbcf_settings' );
+				submit_button();
+			?>
+		</div>
+		<div class="box">
+			<?php require dirname( __FILE__ ) . '/html-admin-support.php'; ?>
+		</div>
 	</form>
 </div>
 
