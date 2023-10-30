@@ -48,15 +48,15 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Maybe ignore missing company field error when only CPF is required.
 	 *
-	 * @param  array $data    Checkout posted data.
+	 * @param  array  $data   Checkout posted data.
 	 * @param  object $errors Checkout errors.
 	 *
 	 * @return void
 	 */
 	public function maybe_ignore_company_required( $data, $errors ) {
-	    if ( isset( $data['billing_persontype'] ) && '1' === $data['billing_persontype'] ) {
-	        $errors->remove( 'billing_company_required' );
-	    }
+		if ( isset( $data['billing_persontype'] ) && '1' === $data['billing_persontype'] ) {
+			$errors->remove( 'billing_company_required' );
+		}
 	}
 
 	/**
@@ -333,7 +333,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$new_fields = array();
 
 		// Get plugin settings.
-		$settings    = get_option( 'wcbcf_settings' );
+		$settings = get_option( 'wcbcf_settings' );
 
 		if ( isset( $fields['shipping_first_name'] ) ) {
 			$new_fields['shipping_first_name']          = $fields['shipping_first_name'];
