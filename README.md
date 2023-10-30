@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 4.0  
 **Tested up to:** 6.3  
-**Stable tag:** 3.9.0  
+**Stable tag:** 3.9.1  
 **Requires PHP:** 5.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -13,7 +13,7 @@ Adds Brazilian checkout fields in WooCommerce
 
 ## Description ##
 
-Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Sexo, Número, Bairro e Celular. Além de máscaras em campos e aviso de e-mail incorreto.
+Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Gênero, Número, Bairro e Celular. Além de máscaras em campos e aviso de e-mail incorreto.
 
 Em breve serão integradas mais novidades para o mercado brasileiro, como poder fazer login por CPF/CNPJ, ocultar alguns campos no carrinho, aguardem!
 
@@ -75,6 +75,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.9.1 - 2023/10/29 ###
+
+- Melhorado como o plugin lida o requerimento dos campos de PF e PJ.
 
 ### 3.9.0 - 2023/10/29 ###
 
@@ -144,8 +148,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.9.0 ###
+### 3.9.1 ###
 
+- Melhorado como o plugin lida o requerimento dos campos de PF e PJ.
 - Adicionado suporte para o plugin Flux Checkout for WooCommerce.
 - Adicionado suporte para WooCommerce 8.2+.
 - Adicionada opção para controlar a obrigatoriedade do campo de Bairro.

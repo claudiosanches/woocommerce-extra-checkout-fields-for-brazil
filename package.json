@@ -1,7 +1,7 @@
 {
   "name": "woocommerce-extra-checkout-fields-for-brazil",
   "description": "Brazilian Market on WooCommerce",
-  "version": "3.9.0",
+  "version": "3.9.1",
   "scripts": {
     "autoprefixer": "postcss -u --no-map autoprefixer -r assets/css/**/*.css",
     "babel:admin": "babel assets/js/admin --out-dir assets/js/admin --out-file-extension .min.js --ignore '**/*.min.js'",
