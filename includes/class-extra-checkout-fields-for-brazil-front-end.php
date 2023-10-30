@@ -313,7 +313,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				$new_fields['billing_phone']['clear'] = true;
 
 				if ( -1 === (int) wc_get_var( $settings['cell_phone'] ) ) {
-					$fields['billing_phone']['label'] = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
+					$new_fields['billing_phone']['label'] = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
 				}
 			}
 
