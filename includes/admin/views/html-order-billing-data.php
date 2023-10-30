@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php if ( isset( $settings['birthdate_sex'] ) ) : ?>
 			<strong><?php esc_html_e( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_birthdate' ) ); ?><br />
-			<strong><?php esc_html_e( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_sex' ) ); ?><br />
+			<strong><?php esc_html_e( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_sex' ) ); ?><br />
 		<?php endif; ?>
 
 		<strong><?php esc_html_e( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_phone() ); ?><br />

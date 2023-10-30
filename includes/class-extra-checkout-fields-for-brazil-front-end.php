@@ -218,15 +218,17 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 			$new_fields['billing_sex'] = array(
 				'type'        => 'select',
-				'label'       => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'       => array( 'form-row-last' ),
 				'input_class' => array( 'wc-ecfb-select' ),
 				'clear'       => true,
 				'required'    => true,
 				'options'     => array(
 					'' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					__( 'Prefer not to say', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Prefer not to say', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Female', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Male', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					__( 'Other', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Other', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 				'priority'    => 32,
 			);

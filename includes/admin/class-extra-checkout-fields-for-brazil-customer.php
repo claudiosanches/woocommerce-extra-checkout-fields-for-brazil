@@ -80,7 +80,7 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 				'description' => '',
 			);
 			$new_fields['billing']['fields']['billing_sex']       = array(
-				'label'       => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => '',
 			);
 		}

@@ -96,7 +96,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 				'show'  => false,
 			);
 			$billing_data['sex']       = array(
-				'label' => __( 'Sex', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'show'  => false,
 			);
 		}

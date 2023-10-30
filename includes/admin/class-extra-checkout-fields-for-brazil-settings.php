@@ -119,17 +119,17 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// Birthdate and Sex option.
+		// Birthdate and Gender option.
 		add_settings_field(
 			'birthdate_sex',
-			__( 'Display Birthdate and Sex:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display Birthdate and Gender:', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'birthdate_sex',
-				'label' => __( 'If checked show the Birthdate and Sex field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked show the Birthdate and Gender field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
