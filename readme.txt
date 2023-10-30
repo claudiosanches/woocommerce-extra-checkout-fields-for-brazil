@@ -1,6 +1,6 @@
 === Brazilian Market on WooCommerce ===
 Contributors: claudiosanches
-Donate link: https://apoia.se/claudiosanches
+Donate link: https://apoia.se/claudiosanches?utm_source=plugin-bmw
 Tags: woocommerce, checkout, brazil, cpf, cpnj
 Requires at least: 4.0
 Tested up to: 6.3

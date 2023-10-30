@@ -273,8 +273,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 			$new_fields['billing_cellphone'] = array(
 				'label'    => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'type'     => 'tel',
 				'class'    => array( 'form-row-last' ),
 				'clear'    => true,
+				'validate' => array( 'phone' ),
+				'required' => false,
 				'priority' => 105,
 			);
 
