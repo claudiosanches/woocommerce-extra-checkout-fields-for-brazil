@@ -249,6 +249,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'    => array( 'form-row-first', 'address-field' ),
 			'clear'    => true,
+			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
 			'priority' => 65,
 		);
 
@@ -314,6 +315,9 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function checkout_shipping_fields( $fields ) {
 		$new_fields = array();
 
+		// Get plugin settings.
+		$settings    = get_option( 'wcbcf_settings' );
+
 		if ( isset( $fields['shipping_first_name'] ) ) {
 			$new_fields['shipping_first_name']          = $fields['shipping_first_name'];
 			$new_fields['shipping_first_name']['class'] = array( 'form-row-first' );
@@ -364,6 +368,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'    => array( 'form-row-first', 'address-field' ),
 			'clear'    => true,
+			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
 			'priority' => 65,
 		);
 

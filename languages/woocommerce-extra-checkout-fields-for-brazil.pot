@@ -10,8 +10,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2023-10-29T20:34:55-03:00\n"
+
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
 
 #. Plugin Name of the plugin
@@ -231,42 +232,50 @@ msgid "If checked show the Cell Phone field in billing options."
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:153
+msgid "Display Neighborhood as required:"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:160
+msgid "If checked show the Neighborhood field will be a required field."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:167
 msgid "jQuery Options:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:161
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:175
 msgid "Enable Mail Check:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:168
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:182
 msgid "If checked informs typos in email to users."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:175
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:189
 msgid "Enable Input Mask:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:182
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:196
 msgid "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:189
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:203
 msgid "Validation:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:197
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
 msgid "Validate CPF:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:204
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:225
 msgid "Validate CNPJ:"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:232
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 

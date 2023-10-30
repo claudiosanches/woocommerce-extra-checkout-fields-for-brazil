@@ -147,6 +147,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Neighborhood is required option.
+		add_settings_field(
+			'neighborhood_required',
+			__( 'Display Neighborhood as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'neighborhood_required',
+				'label' => __( 'If checked show the Neighborhood field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
 		// Set Custom Fields section.
 		add_settings_section(
 			'jquery_section',
