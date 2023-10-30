@@ -76,7 +76,23 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Load the plugin text domain for translation.
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'woocommerce-extra-checkout-fields-for-brazil', false, dirname( plugin_basename( CSBMW_PLUGIN_FILE ) ) . '/languages/' );
+		// Try to use the plugins own translation, only available for pt_BR.
+		$locale = apply_filters( 'plugin_locale', determine_locale(), 'woocommerce-extra-checkout-fields-for-brazil' );
+
+		if ( 'pt_BR' === $locale ) {
+			unload_textdomain( 'woocommerce-extra-checkout-fields-for-brazil' );
+			load_textdomain(
+				'woocommerce-extra-checkout-fields-for-brazil',
+				plugin_dir_path( CSBMW_PLUGIN_FILE ) . '/languages/woocommerce-extra-checkout-fields-for-brazil-' . $locale . '.mo'
+			);
+		}
+
+		// Load regular translation from WordPress.
+		load_plugin_textdomain(
+			'woocommerce-extra-checkout-fields-for-brazil',
+			false,
+			dirname( plugin_basename( CSBMW_PLUGIN_FILE ) ) . '/languages'
+		);
 	}
 
 	/**

@@ -1,50 +1,62 @@
-# Copyright (C) 2023 Claudio Sanches
-# This file is distributed under the GPLv2 or later.
+# Translation of Plugins - Brazilian Market on WooCommerce - Stable (latest release) in Portuguese (Brazil)
+# This file is distributed under the same license as the Plugins - Brazilian Market on WooCommerce - Stable (latest release) package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Brazilian Market on WooCommerce 3.8.4\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: Plugins - Brazilian Market on WooCommerce - Stable "
+"(latest release)\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-"
+"checkout-fields-for-brazil\n"
+"POT-Creation-Date: 2023-10-29T21:38:24-03:00\n"
+"PO-Revision-Date: 2023-10-29 21:53-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-29T21:38:24-03:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
-"X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #. Plugin Name of the plugin
 msgid "Brazilian Market on WooCommerce"
-msgstr ""
+msgstr "Brazilian Market on WooCommerce"
 
 #. Plugin URI of the plugin
-msgid "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil"
+msgid ""
+"https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-"
+"brazil"
 msgstr ""
+"https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-"
+"brazil"
 
 #. Description of the plugin
-msgid "Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil."
+msgid ""
+"Adds new checkout fields, field masks and other things necessary to properly "
+"work with WooCommerce on Brazil."
 msgstr ""
+"Adiciona novos campos na tela de finalização de pedido, adiciona mascaras em "
+"campos e outras coisas necessárias para o WooCommerce funcionar de forma "
+"adequada no Brasil."
 
 #. Author of the plugin
 msgid "Claudio Sanches"
-msgstr ""
+msgstr "Claudio Sanches"
 
 #. Author URI of the plugin
 msgid "https://claudiosanches.com"
-msgstr ""
+msgstr "https://claudiosanches.com"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:49
 msgid "Load the customer extras data?"
-msgstr ""
+msgstr "Carregar informações adicionais do cliente?"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:50
 msgid "Also copy the data of number and neighborhood?"
-msgstr ""
+msgstr "Copiar também as informações de número e bairro?"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:39
 msgid "Customer Billing Address"
-msgstr ""
+msgstr "Endereço de Cobrança do Cliente"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:47
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:59
@@ -54,7 +66,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:450
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:454
 msgid "CPF"
-msgstr ""
+msgstr "CPF"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:53
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:64
@@ -62,7 +74,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:153
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:458
 msgid "RG"
-msgstr ""
+msgstr "RG"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:62
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:76
@@ -72,7 +84,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:469
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:473
 msgid "CNPJ"
-msgstr ""
+msgstr "CNPJ"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:68
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:81
@@ -80,21 +92,21 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:187
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:477
 msgid "State Registration"
-msgstr ""
+msgstr "Inscrição Estadual"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:79
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:95
 #: includes/admin/views/html-order-billing-data.php:39
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:212
 msgid "Birthdate"
-msgstr ""
+msgstr "Data de Nascimento"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:83
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:99
 #: includes/admin/views/html-order-billing-data.php:40
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:221
 msgid "Sex"
-msgstr ""
+msgstr "Gênero"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:90
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:120
@@ -103,7 +115,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:252
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:371
 msgid "Number"
-msgstr ""
+msgstr "Número"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:95
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:125
@@ -112,276 +124,302 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:266
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:385
 msgid "Neighborhood"
-msgstr ""
+msgstr "Bairro"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:106
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:123
 #: includes/admin/views/html-order-billing-data.php:46
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:292
 msgid "Cell Phone"
-msgstr ""
+msgstr "Celular"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:114
 msgid "Customer Shipping Address"
-msgstr ""
+msgstr "Endereço de Envio do Cliente"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:47
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:130
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:444
 msgid "Person type"
-msgstr ""
+msgstr "Tipo de Pessoa"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:50
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:227
 msgid "Select"
-msgstr ""
+msgstr "Selecionar"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:51
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:135
 msgid "Individuals"
-msgstr ""
+msgstr "Pessoa Física"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:52
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:136
 msgid "Legal Person"
-msgstr ""
+msgstr "Pessoa Jurídica"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:72
 #: includes/admin/views/html-order-billing-data.php:27
 msgid "Company Name"
-msgstr ""
+msgstr "Razão Social"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:88
 #: includes/admin/views/html-order-billing-data.php:35
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:465
 msgid "Company"
-msgstr ""
+msgstr "Empresa"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:31
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:32
 msgid "Checkout Fields"
-msgstr ""
+msgstr "Campos do Checkout"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:55
 msgid "Checkout Custom Fields:"
-msgstr ""
+msgstr "Campos personalizados de Checkout:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:63
 msgid "Display Person Type:"
-msgstr ""
+msgstr "Exibir Tipo de Pessoa:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:70
 msgid "Individuals enables CPF field and Legal Person enables CNPJ field."
 msgstr ""
+"Pessoa Física habilita o campo CPF e Pessoa Jurídica habilita o campo CNPJ."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:72
 msgid "None"
-msgstr ""
+msgstr "Nenhum"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:73
 msgid "Individuals and Legal Person"
-msgstr ""
+msgstr "Pessoa Física e Pessoa Jurídica"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:74
 msgid "Individuals only"
-msgstr ""
+msgstr "Pessoa Física apenas"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:75
 msgid "Legal Person only"
-msgstr ""
+msgstr "Pessoa Jurídica apenas"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:83
 msgid "Person Type is required only in Brazil?"
-msgstr ""
+msgstr "Tipo de Pessoa é obrigatório apenas no Brasil?"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:90
-msgid "If checked the Individuals and Legal Person options will be mandatory only in Brazil."
+msgid ""
+"If checked the Individuals and Legal Person options will be mandatory only "
+"in Brazil."
 msgstr ""
+"Faça com que os campos de Pessoa Física e Pessoa Jurídica sejam obrigatórios "
+"apenas no Brasil."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:97
 msgid "Display RG:"
-msgstr ""
+msgstr "Exibir RG:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:104
 msgid "If checked show the RG field in billing options."
-msgstr ""
+msgstr "Exibir o campo de RG nas informações de cobrança."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:111
 msgid "Display State Registration:"
-msgstr ""
+msgstr "Exibir Inscrição Estadual:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:118
 msgid "If checked show the State Registration field in billing options."
-msgstr ""
+msgstr "Exibir o campo de Inscrição Estadual nas informações de cobrança."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:125
 msgid "Display Birthdate and Sex:"
-msgstr ""
+msgstr "Exibir Data de Nascimento e Gênero:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:132
 msgid "If checked show the Birthdate and Sex field in billing options."
 msgstr ""
+"Exibir os campos de Data de nascimento e Gênero nas informações de cobrança."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:139
 msgid "Display Cell Phone:"
-msgstr ""
+msgstr "Exibir Celular:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:146
 msgid "If checked show the Cell Phone field in billing options."
-msgstr ""
+msgstr "Exibir o campo de Celular nas informações de cobrança."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:153
 msgid "Display Neighborhood as required:"
-msgstr ""
+msgstr "Exibir Bairro como campo obrigatório:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:160
 msgid "If checked show the Neighborhood field will be a required field."
-msgstr ""
+msgstr "Exibir Bairro como um campo obrigatório."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:167
 msgid "jQuery Options:"
-msgstr ""
+msgstr "Opções de jQuery:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:175
 msgid "Enable Mail Check:"
-msgstr ""
+msgstr "Habilitar Sugestões de E-mail:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:182
 msgid "If checked informs typos in email to users."
-msgstr ""
+msgstr "Exibir dicas quando o usuário digita o e-mail de forma incorreta."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:189
 msgid "Enable Input Mask:"
-msgstr ""
+msgstr "Habilitar Máscara de Campos:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:196
-msgid "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone."
+msgid ""
+"If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone "
+"and Cell Phone."
 msgstr ""
+"Adicionar máscaras de preenchimento para os campos de CPF, CNPJ, Data de "
+"Nascimento, Telefone e Celular."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:203
 msgid "Validation:"
-msgstr ""
+msgstr "Validação:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
 msgid "Validate CPF:"
-msgstr ""
+msgstr "Validar CPF:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
 msgid "Checks if the CPF is valid."
-msgstr ""
+msgstr "Verificar se o CPF é válido."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:225
 msgid "Validate CNPJ:"
-msgstr ""
+msgstr "Validar CNPJ:"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:232
 msgid "Checks if the CNPJ is valid."
-msgstr ""
+msgstr "Verificar se o CNPJ é válido."
 
 #: includes/admin/views/html-admin-support.php:20
 msgid "Support this plugin's author"
-msgstr ""
+msgstr "Apoie o autor deste plugin"
 
 #: includes/admin/views/html-admin-support.php:21
 msgid "Apoia.se"
-msgstr ""
+msgstr "Apoia.se"
 
 #: includes/admin/views/html-admin-support.php:22
-msgid "Be a member of Apoia.se and help in the development of many free plugins for WooCommerce, including the Brazilian Market on WooCommerce, depending on the amount of your support you can report bugs and vote on what will be prioritized in monthly releases and updates, in addition to having access to an exclusive support system for supporters that I intend to answer during working days between 12:00 and 19:00."
+msgid ""
+"Be a member of Apoia.se and help in the development of many free plugins for "
+"WooCommerce, including the Brazilian Market on WooCommerce, depending on the "
+"amount of your support you can report bugs and vote on what will be "
+"prioritized in monthly releases and updates, in addition to having access to "
+"an exclusive support system for supporters that I intend to answer during "
+"working days between 12:00 and 19:00."
 msgstr ""
+"Seja membro do Apoia.se e ajude no desenvolvimento de diversos plugins "
+"gratuitos para WooCommerce, incluindo o Brazilian Market on WooCommerce, "
+"dependendo do valor do seu apoio você pode reportar bugs e votar no que vai "
+"ser priorizado nos lançamentos e atualizações mensais, além de ter acesso a "
+"um sistema exclusivo de suporte para apoiadores que pretendo responder "
+"durante dias úteis entre ás 12:00 até ás 19:00."
 
 #: includes/admin/views/html-admin-support.php:23
 msgid "Become a member at Apoia.se"
-msgstr ""
+msgstr "Torne-se membro no Apoia.se"
 
 #: includes/admin/views/html-admin-support.php:24
 #: includes/admin/views/html-admin-support.php:26
 msgid "Make a review"
-msgstr ""
+msgstr "Faça uma avaliação"
 
 #: includes/admin/views/html-admin-support.php:25
-msgid "Help this plugin by rating with &#9733;&#9733;&#9733;&#9733;&#9733; on WordPress.org."
+msgid ""
+"Help this plugin by rating with &#9733;&#9733;&#9733;&#9733;&#9733; on "
+"WordPress.org."
 msgstr ""
+"Ajude este plugin avaliando com &#9733;&#9733;&#9733;&#9733;&#9733; no "
+"WordPress.org."
 
 #: includes/admin/views/html-order-billing-data.php:15
 msgid "Customer data"
-msgstr ""
+msgstr "Informações do cliente"
 
 #: includes/admin/views/html-order-billing-data.php:43
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 #: includes/admin/views/html-order-billing-data.php:49
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:276
 #: includes/class-extra-checkout-fields-for-brazil-api.php:326
 msgid "Number."
-msgstr ""
+msgstr "Número."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:281
 #: includes/class-extra-checkout-fields-for-brazil-api.php:331
 msgid "Neighborhood."
-msgstr ""
+msgstr "Bairro."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:286
 msgid "Person type."
-msgstr ""
+msgstr "Tipo de pessoa."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:291
 msgid "CPF."
-msgstr ""
+msgstr "CPF."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:296
 msgid "RG."
-msgstr ""
+msgstr "RG."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:301
 msgid "CNPJ."
-msgstr ""
+msgstr "CNPJ."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:306
 msgid "IE."
-msgstr ""
+msgstr "IE."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:311
 msgid "Birthdate."
-msgstr ""
+msgstr "Data de aniversário."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:316
 msgid "Gender."
-msgstr ""
+msgstr "Gênero."
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:321
 msgid "Cell Phone."
-msgstr ""
+msgstr "Celular."
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:82
 msgid "State"
-msgstr ""
+msgstr "Estado"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:83
 msgid "required"
-msgstr ""
+msgstr "obrigatório"
 
 #. translators: %hint%: email hint
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:89
 msgid "Did you mean: %hint%?"
-msgstr ""
+msgstr "Você quis dizer: %hint%?"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:228
 msgid "Female"
-msgstr ""
+msgstr "Feminino"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:229
 msgid "Male"
-msgstr ""
+msgstr "Masculino"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:261
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:380
 msgid "Address line 2"
-msgstr ""
+msgstr "Complemento"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:444
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:450
@@ -390,30 +428,30 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:469
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:477
 msgid "is a required field"
-msgstr ""
+msgstr "é um campo obrigatório"
 
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:454
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:473
 msgid "is not valid"
-msgstr ""
+msgstr "é inválido"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:128
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:129
 msgid "Premium Support"
-msgstr ""
+msgstr "Suporte Premium"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:130
 msgid "Contribute"
-msgstr ""
+msgstr "Contribua"
 
 #. translators: %s: woocommerce link
 #: includes/class-extra-checkout-fields-for-brazil.php:142
 msgid "Brazilian Market on WooCommerce depends on %s to work!"
-msgstr ""
+msgstr "O Brazilian Market on WooCommerce depende do %s para funcionar!"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:143
 msgid "WooCommerce"
-msgstr ""
+msgstr "WooCommerce"
