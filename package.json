@@ -12,6 +12,8 @@
     "build:pot": "composer run-script makepot",
     "build": "npm-run-all -s lint:* build:*",
     "commit": "npm install && composer install && npm run build && wp-plugin-deploy",
+    "fix:php": "composer run-script phpcbf",
+    "fix:js": "eslint assets/js --fix",
     "lint:js": "eslint assets/js",
     "lint:php": "composer run-script phpcs",
     "lint:scss": "stylelint assets/scss/**/*.scss",
