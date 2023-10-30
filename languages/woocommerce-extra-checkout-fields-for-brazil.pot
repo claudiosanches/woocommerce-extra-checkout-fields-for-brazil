@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Brazilian Market on WooCommerce 3.8.4\n"
+"Project-Id-Version: Brazilian Market on WooCommerce 3.9.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-29T21:38:24-03:00\n"
+"POT-Creation-Date: 2023-10-29T22:04:06-03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -397,23 +397,23 @@ msgstr ""
 msgid "is not valid"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:128
+#: includes/class-extra-checkout-fields-for-brazil.php:144
 msgid "Settings"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:129
+#: includes/class-extra-checkout-fields-for-brazil.php:145
 msgid "Premium Support"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:130
+#: includes/class-extra-checkout-fields-for-brazil.php:146
 msgid "Contribute"
 msgstr ""
 
 #. translators: %s: woocommerce link
-#: includes/class-extra-checkout-fields-for-brazil.php:142
+#: includes/class-extra-checkout-fields-for-brazil.php:158
 msgid "Brazilian Market on WooCommerce depends on %s to work!"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:143
+#: includes/class-extra-checkout-fields-for-brazil.php:159
 msgid "WooCommerce"
 msgstr ""

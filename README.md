@@ -1,10 +1,10 @@
 # Brazilian Market on WooCommerce #
 **Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches/)  
-**Donate link:** https://apoia.se/claudiosanches  
+**Donate link:** https://apoia.se/claudiosanches?utm_source=plugin-bmw  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 4.0  
 **Tested up to:** 6.3  
-**Stable tag:** 3.8.4  
+**Stable tag:** 3.9.0  
 **Requires PHP:** 5.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -26,8 +26,7 @@ Compatível desde a versão 5.0.x do WooCommerce.
 Funciona com os plugins:
 
 * [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
-* [Bcash](http://wordpress.org/extend/plugins/woocommerce-bcash/) (adiciona as informações de **número**, **CPF**, **Razão Social** e **CNPJ**)
-* [Moip](http://wordpress.org/extend/plugins/woocommerce-moip/) (adiciona as informações de **bairro** e **número** e melhora o Checkout Transparente)
+* Flux Checkout for WooCommerce
 
 ### Dúvidas? ###
 
@@ -76,6 +75,13 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 3.9.0 - 2023/10/29 ###
+
+- Adicionado suporte para o plugin Flux Checkout for WooCommerce.
+- Adicionado suporte para WooCommerce 8.2+.
+- Adicionada opção para controlar a obrigatoriedade do campo de Bairro.
+- Adicionada regra para ignorar o requerimento do campo de empresa quando CPF é selecionado no checkout.
 
 ### 3.8.4 - 2023/09/25 ###
 
@@ -138,7 +144,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 ## Upgrade Notice ##
 
-### 3.8.4 ###
+### 3.9.0 ###
 
-- Adicionado suporte para WooCommerce HPOS.
-- Adicionado suporte para WooCommerce 8.1+.
+- Adicionado suporte para o plugin Flux Checkout for WooCommerce.
+- Adicionado suporte para WooCommerce 8.2+.
+- Adicionada opção para controlar a obrigatoriedade do campo de Bairro.
+- Adicionada regra para ignorar o requerimento do campo de empresa quando CPF é selecionado no checkout.

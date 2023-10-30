@@ -19,7 +19,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	*
 	* @var string
 	*/
-	const VERSION = '3.8.3';
+	const VERSION = '3.9.0';
 
 	/**
 	 * Instance of this class.

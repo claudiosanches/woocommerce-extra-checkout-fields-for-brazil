@@ -6,8 +6,8 @@ msgstr ""
 "(latest release)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-"
 "checkout-fields-for-brazil\n"
-"POT-Creation-Date: 2023-10-29T21:38:24-03:00\n"
-"PO-Revision-Date: 2023-10-29 21:53-0300\n"
+"POT-Creation-Date: 2023-10-29T22:01:43-03:00\n"
+"PO-Revision-Date: 2023-10-29 22:02-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -435,23 +435,23 @@ msgstr "é um campo obrigatório"
 msgid "is not valid"
 msgstr "é inválido"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:128
+#: includes/class-extra-checkout-fields-for-brazil.php:144
 msgid "Settings"
 msgstr "Configurações"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:129
+#: includes/class-extra-checkout-fields-for-brazil.php:145
 msgid "Premium Support"
 msgstr "Suporte Premium"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:130
+#: includes/class-extra-checkout-fields-for-brazil.php:146
 msgid "Contribute"
 msgstr "Contribua"
 
 #. translators: %s: woocommerce link
-#: includes/class-extra-checkout-fields-for-brazil.php:142
+#: includes/class-extra-checkout-fields-for-brazil.php:158
 msgid "Brazilian Market on WooCommerce depends on %s to work!"
 msgstr "O Brazilian Market on WooCommerce depende do %s para funcionar!"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:143
+#: includes/class-extra-checkout-fields-for-brazil.php:159
 msgid "WooCommerce"
 msgstr "WooCommerce"
