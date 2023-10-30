@@ -45,7 +45,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_get_order_address', array( $this, 'order_address' ), 10, 3 );
 	}
 
-	
 	/**
 	 * Maybe ignore missing company field error when only CPF is required.
 	 *
@@ -54,13 +53,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 *
 	 * @return void
 	 */
-	public function maybe_ignore_company_required( $data, &$errors ) {
-	    if ( '1' === $data['billing_persontype'] ) {
+	public function maybe_ignore_company_required( $data, $errors ) {
+	    if ( isset( $data['billing_persontype'] ) && '1' === $data['billing_persontype'] ) {
 	        $errors->remove( 'billing_company_required' );
 	    }
 	}
 
-	
 	/**
 	 * Register scripts.
 	 */
