@@ -4,7 +4,7 @@ Donate link: https://apoia.se/claudiosanches?utm_source=plugin-bmw
 Tags: woocommerce, checkout, brazil, cpf, cpnj
 Requires at least: 4.0
 Tested up to: 6.3
-Stable tag: 3.9.1
+Stable tag: 3.10.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -65,6 +65,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 5. Sugestão de e-mail
 
 == Changelog ==
+
+= 3.10.0 - 2023/10/30 =
+
+- Adicionada "Não quero informar" e "Outro" como opções para o campo de gênero.
 
 = 3.9.1 - 2023/10/29 =
 
@@ -138,8 +142,9 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 == Upgrade Notice ==
 
-= 3.9.1 =
+= 3.10.0 =
 
+- Adicionada "Não quero informar" e "Outro" como opções para o campo de gênero.
 - Melhorado como o plugin lida o requerimento dos campos de PF e PJ.
 - Adicionado suporte para o plugin Flux Checkout for WooCommerce.
 - Adicionado suporte para WooCommerce 8.2+.
