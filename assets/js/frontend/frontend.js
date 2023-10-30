@@ -90,21 +90,61 @@ jQuery(function ($) {
 					.on('change', function () {
 						const current = $(this).val();
 
-						$('#billing_cpf_field').hide();
-						$('#billing_rg_field').hide();
-						$('#billing_company_field').hide();
-						$('#billing_cnpj_field').hide();
-						$('#billing_ie_field').hide();
+						$('#billing_cpf_field')
+							.hide()
+							.removeClass(
+								'validate-required is-active woocommerce-validated'
+							);
+						$('#billing_rg_field')
+							.hide()
+							.removeClass(
+								'validate-required is-active woocommerce-validated'
+							);
+						$('#billing_company_field')
+							.hide()
+							.removeClass(
+								'validate-required is-active woocommerce-validated'
+							);
+						$('#billing_cnpj_field')
+							.hide()
+							.removeClass(
+								'validate-required is-active woocommerce-validated'
+							);
+						$('#billing_ie_field')
+							.hide()
+							.removeClass(
+								'validate-required is-active woocommerce-validated'
+							);
 
 						if ('1' === current) {
-							$('#billing_cpf_field').show();
-							$('#billing_rg_field').show();
+							$('#billing_cpf_field')
+								.show()
+								.addClass(
+									'validate-required is-active woocommerce-validated'
+								);
+							$('#billing_rg_field')
+								.show()
+								.addClass(
+									'validate-required is-active woocommerce-validated'
+								);
 						}
 
 						if ('2' === current) {
-							$('#billing_company_field').show();
-							$('#billing_cnpj_field').show();
-							$('#billing_ie_field').show();
+							$('#billing_company_field')
+								.show()
+								.addClass(
+									'validate-required is-active woocommerce-validated'
+								);
+							$('#billing_cnpj_field')
+								.show()
+								.addClass(
+									'validate-required is-active woocommerce-validated'
+								);
+							$('#billing_ie_field')
+								.show()
+								.addClass(
+									'validate-required is-active woocommerce-validated'
+								);
 						}
 					})
 					.change();
