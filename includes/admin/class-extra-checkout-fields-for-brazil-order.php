@@ -224,6 +224,13 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		// Get plugin settings.
 		$settings    = get_option( 'wcbcf_settings' );
 		$person_type = intval( $settings['person_type'] );
+		$phone_label = __( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
+		$has_cellphone = '' !== $order->get_meta( '_billing_cellphone' );
+
+		// Make sure that order don't have a phone, so we don't change the label of old orders.
+		if ( -1 == wc_get_var( $settings['cell_phone'] ) && ! $has_cellphone ) {
+			$phone_label = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
+		}
 
 		include dirname( __FILE__ ) . '/views/html-order-billing-data.php';
 	}

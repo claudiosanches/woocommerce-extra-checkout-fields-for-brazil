@@ -137,13 +137,18 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		add_settings_field(
 			'cell_phone',
 			__( 'Display Cell Phone:', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			array( $this, 'radio_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'cell_phone',
-				'label' => __( 'If checked show the Cell Phone field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'options' => array(
+					1 => __( 'If checked show the Cell Phone field as optional.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					2 => __( 'If checked show the Cell Phone field as required.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					-1 => __( 'If checked change the label of Phone field to "Cell Phone".', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					0 => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
 			)
 		);
 
@@ -259,8 +264,31 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
+		
+		$current = intval( $current );
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
+	}
+
+	/**
+	 * Radio element fallback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function radio_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : 0;
+		}
+		
+		$current = intval( $current );
+
+		include dirname( __FILE__ ) . '/views/html-radio-field.php';
 	}
 
 	/**
