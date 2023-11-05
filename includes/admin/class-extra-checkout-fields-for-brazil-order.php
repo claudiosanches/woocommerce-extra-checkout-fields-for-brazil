@@ -225,7 +225,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		$settings    = get_option( 'wcbcf_settings' );
 		$person_type = intval( $settings['person_type'] );
 		$phone_label = __( 'Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
-		$has_cellphone = version_compare( WC_VERSION, '3.0', '<' ) ? ! empty( $order->billing_cellphone ) : '' !== $order->get_meta( '_billing_cellphone' );
+		$has_cellphone = '' !== $order->get_meta( '_billing_cellphone' );
 
 		// Make sure that order don't have a phone, so we don't change the label of old orders.
 		if ( -1 == wc_get_var( $settings['cell_phone'] ) && ! $has_cellphone ) {
