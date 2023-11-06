@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 <?php foreach ( $args['options'] as $key => $value ) : ?>
 	<label>
-		<input name="<?php echo esc_attr( $menu ); ?>[<?php echo esc_attr( $id ); ?>]" type="radio" value="<?php echo esc_attr( $key ); ?>" <?php checked( $key, $current, true ) ?> /> <?php echo esc_html( $value ); ?>
+		<input name="<?php echo esc_attr( $menu ); ?>[<?php echo esc_attr( $id ); ?>]" type="radio" value="<?php echo esc_attr( $key ); ?>" <?php checked( $key, $current, true ); ?> /> <?php echo esc_html( $value ); ?>
 	</label>
 	<br>
 <?php endforeach; ?>

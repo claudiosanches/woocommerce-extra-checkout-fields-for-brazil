@@ -141,13 +141,13 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$option,
 			'options_section',
 			array(
-				'menu'  => $option,
-				'id'    => 'cell_phone',
+				'menu'    => $option,
+				'id'      => 'cell_phone',
 				'options' => array(
-					1 => __( 'If checked show the Cell Phone field as optional.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					2 => __( 'If checked show the Cell Phone field as required.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					1  => __( 'If checked show the Cell Phone field as optional.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					2  => __( 'If checked show the Cell Phone field as required.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					-1 => __( 'If checked change the label of Phone field to "Cell Phone".', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					0 => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					0  => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 			)
 		);
@@ -264,7 +264,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
-		
+
 		$current = intval( $current );
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
@@ -285,7 +285,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : 0;
 		}
-		
+
 		$current = intval( $current );
 
 		include dirname( __FILE__ ) . '/views/html-radio-field.php';
