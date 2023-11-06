@@ -219,7 +219,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		if ( isset( $settings['gender'] ) ) {
-			$new_fields['billing_sex'] = array(
+			$new_fields['billing_gender'] = array(
 				'type'        => 'select',
 				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'       => array( 'form-row-wide' ),

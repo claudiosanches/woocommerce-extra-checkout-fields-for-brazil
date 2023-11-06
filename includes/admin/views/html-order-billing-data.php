@@ -35,9 +35,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<strong><?php esc_html_e( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_company() ); ?><br />
 		<?php endif; ?>
 
-		<?php if ( isset( $settings['birthdate_sex'] ) ) : ?>
+		<?php if ( isset( $settings['birthdate'] ) ) : ?>
 			<strong><?php esc_html_e( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_birthdate' ) ); ?><br />
-			<strong><?php esc_html_e( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_sex' ) ); ?><br />
+		<?php endif; ?>
+
+		<?php if ( isset( $settings['gender'] ) ) : ?>
+			<strong><?php esc_html_e( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_gender' ) ); ?><br />
 		<?php endif; ?>
 
 		<strong><?php echo esc_html( $phone_label ); ?>: </strong><?php echo esc_html( $order->get_billing_phone() ); ?><br />

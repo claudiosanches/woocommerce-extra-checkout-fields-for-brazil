@@ -90,12 +90,15 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			);
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			$billing_data['birthdate'] = array(
 				'label' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'show'  => false,
 			);
-			$billing_data['sex']       = array(
+		}
+
+		if ( isset( $settings['gender'] ) ) {
+			$billing_data['gender'] = array(
 				'label' => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'show'  => false,
 			);
@@ -183,7 +186,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			$type_to_load . '_cnpj'         => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
 			$type_to_load . '_ie'           => get_user_meta( $user_id, $type_to_load . '_ie', true ),
 			$type_to_load . '_birthdate'    => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
-			$type_to_load . '_sex'          => get_user_meta( $user_id, $type_to_load . '_sex', true ),
+			$type_to_load . '_gender'       => get_user_meta( $user_id, $type_to_load . '_gender', true ),
 			$type_to_load . '_cellphone'    => get_user_meta( $user_id, $type_to_load . '_cellphone', true ),
 		);
 
@@ -207,7 +210,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		$data['billing']['cnpj']          = $customer->get_meta( 'billing_cnpj' );
 		$data['billing']['ie']            = $customer->get_meta( 'billing_ie' );
 		$data['billing']['birthdate']     = $customer->get_meta( 'billing_birthdate' );
-		$data['billing']['sex']           = $customer->get_meta( 'billing_sex' );
+		$data['billing']['gender']        = $customer->get_meta( 'billing_gender' );
 		$data['billing']['cellphone']     = $customer->get_meta( 'billing_cellphone' );
 		$data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
 		$data['shipping']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
@@ -285,12 +288,15 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			}
 		}
 
-		if ( isset( $settings['birthdate_sex'] ) ) {
+		if ( isset( $settings['birthdate'] ) ) {
 			if ( isset( $_POST['_billing_birthdate'] ) ) {
 				$order->update_meta_data( '_billing_birthdate', sanitize_text_field( wp_unslash( $_POST['_billing_birthdate'] ) ) );
 			}
-			if ( isset( $_POST['_billing_sex'] ) ) {
-				$order->update_meta_data( '_billing_sex', sanitize_text_field( wp_unslash( $_POST['_billing_sex'] ) ) );
+		}
+
+		if ( isset( $settings['gender'] ) ) {
+			if ( isset( $_POST['_billing_gender'] ) ) {
+				$order->update_meta_data( '_billing_gender', sanitize_text_field( wp_unslash( $_POST['_billing_gender'] ) ) );
 			}
 		}
 

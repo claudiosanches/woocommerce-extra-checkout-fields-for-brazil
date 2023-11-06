@@ -76,7 +76,9 @@
 							$('input#_billing_birthdate').val(
 								response.billing_birthdate
 							);
-							$('input#_billing_sex').val(response.billing_sex);
+							$('input#_billing_gender').val(
+								response.billing_gender
+							);
 							$('input#_billing_cellphone').val(
 								response.billing_cellphone
 							);

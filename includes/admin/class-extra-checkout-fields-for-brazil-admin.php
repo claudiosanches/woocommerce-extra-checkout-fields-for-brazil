@@ -83,6 +83,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 					$options['cell_phone']   = -1;
 					$options['fields_style'] = 'side_by_side';
 
+					// Migrate old fields.
 					if ( isset( $options['birthdate_sex'] ) ) {
 						$options['birthdate'] = 1;
 						$options['gender']    = 1;

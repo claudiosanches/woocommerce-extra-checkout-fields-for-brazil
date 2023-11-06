@@ -123,7 +123,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$order_data['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
 		$order_data['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
 		$order_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
-		$order_data['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
+		$order_data['billing_address']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 		$order_data['billing_address']['number']       = $order->get_meta( '_billing_number' );
 		$order_data['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 		$order_data['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
@@ -141,7 +141,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			$order_data['customer']['billing_address']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
 			$order_data['customer']['billing_address']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
 			$order_data['customer']['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $order->get_meta( '_billing_birthdate' ), $server );
-			$order_data['customer']['billing_address']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
+			$order_data['customer']['billing_address']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 			$order_data['customer']['billing_address']['number']       = $order->get_meta( '_billing_number' );
 			$order_data['customer']['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 			$order_data['customer']['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
@@ -176,7 +176,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$customer_data['billing_address']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
 		$customer_data['billing_address']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
 		$customer_data['billing_address']['birthdate']    = $this->get_formatted_birthdate_legacy( $customer->get_meta( 'billing_birthdate' ), $server );
-		$customer_data['billing_address']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
+		$customer_data['billing_address']['gender']       = substr( $customer->get_meta( 'billing_gender' ), 0, 1 );
 		$customer_data['billing_address']['number']       = $customer->get_meta( 'billing_number' );
 		$customer_data['billing_address']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
 		$customer_data['billing_address']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
@@ -212,7 +212,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['cnpj']         = $this->format_number( $customer->get_meta( 'billing_cnpj' ) );
 		$response->data['billing']['ie']           = $this->format_number( $customer->get_meta( 'billing_ie' ) );
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->get_meta( 'billing_birthdate' ) );
-		$response->data['billing']['sex']          = substr( $customer->get_meta( 'billing_sex' ), 0, 1 );
+		$response->data['billing']['gender']       = substr( $customer->get_meta( 'billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
 
 		// Shipping fields.
@@ -254,7 +254,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['cnpj']         = $this->format_number( $order->get_meta( '_billing_cnpj' ) );
 		$response->data['billing']['ie']           = $this->format_number( $order->get_meta( '_billing_ie' ) );
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $order->get_meta( '_billing_birthdate' ) );
-		$response->data['billing']['sex']          = substr( $order->get_meta( '_billing_sex' ), 0, 1 );
+		$response->data['billing']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
 		// Shipping fields.
@@ -312,7 +312,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['sex']           = array(
+		$properties['billing']['properties']['gender']        = array(
 			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
