@@ -118,6 +118,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	private function update_database_to_400() {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			"UPDATE {$wpdb->postmeta}
 			SET meta_key = '_billing_gender'
@@ -139,6 +140,8 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 				WHERE meta_key = '_billing_sex'",
 			);
 		}
+
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 }
 

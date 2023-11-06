@@ -5,7 +5,7 @@
  * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
  * Author: Claudio Sanches
  * Author URI: https://claudiosanches.com
- * Version: 3.10.0
+ * Version: 4.0.0
  * Requires at least: 4.0
  * Requires PHP: 5.6
  * License: GPLv2 or later

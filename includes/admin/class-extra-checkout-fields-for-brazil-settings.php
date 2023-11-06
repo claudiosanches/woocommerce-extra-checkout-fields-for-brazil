@@ -52,7 +52,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Set General Options section.
 		add_settings_section(
 			'options_section',
-			__( 'Custom Field:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Custom Field', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option
 		);
