@@ -88,6 +88,9 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 						$options['birthdate'] = 1;
 						$options['gender']    = 1;
 					}
+
+					// Update database.
+					$this->update_database_to_400();
 				}
 
 				update_option( 'wcbcf_settings', $options );
@@ -106,6 +109,35 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 
 			add_option( 'wcbcf_settings', $default );
 			add_option( 'wcbcf_version', Extra_Checkout_Fields_For_Brazil::VERSION );
+		}
+	}
+
+	/**
+	 * Update database to 4.0.0.
+	 */
+	private function update_database_to_400() {
+		global $wpdb;
+
+		$wpdb->query(
+			"UPDATE {$wpdb->postmeta}
+			SET meta_key = '_billing_gender'
+			WHERE meta_key = '_billing_sex'",
+		);
+		$wpdb->query(
+			"UPDATE {$wpdb->usermeta}
+			SET meta_key = 'billing_gender'
+			WHERE meta_key = 'billing_sex'",
+		);
+
+		// Check if custom order meta table exists.
+		$wc_orders_meta = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}wc_orders_meta'" );
+
+		if ( ! is_null( $wc_orders_meta ) ) {
+			$wpdb->query(
+				"UPDATE {$wpdb->prefix}wc_orders_meta
+				SET meta_key = '_billing_gender'
+				WHERE meta_key = '_billing_sex'",
+			);
 		}
 	}
 }
