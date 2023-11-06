@@ -286,7 +286,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$new_fields['billing_state']['clear'] = true;
 		}
 
-		if ( in_array( wc_get_var( $settings['cell_phone'] ), array( '1', '2' ), true ) ) {
+		if ( in_array( wc_get_var( $settings['cell_phone'], '0' ), array( '1', '2' ), true ) ) {
 			if ( isset( $fields['billing_phone'] ) ) {
 				$new_fields['billing_phone']          = $fields['billing_phone'];
 				$new_fields['billing_phone']['class'] = array( $first_class );
@@ -315,7 +315,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				$new_fields['billing_phone']['class'] = array( 'form-row-wide' );
 				$new_fields['billing_phone']['clear'] = true;
 
-				if ( '-1' === wc_get_var( $settings['cell_phone'] ) ) {
+				if ( '-1' === wc_get_var( $settings['cell_phone'], '0' ) ) {
 					$new_fields['billing_phone']['label'] = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
 				}
 			}
