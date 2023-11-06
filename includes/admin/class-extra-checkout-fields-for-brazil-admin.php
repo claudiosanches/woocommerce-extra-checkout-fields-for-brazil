@@ -85,6 +85,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			$default = array(
 				'person_type'   => 1,
 				'cell_phone'    => -1,
+				'fields_style'  => 0,
 				'mailcheck'     => 1,
 				'maskedinput'   => 1,
 				'validate_cpf'  => 1,

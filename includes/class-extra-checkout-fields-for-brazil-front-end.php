@@ -110,17 +110,18 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$new_fields = array();
 
 		// Get plugin settings.
-		$settings    = get_option( 'wcbcf_settings' );
-		$person_type = intval( $settings['person_type'] );
+		$settings     = get_option( 'wcbcf_settings' );
+		$person_type  = intval( $settings['person_type'] );
+		$style_option = wc_get_var( $settings['fields_style'], 'side_by_side' );
+		$first_class  = 'wide' === $style_option ? 'form-row-wide' : 'form-row-first';
+		$last_class   = 'wide' === $style_option ? 'form-row-wide' : 'form-row-last';
 
 		if ( isset( $fields['billing_first_name'] ) ) {
-			$new_fields['billing_first_name']          = $fields['billing_first_name'];
-			$new_fields['billing_first_name']['class'] = array( 'form-row-first' );
+			$new_fields['billing_first_name'] = $fields['billing_first_name'];
 		}
 
 		if ( isset( $fields['billing_last_name'] ) ) {
-			$new_fields['billing_last_name']          = $fields['billing_last_name'];
-			$new_fields['billing_last_name']['class'] = array( 'form-row-last' );
+			$new_fields['billing_last_name'] = $fields['billing_last_name'];
 		}
 
 		if ( 0 !== $person_type ) {
@@ -143,7 +144,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				if ( isset( $settings['rg'] ) ) {
 					$new_fields['billing_cpf'] = array(
 						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-first', 'person-type-field' ),
+						'class'    => array( $first_class, 'person-type-field' ),
 						'required' => false,
 						'type'     => 'tel',
 						'priority' => 23,
@@ -151,7 +152,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 					$new_fields['billing_rg'] = array(
 						'label'    => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-last', 'person-type-field' ),
+						'class'    => array( $last_class, 'person-type-field' ),
 						'required' => false,
 						'priority' => 24,
 					);
@@ -177,7 +178,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				if ( isset( $settings['ie'] ) ) {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-first', 'person-type-field' ),
+						'class'    => array( $first_class, 'person-type-field' ),
 						'required' => false,
 						'type'     => 'tel',
 						'priority' => 26,
@@ -185,7 +186,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 					$new_fields['billing_ie'] = array(
 						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-last', 'person-type-field' ),
+						'class'    => array( $last_class, 'person-type-field' ),
 						'required' => false,
 						'priority' => 27,
 					);
@@ -210,7 +211,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $settings['birthdate_sex'] ) ) {
 			$new_fields['billing_birthdate'] = array(
 				'label'    => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'class'    => array( 'form-row-first' ),
+				'class'    => array( $first_class ),
 				'clear'    => false,
 				'required' => true,
 				'priority' => 31,
@@ -219,7 +220,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$new_fields['billing_sex'] = array(
 				'type'        => 'select',
 				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'class'       => array( 'form-row-last' ),
+				'class'       => array( $last_class ),
 				'input_class' => array( 'wc-ecfb-select' ),
 				'clear'       => true,
 				'required'    => true,
@@ -241,18 +242,18 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['billing_postcode'] ) ) {
 			$new_fields['billing_postcode']             = $fields['billing_postcode'];
-			$new_fields['billing_postcode']['class']    = array( 'form-row-first', 'address-field' );
+			$new_fields['billing_postcode']['class']    = array( $first_class, 'address-field' );
 			$new_fields['billing_postcode']['priority'] = 45;
 		}
 
 		if ( isset( $fields['billing_address_1'] ) ) {
 			$new_fields['billing_address_1']          = $fields['billing_address_1'];
-			$new_fields['billing_address_1']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['billing_address_1']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['billing_number'] = array(
 			'label'    => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( 'form-row-first', 'address-field' ),
+			'class'    => array( $first_class, 'address-field' ),
 			'clear'    => true,
 			'required' => true,
 			'priority' => 55,
@@ -261,12 +262,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $fields['billing_address_2'] ) ) {
 			$new_fields['billing_address_2']          = $fields['billing_address_2'];
 			$new_fields['billing_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
-			$new_fields['billing_address_2']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['billing_address_2']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['billing_neighborhood'] = array(
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( 'form-row-first', 'address-field' ),
+			'class'    => array( $first_class, 'address-field' ),
 			'clear'    => true,
 			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
 			'priority' => 65,
@@ -274,7 +275,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['billing_city'] ) ) {
 			$new_fields['billing_city']          = $fields['billing_city'];
-			$new_fields['billing_city']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['billing_city']['class'] = array( $last_class, 'address-field' );
 		}
 
 		if ( isset( $fields['billing_state'] ) ) {
@@ -286,14 +287,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( in_array( wc_get_var( $settings['cell_phone'] ), array( '1', '2' ), true ) ) {
 			if ( isset( $fields['billing_phone'] ) ) {
 				$new_fields['billing_phone']          = $fields['billing_phone'];
-				$new_fields['billing_phone']['class'] = array( 'form-row-first' );
+				$new_fields['billing_phone']['class'] = array( $first_class );
 				$new_fields['billing_phone']['clear'] = false;
 			}
 
 			$new_fields['billing_cellphone'] = array(
 				'label'    => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'type'     => 'tel',
-				'class'    => array( 'form-row-last' ),
+				'class'    => array( $last_class ),
 				'clear'    => true,
 				'validate' => array( 'phone' ),
 				'required' => '2' === $settings['cell_phone'],
@@ -339,16 +340,17 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$new_fields = array();
 
 		// Get plugin settings.
-		$settings = get_option( 'wcbcf_settings' );
+		$settings     = get_option( 'wcbcf_settings' );
+		$style_option = wc_get_var( $settings['fields_style'], 'side_by_side' );
+		$first_class  = 'wide' === $style_option ? 'form-row-wide' : 'form-row-first';
+		$last_class   = 'wide' === $style_option ? 'form-row-wide' : 'form-row-last';
 
 		if ( isset( $fields['shipping_first_name'] ) ) {
-			$new_fields['shipping_first_name']          = $fields['shipping_first_name'];
-			$new_fields['shipping_first_name']['class'] = array( 'form-row-first' );
+			$new_fields['shipping_first_name'] = $fields['shipping_first_name'];
 		}
 
 		if ( isset( $fields['shipping_last_name'] ) ) {
-			$new_fields['shipping_last_name']          = $fields['shipping_last_name'];
-			$new_fields['shipping_last_name']['class'] = array( 'form-row-last' );
+			$new_fields['shipping_last_name'] = $fields['shipping_last_name'];
 		}
 
 		if ( isset( $fields['shipping_company'] ) ) {
@@ -364,7 +366,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['shipping_postcode'] ) ) {
 			$new_fields['shipping_postcode']             = $fields['shipping_postcode'];
-			$new_fields['shipping_postcode']['class']    = array( 'form-row-first', 'address-field' );
+			$new_fields['shipping_postcode']['class']    = array( $first_class, 'address-field' );
 			$new_fields['shipping_postcode']['priority'] = 45;
 		}
 
@@ -375,7 +377,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		$new_fields['shipping_number'] = array(
 			'label'    => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( 'form-row-first', 'address-field' ),
+			'class'    => array( $first_class, 'address-field' ),
 			'clear'    => true,
 			'required' => true,
 			'priority' => 55,
@@ -389,7 +391,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		$new_fields['shipping_neighborhood'] = array(
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( 'form-row-first', 'address-field' ),
+			'class'    => array( $first_class, 'address-field' ),
 			'clear'    => true,
 			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
 			'priority' => 65,
