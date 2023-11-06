@@ -78,6 +78,17 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 					}
 				}
 
+				// Update to version 4.0.0.
+				if ( version_compare( $version, '4.0.0', '<' ) ) {
+					$options['cell_phone']   = -1;
+					$options['fields_style'] = 'side_by_side';
+
+					if ( isset( $options['birthdate_sex'] ) ) {
+						$options['birthdate'] = 1;
+						$options['gender']    = 1;
+					}
+				}
+
 				update_option( 'wcbcf_settings', $options );
 				update_option( 'wcbcf_version', Extra_Checkout_Fields_For_Brazil::VERSION );
 			}
