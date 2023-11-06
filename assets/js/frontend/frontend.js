@@ -91,6 +91,7 @@ jQuery(function ($) {
 
 				if ('2' === personType) {
 					if ('BR' === country) {
+						$('#billing_company_field label .optional').remove();
 						$('#billing_company_field')
 							.addClass(
 								'validate-required is-active woocommerce-validated'

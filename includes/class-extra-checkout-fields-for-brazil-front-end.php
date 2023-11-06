@@ -170,7 +170,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			if ( 1 === $person_type || 3 === $person_type ) {
 				if ( isset( $fields['billing_company'] ) ) {
 					$new_fields['billing_company']             = $fields['billing_company'];
-					$new_fields['billing_company']['class']    = array( 'form-row-wide' );
+					$new_fields['billing_company']['class']    = array( 'form-row-wide', 'person-type-field' );
 					$new_fields['billing_company']['clear']    = true;
 					$new_fields['billing_company']['priority'] = 25;
 				}
@@ -203,7 +203,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		} else {
 			if ( isset( $fields['billing_company'] ) ) {
 				$new_fields['billing_company']          = $fields['billing_company'];
-				$new_fields['billing_company']['class'] = array( 'form-row-wide' );
+				$new_fields['billing_company']['class'] = array( 'form-row-wide', 'person-type-field' );
 				$new_fields['billing_company']['clear'] = true;
 			}
 		}
