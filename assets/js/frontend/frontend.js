@@ -166,11 +166,15 @@ jQuery(function ($) {
 						const current = $(this).val();
 
 						if ('BR' === current) {
-							if ('1' === bmwPublicParams.person_type) {
-								const personType = $(
-									'#billing_persontype'
-								).val();
-
+							if ('0' !== bmwPublicParams.person_type) {
+								let personType;
+								if (bmwPublicParams.person_type === '1') {
+									personType = $('#billing_persontype').val();
+								} else {
+									// bwmPublicParams.person_type 2 means individuals, 3 means legal person
+									// offsetting it by one returns what we would expect from #billing_persontype
+									personType = (bmwPublicParams.person_type - 1).toString();
+								}
 								handleFields(personType);
 							}
 						} else {
