@@ -2,7 +2,7 @@
     "name": "claudiosanches/brazilian-market-on-woocommerce",
     "description": "Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil",
     "homepage": "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "type": "wordpress-plugin",
     "license": "GPL-3.0-or-later",
     "require-dev": {

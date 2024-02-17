@@ -4,7 +4,7 @@
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
 **Requires at least:** 4.0  
 **Tested up to:** 6.4  
-**Stable tag:** 4.0.1  
+**Stable tag:** 4.0.2  
 **Requires PHP:** 5.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -75,6 +75,10 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 4.0.2 - 2024/02/17 ###
+
+- Corrigida validação de CPF/CPNJ.
 
 ### 4.0.1 - 2024/02/17 ###
 

@@ -173,7 +173,9 @@ jQuery(function ($) {
 								} else {
 									// bwmPublicParams.person_type 2 means individuals, 3 means legal person
 									// offsetting it by one returns what we would expect from #billing_persontype
-									personType = (bmwPublicParams.person_type - 1).toString();
+									personType = (
+										bmwPublicParams.person_type - 1
+									).toString();
 								}
 								handleFields(personType);
 							}
