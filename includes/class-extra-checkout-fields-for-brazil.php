@@ -119,6 +119,7 @@ class Extra_Checkout_Fields_For_Brazil {
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-formatting.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-front-end.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-integrations.php';
+		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-blocks.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-api.php';
 	}
 
