@@ -295,21 +295,26 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		);
 
 		// Register billing cellphone field.
-		__experimental_woocommerce_blocks_register_checkout_field(
-			array(
-				'id'            => 'csbmw/cellphone',
-				'label'         => __( 'Cellphone', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'optionalLabel' => __( 'Cellphone (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'location'      => 'address',
-				'type'          => 'text',
-				'required'      => isset( $settings['cell_phone'] ) && '2' === $settings['cell_phone'],
-				'hidden'        => false,
-				'index'         => 89,
-				'attributes'    => array(
-					'autocomplete' => 'tel',
-				),
-			)
-		);
+		if (
+			isset( $settings['cell_phone'] )
+			&& in_array( wc_get_var( $settings['cell_phone'], '0' ), array( '1', '2' ), true )
+		) {
+			__experimental_woocommerce_blocks_register_checkout_field(
+				array(
+					'id'            => 'csbmw/cellphone',
+					'label'         => __( 'Cellphone', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'optionalLabel' => __( 'Cellphone (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'location'      => 'address',
+					'type'          => 'text',
+					'required'      => '2' === $settings['cell_phone'],
+					'hidden'        => false,
+					'index'         => 89,
+					'attributes'    => array(
+						'autocomplete' => 'tel',
+					),
+				)
+			);
+		}
 	}
 }
 
