@@ -71,4 +71,22 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 
 		return true;
 	}
+
+	public static function is_valid_date( $date ) {
+		if ( ! strpos( $date, '/' ) ) {
+			return false;
+		}
+
+		if ( substr_count( $date, '/' ) !== 2 ) {
+			return false;
+		}
+
+		if ( preg_match( '/(0[1-9]|1[0-9]|3[01])\/(0[1-9]|1[012])\/(2[0-9][0-9][0-9]|1[6-9][0-9][0-9])/', $date ) !== 1 ) {
+			return false;
+		}
+
+		$split = explode( '/', $date );
+
+		return checkdate( $split[1], $split[0], $split[2] );
+	}
 }
