@@ -21,6 +21,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_blocks_loaded', array( $this, 'register_blocks' ) );
+		add_action(
+			'__experimental_woocommerce_blocks_validate_additional_field',
+			array( $this, 'validate_fields' ),
+			10,
+			3
+		);
 	}
 
 	/**
@@ -55,6 +61,43 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Validate fields.
+	 *
+	 * @param WP_Error $errors      WP Error.
+	 * @param string   $field_key   Field key.
+	 * @param string   $field_value Field value.
+	 *
+	 * @return WP_Error
+	 */
+	public function validate_fields( WP_Error $errors, $field_key, $field_value ) {
+		$settings = get_option( 'wcbcf_settings' );
+
+		// Validate CPF.
+		if (
+			'csbmw/cpf' === $field_key
+			&& isset( $settings['validate_cpf'] )
+			&& ! empty( $field_value )
+		) {
+			if ( ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $field_value ) ) {
+				$errors->add( 'invalid_cpf', __( 'Invalid CPF. Please provide a valid CPF.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+			}
+		}
+
+		// Validate CNPJ.
+		if (
+			'csbmw/cnpj' === $field_key
+			&& isset( $settings['validate_cnpj'] )
+			&& ! empty( $field_value )
+		) {
+			if ( ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $field_value ) ) {
+				$errors->add( 'invalid_cnpj', __( 'Invalid CNPJ. Please provide a valid CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+			}
+		}
+
+		return $errors;
 	}
 
 	/**
