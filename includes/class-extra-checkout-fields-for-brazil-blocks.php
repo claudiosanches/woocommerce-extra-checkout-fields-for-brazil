@@ -249,8 +249,8 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			__experimental_woocommerce_blocks_register_checkout_field(
 				array(
 					'id'            => 'csbmw/birthdate',
-					'label'         => __( 'Birth Date', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'optionalLabel' => __( 'Birth Date (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'label'         => __( 'Birth date', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'optionalLabel' => __( 'Birth date (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'      => 'contact',
 					'type'          => 'text',
 					'required'      => true,
