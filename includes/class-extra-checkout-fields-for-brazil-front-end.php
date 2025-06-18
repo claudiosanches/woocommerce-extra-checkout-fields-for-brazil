@@ -130,7 +130,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'class'       => array( 'form-row-wide', 'person-type-field' ),
 					'input_class' => array( 'wc-ecfb-select' ),
-					'required'    => false,
+					'required'    => true, /* If the person type field is being displayed on the frontend, it should be required anyway */
 					'options'     => array(
 						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -144,7 +144,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cpf'] = array(
 						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => false,
+						'required' => boolval($settings['cpf_required'] ?? 0),
 						'type'     => 'tel',
 						'priority' => 23,
 					);
@@ -159,7 +159,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cpf'] = array(
 						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => false,
+						'required' => boolval($settings['cpf_required'] ?? 0),
 						'type'     => 'tel',
 						'priority' => 23,
 					);
@@ -178,7 +178,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => false,
+						'required' => boolval($settings['cnpj_required'] ?? 0),
 						'type'     => 'tel',
 						'priority' => 26,
 					);
@@ -186,14 +186,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_ie'] = array(
 						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $last_class, 'person-type-field' ),
-						'required' => false,
+						'required' => boolval($settings['ie_required'] ?? 0),
 						'priority' => 27,
 					);
 				} else {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => false,
+						'required' => boolval($settings['cnpj_required'] ?? 0),
 						'type'     => 'tel',
 						'priority' => 26,
 					);
