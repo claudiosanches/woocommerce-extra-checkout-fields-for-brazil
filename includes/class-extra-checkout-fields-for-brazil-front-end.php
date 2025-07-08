@@ -148,7 +148,15 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'type'     => 'tel',
 						'priority' => 23,
 					);
-
+					if ( isset( $settings['cpf_required'] ) && '1' === $settings['cpf_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cpf' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
+					
 					$new_fields['billing_rg'] = array(
 						'label'    => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $last_class, 'person-type-field' ),
@@ -163,6 +171,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'type'     => 'tel',
 						'priority' => 23,
 					);
+					if ( isset( $settings['cpf_required'] ) && '1' === $settings['cpf_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cpf' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				}
 			}
 
@@ -182,6 +198,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'type'     => 'tel',
 						'priority' => 26,
 					);
+					if ( isset( $settings['cnpj_required'] ) && '1' === $settings['cnpj_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cnpj' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 
 					$new_fields['billing_ie'] = array(
 						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -189,6 +213,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'required' => false,
 						'priority' => 27,
 					);
+					if ( isset( $settings['ie_required'] ) && '1' === $settings['ie_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_ie' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				} else {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -197,6 +229,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 						'type'     => 'tel',
 						'priority' => 26,
 					);
+					if ( isset( $settings['cnpj_required'] ) && '1' === $settings['cnpj_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cnpj' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				}
 			}
 		} else {

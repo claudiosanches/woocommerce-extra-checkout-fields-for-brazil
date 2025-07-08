@@ -180,6 +180,48 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// CPF is required option.
+		add_settings_field(
+			'cpf_required',
+			__( 'Display CPF as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'cpf_required',
+				'label' => __( 'If checked, the CPF field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+		
+		// CNPJ is required option.
+		add_settings_field(
+			'cnpj_required',
+			__( 'Display CNPJ as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'cnpj_required',
+				'label' => __( 'If checked, the CNPJ field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+		
+		// IE is required option.
+		add_settings_field(
+			'ie_required',
+			__( 'Display IE as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'ie_required',
+				'label' => __( 'If checked, the State Registration field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
 		// Set Design section.
 		add_settings_section(
 			'design_section',
