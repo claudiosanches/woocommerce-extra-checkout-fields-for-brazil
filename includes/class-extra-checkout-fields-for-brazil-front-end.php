@@ -130,7 +130,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'class'       => array( 'form-row-wide', 'person-type-field' ),
 					'input_class' => array( 'wc-ecfb-select' ),
-					'required'    => false
+					'required'    => false,
 					'options'     => array(
 						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
