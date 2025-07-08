@@ -130,7 +130,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'class'       => array( 'form-row-wide', 'person-type-field' ),
 					'input_class' => array( 'wc-ecfb-select' ),
-					'required'    => true, /* If the person type field is being displayed on the frontend, it should be required anyway */
+					'required'    => false
 					'options'     => array(
 						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -144,11 +144,19 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cpf'] = array(
 						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => boolval($settings['cpf_required'] ?? 0),
+						'required' => false,
 						'type'     => 'tel',
 						'priority' => 23,
 					);
-
+					if ( isset( $settings['cpf_required'] ) && '1' === $settings['cpf_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cpf' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
+					
 					$new_fields['billing_rg'] = array(
 						'label'    => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $last_class, 'person-type-field' ),
@@ -159,10 +167,18 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cpf'] = array(
 						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => boolval($settings['cpf_required'] ?? 0),
+						'required' => false,
 						'type'     => 'tel',
 						'priority' => 23,
 					);
+					if ( isset( $settings['cpf_required'] ) && '1' === $settings['cpf_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cpf' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				}
 			}
 
@@ -178,25 +194,49 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => boolval($settings['cnpj_required'] ?? 0),
+						'required' => false,
 						'type'     => 'tel',
 						'priority' => 26,
 					);
+					if ( isset( $settings['cnpj_required'] ) && '1' === $settings['cnpj_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cnpj' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 
 					$new_fields['billing_ie'] = array(
 						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( $last_class, 'person-type-field' ),
-						'required' => boolval($settings['ie_required'] ?? 0),
+						'required' => false,
 						'priority' => 27,
 					);
+					if ( isset( $settings['ie_required'] ) && '1' === $settings['ie_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_ie' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				} else {
 					$new_fields['billing_cnpj'] = array(
 						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => boolval($settings['cnpj_required'] ?? 0),
+						'required' => false,
 						'type'     => 'tel',
 						'priority' => 26,
 					);
+					if ( isset( $settings['cnpj_required'] ) && '1' === $settings['cnpj_required'] ) {
+						add_filter('woocommerce_form_field_args', function( $args, $key, $value ) {
+	  						if ( 'billing_cnpj' === $key ) {
+								$args['required'] = true;
+							}
+							return $args;
+						}, 9999, 3);
+					}
 				}
 			}
 		} else {
