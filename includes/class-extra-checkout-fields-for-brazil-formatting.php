@@ -52,23 +52,41 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 	 * @return bool
 	 */
 	public static function is_cnpj( $cnpj ) {
-		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+		$pesos = array( 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 );
 
-		if ( 14 !== strlen( $cnpj ) || 0 === intval( substr( $cnpj, -4 ) ) ) {
+		$cnpj = strtoupper( preg_replace( '/[\.\/-]/', '', $cnpj ) );
+
+		if ( 14 !== strlen( $cnpj ) ) {
 			return false;
 		}
 
-		for ( $t = 11; $t < 13; ) {
-			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
-				$d += $cnpj[ $c ] * $p;
-			}
-
-			$d = ( ( 10 * $d ) % 11 ) % 10;
-			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
-				return false;
-			}
+		if ( ! preg_match( '/^[A-Z0-9]{12}\d{2}$/', $cnpj ) ) {
+			return false;
 		}
 
-		return true;
+		if ( '00000000000000' === $cnpj ) {
+			return false;
+		}
+
+		if ( preg_match( '/^\d{14}$/', $cnpj ) && preg_match( '/^(\d)\1{13}$/', $cnpj ) ) {
+			return false;
+		}
+
+		$soma1 = 0;
+		$soma2 = 0;
+
+		for ( $i = 0; $i < 12; $i++ ) {
+			$valor  = ord( $cnpj[ $i ] ) - 48;
+			$soma1 += $valor * $pesos[ $i + 1 ];
+			$soma2 += $valor * $pesos[ $i ];
+		}
+
+		$dv1 = ( $soma1 % 11 < 2 ) ? 0 : 11 - ( $soma1 % 11 );
+
+		$soma2 += $dv1 * $pesos[12];
+
+		$dv2 = ( $soma2 % 11 < 2 ) ? 0 : 11 - ( $soma2 % 11 );
+
+		return $cnpj[12] === (string) $dv1 && $cnpj[13] === (string) $dv2;
 	}
 }
