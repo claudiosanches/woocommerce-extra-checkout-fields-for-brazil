@@ -31,7 +31,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		$screen = get_current_screen();
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		if ( 'shop_order' === $screen->id ) {
+		if ( 'woocommerce_page_wc-orders' === $screen->id ) {
 			// Get plugin settings.
 			$settings = get_option( 'wcbcf_settings' );
 

@@ -66,9 +66,9 @@
 							$('input#_billing_neighborhood').val(
 								response.billing_neighborhood
 							);
-							$('input#_billing_persontype').val(
+							$('select#_billing_persontype').val(
 								response.billing_persontype
-							);
+							).change();
 							$('input#_billing_cpf').val(response.billing_cpf);
 							$('input#_billing_rg').val(response.billing_rg);
 							$('input#_billing_cnpj').val(response.billing_cnpj);
