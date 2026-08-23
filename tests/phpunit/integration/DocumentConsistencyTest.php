@@ -230,4 +230,56 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		$this->assertFalse( $locales['BR']['company']['required'] );
 		$this->assertFalse( $locales['BR']['company']['hidden'] );
 	}
+
+	/**
+	 * Read what the classic checkout would prefill for a stored birthdate.
+	 *
+	 * `WC_Checkout` caches the logged in customer for the whole request, so the
+	 * cache is cleared before each read.
+	 *
+	 * @param string $stored Value on the customer.
+	 *
+	 * @return string
+	 */
+	protected function prefilled_birthdate( $stored ) {
+		$customer_id = $this->factory->user->create( array( 'role' => 'customer' ) );
+		update_user_meta( $customer_id, 'billing_birthdate', $stored );
+		wp_set_current_user( $customer_id );
+
+		$checkout = WC()->checkout();
+		$cache    = new ReflectionProperty( WC_Checkout::class, 'logged_in_customer' );
+		$cache->setAccessible( true );
+		$cache->setValue( $checkout, null );
+
+		return (string) $checkout->get_value( 'billing_birthdate' );
+	}
+
+	/**
+	 * The classic checkout has to prefill a normalised birthdate.
+	 *
+	 * This goes through WooCommerce's own `get_value()` rather than calling the
+	 * callback, because the filter it used to be attached to short circuits
+	 * with `null` and the callback never saw a value. Asserting that a filter
+	 * is registered would not have caught it.
+	 *
+	 * @return void
+	 */
+	public function test_the_classic_checkout_prefills_a_normalised_birthdate() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1, 'birthdate' => 1 ) );
+		new Extra_Checkout_Fields_For_Brazil_Front_End();
+
+		$this->assertSame( '01/01/1980', $this->prefilled_birthdate( '1/1/1980' ) );
+	}
+
+	/**
+	 * An unparseable birthdate is left alone rather than blanked.
+	 *
+	 * @return void
+	 */
+	public function test_an_unreadable_birthdate_survives_the_prefill() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1, 'birthdate' => 1 ) );
+		new Extra_Checkout_Fields_For_Brazil_Front_End();
+
+		$this->assertSame( 'not a date', $this->prefilled_birthdate( 'not a date' ) );
+	}
 }

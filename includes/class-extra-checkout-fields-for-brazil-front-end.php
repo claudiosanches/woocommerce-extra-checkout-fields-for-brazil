@@ -31,7 +31,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		// Historic birthdates were never format-checked, and the date mask turns
 		// one like 1/1/1980 into 11/19/80 the moment a form renders it.
-		add_filter( 'woocommerce_checkout_get_value', array( $this, 'normalize_birthdate_value' ), 10, 2 );
+		add_filter( 'default_checkout_billing_birthdate', array( $this, 'normalize_birthdate_value' ) );
 		add_filter( 'woocommerce_address_to_edit', array( $this, 'normalize_birthdate_to_edit' ), 10 );
 
 		// Valid checkout fields.
@@ -413,16 +413,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Normalise the birthdate the classic checkout prefills.
 	 *
-	 * @param mixed  $value Stored value.
-	 * @param string $input Field key.
+	 * @param mixed $value Stored value.
 	 *
 	 * @return mixed
 	 */
-	public function normalize_birthdate_value( $value, $input ) {
-		if ( 'billing_birthdate' !== $input ) {
-			return $value;
-		}
-
+	public function normalize_birthdate_value( $value ) {
 		return $this->normalized_birthdate( $value );
 	}
 
