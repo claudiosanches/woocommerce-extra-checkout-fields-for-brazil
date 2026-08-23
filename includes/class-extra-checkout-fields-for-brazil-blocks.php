@@ -211,13 +211,6 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 * @return array
 	 */
 	protected function conditions( $visible_when = array(), $required_when = array(), $required = true ) {
-		if ( ! $this->supports_rules() ) {
-			return array(
-				'required' => $required,
-				'hidden'   => false,
-			);
-		}
-
 		$visible = $this->all_of( $visible_when );
 
 		return array(
@@ -233,6 +226,14 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 */
 	public function register_fields() {
 		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
+		}
+
+		// Person type drives which documents apply, and that can only be
+		// expressed as document object rules. Without them every document would
+		// be required at once and no order could be placed, so leave the block
+		// checkout alone and let the classic checkout carry the fields.
+		if ( ! $this->supports_rules() ) {
 			return;
 		}
 
@@ -293,9 +294,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					'label'      => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
 					'index'      => 6,
-					'attributes' => array(
-						'maxLength' => '14',
-						'title'     => __( 'Enter a valid CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'attributes' => $this->text_attributes(
+						'cpf',
+						__( 'Enter a valid CPF', 'woocommerce-extra-checkout-fields-for-brazil' )
 					),
 				),
 				$this->conditions( $individual, $brazil_only )
@@ -308,7 +309,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 						'label'      => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'location'   => 'contact',
 						'index'      => 7,
-						'attributes' => array( 'maxLength' => '20' ),
+						'attributes' => $this->text_attributes( 'rg' ),
 					),
 					$this->conditions( $individual, $brazil_only )
 				);
@@ -322,9 +323,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					'label'      => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
 					'index'      => 8,
-					'attributes' => array(
-						'maxLength' => '18',
-						'title'     => __( 'Enter a valid CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'attributes' => $this->text_attributes(
+						'cnpj',
+						__( 'Enter a valid CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' )
 					),
 				),
 				$this->conditions( $company, $brazil_only )
@@ -337,13 +338,32 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 						'label'      => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'location'   => 'contact',
 						'index'      => 9,
-						'attributes' => array( 'maxLength' => '20' ),
+						'attributes' => $this->text_attributes( 'ie' ),
 					),
 					$this->conditions( $company, $brazil_only )
 				);
 			}
 		}
 	}
+
+	/**
+	 * Longest value accepted for each text field.
+	 *
+	 * The `maxLength` attribute only constrains the rendered input, so these
+	 * are enforced again when a value is sanitized.
+	 *
+	 * @var array
+	 */
+	const MAX_LENGTHS = array(
+		'cpf'          => 14,
+		'rg'           => 20,
+		'cnpj'         => 18,
+		'ie'           => 20,
+		'birthdate'    => 10,
+		'cellphone'    => 15,
+		'number'       => 30,
+		'neighborhood' => 100,
+	);
 
 	/**
 	 * Untranslated gender labels, used to recognise values stored by a site
@@ -389,9 +409,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					'label'      => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
 					'index'      => 10,
-					'attributes' => array(
-						'maxLength' => '10',
-						'title'     => __( 'Enter a valid birthdate as dd/mm/yyyy', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'attributes' => $this->text_attributes(
+						'birthdate',
+						__( 'Enter a valid birthdate as dd/mm/yyyy', 'woocommerce-extra-checkout-fields-for-brazil' )
 					),
 				),
 				array(
@@ -436,7 +456,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					'label'      => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
 					'index'      => 12,
-					'attributes' => array( 'maxLength' => '15' ),
+					'attributes' => $this->text_attributes( 'cellphone' ),
 				),
 				array(
 					'required' => '2' === $cell_phone,
@@ -458,7 +478,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'label'      => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'location'   => 'address',
 				'index'      => 41,
-				'attributes' => array( 'maxLength' => '30' ),
+				'attributes' => $this->text_attributes( 'number' ),
 			),
 			array(
 				'required' => true,
@@ -469,9 +489,10 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		$this->register_field(
 			'neighborhood',
 			array(
-				'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'location' => 'address',
-				'index'    => 42,
+				'label'      => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'location'   => 'address',
+				'index'      => 51,
+				'attributes' => $this->text_attributes( 'neighborhood' ),
 			),
 			array(
 				'required' => '1' === (string) $this->setting( 'neighborhood_required', '0' ),
@@ -507,15 +528,47 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	}
 
 	/**
-	 * Trim submitted values.
+	 * Input attributes for a text field.
+	 *
+	 * @param string $key   Field key without the namespace.
+	 * @param string $title Tooltip describing the expected format.
+	 *
+	 * @return array
+	 */
+	protected function text_attributes( $key, $title = '' ) {
+		$attributes = array( 'maxLength' => (string) self::MAX_LENGTHS[ $key ] );
+
+		if ( '' !== $title ) {
+			$attributes['title'] = $title;
+		}
+
+		return $attributes;
+	}
+
+	/**
+	 * Trim submitted values and hold them to the field's length.
+	 *
+	 * `maxLength` only constrains the rendered input, so a request made outside
+	 * the checkout UI would otherwise store a value of any size.
 	 *
 	 * @param mixed $value Submitted value.
 	 * @param array $field Field definition.
 	 *
 	 * @return mixed
 	 */
-	public function sanitize_field( $value, $field ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-		return is_string( $value ) ? trim( $value ) : $value;
+	public function sanitize_field( $value, $field ) {
+		if ( ! is_string( $value ) ) {
+			return $value;
+		}
+
+		$value = trim( $value );
+		$key   = self::field_key( isset( $field['id'] ) ? $field['id'] : '' );
+
+		if ( ! isset( self::MAX_LENGTHS[ $key ] ) ) {
+			return $value;
+		}
+
+		return mb_substr( $value, 0, self::MAX_LENGTHS[ $key ] );
 	}
 
 	/**
@@ -616,7 +669,11 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			return;
 		}
 
-		if ( ! has_block( 'woocommerce/checkout' ) && ! has_block( 'woocommerce/cart' ) ) {
+		$is_checkout_page = ( function_exists( 'is_checkout' ) && is_checkout() ) || ( function_exists( 'is_cart' ) && is_cart() );
+
+		// has_block() only sees the post content, so a block checkout rendered
+		// from a full site editing template needs the page check as well.
+		if ( ! $is_checkout_page && ! has_block( 'woocommerce/checkout' ) && ! has_block( 'woocommerce/cart' ) ) {
 			return;
 		}
 

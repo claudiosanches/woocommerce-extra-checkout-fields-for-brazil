@@ -27,6 +27,12 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		add_action( 'woocommerce_set_additional_field_value', array( $this, 'write_legacy_meta' ), 10, 4 );
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'write_block_meta' ), 20 );
 
+		// Both checkouts submit every document field they rendered, so an order
+		// can arrive carrying the documents of the person type the customer
+		// moved away from. Clear them before the order is saved.
+		add_action( 'woocommerce_checkout_create_order', array( $this, 'clear_unused_documents' ), 20 );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'clear_unused_documents' ), 20 );
+
 		foreach ( $this->get_keys() as $key ) {
 			add_filter(
 				'woocommerce_get_default_value_for_' . Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ),
@@ -40,6 +46,10 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		// this plugin already renders the same values from the legacy meta.
 		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'remove_duplicated_admin_fields' ), 999 );
 		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'remove_duplicated_admin_fields' ), 999 );
+
+		add_filter( 'woocommerce_billing_fields', array( $this, 'remove_duplicated_account_fields' ), 999 );
+		add_filter( 'woocommerce_shipping_fields', array( $this, 'remove_duplicated_account_fields' ), 999 );
+		add_filter( 'woocommerce_filter_fields_for_order_confirmation', array( $this, 'hide_address_fields_from_confirmation' ), 10, 2 );
 	}
 
 	/**
@@ -123,6 +133,13 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	 * @return mixed
 	 */
 	public static function to_block_value( $key, $value ) {
+		// The classic checkout never enforced a birthdate format, so a stored
+		// value may be d/m/Y or Y-m-d. Normalise what is unambiguous and drop
+		// what is not, rather than prefilling a value the block would reject.
+		if ( 'birthdate' === $key ) {
+			return self::normalize_birthdate( $value );
+		}
+
 		if ( 'gender' !== $key ) {
 			return $value;
 		}
@@ -148,6 +165,31 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	}
 
 	/**
+	 * Put a historic birthdate into the dd/mm/yyyy format the block expects.
+	 *
+	 * @param string $value Stored birthdate.
+	 *
+	 * @return string Normalised date, or an empty string when unrecognisable.
+	 */
+	protected static function normalize_birthdate( $value ) {
+		$value = trim( (string) $value );
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		foreach ( array( 'd/m/Y', 'j/n/Y', 'Y-m-d', 'd-m-Y' ) as $format ) {
+			$date = DateTime::createFromFormat( $format, $value );
+
+			if ( $date && $date->format( $format ) === $value ) {
+				return $date->format( 'd/m/Y' );
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Mirror a value saved by the checkout block into the historic meta key.
 	 *
 	 * @param string  $field_id  Namespaced field id.
@@ -160,7 +202,10 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	public function write_legacy_meta( $field_id, $value, $group, $wc_object ) {
 		$key = Extra_Checkout_Fields_For_Brazil_Blocks::field_key( $field_id );
 
-		if ( '' === $key || ! $wc_object instanceof WC_Data ) {
+		// The key becomes a meta key, so only the ones this plugin registers
+		// are accepted. Another extension is free to use the namespace, but it
+		// does not get to choose where this plugin writes.
+		if ( ! in_array( $key, $this->get_keys(), true ) || ! $wc_object instanceof WC_Data ) {
 			return;
 		}
 
@@ -208,9 +253,9 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	protected function copy_to_block_meta( $order, $key, $group ) {
 		$block_key = self::get_block_key( $key, $group );
 
-		// Only fields the block checkout knows about, and only ones the order
-		// already carries, so a save does not invent empty meta.
-		if ( '' === (string) $order->get_meta( $block_key ) ) {
+		// Only orders that already carry block meta, so a save does not invent
+		// it. A field left blank stores an empty value, which still counts.
+		if ( ! $order->meta_exists( $block_key ) ) {
 			return;
 		}
 
@@ -218,6 +263,57 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 
 		if ( (string) $value !== (string) $order->get_meta( $block_key ) ) {
 			$order->update_meta_data( $block_key, $value );
+		}
+	}
+
+	/**
+	 * Documents that do not belong to a person type.
+	 *
+	 * @var array
+	 */
+	const UNUSED_DOCUMENTS = array(
+		'1' => array( 'cnpj', 'ie' ),
+		'2' => array( 'cpf', 'rg' ),
+	);
+
+	/**
+	 * Empty the documents of the person type the order is not for.
+	 *
+	 * A customer who fills in a CNPJ and then switches to Individuals still
+	 * submits it, and so does a request crafted against the Store API. Leaving
+	 * it stored hands gateways and ERPs a document that contradicts the order.
+	 *
+	 * @param WC_Order $order Order being created.
+	 *
+	 * @return void
+	 */
+	public function clear_unused_documents( $order ) {
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		$settings    = (array) get_option( 'wcbcf_settings', array() );
+		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+
+		if ( 0 === $person_type ) {
+			return;
+		}
+
+		// A store that accepts one person type never asks, so the setting is
+		// the answer: 2 means individuals, 3 means legal persons.
+		if ( 1 === $person_type ) {
+			$selected = (string) $order->get_meta( '_billing_persontype' );
+		} else {
+			$selected = 2 === $person_type ? '1' : '2';
+		}
+
+		if ( ! isset( self::UNUSED_DOCUMENTS[ $selected ] ) ) {
+			return;
+		}
+
+		foreach ( self::UNUSED_DOCUMENTS[ $selected ] as $key ) {
+			$order->update_meta_data( self::get_legacy_key( $key, 'other', $order ), '' );
+			$order->update_meta_data( self::get_block_key( $key, 'other' ), '' );
 		}
 	}
 
@@ -252,6 +348,55 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	}
 
 	/**
+	 * Drop the historic number and neighborhood fields on My Account.
+	 *
+	 * WooCommerce renders its own copy of every registered address field on the
+	 * edit-address form, so the customer would otherwise see each label twice,
+	 * with the two copies writing to different meta. WooCommerce's copy is the
+	 * one kept: saving it also updates the historic meta through
+	 * write_legacy_meta().
+	 *
+	 * This filters the field list rather than the rendered form, because
+	 * WC_Form_Handler::save_address() validates and saves from the same list.
+	 *
+	 * @param array $fields Address fields.
+	 *
+	 * @return array
+	 */
+	public function remove_duplicated_account_fields( $fields ) {
+		global $wp;
+
+		if ( ! isset( $wp->query_vars['edit-address'] ) ) {
+			return $fields;
+		}
+
+		foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::ADDRESS_FIELDS as $key ) {
+			unset( $fields[ 'billing_' . $key ], $fields[ 'shipping_' . $key ] );
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Keep number and neighborhood out of the order confirmation's additional
+	 * information, since the formatted address already shows them.
+	 *
+	 * @param bool  $show  Whether WooCommerce would show the field.
+	 * @param array $field Field definition.
+	 *
+	 * @return bool
+	 */
+	public function hide_address_fields_from_confirmation( $show, $field ) {
+		$key = Extra_Checkout_Fields_For_Brazil_Blocks::field_key( isset( $field['id'] ) ? $field['id'] : '' );
+
+		if ( in_array( $key, Extra_Checkout_Fields_For_Brazil_Blocks::ADDRESS_FIELDS, true ) ) {
+			return false;
+		}
+
+		return $show;
+	}
+
+	/**
 	 * Drop this plugin's registered fields from the WooCommerce order screen.
 	 *
 	 * @param array $fields Fields WooCommerce is about to render.
@@ -259,15 +404,22 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	 * @return array
 	 */
 	public function remove_duplicated_admin_fields( $fields ) {
-		$namespace = Extra_Checkout_Fields_For_Brazil_Blocks::FIELD_NAMESPACE . '/';
+		$prefixes = array();
+
+		foreach ( array( 'billing', 'shipping', 'other' ) as $group ) {
+			foreach ( $this->get_keys() as $key ) {
+				$prefixes[] = self::get_block_key( $key, $group );
+			}
+		}
 
 		foreach ( $fields as $key => $field ) {
 			// Address fields arrive through array_splice, which discards their
 			// string keys, so the id carried in the field itself is the only
-			// reliable way to spot them.
+			// reliable way to spot them. Match it exactly: an unrelated field
+			// whose id merely contains the namespace must keep saving.
 			$id = isset( $field['id'] ) ? (string) $field['id'] : (string) $key;
 
-			if ( false !== strpos( $id, $namespace ) ) {
+			if ( in_array( $id, $prefixes, true ) ) {
 				unset( $fields[ $key ] );
 			}
 		}

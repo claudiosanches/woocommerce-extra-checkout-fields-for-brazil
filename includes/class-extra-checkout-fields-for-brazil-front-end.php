@@ -420,12 +420,16 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			return $fields;
 		}
 
+		// Never required here: this filter feeds billing and shipping, every
+		// country, and the default locale. Whether a company is mandatory
+		// depends on the billing person type, which valid_checkout_fields() and
+		// Extra_Checkout_Fields_For_Brazil_Blocks::validate_company() decide.
 		$fields['company'] = array(
 			'label'        => __( 'Company name', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Reuses the WooCommerce label.
 			'class'        => array( 'form-row-wide' ),
 			'autocomplete' => 'organization',
 			'priority'     => 30,
-			'required'     => 3 === $person_type,
+			'required'     => false,
 		);
 
 		return $fields;
@@ -448,11 +452,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$locales['BR']['postcode']['priority'] = 45;
 
 		// The checkout block hides company by default. Legal persons have to be
-		// able to fill it in; whether it is mandatory depends on the person type
-		// they pick, which is enforced when the order is validated.
+		// able to fill it in; whether it is mandatory is decided when the order
+		// is validated, where the billing person type is known.
 		if ( 1 === $person_type || 3 === $person_type ) {
 			$locales['BR']['company']['hidden']   = false;
-			$locales['BR']['company']['required'] = 3 === $person_type;
+			$locales['BR']['company']['required'] = false;
 		}
 
 		return $locales;
