@@ -1,5 +1,5 @@
 {
-	"plugins": [ ".", "https://downloads.wordpress.org/plugin/woocommerce.zip" ],
+	"plugins": [ "https://downloads.wordpress.org/plugin/woocommerce.zip", "." ],
 	"port": 8977,
 	"testsPort": 8978,
 	"config": {
