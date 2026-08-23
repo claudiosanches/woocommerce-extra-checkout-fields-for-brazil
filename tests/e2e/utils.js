@@ -152,11 +152,20 @@ async function goToClassicCheckout( page ) {
  * @return {Promise<void>}
  */
 async function waitForClassicCheckoutIdle( page ) {
-	await page.waitForFunction(
-		() => ! document.querySelector( '.blockUI.blockOverlay' ),
-		undefined,
-		{ timeout: 30_000 }
-	);
+	const settled = () =>
+		page.waitForFunction(
+			() => ! document.querySelector( '.blockUI.blockOverlay' ),
+			undefined,
+			{ timeout: 30_000 }
+		);
+
+	await settled();
+
+	// WooCommerce debounces update_checkout by a second, so an overlay that is
+	// absent now may still be queued. Let the debounce elapse and settle again,
+	// otherwise the refresh lands mid-typing and swallows keystrokes.
+	await page.waitForTimeout( 1200 );
+	await settled();
 }
 
 /**
