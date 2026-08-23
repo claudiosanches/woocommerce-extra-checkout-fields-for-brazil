@@ -5,6 +5,7 @@
 *.zip
 /assets/
 /node_modules/
+/artifacts/
 /tests/
 /vendor/
 composer.*
@@ -12,4 +13,5 @@ eslint.config.js
 package-lock.json
 package.json
 README.md
+playwright.config.js
 webpack.config.js

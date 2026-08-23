@@ -51,6 +51,38 @@ jobs:
 
       - run: npm run test:unit
 
+  e2e:
+    name: End to end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # Real Google Chrome rather than bundled Chromium, so the specs run the
+      # browser the storefront is used in.
+      - run: npx playwright install --with-deps chrome
+
+      - run: npx wp-env start
+
+      - run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-artifacts
+          path: artifacts/
+          retention-days: 7
+
   integration:
     name: WordPress integration
     runs-on: ubuntu-latest

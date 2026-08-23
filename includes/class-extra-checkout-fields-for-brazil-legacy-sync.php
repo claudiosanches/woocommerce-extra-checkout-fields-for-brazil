@@ -171,7 +171,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	 *
 	 * @return string Normalised date, or an empty string when unrecognisable.
 	 */
-	protected static function normalize_birthdate( $value ) {
+	public static function normalize_birthdate( $value ) {
 		$value = trim( (string) $value );
 
 		if ( '' === $value ) {

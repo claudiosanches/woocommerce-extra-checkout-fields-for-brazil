@@ -29,6 +29,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'restore_company_field' ), 10 );
 
+		// Historic birthdates were never format-checked, and the date mask turns
+		// one like 1/1/1980 into 11/19/80 the moment a form renders it.
+		add_filter( 'woocommerce_checkout_get_value', array( $this, 'normalize_birthdate_value' ), 10, 2 );
+		add_filter( 'woocommerce_address_to_edit', array( $this, 'normalize_birthdate_to_edit' ), 10 );
+
 		// Valid checkout fields.
 		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ), 10 );
 
@@ -402,6 +407,56 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		return apply_filters( 'wcbcf_shipping_fields', $new_fields );
+	}
+
+	/**
+	 * Normalise the birthdate the classic checkout prefills.
+	 *
+	 * @param mixed  $value Stored value.
+	 * @param string $input Field key.
+	 *
+	 * @return mixed
+	 */
+	public function normalize_birthdate_value( $value, $input ) {
+		if ( 'billing_birthdate' !== $input ) {
+			return $value;
+		}
+
+		return $this->normalized_birthdate( $value );
+	}
+
+	/**
+	 * Normalise the birthdate the My Account address form prefills.
+	 *
+	 * @param array $address Address fields being edited.
+	 *
+	 * @return array
+	 */
+	public function normalize_birthdate_to_edit( $address ) {
+		if ( isset( $address['billing_birthdate']['value'] ) ) {
+			$address['billing_birthdate']['value'] = $this->normalized_birthdate( $address['billing_birthdate']['value'] );
+		}
+
+		return $address;
+	}
+
+	/**
+	 * A birthdate in dd/mm/yyyy, or the value untouched when it cannot be read.
+	 *
+	 * @param mixed $value Stored value.
+	 *
+	 * @return mixed
+	 */
+	protected function normalized_birthdate( $value ) {
+		if ( ! is_string( $value ) || '' === $value ) {
+			return $value;
+		}
+
+		$normalized = Extra_Checkout_Fields_For_Brazil_Legacy_Sync::normalize_birthdate( $value );
+
+		// Never blank out something the customer typed; only reshape what is
+		// unambiguous, and leave anything else for them to correct.
+		return '' === $normalized ? $value : $normalized;
 	}
 
 	/**

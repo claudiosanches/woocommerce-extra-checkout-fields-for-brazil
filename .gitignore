@@ -4,3 +4,5 @@ build/
 *.zip
 .phpunit.result.cache
 .wp-env.override.json
+artifacts/
+playwright-report/
