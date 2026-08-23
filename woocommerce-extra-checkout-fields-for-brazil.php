@@ -5,14 +5,14 @@
  * Description: Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil.
  * Author: Claudio Sanches
  * Author URI: https://claudiosanches.com
- * Version: 4.0.2
- * Requires at least: 4.0
- * Requires PHP: 5.6
+ * Version: 5.0.0
+ * Requires at least: 6.7
+ * Requires PHP: 7.4
  * License: GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
- * WC requires at least: 5.0
- * WC tested up to: 8.6
+ * WC requires at least: 9.9
+ * WC tested up to: 11.0
  *
  * Brazilian Market on WooCommerce is free software: you can
  * redistribute it and/or modify it under the terms of the
@@ -43,7 +43,7 @@ if ( ! defined( 'CSBMW_PLUGIN_FILE' ) ) {
 }
 
 if ( ! class_exists( 'Extra_Checkout_Fields_For_Brazil' ) ) {
-	include_once dirname( __FILE__ ) . '/includes/class-extra-checkout-fields-for-brazil.php';
+	include_once __DIR__ . '/includes/class-extra-checkout-fields-for-brazil.php';
 
 	/**
 	 * Initialize the plugin.

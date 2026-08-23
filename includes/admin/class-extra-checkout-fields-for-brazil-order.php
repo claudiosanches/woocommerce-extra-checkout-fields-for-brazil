@@ -235,7 +235,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			$phone_label = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-order-billing-data.php';
+		include __DIR__ . '/views/html-order-billing-data.php';
 	}
 
 	/**

@@ -40,7 +40,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 * Render the settings page for this plugin.
 	 */
 	public function html_settings_page() {
-		include dirname( __FILE__ ) . '/views/html-settings-page.php';
+		include __DIR__ . '/views/html-settings-page.php';
 	}
 
 	/**
@@ -286,7 +286,6 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 * Section null fallback.
 	 */
 	public function section_options_callback() {
-
 	}
 
 	/**
@@ -307,7 +306,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 		$current = intval( $current );
 
-		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
+		include __DIR__ . '/views/html-checkbox-field.php';
 	}
 
 	/**
@@ -328,7 +327,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 		$current = intval( $current );
 
-		include dirname( __FILE__ ) . '/views/html-radio-field.php';
+		include __DIR__ . '/views/html-radio-field.php';
 	}
 
 	/**
@@ -347,7 +346,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$current = isset( $args['default'] ) ? $args['default'] : 0;
 		}
 
-		include dirname( __FILE__ ) . '/views/html-select-field.php';
+		include __DIR__ . '/views/html-select-field.php';
 	}
 
 	/**

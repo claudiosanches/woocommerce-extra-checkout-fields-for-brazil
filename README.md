@@ -2,10 +2,10 @@
 **Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches/)  
 **Donate link:** https://apoia.se/claudiosanches?utm_source=plugin-bmw  
 **Tags:** woocommerce, checkout, brazil, cpf, cpnj  
-**Requires at least:** 4.0  
-**Tested up to:** 6.4  
-**Stable tag:** 4.0.2  
-**Requires PHP:** 5.6  
+**Requires at least:** 6.7  
+**Tested up to:** 7.1  
+**Stable tag:** 5.0.0  
+**Requires PHP:** 7.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -21,7 +21,7 @@ Em breve serão integradas mais novidades para o mercado brasileiro, como poder 
 
 ### Compatibilidade ###
 
-Compatível desde a versão 5.0.x do WooCommerce.
+Compatível desde a versão 9.9 do WooCommerce, tanto no checkout clássico quanto no checkout em blocos.
 
 Funciona com os plugins:
 
@@ -39,8 +39,7 @@ Você pode esclarecer suas dúvidas usando:
 
 Foram utilizados os seguintes scripts/serviços de terceiros:
 
-* [MailCheck jQuery](https://github.com/Kicksend/mailcheck).
-* [jQuery Mask Plugin](https://github.com/igorescobar/jQuery-Mask-Plugin).
+* [Mailcheck](https://github.com/mailcheck/mailcheck).
 
 ### Colaborar ###
 
@@ -75,6 +74,15 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 
 
 ## Changelog ##
+
+### 5.0.0 - 2026/08/23 ###
+
+- Adicionado suporte ao checkout em blocos do WooCommerce, com todos os campos, máscaras e validações do checkout clássico.
+- Os campos preenchidos no checkout em blocos continuam sendo gravados nos metadados históricos (`_billing_cpf`, `_billing_number` e afins), mantendo a compatibilidade com gateways, ERPs e demais integrações.
+- Adicionado suporte ao CNPJ alfanumérico.
+- Declarada compatibilidade com o recurso de carrinho e checkout em blocos do WooCommerce.
+- Requisitos mínimos atualizados para WordPress 6.7, PHP 7.4 e WooCommerce 9.9.
+- Removido o jQuery Mask Plugin em favor de uma implementação própria sem dependências.
 
 ### 4.0.2 - 2024/02/17 ###
 
@@ -167,6 +175,11 @@ Você pode contribuir com código-fonte em nossa página no [GitHub](https://git
 - Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
 
 ## Upgrade Notice ##
+
+### 5.0.0 ###
+
+- Adicionado suporte ao checkout em blocos do WooCommerce.
+- Requisitos mínimos atualizados para WordPress 6.7, PHP 7.4 e WooCommerce 9.9.
 
 ### 4.0.0 ###
 

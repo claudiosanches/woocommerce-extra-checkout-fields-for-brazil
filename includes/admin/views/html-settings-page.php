@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		</div>
 		<div class="box">
-			<?php require dirname( __FILE__ ) . '/html-admin-support.php'; ?>
+			<?php require __DIR__ . '/html-admin-support.php'; ?>
 		</div>
 	</form>
 </div>

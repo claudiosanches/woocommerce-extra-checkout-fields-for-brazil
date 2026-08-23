@@ -47,28 +47,53 @@ class Extra_Checkout_Fields_For_Brazil_Formatting {
 	/**
 	 * Checks if the CNPJ is valid.
 	 *
+	 * Accepts both the numeric CNPJ and the alphanumeric format Receita Federal
+	 * adopted in 2026, where the first twelve characters may be letters. Each
+	 * character contributes its ASCII code minus 48; for digits that is the
+	 * digit itself, so the two formats share one algorithm.
+	 *
 	 * @param  string $cnpj CNPJ to validate.
 	 *
 	 * @return bool
 	 */
 	public static function is_cnpj( $cnpj ) {
-		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+		$cnpj = preg_replace( '/[^A-Z0-9]/', '', strtoupper( (string) $cnpj ) );
 
-		if ( 14 !== strlen( $cnpj ) || 0 === intval( substr( $cnpj, -4 ) ) ) {
+		if ( ! preg_match( '/^[A-Z0-9]{12}[0-9]{2}$/', $cnpj ) || preg_match( '/^([A-Z0-9])\1+$/', $cnpj ) ) {
 			return false;
 		}
 
-		for ( $t = 11; $t < 13; ) {
-			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
-				$d += $cnpj[ $c ] * $p;
+		$check_digit = function ( $value, $weights ) {
+			$sum = 0;
+
+			for ( $i = 0, $length = strlen( $value ); $i < $length; $i++ ) {
+				$sum += ( ord( $value[ $i ] ) - 48 ) * $weights[ $i ];
 			}
 
-			$d = ( ( 10 * $d ) % 11 ) % 10;
-			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
-				return false;
-			}
+			$remainder = $sum % 11;
+
+			return $remainder < 2 ? 0 : 11 - $remainder;
+		};
+
+		$base   = substr( $cnpj, 0, 12 );
+		$first  = $check_digit( $base, array( 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 ) );
+		$second = $check_digit( $base . $first, array( 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 ) );
+
+		return substr( $cnpj, 12 ) === $first . $second;
+	}
+
+	/**
+	 * Checks if a date is a real calendar date in the dd/mm/yyyy format.
+	 *
+	 * @param  string $date Date to validate.
+	 *
+	 * @return bool
+	 */
+	public static function is_date( $date ) {
+		if ( ! preg_match( '/^(\d{2})\/(\d{2})\/(\d{4})$/', (string) $date, $matches ) ) {
+			return false;
 		}
 
-		return true;
+		return checkdate( intval( $matches[2] ), intval( $matches[1] ), intval( $matches[3] ) );
 	}
 }
