@@ -12,4 +12,14 @@ module.exports = [
 			},
 		},
 	},
+	{
+		// Jest reads the environment for a test file from this docblock tag.
+		files: [ 'tests/js/**/*.js' ],
+		rules: {
+			'jsdoc/check-tag-names': [
+				'error',
+				{ definedTags: [ 'jest-environment' ] },
+			],
+		},
+	},
 ];

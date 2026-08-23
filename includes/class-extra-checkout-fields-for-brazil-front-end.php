@@ -529,7 +529,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		// Get plugin settings.
-		$settings           = get_option( 'wcbcf_settings' );
+		$settings = get_option( 'wcbcf_settings' );
+
+		// The birthdate does not depend on the person type, so it is checked
+		// before the person type rules below can return early.
+		if ( isset( $settings['birthdate'] ) && ! empty( $_POST['billing_birthdate'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_date( sanitize_text_field( wp_unslash( $_POST['billing_birthdate'] ) ) ) ) {
+			wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+		}
+
 		$person_type        = intval( $settings['person_type'] );
 		$only_brazil        = isset( $settings['only_brazil'] ) ? true : false;
 		$billing_persontype = isset( $_POST['billing_persontype'] ) ? intval( wp_unslash( $_POST['billing_persontype'] ) ) : 0;

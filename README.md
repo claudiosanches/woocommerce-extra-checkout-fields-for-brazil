@@ -125,8 +125,12 @@ This plugin is licensed as GPL.
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
-- Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieu Hallé](https://github.com/Matthieuhal)).
+- Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieuhal](https://github.com/Matthieuhal)).
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
+- Added masks and validation to the Brazilian fields on the admin order screen. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
+- Fixed the Brazilian fields not working on the admin order screen when High-Performance Order Storage is enabled, and the person type not switching after the customer autofill. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
+- Added validation to the Birthdate field, which used to accept dates that do not exist.
+- Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
@@ -225,13 +229,4 @@ This plugin is licensed as GPL.
 
 ### 5.0.0 ###
 
-- Added support for the WooCommerce block checkout.
-- Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
-
-### 4.0.0 ###
-
-- Added a new option for the field style, now defaulting to full width to prevent incompatibilities with themes and plugins.
-- Improved the cell phone field option, which can now replace the phone field.
-- Split Birthdate and Gender into their own fields.
-- Updated the `_sex` suffix to `_gender` in the database.
-- Fixed a bug that left the Company name field always optional.
+Adds support for the WooCommerce block checkout, keeping the same fields, masks and validation as the classic checkout. Values are still written to the historic meta keys, so gateways and other integrations are unaffected. Minimum requirements are now WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
