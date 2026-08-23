@@ -96,6 +96,78 @@ class LegacySyncTest extends WP_UnitTestCase {
 		$this->assertSame( '', $order->get_meta( '_billing_cpf' ) );
 	}
 
+	/**
+	 * Ids another extension could register inside this plugin's namespace. The
+	 * key becomes a meta key, so anything unrecognised has to be refused.
+	 *
+	 * @return array
+	 */
+	public function foreign_namespaced_id_provider() {
+		return array(
+			'unknown key'      => array( 'csbmw/anything' ),
+			'traversal'        => array( 'csbmw/../../evil' ),
+			'nested namespace' => array( 'csbmw/acme/cpf' ),
+			'empty key'        => array( 'csbmw/' ),
+			'near miss'        => array( 'csbmw/cpf2' ),
+		);
+	}
+
+	/**
+	 * @dataProvider foreign_namespaced_id_provider
+	 *
+	 * @param string $field_id Field id to attempt.
+	 */
+	public function test_unknown_keys_in_our_namespace_write_nothing( $field_id ) {
+		$order  = new WC_Order();
+		$before = count( $order->get_meta_data() );
+
+		$this->sync->write_legacy_meta( $field_id, 'value', 'other', $order );
+
+		$this->assertCount( $before, $order->get_meta_data(), $field_id );
+	}
+
+	public function test_the_order_hooks_are_wired_up() {
+		$sync = new Extra_Checkout_Fields_For_Brazil_Legacy_Sync();
+
+		$hooks = array(
+			'woocommerce_set_additional_field_value'                  => 'write_legacy_meta',
+			'woocommerce_process_shop_order_meta'                     => 'write_block_meta',
+			'woocommerce_checkout_create_order'                       => 'clear_unused_documents',
+			'woocommerce_store_api_checkout_update_order_from_request' => 'clear_unused_documents',
+			'woocommerce_billing_fields'                              => 'remove_duplicated_account_fields',
+			'woocommerce_admin_billing_fields'                        => 'remove_duplicated_admin_fields',
+			'woocommerce_filter_fields_for_order_confirmation'        => 'hide_address_fields_from_confirmation',
+		);
+
+		foreach ( $hooks as $hook => $method ) {
+			$this->assertNotFalse(
+				has_filter( $hook, array( $sync, $method ) ),
+				"$method is not hooked to $hook"
+			);
+		}
+	}
+
+	public function test_the_historic_fields_survive_on_the_checkout() {
+		$fields = WC()->countries->get_address_fields( 'BR', 'billing_' );
+
+		$this->assertArrayHasKey( 'billing_number', $fields );
+		$this->assertArrayHasKey( 'billing_neighborhood', $fields );
+	}
+
+	public function test_the_historic_fields_are_gone_from_the_account_field_list() {
+		global $wp;
+
+		// WC_Form_Handler::save_address() validates and saves from this same
+		// list, so removing them from the form alone would break the save.
+		$wp->query_vars['edit-address'] = 'billing';
+		$fields                         = WC()->countries->get_address_fields( 'BR', 'billing_' );
+		unset( $wp->query_vars['edit-address'] );
+
+		$this->assertArrayNotHasKey( 'billing_number', $fields );
+		$this->assertArrayNotHasKey( 'billing_neighborhood', $fields );
+		$this->assertArrayHasKey( 'billing_cpf', $fields, 'Only the duplicated pair should go' );
+	}
+
 	public function test_gender_is_stored_as_a_label_in_the_legacy_meta() {
 		$order = new WC_Order();
 
