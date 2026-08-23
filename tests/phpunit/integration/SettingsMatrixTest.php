@@ -24,13 +24,6 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 	 */
 	protected $controller;
 
-	/**
-	 * Problems found while walking the matrix.
-	 *
-	 * @var array
-	 */
-	protected $problems = array();
-
 	public function set_up() {
 		parent::set_up();
 		$this->controller = Package::container()->get( CheckoutFields::class );
@@ -71,18 +64,118 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Record a problem against the combination being checked.
+	 * Every combination of the settings that decide which fields exist.
 	 *
-	 * @param string $label Combination description.
-	 * @param string $why   What was wrong.
+	 * The settings interact, so the whole cartesian product is walked rather
+	 * than a handful of representative cases. Each combination arrives as its
+	 * own test case, so a failure names the settings that produced it.
+	 *
+	 * @return iterable
+	 */
+	public static function combination_provider() {
+		$axes = array(
+			'person_type'           => array( 0, 1, 2, 3 ),
+			'only_brazil'           => array( false, true ),
+			'rg'                    => array( false, true ),
+			'ie'                    => array( false, true ),
+			'birthdate'             => array( false, true ),
+			'gender'                => array( false, true ),
+			'cell_phone'            => array( '-1', '0', '1', '2' ),
+			'neighborhood_required' => array( '0', '1' ),
+		);
+
+		foreach ( self::cartesian( $axes ) as $combination ) {
+			yield self::describe( $combination ) => array( $combination );
+		}
+	}
+
+	/**
+	 * Cartesian product of a set of named axes.
+	 *
+	 * @param array $axes Values each key can take.
+	 *
+	 * @return array
+	 */
+	protected static function cartesian( array $axes ) {
+		$rows = array( array() );
+
+		foreach ( $axes as $key => $values ) {
+			$expanded = array();
+
+			foreach ( $rows as $row ) {
+				foreach ( $values as $value ) {
+					$expanded[] = array_merge( $row, array( $key => $value ) );
+				}
+			}
+
+			$rows = $expanded;
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Readable name for a combination, used as the data set name.
+	 *
+	 * @param array $combination Settings combination.
+	 *
+	 * @return string
+	 */
+	protected static function describe( array $combination ) {
+		$parts = array();
+
+		foreach ( $combination as $key => $value ) {
+			if ( is_bool( $value ) ) {
+				if ( $value ) {
+					$parts[] = $key;
+				}
+
+				continue;
+			}
+
+			$parts[] = $key . '=' . $value;
+		}
+
+		return implode( ' ', $parts );
+	}
+
+	/**
+	 * Turn a combination into the option the plugin reads.
+	 *
+	 * The plugin treats these settings as checkboxes, so the ones that are off
+	 * are absent rather than falsy.
+	 *
+	 * @param array $combination Settings combination.
+	 *
+	 * @return array
+	 */
+	protected static function settings_for( array $combination ) {
+		$settings = array(
+			'person_type'           => $combination['person_type'],
+			'cell_phone'            => $combination['cell_phone'],
+			'neighborhood_required' => $combination['neighborhood_required'],
+		);
+
+		foreach ( array( 'only_brazil', 'rg', 'ie', 'birthdate', 'gender' ) as $key ) {
+			if ( $combination[ $key ] ) {
+				$settings[ $key ] = 1;
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Register the plugin's fields for one settings combination and check the
+	 * result against what those settings ask for.
+	 *
+	 * @dataProvider combination_provider
+	 *
+	 * @param array $combination Settings combination.
 	 *
 	 * @return void
 	 */
-	protected function problem( $label, $why ) {
-		$this->problems[] = $label . ' :: ' . $why;
-	}
-
-	public function test_every_settings_combination_registers_the_right_fields() {
+	public function test_registers_the_fields_the_settings_ask_for( array $combination ) {
 		$notices = array();
 		add_action(
 			'doing_it_wrong_run',
@@ -93,70 +186,28 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 			2
 		);
 
-		$combinations = 0;
+		$this->check_combination( $combination );
 
-		foreach ( array( 0, 1, 2, 3 ) as $person_type ) {
-			foreach ( array( false, true ) as $only_brazil ) {
-				foreach ( array( false, true ) as $rg ) {
-					foreach ( array( false, true ) as $ie ) {
-						foreach ( array( false, true ) as $birthdate ) {
-							foreach ( array( false, true ) as $gender ) {
-								foreach ( array( '-1', '0', '1', '2' ) as $cell_phone ) {
-									foreach ( array( '0', '1' ) as $neighborhood_required ) {
-										++$combinations;
-										$this->check_combination(
-											$person_type,
-											$only_brazil,
-											$rg,
-											$ie,
-											$birthdate,
-											$gender,
-											$cell_phone,
-											$neighborhood_required
-										);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		$this->assertSame( 1024, $combinations );
-		$this->assertSame( array(), array_slice( array_unique( $this->problems ), 0, 20 ) );
 		$this->assertSame( array(), array_unique( $notices ), 'WooCommerce rejected a field registration' );
 	}
 
 	/**
 	 * Check one settings combination.
 	 *
-	 * @param int    $person_type           person_type setting.
-	 * @param bool   $only_brazil           only_brazil setting.
-	 * @param bool   $rg                    rg setting.
-	 * @param bool   $ie                    ie setting.
-	 * @param bool   $birthdate             birthdate setting.
-	 * @param bool   $gender                gender setting.
-	 * @param string $cell_phone            cell_phone setting.
-	 * @param string $neighborhood_required neighborhood_required setting.
+	 * @param array $combination Settings combination.
 	 *
 	 * @return void
 	 */
-	protected function check_combination( $person_type, $only_brazil, $rg, $ie, $birthdate, $gender, $cell_phone, $neighborhood_required ) {
-		$settings = array(
-			'person_type'           => $person_type,
-			'cell_phone'            => $cell_phone,
-			'neighborhood_required' => $neighborhood_required,
-		);
+	protected function check_combination( array $combination ) {
+		$person_type           = $combination['person_type'];
+		$rg                    = $combination['rg'];
+		$ie                    = $combination['ie'];
+		$birthdate             = $combination['birthdate'];
+		$gender                = $combination['gender'];
+		$cell_phone            = $combination['cell_phone'];
+		$neighborhood_required = $combination['neighborhood_required'];
 
-		foreach ( compact( 'only_brazil', 'rg', 'ie', 'birthdate', 'gender' ) as $key => $on ) {
-			if ( $on ) {
-				$settings[ $key ] = 1;
-			}
-		}
-
-		$fields = $this->register( $settings );
-		$label  = wp_json_encode( $settings );
+		$fields = $this->register( self::settings_for( $combination ) );
 		$has    = static function ( $key ) use ( $fields ) {
 			return isset( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ] );
 		};
@@ -178,22 +229,16 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 		);
 
 		foreach ( $expected as $key => $want ) {
-			if ( $has( $key ) !== $want ) {
-				$this->problem( $label, sprintf( '%s should%s be registered', $key, $want ? '' : ' not' ) );
-			}
+			$this->assertSame( $want, $has( $key ), sprintf( '%s should%s be registered', $key, $want ? '' : ' not' ) );
 		}
 
 		foreach ( $fields as $id => $field ) {
-			if ( true === $field['hidden'] ) {
-				$this->problem( $label, "$id registered as hidden" );
-			}
+			$this->assertNotTrue( $field['hidden'], "$id registered as hidden" );
+			$this->assertIsCallable( $field['validate_callback'], "$id is missing a validate callback" );
+			$this->assertIsCallable( $field['sanitize_callback'], "$id is missing a sanitize callback" );
 
-			if ( ! is_callable( $field['validate_callback'] ) || ! is_callable( $field['sanitize_callback'] ) ) {
-				$this->problem( $label, "$id is missing a callback" );
-			}
-
-			if ( 'text' === $field['type'] && ! isset( $field['attributes']['maxLength'] ) ) {
-				$this->problem( $label, "$id has no maxLength" );
+			if ( 'text' === $field['type'] ) {
+				$this->assertArrayHasKey( 'maxLength', $field['attributes'], "$id has no maxLength" );
 			}
 		}
 
@@ -206,49 +251,34 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 			$field = $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ];
 
 			if ( 1 === $person_type ) {
-				if ( ! is_array( $field['hidden'] ) || ! is_array( $field['required'] ) ) {
-					$this->problem( $label, "$key should be conditional" );
-				}
+				$this->assertIsArray( $field['hidden'], "$key should be conditional" );
+				$this->assertIsArray( $field['required'], "$key should be conditional" );
 				continue;
 			}
 
-			if ( false !== $field['hidden'] ) {
-				$this->problem( $label, "$key should never be hidden" );
-			}
-
-			if ( $only_brazil !== is_array( $field['required'] ) ) {
-				$this->problem( $label, "$key requiredness should follow only_brazil" );
-			}
+			$this->assertFalse( $field['hidden'], "$key should never be hidden" );
+			$this->assertSame( $combination['only_brazil'], is_array( $field['required'] ), "$key requiredness should follow only_brazil" );
 		}
 
 		foreach ( array( 'birthdate', 'gender' ) as $key ) {
-			if ( $has( $key ) && true !== $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'] ) {
-				$this->problem( $label, "$key should be required" );
+			if ( $has( $key ) ) {
+				$this->assertTrue( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], "$key should be required" );
 			}
 		}
 
-		if ( true !== $fields['csbmw/number']['required'] ) {
-			$this->problem( $label, 'number should be required' );
+		$this->assertTrue( $fields['csbmw/number']['required'], 'number should be required' );
+
+		if ( $has( 'cellphone' ) ) {
+			$this->assertSame( '2' === $cell_phone, $fields['csbmw/cellphone']['required'], 'cellphone requiredness is wrong' );
 		}
 
-		if ( $has( 'cellphone' ) && $fields['csbmw/cellphone']['required'] !== ( '2' === $cell_phone ) ) {
-			$this->problem( $label, 'cellphone requiredness is wrong' );
-		}
-
-		if ( $fields['csbmw/neighborhood']['required'] !== ( '1' === $neighborhood_required ) ) {
-			$this->problem( $label, 'neighborhood requiredness is wrong' );
-		}
+		$this->assertSame( '1' === $neighborhood_required, $fields['csbmw/neighborhood']['required'], 'neighborhood requiredness is wrong' );
 
 		// Number sits right after address line 1 and neighborhood after address
 		// line 2, matching the order the classic checkout has always used.
 		$core = $this->controller->get_core_fields();
 
-		if ( $fields['csbmw/number']['index'] <= $core['address_1']['index'] ) {
-			$this->problem( $label, 'number should come after address line 1' );
-		}
-
-		if ( $fields['csbmw/neighborhood']['index'] <= $core['address_2']['index'] ) {
-			$this->problem( $label, 'neighborhood should come after address line 2' );
-		}
+		$this->assertGreaterThan( $core['address_1']['index'], $fields['csbmw/number']['index'], 'number should come after address line 1' );
+		$this->assertGreaterThan( $core['address_2']['index'], $fields['csbmw/neighborhood']['index'], 'neighborhood should come after address line 2' );
 	}
 }
