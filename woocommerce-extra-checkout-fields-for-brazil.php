@@ -8,6 +8,7 @@
  * Version: 5.0.0
  * Requires at least: 6.7
  * Requires PHP: 7.4
+ * Requires Plugins: woocommerce
  * License: GPLv2 or later
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
