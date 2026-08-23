@@ -21,7 +21,7 @@ Brazilian Market on WooCommerce adds those fields to the checkout, the My Accoun
 
 * **Person type** - lets the customer choose between individual and legal entity, showing only the documents that apply to the choice.
 * **CPF** and **RG** for individuals.
-* **CNPJ** and **State Registration** for companies, with Company name made required.
+* **CNPJ** and **State Registration** for companies, with Company name made required. Companies with no state registration can tick a box to fill it with ISENTO.
 * **Birthdate** and **Gender**.
 * **Cell phone**, either as an extra field or replacing the regular phone field.
 * **Number** and **Neighborhood** on both billing and shipping addresses.
@@ -111,6 +111,7 @@ This plugin is licensed as GPL.
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
+- Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieu Hallé](https://github.com/Matthieuhal)).
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.

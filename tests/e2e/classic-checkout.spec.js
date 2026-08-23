@@ -89,6 +89,30 @@ test.describe( 'Classic checkout', () => {
 		);
 	} );
 
+	test( 'fills the State Registration with ISENTO from the exempt box', async ( {
+		page,
+	} ) => {
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await page.fill( '#billing_cnpj', '11222333000181' );
+		await page.fill( '#billing_company', 'Isenta Ltda' );
+		await fillCommonFields( page );
+		await waitForClassicCheckoutIdle( page );
+
+		await page.locator( '.wcbcf-ie-exempt-input' ).check();
+		await expect( page.locator( '#billing_ie' ) ).toHaveValue( 'ISENTO' );
+
+		await page.click( '#place_order' );
+		await page.waitForURL( /order-received/, { timeout: 45_000 } );
+
+		const orderId = orderIdFromUrl( page.url() );
+		expect( orderId ).not.toBeNull();
+
+		expect( orderMetaAll( orderId, [ '_billing_ie' ] )._billing_ie ).toBe(
+			'ISENTO'
+		);
+	} );
+
 	test( 'drops the documents of the person type the customer left behind', async ( {
 		page,
 	} ) => {

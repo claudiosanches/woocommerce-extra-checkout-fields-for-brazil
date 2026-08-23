@@ -268,6 +268,54 @@ test.describe( 'Block checkout', () => {
 		expect( orderIdFromUrl( page.url() ) ).toBeNull();
 	} );
 
+	test( 'fills the State Registration with ISENTO from the exempt box', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await page.waitForTimeout( 1500 );
+		await fillCommonFields( page );
+		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+
+		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+		await expect( exempt ).toBeVisible();
+
+		await exempt.check();
+		await expect( page.locator( field( 'ie' ) ) ).toHaveValue( 'ISENTO' );
+
+		await placeOrder( page );
+
+		const orderId = orderIdFromUrl( page.url() );
+		expect( orderId ).not.toBeNull();
+
+		// The exemption is only ever a value, so nothing downstream has to
+		// know the checkbox exists.
+		expect(
+			orderMetaAll( orderId, [ '_billing_ie', '_wc_other/csbmw/ie' ] )
+		).toEqual( {
+			_billing_ie: 'ISENTO',
+			'_wc_other/csbmw/ie': 'ISENTO',
+		} );
+	} );
+
+	test( 'clears the State Registration when the exempt box is unticked', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await page.waitForTimeout( 1500 );
+
+		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+
+		await exempt.check();
+		await expect( page.locator( field( 'ie' ) ) ).toHaveValue( 'ISENTO' );
+
+		await exempt.uncheck();
+		await expect( page.locator( field( 'ie' ) ) ).toHaveValue( '' );
+		await expect( page.locator( field( 'ie' ) ) ).toBeEditable();
+	} );
+
 	test( 'drops the documents of the person type the customer left behind', async ( {
 		page,
 	} ) => {

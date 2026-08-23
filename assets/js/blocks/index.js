@@ -12,6 +12,7 @@
 
 import { caretIndex, caretOffset, formatters } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
+import { bindIeExempt } from '../shared/ie-exempt';
 import '../../scss/blocks/blocks.scss';
 
 const NATIVE_VALUE_SETTER = Object.getOwnPropertyDescriptor(
@@ -111,7 +112,36 @@ function handleInput( event ) {
 	}
 }
 
+/**
+ * Write a value into a React-controlled input.
+ *
+ * Unlike a keystroke this change has no event of its own, so it has to be
+ * announced. There is no race here: nothing else is typing.
+ *
+ * @param {HTMLInputElement} input Input to write to.
+ * @param {string}           value Value to write.
+ */
+function writeControlled( input, value ) {
+	NATIVE_VALUE_SETTER.call( input, value );
+	input.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
+}
+
+function setupIeExempt() {
+	const input = document.getElementById( field( 'contact', 'ie' ) );
+
+	if ( input ) {
+		bindIeExempt( input, {
+			label: params.ieExemptLabel,
+			write: writeControlled,
+		} );
+	}
+}
+
 function setupMailcheck() {
+	if ( 'yes' !== params.mailcheck ) {
+		return;
+	}
+
 	const email = document.getElementById( 'email' );
 
 	if ( email && ! email.dataset.bmwMailcheck ) {
@@ -125,16 +155,18 @@ function init() {
 		document.addEventListener( 'input', handleInput, true );
 	}
 
-	if ( 'yes' === params.mailcheck ) {
-		setupMailcheck();
+	setupIeExempt();
+	setupMailcheck();
 
-		// The contact block mounts after the first paint and can remount, so
-		// keep watching for the email input rather than binding once.
-		new window.MutationObserver( setupMailcheck ).observe( document.body, {
-			childList: true,
-			subtree: true,
-		} );
-	}
+	// The contact block mounts after the first paint and can remount, so keep
+	// watching rather than binding once.
+	new window.MutationObserver( () => {
+		setupIeExempt();
+		setupMailcheck();
+	} ).observe( document.body, {
+		childList: true,
+		subtree: true,
+	} );
 }
 
 if ( 'loading' === document.readyState ) {

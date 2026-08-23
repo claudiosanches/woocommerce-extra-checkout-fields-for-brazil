@@ -2,6 +2,7 @@
 
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
+import { bindIeExempt } from '../shared/ie-exempt';
 import '../../scss/frontend/frontend.scss';
 
 /**
@@ -79,6 +80,10 @@ jQuery( function ( $ ) {
 
 				this.maskGeneral();
 			}
+
+			bindIeExempt( document.getElementById( 'billing_ie' ), {
+				label: bmwPublicParams.ie_exempt,
+			} );
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck(

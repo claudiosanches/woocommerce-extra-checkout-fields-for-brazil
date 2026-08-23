@@ -13,3 +13,19 @@
 	color: #c00;
 	font-size: small;
 }
+
+.wcbcf-ie-exempt {
+	align-items: center;
+	display: flex;
+	gap: 0.5em;
+	margin-top: 0.5em;
+
+	input {
+		margin: 0;
+		width: auto;
+	}
+}
+
+.wcbcf-ie-exempt-on {
+	opacity: 0.7;
+}
