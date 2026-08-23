@@ -1,7 +1,7 @@
 # Brazilian Market on WooCommerce #
 **Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches/)  
 **Donate link:** https://apoia.se/claudiosanches?utm_source=plugin-bmw  
-**Tags:** woocommerce, checkout, brazil, cpf, cpnj  
+**Tags:** woocommerce, checkout, brazil, cpf, cnpj  
 **Requires at least:** 6.7  
 **Tested up to:** 7.1  
 **Stable tag:** 5.0.0  
@@ -9,182 +9,228 @@
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-Adds Brazilian checkout fields in WooCommerce
+Adds CPF, CNPJ, RG, State Registration, street number, neighborhood and other checkout fields Brazilian stores need.
 
 ## Description ##
 
-Adiciona novos campos para Pessoa Física ou Jurídica, Data de Nascimento, Gênero, Número, Bairro e Celular. Além de máscaras em campos e aviso de e-mail incorreto.
+WooCommerce ships with an address form designed for the United States. Brazilian stores need more than that: a tax document to issue an invoice, a street number and a neighborhood to get a package delivered, and a phone number in the format carriers expect.
 
-Em breve serão integradas mais novidades para o mercado brasileiro, como poder fazer login por CPF/CNPJ, ocultar alguns campos no carrinho, aguardem!
+Brazilian Market on WooCommerce adds those fields to the checkout, the My Account address forms and the admin order screen, validates them, and formats them as the customer types.
 
-É necessário estar utilizando uma versão do [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) para que o Brazilian Market on WooCommerce funcione.
+### Fields you can add ###
 
-### Compatibilidade ###
+* **Person type** - lets the customer choose between individual and legal entity, showing only the documents that apply to the choice.
+* **CPF** and **RG** for individuals.
+* **CNPJ** and **State Registration** for companies, with Company name made required.
+* **Birthdate** and **Gender**.
+* **Cell phone**, either as an extra field or replacing the regular phone field.
+* **Number** and **Neighborhood** on both billing and shipping addresses.
 
-Compatível desde a versão 9.9 do WooCommerce, tanto no checkout clássico quanto no checkout em blocos.
+Every field is optional to enable. Turn on only what your store actually needs, and set which ones are required.
 
-Funciona com os plugins:
+### Validation and formatting ###
 
-* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (adiciona as informações de **bairro**, **CPF** e **número**)
+* CPF and CNPJ are checked against their real check digits, so typos and made-up numbers are rejected before the order is placed. Both checks are optional.
+* The new alphanumeric CNPJ format is supported.
+* Input masks format CPF, CNPJ, postcode, birthdate, phone and cell phone while the customer types.
+* Mail check suggests a correction when an email address has a typo in the domain, such as `gmail.con`.
+
+### Works with the block checkout ###
+
+The plugin supports both the block checkout and the classic shortcode checkout, with the same fields, masks and validation in each.
+
+On the block checkout, fields appear and disappear as the customer picks a person type or changes country, using WooCommerce's own rules rather than custom scripts.
+
+Values entered on the block checkout are also written to the historic meta keys (`_billing_cpf`, `_billing_number`, `_shipping_neighborhood` and the rest), so payment gateways, shipping plugins, ERPs and invoicing integrations that read them keep working with no changes.
+
+### Address formatting ###
+
+Brazilian addresses are rendered in the local format, with the street number after the street name and the neighborhood on its own line. This applies to the order confirmation page, order emails, the admin order screen and shipping labels.
+
+### Compatibility ###
+
+Requires WooCommerce 9.9 or newer. Compatible with High-Performance Order Storage (HPOS) and with the cart and checkout blocks.
+
+Known to work with:
+
+* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (receives **neighborhood**, **CPF** and **number**)
 * Flux Checkout for WooCommerce
 
-### Dúvidas? ###
+### Questions? ###
 
-Você pode esclarecer suas dúvidas usando:
+* Open an issue on our [GitHub repository](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil/issues).
+* Or start a thread on the [WordPress support forum](https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil).
 
-* Utilizando o nosso [fórum no Github](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil/issues).
-* Criando um tópico no [fórum de ajuda do WordPress](https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil).
+### Credits ###
 
-### Créditos ###
+This plugin uses [Mailcheck](https://github.com/mailcheck/mailcheck).
 
-Foram utilizados os seguintes scripts/serviços de terceiros:
+### Contributing ###
 
-* [Mailcheck](https://github.com/mailcheck/mailcheck).
-
-### Colaborar ###
-
-Você pode contribuir com código-fonte em nossa página no [GitHub](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
+You can contribute code on our [GitHub repository](https://github.com/claudiosmweb/woocommerce-extra-checkout-fields-for-brazil).
 
 ## Frequently Asked Questions ##
 
-### Qual é a licença do plugin? ###
+### What do I need to use this plugin? ###
 
-* Este plugin esta licenciado como GPL.
+WooCommerce 9.9 or newer, running on WordPress 6.7 or newer with PHP 7.4 or newer.
 
-### O que eu preciso para utilizar este plugin? ###
+### Does it work with the block checkout? ###
 
-* Ter instalado o plugin WooCommerce.
+Yes. All fields, masks and validations work on the block checkout and on the classic shortcode checkout.
+
+### I already have orders and customers from an older version. Will the data still be there? ###
+
+Yes. The plugin keeps reading and writing the same meta keys it always has, so existing orders, customer addresses and integrations are unaffected.
+
+### Can I use it on a store that also sells outside Brazil? ###
+
+Yes. Person type and the document fields can be made required only for Brazilian addresses, leaving international checkouts untouched.
+
+### Where are the settings? ###
+
+Under WooCommerce > Settings > Checkout Fields.
+
+### What is the plugin license? ###
+
+This plugin is licensed as GPL.
 
 ## Screenshots ##
 
-### 1. Página de checkout usando o tema Storefront ###
-![Página de checkout usando o tema Storefront](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
+### 1. Person type, CPF and RG fields on the block checkout ###
+![Person type, CPF and RG fields on the block checkout](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-1.png)
 
-### 2. Página de edição de endereço de entrega usando o tema Storefront ###
-![Página de edição de endereço de entrega usando o tema Storefront](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
+### 2. Company fields on the block checkout with Legal Person selected ###
+![Company fields on the block checkout with Legal Person selected](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-2.png)
 
-### 3. Página de dados do pedido ###
-![Página de dados do pedido](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
+### 3. Fields on the classic shortcode checkout ###
+![Fields on the classic shortcode checkout](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-3.png)
 
-### 4. Configurações do plugin ###
-![Configurações do plugin](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
+### 4. Billing address form in My Account ###
+![Billing address form in My Account](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-4.png)
 
-### 5. Sugestão de e-mail ###
-![Sugestão de e-mail](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
+### 5. Brazilian fields on the admin order screen ###
+![Brazilian fields on the admin order screen](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-5.png)
+
+### 6. Plugin settings ###
+![Plugin settings](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-6.png)
+
+### 7. Email typo suggestion ###
+![Email typo suggestion](https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/screenshot-7.png)
 
 
 ## Changelog ##
 
 ### 5.0.0 - 2026/08/23 ###
 
-- Adicionado suporte ao checkout em blocos do WooCommerce, com todos os campos, máscaras e validações do checkout clássico.
-- Os campos preenchidos no checkout em blocos continuam sendo gravados nos metadados históricos (`_billing_cpf`, `_billing_number` e afins), mantendo a compatibilidade com gateways, ERPs e demais integrações.
-- Adicionado suporte ao CNPJ alfanumérico.
-- Declarada compatibilidade com o recurso de carrinho e checkout em blocos do WooCommerce.
-- Requisitos mínimos atualizados para WordPress 6.7, PHP 7.4 e WooCommerce 9.9.
-- Removido o jQuery Mask Plugin em favor de uma implementação própria sem dependências.
+- Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
+- Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
+- Added support for the alphanumeric CNPJ.
+- Declared compatibility with the WooCommerce cart and checkout blocks feature.
+- Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
+- Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
 
 ### 4.0.2 - 2024/02/17 ###
 
-- Corrigida validação de CPF/CPNJ.
+- Fixed CPF/CNPJ validation.
 
 ### 4.0.1 - 2024/02/17 ###
 
-- Declarado suporte para WooCommerce 8.6+ e WordPress 6.4+.
+- Declared support for WooCommerce 8.6+ and WordPress 6.4+.
 
 ### 4.0.0 - 2023/11/06 ###
 
-- Adicionada nova opção para estilo dos campos, agora por padrão com largura total para prevenir incompatibilidade com temas e plugins.
-- Melhorada a opção para campo de celular, podendo agora substituir o campo de telefone.
-- Separado os campos de Data de Nascimento e Gênero em campos próprios.
-- Atualizado sufixo `_sex` para `_gender` no banco de dados.
-- Corrigido bug que deixava o campo de Nome da Empresa sempre opcional.
+- Added a new option for the field style, now defaulting to full width to prevent incompatibilities with themes and plugins.
+- Improved the cell phone field option, which can now replace the phone field.
+- Split Birthdate and Gender into their own fields.
+- Updated the `_sex` suffix to `_gender` in the database.
+- Fixed a bug that left the Company name field always optional.
 
 ### 3.10.0 - 2023/10/30 ###
 
-- Adicionada "Não quero informar" e "Outro" como opções para o campo de gênero.
+- Added "Prefer not to say" and "Other" as options for the gender field.
 
 ### 3.9.1 - 2023/10/29 ###
 
-- Melhorado como o plugin lida o requerimento dos campos de PF e PJ.
+- Improved how the plugin handles requiring the individual and legal entity fields.
 
 ### 3.9.0 - 2023/10/29 ###
 
-- Adicionado suporte para o plugin Flux Checkout for WooCommerce.
-- Adicionado suporte para WooCommerce 8.2+.
-- Adicionada opção para controlar a obrigatoriedade do campo de Bairro.
-- Adicionada regra para ignorar o requerimento do campo de empresa quando CPF é selecionado no checkout.
+- Added support for the Flux Checkout for WooCommerce plugin.
+- Added support for WooCommerce 8.2+.
+- Added an option to control whether the Neighborhood field is required.
+- Added a rule to ignore the Company field requirement when CPF is selected at checkout.
 
 ### 3.8.4 - 2023/09/25 ###
 
-- Adicionado suporte para WooCommerce 8.1+.
+- Added support for WooCommerce 8.1+.
 
 ### 3.8.3 - 2023/09/13 ###
 
-- Adicionado suporte para WooCommerce HPOS.
+- Added support for WooCommerce HPOS.
 
 ### 3.8.2 - 2023/05/01 ###
 
-- Sugestão de e-mail agora pode ser traduzida.
+- The email suggestion can now be translated.
 
 ### 3.8.1 - 2023/05/01 ###
 
-- Atualizado arquivo de tradução.
+- Updated translation file.
 
 ### 3.8.0 - 2023/05/01 ###
 
-- Adicionado suporte para versões atuais do WooCommerce.
-- Removido suporte a versões anteriores a 3.0 do WooCommerce.
-- Corrida aplicação de máscaras no checkout.
-- Corrido retorno dos resultados para o hook `woocommerce_ajax_get_customer_details`. 
+- Added support for current WooCommerce versions.
+- Dropped support for WooCommerce versions older than 3.0.
+- Fixed how masks are applied at checkout.
+- Fixed the values returned to the `woocommerce_ajax_get_customer_details` hook.
 
 ### 3.7.2 - 2019/09/26 ###
 
-- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
-- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
-- Corrigido bug causado pelo WooCommerce na exibição do endereço de entrega na lista de pedidos no painel admininstrativo.
+- Renamed the plugin from "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
+- Removed the obsolete address autofill option; use the built-in integration in the "Claudio Sanches - Correios for WooCommerce" plugin instead.
+- Fixed a WooCommerce bug affecting how the shipping address is displayed in the admin order list.
 
 ### 3.7.1 - 2019/09/24 ###
 
-- Corrigido bug causado pelo WooCommerce na exibição do endereço de entrega na lista de pedidos no painel admininstrativo.
+- Fixed a WooCommerce bug affecting how the shipping address is displayed in the admin order list.
 
 ### 3.7.0 - 2019/09/20 ###
 
-- Nome do plugin alterado de "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
-- Removida opção obsoleta de preenchimento de endereço, no lugar dela utilize a integração direta que existe no plugin "Claudio Sanches - Correios for WooCommerce".
+- Renamed the plugin from "WooCommerce Extra Checkout Fields for Brazil" to "Brazilian Market on WooCommerce".
+- Removed the obsolete address autofill option; use the built-in integration in the "Claudio Sanches - Correios for WooCommerce" plugin instead.
 
 ### 3.6.1 - 2018/05/24 ###
 
-- Correção de mensagens dizendo que alguns campos eram opcionais, mesmo quando marcados como obrigatórios.
+- Fixed messages saying some fields were optional even when marked as required.
 
 ### 3.6.0 - 2017/05/12 ###
 
-- Modificada a posição de todos os campos do formulário para funcionar melhor com temas que ainda não são totalmente compatíveis com o WooCommerce 3.0.
+- Changed the position of every form field to work better with themes that are not yet fully compatible with WooCommerce 3.0.
 
 ### 3.5.1 - 2017/04/26 ###
 
-- Corrigido o posicionamento do campo de CEP.
-- Corrigida a validação de CNPJ.
+- Fixed the postcode field position.
+- Fixed CNPJ validation.
 
 ### 3.5.0 - 2017/03/04 ###
 
-- Adicionado suporte ao WooCommerce 3.0.
-- Alterado o plugin de máscara de [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) para [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin). (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
-- Corrigida a máscara dos campos telefone e celular, permitido ter 10 ou 11 dígitos sem alterar a experiência do usuário. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
-- Alterados os tipos dos campos telefone, celular, cep, data de nascimento para `tel` quando o país selecionado for BR. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
-- Alterados os tipos dos campos cpf, cnpj para `tel` e e-mail para `email`. (Possível com a ajuda de [Thiago Guimarães](https://github.com/thiagogsr)).
+- Added support for WooCommerce 3.0.
+- Switched the mask library from [jquery.maskedinput](https://github.com/digitalBush/jquery.maskedinput) to [jquery.mask](https://github.com/igorescobar/jQuery-Mask-Plugin). (Made possible with help from [Thiago Guimarães](https://github.com/thiagogsr)).
+- Fixed the phone and cell phone masks, allowing 10 or 11 digits without changing the user experience. (Made possible with help from [Thiago Guimarães](https://github.com/thiagogsr)).
+- Changed the phone, cell phone, postcode and birthdate fields to type `tel` when the selected country is BR. (Made possible with help from [Thiago Guimarães](https://github.com/thiagogsr)).
+- Changed the CPF and CNPJ fields to type `tel` and email to type `email`. (Made possible with help from [Thiago Guimarães](https://github.com/thiagogsr)).
 
 ## Upgrade Notice ##
 
 ### 5.0.0 ###
 
-- Adicionado suporte ao checkout em blocos do WooCommerce.
-- Requisitos mínimos atualizados para WordPress 6.7, PHP 7.4 e WooCommerce 9.9.
+- Added support for the WooCommerce block checkout.
+- Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 
 ### 4.0.0 ###
 
-- Adicionada nova opção para estilo dos campos, agora por padrão com largura total para prevenir incompatibilidade com temas e plugins.
-- Melhorada a opção para campo de celular, podendo agora substituir o campo de telefone.
-- Separado os campos de Data de Nascimento e Gênero em campos próprios.
-- Atualizado sufixo `_sex` para `_gender` no banco de dados.
-- Corrigido bug que deixava o campo de Nome da Empresa sempre opcional.
+- Added a new option for the field style, now defaulting to full width to prevent incompatibilities with themes and plugins.
+- Improved the cell phone field option, which can now replace the phone field.
+- Split Birthdate and Gender into their own fields.
+- Updated the `_sex` suffix to `_gender` in the database.
+- Fixed a bug that left the Company name field always optional.
