@@ -217,7 +217,12 @@ jQuery(function ($) {
 
 		maskGeneral() {
 			$('#billing_cpf, #credit-card-cpf').mask('000.000.000-00');
-			$('#billing_cnpj').mask('00.000.000/0000-00');
+			$('#billing_cnpj').mask('SS.SSS.SSS/SSSS-00');
+			$('#billing_cnpj').on('input', function () {
+				var pos = this.selectionStart;
+				$(this).val($(this).val().toUpperCase());
+				this.setSelectionRange(pos, pos);
+			});
 			bmwFrontEnd.maskPhone('#credit-card-phone');
 		},
 
