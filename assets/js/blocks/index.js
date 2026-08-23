@@ -2,8 +2,12 @@
  * Masking and email suggestions for the checkout block.
  *
  * The block checkout renders React-controlled inputs, so a reformatted value
- * has to go in through the native setter and be announced with an `input`
- * event. Assigning `input.value` alone would be reverted on the next render.
+ * has to go in through the native setter. The rewrite happens in the capture
+ * phase of the original `input` event, which is the only point where React
+ * has not read the value yet: it picks up the formatted string when the same
+ * event reaches its own handler. Dispatching a second event instead would
+ * queue a render holding the pre-keystroke value, and a keystroke landing
+ * before that render committed would be reverted with it.
  */
 
 import { caretIndex, caretOffset, formatters } from '../shared/mask';
@@ -35,8 +39,6 @@ const BRAZIL_ONLY_MASKS = {
 	'billing-phone': 'phone',
 	'shipping-phone': 'phone',
 };
-
-let applying = false;
 
 /**
  * The country currently selected for the address an input belongs to.
@@ -72,15 +74,11 @@ function formatterFor( input ) {
 }
 
 /**
- * Reformat an input and let React know its value changed.
+ * Reformat an input in place, before React reads the event.
  *
  * @param {InputEvent} event Input event.
  */
 function handleInput( event ) {
-	if ( applying ) {
-		return;
-	}
-
 	const input = event.target;
 
 	if ( ! ( input instanceof window.HTMLInputElement ) ) {
@@ -102,26 +100,15 @@ function handleInput( event ) {
 
 	const index = caretIndex( value, input.selectionStart || 0 );
 
-	applying = true;
 	NATIVE_VALUE_SETTER.call( input, nextValue );
-	input.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
-	applying = false;
 
-	// React restores the caret to the end after re-rendering, so put it back
-	// once the render has flushed.
-	window.requestAnimationFrame( () => {
-		if ( input.ownerDocument.activeElement !== input ) {
-			return;
-		}
+	const offset = caretOffset( nextValue, index );
 
-		const offset = caretOffset( input.value, index );
-
-		try {
-			input.setSelectionRange( offset, offset );
-		} catch {
-			// Selection is unavailable for this input type.
-		}
-	} );
+	try {
+		input.setSelectionRange( offset, offset );
+	} catch {
+		// Selection is unavailable for this input type.
+	}
 }
 
 function setupMailcheck() {

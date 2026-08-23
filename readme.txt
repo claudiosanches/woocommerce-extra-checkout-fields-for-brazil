@@ -111,7 +111,7 @@ This plugin is licensed as GPL.
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
-- Added support for the alphanumeric CNPJ.
+- Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.

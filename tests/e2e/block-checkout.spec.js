@@ -88,6 +88,11 @@ test.describe( 'Block checkout', () => {
 		await goToBlockCheckout( page );
 		await page.selectOption( field( 'persontype' ), '1' );
 
+		// Changing the person type re-renders the block and pushes to the
+		// Store API. A keystroke landing while that render commits is dropped
+		// by React, so let it settle before typing.
+		await page.waitForTimeout( 1500 );
+
 		const cases = [
 			[ field( 'cpf' ), '11144477735', '111.444.777-35' ],
 			[ field( 'birthdate' ), '01021990', '01/02/1990' ],
@@ -103,6 +108,7 @@ test.describe( 'Block checkout', () => {
 		}
 
 		await page.selectOption( field( 'persontype' ), '2' );
+		await page.waitForTimeout( 1500 );
 		await page.click( field( 'cnpj' ) );
 		await page.type( field( 'cnpj' ), '11222333000181', { delay: 15 } );
 		await expect( page.locator( field( 'cnpj' ) ) ).toHaveValue(
@@ -213,6 +219,53 @@ test.describe( 'Block checkout', () => {
 			_billing_cnpj: VALID.cnpj,
 			_billing_ie: '110042490114',
 		} );
+	} );
+
+	test( 'accepts an alphanumeric CNPJ typed in lower case', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'ie' ), '110042490114' );
+
+		// The 2026 format allows letters in the first twelve characters. The
+		// mask has to upper case them as they are typed, since the check
+		// digits are derived from the upper case ASCII values.
+		await page.click( field( 'cnpj' ) );
+		await page.type( field( 'cnpj' ), '12abc34501de35', { delay: 15 } );
+		await expect( page.locator( field( 'cnpj' ) ) ).toHaveValue(
+			VALID.cnpjAlphanumeric
+		);
+
+		await placeOrder( page );
+
+		const orderId = orderIdFromUrl( page.url() );
+		expect( orderId ).not.toBeNull();
+
+		expect(
+			orderMetaAll( orderId, [ '_billing_cnpj', '_wc_other/csbmw/cnpj' ] )
+		).toEqual( {
+			_billing_cnpj: VALID.cnpjAlphanumeric,
+			'_wc_other/csbmw/cnpj': VALID.cnpjAlphanumeric,
+		} );
+	} );
+
+	test( 'rejects an alphanumeric CNPJ with wrong check digits', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'ie' ), '110042490114' );
+		await page.fill( field( 'cnpj' ), '12.ABC.345/01DE-34' );
+
+		await placeOrder( page );
+
+		await expect( page.locator( ERROR_BANNER ) ).toContainText( 'CNPJ' );
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
 	} );
 
 	test( 'drops the documents of the person type the customer left behind', async ( {
