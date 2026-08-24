@@ -12,9 +12,17 @@ const CUSTOMER = { user: 'csbmw_legacy', pass: 'csbmw-e2e-password' };
 /**
  * Read one meta value from the fixture customer.
  *
- * @param {string} key Meta key.
+ * @param {string} key   Meta key.
+ * @param          value
  * @return {string} Stored value.
  */
+function setCustomerMeta( key, value ) {
+	wpCli( [
+		'eval',
+		`$u = get_user_by( 'login', 'csbmw_legacy' ); $c = new WC_Customer( $u->ID ); $c->update_meta_data( '${ key }', '${ value }' ); $c->save();`,
+	] );
+}
+
 function customerMeta( key ) {
 	return wpCli( [
 		'eval',
@@ -160,6 +168,36 @@ test.describe( 'My account', () => {
 		// An untranslated gender label still resolves to its stable key.
 		await expect( page.locator( '#contact-csbmw-gender' ) ).toHaveValue(
 			'female'
+		);
+	} );
+
+	test( 'a corrected document reaches the block checkout', async ( {
+		page,
+	} ) => {
+		// A customer who has ordered through the block checkout carries both
+		// copies. The account form only edits the historic one.
+		setCustomerMeta( '_wc_other/csbmw/cpf', '123.456.789-09' );
+
+		await logIn( page );
+		await page.goto( '/my-account/edit-address/billing/', {
+			waitUntil: 'domcontentloaded',
+		} );
+		await expect(
+			page.locator( 'button[name="save_address"]' )
+		).toBeVisible();
+
+		await page.fill( '#billing_cpf', '111.444.777-35' );
+		await page.click( 'button[name="save_address"]' );
+		await page.waitForURL( /my-account\/edit-address/, {
+			timeout: 30_000,
+		} );
+
+		expect( customerMeta( 'billing_cpf' ) ).toBe( '111.444.777-35' );
+
+		// Left stale, this is what the block checkout would prefill, and the
+		// correction would be written back out on the next order.
+		expect( customerMeta( '_wc_other/csbmw/cpf' ) ).toBe(
+			'111.444.777-35'
 		);
 	} );
 } );

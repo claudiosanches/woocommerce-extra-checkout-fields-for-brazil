@@ -26,6 +26,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	public function __construct() {
 		add_action( 'woocommerce_set_additional_field_value', array( $this, 'write_legacy_meta' ), 10, 4 );
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'write_block_meta' ), 20 );
+		add_action( 'woocommerce_customer_save_address', array( $this, 'write_customer_block_meta' ), 20, 2 );
 
 		// Both checkouts submit every document field they rendered, so an order
 		// can arrive carrying the documents of the person type the customer
@@ -62,6 +63,40 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			Extra_Checkout_Fields_For_Brazil_Blocks::CONTACT_FIELDS,
 			Extra_Checkout_Fields_For_Brazil_Blocks::ADDRESS_FIELDS
 		);
+	}
+
+	/**
+	 * Mirror an edited address back into the block meta.
+	 *
+	 * The account form edits the historic fields, and WooCommerce only falls
+	 * back to them when the block meta is empty. Without this a correction made
+	 * here is ignored by the block checkout, which prefills the old value and
+	 * writes it back out with the next order.
+	 *
+	 * @param int    $user_id      Customer being saved.
+	 * @param string $address_type Address the form saved.
+	 *
+	 * @return void
+	 */
+	public function write_customer_block_meta( $user_id, $address_type = 'billing' ) {
+		$customer = new WC_Customer( $user_id );
+
+		if ( ! $customer->get_id() ) {
+			return;
+		}
+
+		// Contact fields are only ever rendered on the billing form.
+		if ( 'billing' === $address_type ) {
+			foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::CONTACT_FIELDS as $key ) {
+				$this->copy_to_block_meta( $customer, $key, 'other' );
+			}
+		}
+
+		foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::ADDRESS_FIELDS as $key ) {
+			$this->copy_to_block_meta( $customer, $key, $address_type );
+		}
+
+		$customer->save();
 	}
 
 	/**
