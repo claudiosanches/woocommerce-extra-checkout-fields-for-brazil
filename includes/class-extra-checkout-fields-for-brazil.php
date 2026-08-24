@@ -44,8 +44,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 			$this->includes();
 			add_filter( 'plugin_action_links_' . plugin_basename( CSBMW_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
-		} else {
-			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
 		}
 	}
 
@@ -138,23 +136,5 @@ class Extra_Checkout_Fields_For_Brazil {
 		$plugin_links[] = '<a href="https://apoia.se/claudiosanches?utm_source=plugin-bmw" target="_blank" rel="noopener noreferrer">' . __( 'Contribute', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
 
 		return array_merge( $plugin_links, $links );
-	}
-
-	/**
-	 * WooCommerce fallback notice.
-	 */
-	public function woocommerce_fallback_notice() {
-		echo '<div class="error"><p>' . wp_kses(
-			sprintf(
-				/* translators: %s: woocommerce link */
-				__( 'Brazilian Market on WooCommerce depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'<a href="http://wordpress.org/plugins/woocommerce/">' . __( 'WooCommerce', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
-			),
-			array(
-				'a' => array(
-					'href' => array(),
-				),
-			)
-		) . '</p></div>';
 	}
 }

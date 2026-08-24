@@ -56,8 +56,8 @@ msgstr "Endereço de Cobrança do Cliente"
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:294
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:145
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:160
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:556
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:560
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:551
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:555
 msgid "CPF"
 msgstr "CPF"
 
@@ -66,7 +66,7 @@ msgstr "CPF"
 #: includes/admin/views/html-order-billing-data.php:22
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:309
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:153
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:564
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:559
 msgid "RG"
 msgstr "RG"
 
@@ -76,8 +76,8 @@ msgstr "RG"
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:323
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:179
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:194
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:575
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:579
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:570
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:574
 msgid "CNPJ"
 msgstr "CNPJ"
 
@@ -86,7 +86,7 @@ msgstr "CNPJ"
 #: includes/admin/views/html-order-billing-data.php:31
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:338
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:187
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:583
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:578
 msgid "State Registration"
 msgstr "Inscrição Estadual"
 
@@ -95,7 +95,7 @@ msgstr "Inscrição Estadual"
 #: includes/admin/views/html-order-billing-data.php:39
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:409
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:210
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:537
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:532
 msgid "Birthdate"
 msgstr "Data de Nascimento"
 
@@ -144,7 +144,7 @@ msgstr "Endereço de Envio do Cliente"
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:47
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:268
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:130
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:550
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:545
 msgid "Person type"
 msgstr "Tipo de Pessoa"
 
@@ -173,7 +173,7 @@ msgstr "Razão Social"
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:88
 #: includes/admin/views/html-order-billing-data.php:35
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:657
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:571
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:566
 msgid "Company"
 msgstr "Empresa"
 
@@ -456,42 +456,32 @@ msgstr "Outro"
 msgid "Address line 2"
 msgstr "Complemento"
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:550
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:556
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:564
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:571
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:575
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:583
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:545
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:551
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:559
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:566
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:570
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:578
 msgid "is a required field"
 msgstr "é um campo obrigatório"
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:537
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:560
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:579
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:532
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:555
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:574
 msgid "is not valid"
 msgstr "é inválido"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:136
+#: includes/class-extra-checkout-fields-for-brazil.php:134
 msgid "Settings"
 msgstr "Configurações"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:137
+#: includes/class-extra-checkout-fields-for-brazil.php:135
 msgid "Premium Support"
 msgstr "Suporte Premium"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:138
+#: includes/class-extra-checkout-fields-for-brazil.php:136
 msgid "Contribute"
 msgstr "Contribua"
-
-#. translators: %s: woocommerce link
-#: includes/class-extra-checkout-fields-for-brazil.php:150
-#, php-format
-msgid "Brazilian Market on WooCommerce depends on %s to work!"
-msgstr "O Brazilian Market on WooCommerce depende do %s para funcionar!"
-
-#: includes/class-extra-checkout-fields-for-brazil.php:151
-msgid "WooCommerce"
-msgstr "WooCommerce"
 
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:299
 msgid "Enter a valid CPF"

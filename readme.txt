@@ -116,7 +116,7 @@ This plugin is licensed as GPL.
 - Added masks and validation to the Brazilian fields on the admin order screen. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
 - Fixed the Brazilian fields not working on the admin order screen when High-Performance Order Storage is enabled, and the person type not switching after the customer autofill. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
 - Added validation to the Birthdate field, which used to accept dates that do not exist.
-- Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin.
+- Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin, and removed the notice that used to say it was missing.
 - Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
