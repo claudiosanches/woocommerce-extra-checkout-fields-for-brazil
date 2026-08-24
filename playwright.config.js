@@ -18,6 +18,11 @@ module.exports = defineConfig( {
 	fullyParallel: false,
 	forbidOnly: !! process.env.CI,
 	retries: process.env.CI ? 1 : 0,
+
+	// A test that only passes on retry still points at a real race, and a
+	// green run hides it. Retries stay, so the report names the culprit, but
+	// the run fails.
+	failOnFlakyTests: !! process.env.CI,
 	timeout: 90_000,
 	expect: { timeout: 15_000 },
 	reporter: process.env.CI ? [ [ 'github' ], [ 'list' ] ] : [ [ 'list' ] ],

@@ -33,7 +33,13 @@ async function logIn( page ) {
 	await page.fill( '#user_login', CUSTOMER.user );
 	await page.fill( '#user_pass', CUSTOMER.pass );
 	await page.click( '#wp-submit' );
-	await page.waitForLoadState( 'domcontentloaded' );
+
+	// Waiting for the load alone can resolve before the auth cookie is set,
+	// and the next navigation is then bounced back to this form.
+	await page.waitForURL(
+		( url ) => ! url.pathname.includes( 'wp-login.php' ),
+		{ timeout: 30_000 }
+	);
 }
 
 test.describe( 'My account', () => {
@@ -48,6 +54,12 @@ test.describe( 'My account', () => {
 		await page.goto( '/my-account/edit-address/billing/', {
 			waitUntil: 'domcontentloaded',
 		} );
+
+		// A session that did not take would land on the login form and leave
+		// every count at zero, which reads as a passing duplication check.
+		await expect(
+			page.locator( 'button[name="save_address"]' )
+		).toBeVisible();
 
 		// WooCommerce renders its own copy of every registered address field,
 		// so the historic pair has to stand down or both would show.
