@@ -21,10 +21,11 @@
     "env": "wp-env",
     "packages-update": "wp-scripts packages-update",
     "test:php": "composer run-script test:unit",
-    "test:php-integration": "wp-env run tests-cli --env-cwd=wp-content/plugins/woocommerce-extra-checkout-fields-for-brazil vendor/bin/phpunit -- --testsuite=integration",
+    "test:php-integration": "wp-env run cli --config .wp-env.tests.json --env-cwd=wp-content/plugins/woocommerce-extra-checkout-fields-for-brazil vendor/bin/phpunit -- --testsuite=integration",
     "test": "npm run test:unit && npm run test:php",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "env:tests": "wp-env start --config .wp-env.tests.json"
   },
   "dependencies": {
     "mailcheck": "^1.1.1"

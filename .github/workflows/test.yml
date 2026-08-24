@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# A new push makes the run in progress pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   php:
     name: PHP ${{ matrix.php }}
@@ -69,10 +74,16 @@ jobs:
       - run: npm run build
 
       # Real Google Chrome rather than bundled Chromium, so the specs run the
-      # browser the storefront is used in.
-      - run: npx playwright install --with-deps chrome
-
-      - run: npx wp-env start
+      # browser the storefront is used in. Independent of the environment, so
+      # the two slowest setup steps overlap instead of queueing.
+      - name: Install Chrome and start WordPress
+        run: |
+          npx playwright install --with-deps chrome &
+          chrome=$!
+          npx wp-env start &
+          env=$!
+          wait $chrome
+          wait $env
 
       - run: npm run test:e2e
 
@@ -108,6 +119,7 @@ jobs:
 
       - run: npm run build
 
-      - run: npx wp-env start
+      # Its own config, so only the environment this job uses is started.
+      - run: npx wp-env start --config .wp-env.tests.json
 
       - run: npm run test:php-integration

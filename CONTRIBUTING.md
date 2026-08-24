@@ -35,8 +35,14 @@ Integration and end to end tests run against
 [`@wordpress/env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/),
 which installs WordPress and WooCommerce in Docker.
 
+There are two of them. `.wp-env.json` is the site you browse and the one the
+end to end suite drives. `.wp-env.tests.json` is a separate instance for the
+PHPUnit integration suite, which installs its own tables and would otherwise
+wipe the site you were working in.
+
 ```sh
-npm run env start     # http://localhost:8977, tests on :8978
+npm run env start     # http://localhost:8977, the site and the e2e target
+npm run env:tests     # http://localhost:8978, for the integration suite
 npm run env stop
 npm run env -- run cli wp option get wcbcf_settings --format=json
 ```

@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# A new push makes the run in progress pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   php:
     name: PHP coding standards
