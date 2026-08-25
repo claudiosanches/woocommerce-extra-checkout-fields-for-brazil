@@ -1,8 +1,8 @@
 <?php
 /**
- * Extra checkout fields formatting methods.
+ * Extra checkout fields validation methods.
  *
- * @package Extra_Checkout_Fields_For_Brazil/Formatting
+ * @package Extra_Checkout_Fields_For_Brazil/Validation
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Extra_Checkout_Fields_For_Brazil_Formatting class.
+ * Extra_Checkout_Fields_For_Brazil_Validation class.
  */
-class Extra_Checkout_Fields_For_Brazil_Formatting {
+class Extra_Checkout_Fields_For_Brazil_Validation {
 
 	/**
 	 * Checks if the CPF is valid.

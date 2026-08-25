@@ -606,15 +606,15 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 
 		$settings = (array) get_option( 'wcbcf_settings', array() );
 
-		if ( 'cpf' === $key && isset( $settings['validate_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $value ) ) {
+		if ( 'cpf' === $key && isset( $settings['validate_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $value ) ) {
 			$errors->add( 'woocommerce_invalid_cpf', __( 'CPF is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
-		if ( 'cnpj' === $key && isset( $settings['validate_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $value ) ) {
+		if ( 'cnpj' === $key && isset( $settings['validate_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $value ) ) {
 			$errors->add( 'woocommerce_invalid_cnpj', __( 'CNPJ is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
-		if ( 'birthdate' === $key && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_date( $value ) ) {
+		if ( 'birthdate' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $value ) ) {
 			$errors->add( 'woocommerce_invalid_birthdate', __( 'Birthdate is not valid. Use the dd/mm/yyyy format.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 

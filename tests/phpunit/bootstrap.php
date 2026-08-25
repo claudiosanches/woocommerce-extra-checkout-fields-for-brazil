@@ -48,4 +48,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', CSBMW_PLUGIN_DIR . '/' );
 }
 
-require_once CSBMW_PLUGIN_DIR . '/includes/class-extra-checkout-fields-for-brazil-formatting.php';
+require_once CSBMW_PLUGIN_DIR . '/includes/class-extra-checkout-fields-for-brazil-validation.php';

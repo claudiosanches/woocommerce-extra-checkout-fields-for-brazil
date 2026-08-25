@@ -1,6 +1,6 @@
 /**
  * Client-side validation for Brazilian documents. Mirrors the checks in
- * Extra_Checkout_Fields_For_Brazil_Formatting.
+ * Extra_Checkout_Fields_For_Brazil_Validation.
  */
 
 const sanitize = ( value ) =>
