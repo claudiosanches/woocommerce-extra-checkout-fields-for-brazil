@@ -17,7 +17,7 @@ class Extra_Checkout_Fields_For_Brazil_Integrations {
 	/**
 	 * Initialize integrations.
 	 */
-	public function __construct() {		
+	public function __construct() {
 		add_filter( 'woocommerce_bcash_args', array( $this, 'bcash' ), 1, 2 );
 		add_filter( 'woocommerce_moip_args', array( $this, 'moip' ), 1, 2 );
 		add_filter( 'woocommerce_moip_holder_data', array( $this, 'moip_transparent_checkout' ), 1, 2 );
