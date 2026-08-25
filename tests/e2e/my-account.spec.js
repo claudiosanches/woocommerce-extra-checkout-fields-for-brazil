@@ -10,6 +10,19 @@ const {
 const CUSTOMER = { user: 'csbmw_legacy', pass: 'csbmw-e2e-password' };
 
 /**
+ * Write one meta value onto the fixture customer.
+ *
+ * @param {string} key   Meta key.
+ * @param {string} value Value to store.
+ */
+function setCustomerMeta( key, value ) {
+	wpCli( [
+		'eval',
+		`$u = get_user_by( 'login', 'csbmw_legacy' ); $c = new WC_Customer( $u->ID ); $c->update_meta_data( '${ key }', '${ value }' ); $c->save();`,
+	] );
+}
+
+/**
  * Read one meta value from the fixture customer.
  *
  * @param {string} key Meta key.
@@ -29,17 +42,32 @@ function customerMeta( key ) {
  * @return {Promise<void>}
  */
 async function logIn( page ) {
-	await page.goto( '/wp-login.php', { waitUntil: 'domcontentloaded' } );
-	await page.fill( '#user_login', CUSTOMER.user );
-	await page.fill( '#user_pass', CUSTOMER.pass );
-	await page.click( '#wp-submit' );
+	// The login page shuffles focus as it settles, and filling through that
+	// has put the password in the username field, so wait for the form, then
+	// check both values before submitting.
+	for ( let attempt = 0; attempt < 2; attempt++ ) {
+		await page.goto( '/wp-login.php', { waitUntil: 'load' } );
+		await page.locator( '#user_login' ).waitFor( { state: 'visible' } );
 
-	// Waiting for the load alone can resolve before the auth cookie is set,
-	// and the next navigation is then bounced back to this form.
-	await page.waitForURL(
-		( url ) => ! url.pathname.includes( 'wp-login.php' ),
-		{ timeout: 30_000 }
-	);
+		await page.fill( '#user_login', CUSTOMER.user );
+		await page.fill( '#user_pass', CUSTOMER.pass );
+
+		if (
+			( await page.inputValue( '#user_login' ) ) !== CUSTOMER.user ||
+			( await page.inputValue( '#user_pass' ) ) !== CUSTOMER.pass
+		) {
+			continue;
+		}
+
+		await page.click( '#wp-submit' );
+		await page.waitForLoadState( 'load' );
+
+		if ( ! page.url().includes( 'wp-login.php' ) ) {
+			return;
+		}
+	}
+
+	throw new Error( 'Could not log the fixture customer in' );
 }
 
 test.describe( 'My account', () => {
@@ -160,6 +188,36 @@ test.describe( 'My account', () => {
 		// An untranslated gender label still resolves to its stable key.
 		await expect( page.locator( '#contact-csbmw-gender' ) ).toHaveValue(
 			'female'
+		);
+	} );
+
+	test( 'a corrected document reaches the block checkout', async ( {
+		page,
+	} ) => {
+		// A customer who has ordered through the block checkout carries both
+		// copies. The account form only edits the historic one.
+		setCustomerMeta( '_wc_other/csbmw/cpf', '123.456.789-09' );
+
+		await logIn( page );
+		await page.goto( '/my-account/edit-address/billing/', {
+			waitUntil: 'domcontentloaded',
+		} );
+		await expect(
+			page.locator( 'button[name="save_address"]' )
+		).toBeVisible();
+
+		await page.fill( '#billing_cpf', '111.444.777-35' );
+		await page.click( 'button[name="save_address"]' );
+		await page.waitForURL( /my-account\/edit-address/, {
+			timeout: 30_000,
+		} );
+
+		expect( customerMeta( 'billing_cpf' ) ).toBe( '111.444.777-35' );
+
+		// Left stale, this is what the block checkout would prefill, and the
+		// correction would be written back out on the next order.
+		expect( customerMeta( '_wc_other/csbmw/cpf' ) ).toBe(
+			'111.444.777-35'
 		);
 	} );
 } );

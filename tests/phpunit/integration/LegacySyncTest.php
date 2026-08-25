@@ -260,4 +260,94 @@ class LegacySyncTest extends WP_UnitTestCase {
 
 		$this->assertSame( array( 'first_name', 'other/field' ), array_keys( $filtered ) );
 	}
+
+	/**
+	 * Build a customer holding both copies of a field.
+	 *
+	 * @param string $legacy_key Historic meta key.
+	 * @param string $legacy     Historic value.
+	 * @param string $block_key  Block meta key.
+	 * @param string $block      Block value.
+	 *
+	 * @return WC_Customer
+	 */
+	protected function customer_with( $legacy_key, $legacy, $block_key, $block ) {
+		$customer = new WC_Customer( $this->factory->user->create( array( 'role' => 'customer' ) ) );
+		$customer->update_meta_data( $legacy_key, $legacy );
+		$customer->update_meta_data( $block_key, $block );
+		$customer->save();
+
+		return $customer;
+	}
+
+	/**
+	 * The account form edits the historic fields, and WooCommerce only falls
+	 * back to them while the block meta is empty, so a correction made there
+	 * has to reach the block copy.
+	 *
+	 * @return void
+	 */
+	public function test_an_edited_document_reaches_the_block_meta() {
+		$customer = $this->customer_with( 'billing_cpf', '111.444.777-35', '_wc_other/csbmw/cpf', '123.456.789-09' );
+
+		$this->sync->write_customer_block_meta( $customer->get_id(), 'billing' );
+
+		$stored = new WC_Customer( $customer->get_id() );
+
+		$this->assertSame( '111.444.777-35', $stored->get_meta( '_wc_other/csbmw/cpf' ) );
+	}
+
+	/**
+	 * The two stores keep gender in different vocabularies, a translated label
+	 * against a stable key, so the value has to be converted on the way across.
+	 *
+	 * @return void
+	 */
+	public function test_an_edited_gender_is_converted_to_the_block_vocabulary() {
+		$customer = $this->customer_with( 'billing_gender', 'Male', '_wc_other/csbmw/gender', 'female' );
+
+		$this->sync->write_customer_block_meta( $customer->get_id(), 'billing' );
+
+		$stored = new WC_Customer( $customer->get_id() );
+
+		$this->assertSame( 'male', $stored->get_meta( '_wc_other/csbmw/gender' ) );
+	}
+
+	/**
+	 * A customer who has never checked out through the block checkout has no
+	 * block meta, and a saved address must not invent any.
+	 *
+	 * @return void
+	 */
+	public function test_a_customer_without_block_meta_does_not_gain_any() {
+		$customer = new WC_Customer( $this->factory->user->create( array( 'role' => 'customer' ) ) );
+		$customer->update_meta_data( 'billing_cpf', '111.444.777-35' );
+		$customer->save();
+
+		$this->sync->write_customer_block_meta( $customer->get_id(), 'billing' );
+
+		$stored = new WC_Customer( $customer->get_id() );
+
+		$this->assertFalse( $stored->meta_exists( '_wc_other/csbmw/cpf' ) );
+	}
+
+	/**
+	 * Saving the shipping form must not touch the contact fields, which only
+	 * ever appear on the billing one.
+	 *
+	 * @return void
+	 */
+	public function test_saving_shipping_leaves_the_contact_fields_alone() {
+		$customer = $this->customer_with( 'billing_cpf', '111.444.777-35', '_wc_other/csbmw/cpf', '123.456.789-09' );
+		$customer->update_meta_data( 'shipping_number', '99' );
+		$customer->update_meta_data( '_wc_shipping/csbmw/number', '11' );
+		$customer->save();
+
+		$this->sync->write_customer_block_meta( $customer->get_id(), 'shipping' );
+
+		$stored = new WC_Customer( $customer->get_id() );
+
+		$this->assertSame( '99', $stored->get_meta( '_wc_shipping/csbmw/number' ) );
+		$this->assertSame( '123.456.789-09', $stored->get_meta( '_wc_other/csbmw/cpf' ) );
+	}
 }

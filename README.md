@@ -1,5 +1,5 @@
 # Brazilian Market on WooCommerce #
-**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches), [tiagosartor3](https://profiles.wordpress.org/tiagosartor3)  
+**Contributors:** [claudiosanches](https://profiles.wordpress.org/claudiosanches/), [tiagosartor3](https://profiles.wordpress.org/tiagosartor3/)  
 **Donate link:** https://apoia.se/claudiosanches?utm_source=plugin-bmw  
 **Tags:** woocommerce, checkout, brazil, cpf, cnpj  
 **Requires at least:** 6.7  
@@ -129,6 +129,7 @@ This plugin is licensed as GPL.
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
 - Added masks and validation to the Brazilian fields on the admin order screen. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
 - Fixed the Brazilian fields not working on the admin order screen when High-Performance Order Storage is enabled, and the person type not switching after the customer autofill. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
+- Fixed a document corrected in My Account being ignored by the block checkout, which kept prefilling the old value and wrote it back with the next order.
 - Added validation to the Birthdate field, which used to accept dates that do not exist.
 - Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin, and removed the notice that used to say it was missing.
 - Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.
