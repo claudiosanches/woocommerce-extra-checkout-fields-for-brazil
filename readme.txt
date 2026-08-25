@@ -49,12 +49,12 @@ Brazilian addresses are rendered in the local format, with the street number aft
 
 = Compatibility =
 
-Requires WooCommerce 9.9 or newer. Compatible with High-Performance Order Storage (HPOS) and with the cart and checkout blocks.
+Compatible with High-Performance Order Storage (HPOS) and with the cart and checkout blocks.
 
 Known to work with:
 
-* [PagSeguro](http://wordpress.org/extend/plugins/woocommerce-pagseguro/) (receives **neighborhood**, **CPF** and **number**)
-* Flux Checkout for WooCommerce
+* **[WooCommerce](https://wordpress.org/plugins/woocommerce)** (requires WooCommerce 9.9 or newer)
+* **[PagSeguro for WooCommerce](https://wordpress.org/plugins/woocommerce-pagseguro)** (uses **neighborhood**, **CPF**, and **street number** fields)
 
 = Questions? =
 
@@ -121,6 +121,7 @@ This plugin is licensed as GPL.
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
+- Removed support for the discontinued Flux Checkout plugin.
 
 = 4.0.2 - 2024/02/17 =
 
