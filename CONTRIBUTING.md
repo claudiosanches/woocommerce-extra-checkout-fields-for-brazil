@@ -110,7 +110,7 @@ Notable classes:
 - `Extra_Checkout_Fields_For_Brazil_Legacy_Sync` mirrors those values into the
   historic meta keys and seeds the block fields from them.
 - `Extra_Checkout_Fields_For_Brazil_Front_End` handles the classic checkout.
-- `Extra_Checkout_Fields_For_Brazil_Formatting` holds the CPF, CNPJ and date
+- `Extra_Checkout_Fields_For_Brazil_Validation` holds the CPF, CNPJ and date
   validation, and is the only class the unit suite loads.
 
 ## Field storage

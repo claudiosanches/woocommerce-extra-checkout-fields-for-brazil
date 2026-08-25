@@ -8,9 +8,9 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Extra_Checkout_Fields_For_Brazil_Formatting tests.
+ * Extra_Checkout_Fields_For_Brazil_Validation tests.
  */
-class FormattingTest extends TestCase {
+class ValidationTest extends TestCase {
 
 	/**
 	 * Valid CPFs, formatted and unformatted.
@@ -31,7 +31,7 @@ class FormattingTest extends TestCase {
 	 * @param string $cpf CPF to check.
 	 */
 	public function test_accepts_valid_cpf( $cpf ) {
-		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $cpf ) );
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $cpf ) );
 	}
 
 	/**
@@ -56,7 +56,7 @@ class FormattingTest extends TestCase {
 	 * @param string $cpf CPF to check.
 	 */
 	public function test_rejects_invalid_cpf( $cpf ) {
-		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $cpf ) );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $cpf ) );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class FormattingTest extends TestCase {
 	 * @param string $cnpj CNPJ to check.
 	 */
 	public function test_accepts_valid_cnpj( $cnpj ) {
-		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $cnpj ) );
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $cnpj ) );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class FormattingTest extends TestCase {
 	 * @param string $cnpj CNPJ to check.
 	 */
 	public function test_rejects_invalid_cnpj( $cnpj ) {
-		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $cnpj ) );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $cnpj ) );
 	}
 
 	/**
@@ -133,6 +133,6 @@ class FormattingTest extends TestCase {
 	 * @param bool   $expected Expected result.
 	 */
 	public function test_validates_dates( $date, $expected ) {
-		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Formatting::is_date( $date ) );
+		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Validation::is_date( $date ) );
 	}
 }

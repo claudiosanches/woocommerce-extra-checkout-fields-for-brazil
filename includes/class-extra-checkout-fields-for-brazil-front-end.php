@@ -528,7 +528,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		// The birthdate does not depend on the person type, so it is checked
 		// before the person type rules below can return early.
-		if ( isset( $settings['birthdate'] ) && ! empty( $_POST['billing_birthdate'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_date( sanitize_text_field( wp_unslash( $_POST['billing_birthdate'] ) ) ) ) {
+		if ( isset( $settings['birthdate'] ) && ! empty( $_POST['billing_birthdate'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( sanitize_text_field( wp_unslash( $_POST['billing_birthdate'] ) ) ) ) {
 			wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 		}
 
@@ -551,7 +551,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
-				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( sanitize_text_field( wp_unslash( $_POST['billing_cpf'] ) ) ) ) {
+				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( sanitize_text_field( wp_unslash( $_POST['billing_cpf'] ) ) ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
@@ -570,7 +570,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
-				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( sanitize_text_field( wp_unslash( $_POST['billing_cnpj'] ) ) ) ) {
+				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( sanitize_text_field( wp_unslash( $_POST['billing_cnpj'] ) ) ) ) {
 					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
 				}
 
