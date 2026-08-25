@@ -8,6 +8,16 @@
 		._billing_ie_field {
 			clear: both !important;
 			width: 100% !important;
+
+            .is-valid {
+                border-color: green;
+                box-shadow: 0 0 3px rgba(40, 167, 69, 0.4);
+            }
+
+            .is-invalid {
+                border-color: red;
+                box-shadow: 0 0 3px rgba(220, 53, 69, 0.4);
+            }
 		}
 
 		._billing_gender_field,
