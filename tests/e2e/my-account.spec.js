@@ -10,11 +10,10 @@ const {
 const CUSTOMER = { user: 'csbmw_legacy', pass: 'csbmw-e2e-password' };
 
 /**
- * Read one meta value from the fixture customer.
+ * Write one meta value onto the fixture customer.
  *
  * @param {string} key   Meta key.
- * @param          value
- * @return {string} Stored value.
+ * @param {string} value Value to store.
  */
 function setCustomerMeta( key, value ) {
 	wpCli( [
@@ -23,6 +22,12 @@ function setCustomerMeta( key, value ) {
 	] );
 }
 
+/**
+ * Read one meta value from the fixture customer.
+ *
+ * @param {string} key Meta key.
+ * @return {string} Stored value.
+ */
 function customerMeta( key ) {
 	return wpCli( [
 		'eval',
@@ -37,17 +42,32 @@ function customerMeta( key ) {
  * @return {Promise<void>}
  */
 async function logIn( page ) {
-	await page.goto( '/wp-login.php', { waitUntil: 'domcontentloaded' } );
-	await page.fill( '#user_login', CUSTOMER.user );
-	await page.fill( '#user_pass', CUSTOMER.pass );
-	await page.click( '#wp-submit' );
+	// The login page shuffles focus as it settles, and filling through that
+	// has put the password in the username field, so wait for the form, then
+	// check both values before submitting.
+	for ( let attempt = 0; attempt < 2; attempt++ ) {
+		await page.goto( '/wp-login.php', { waitUntil: 'load' } );
+		await page.locator( '#user_login' ).waitFor( { state: 'visible' } );
 
-	// Waiting for the load alone can resolve before the auth cookie is set,
-	// and the next navigation is then bounced back to this form.
-	await page.waitForURL(
-		( url ) => ! url.pathname.includes( 'wp-login.php' ),
-		{ timeout: 30_000 }
-	);
+		await page.fill( '#user_login', CUSTOMER.user );
+		await page.fill( '#user_pass', CUSTOMER.pass );
+
+		if (
+			( await page.inputValue( '#user_login' ) ) !== CUSTOMER.user ||
+			( await page.inputValue( '#user_pass' ) ) !== CUSTOMER.pass
+		) {
+			continue;
+		}
+
+		await page.click( '#wp-submit' );
+		await page.waitForLoadState( 'load' );
+
+		if ( ! page.url().includes( 'wp-login.php' ) ) {
+			return;
+		}
+	}
+
+	throw new Error( 'Could not log the fixture customer in' );
 }
 
 test.describe( 'My account', () => {
