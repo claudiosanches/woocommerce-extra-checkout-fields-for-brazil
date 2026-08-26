@@ -2,7 +2,7 @@
   "name": "woocommerce-extra-checkout-fields-for-brazil",
   "description": "Brazilian Market on WooCommerce",
   "version": "5.0.0",
-  "license": "GPL-2.0-or-later",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "build": "wp-scripts build",
     "start": "wp-scripts start",

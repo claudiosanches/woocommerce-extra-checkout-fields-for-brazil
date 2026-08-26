@@ -9,7 +9,8 @@
  * Requires at least: 6.7
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * License: GPLv2 or later
+ * License: GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
  * WC requires at least: 9.9
@@ -18,7 +19,7 @@
  * Brazilian Market on WooCommerce is free software: you can
  * redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
- * either version 2 of the License, or any later version.
+ * either version 3 of the License, or any later version.
  *
  * Brazilian Market on WooCommerce is distributed in the hope
  * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
@@ -27,7 +28,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Brazilian Market on WooCommerce. If not, see
- * <https://www.gnu.org/licenses/gpl-2.0.txt>.
+ * <https://www.gnu.org/licenses/gpl-3.0.txt>.
  *
  * @package Extra_Checkout_Fields_For_Brazil
  */

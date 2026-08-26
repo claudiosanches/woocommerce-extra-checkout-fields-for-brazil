@@ -6,8 +6,8 @@
 **Tested up to:** 7.1  
 **Stable tag:** 5.0.0  
 **Requires PHP:** 7.4  
-**License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**License:** GPLv3 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
 
 Adds CPF, CNPJ, RG, State Registration, street number, neighborhood and other checkout fields Brazilian stores need.
 
@@ -93,7 +93,7 @@ Under WooCommerce > Settings > Checkout Fields.
 
 ### What is the plugin license? ###
 
-This plugin is licensed as GPL.
+This plugin is licensed under the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Screenshots ##
 
