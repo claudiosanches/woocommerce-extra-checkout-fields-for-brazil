@@ -532,14 +532,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// Get plugin settings.
 		$settings = get_option( 'wcbcf_settings' );
 
-		$billing_persontype = intval( wp_unslash( $data['billing_persontype'] ?? $_POST['billing_persontype'] ?? 0 ));
-		$billing_birthdate  = trim( sanitize_text_field( wp_unslash( $data['billing_birthdate'] ?? $_POST['billing_birthdate'] ?? '' )));
-		$billing_country    = trim( sanitize_text_field( wp_unslash( $data['billing_country'] ?? $_POST['billing_country'] ?? '' )));
-		$billing_cpf        = trim( sanitize_text_field( wp_unslash( $data['billing_cpf'] ?? $_POST['billing_cpf'] ?? '' )));
-		$billing_rg         = trim( sanitize_text_field( wp_unslash( $data['billing_rg'] ?? $_POST['billing_rg'] ?? '' )));
-		$billing_company    = trim( sanitize_text_field( wp_unslash( $data['billing_company'] ?? $_POST['billing_company'] ?? '' )));
-		$billing_cnpj       = trim( sanitize_text_field( wp_unslash( $data['billing_cnpj'] ?? $_POST['billing_cnpj'] ?? '' )));
-		$billing_ie         = trim( sanitize_text_field( wp_unslash( $data['billing_ie'] ?? $_POST['billing_ie'] ?? '' )));
+		$billing_persontype = intval( wp_unslash( $data['billing_persontype'] ?? $_POST['billing_persontype'] ?? 0 ) );
+		$billing_birthdate  = trim( sanitize_text_field( wp_unslash( $data['billing_birthdate'] ?? $_POST['billing_birthdate'] ?? '' ) ) );
+		$billing_country    = trim( sanitize_text_field( wp_unslash( $data['billing_country'] ?? $_POST['billing_country'] ?? '' ) ) );
+		$billing_cpf        = trim( sanitize_text_field( wp_unslash( $data['billing_cpf'] ?? $_POST['billing_cpf'] ?? '' ) ) );
+		$billing_rg         = trim( sanitize_text_field( wp_unslash( $data['billing_rg'] ?? $_POST['billing_rg'] ?? '' ) ) );
+		$billing_company    = trim( sanitize_text_field( wp_unslash( $data['billing_company'] ?? $_POST['billing_company'] ?? '' ) ) );
+		$billing_cnpj       = trim( sanitize_text_field( wp_unslash( $data['billing_cnpj'] ?? $_POST['billing_cnpj'] ?? '' ) ) );
+		$billing_ie         = trim( sanitize_text_field( wp_unslash( $data['billing_ie'] ?? $_POST['billing_ie'] ?? '' ) ) );
 
 		// The birthdate does not depend on the person type, so it is checked
 		// before the person type rules below can return early.
