@@ -109,6 +109,27 @@ test.describe( 'Classic checkout', () => {
 		expect( orderIdFromUrl( page.url() ) ).toBeNull();
 	} );
 
+	test( 'points the error at the field that failed', async ( { page } ) => {
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '1' );
+		await page.fill( '#billing_rg', '123456789' );
+		await fillCommonFields( page );
+		await waitForClassicCheckoutIdle( page );
+
+		// Valid shape, wrong check digits, so only the server can reject it.
+		await page.fill( '#billing_cpf', '111.444.777-00' );
+
+		await page.click( '#place_order' );
+
+		// WooCommerce puts the field id on the notice so it can point at it.
+		const error = page.locator(
+			'.woocommerce-error li[data-id="billing_cpf"], .wc-block-components-notice-banner.is-error[data-id="billing_cpf"]'
+		);
+
+		await expect( error ).toContainText( 'CPF', { timeout: 30_000 } );
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
+	} );
+
 	test( 'fills the State Registration with ISENTO from the exempt box', async ( {
 		page,
 	} ) => {

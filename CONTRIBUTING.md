@@ -70,7 +70,7 @@ npm run test:e2e:ui          # the same with the Playwright inspector
 | --- | --- | --- |
 | Jest | `tests/js/` | Masking, validation, the mail suggestion and the State Registration exemption, as pure functions and against jsdom |
 | PHPUnit unit | `tests/phpunit/unit/` | CPF, CNPJ and date validation. Runs without WordPress |
-| PHPUnit integration | `tests/phpunit/integration/` | Field registration across every settings combination, the conditional rules, and the meta written on both stores |
+| PHPUnit integration | `tests/phpunit/integration/` | Field registration across every settings combination, the conditional rules, the classic checkout validation and the meta written on both stores |
 | Playwright | `tests/e2e/` | Both checkouts, My Account and the Store API, in Google Chrome |
 
 The end to end suite drives real Google Chrome rather than bundled Chromium.
