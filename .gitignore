@@ -6,3 +6,4 @@ build/
 .wp-env.override.json
 artifacts/
 playwright-report/
+composer.phar
