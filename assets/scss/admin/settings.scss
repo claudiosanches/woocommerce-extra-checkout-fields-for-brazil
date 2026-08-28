@@ -1,8 +1,249 @@
-#bmw-settings {
-	display: block;
+.bmw-settings-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 24px;
+    max-width: 1180px;
+    margin-top: 20px;
+}
 
-	@media screen and (min-width: 783px) {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-	}
+.bmw-settings-main,
+.bmw-settings-sidebar {
+    min-width: 0;
+}
+
+.bmw-settings-card,
+.bmw-settings-panel {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.bmw-settings-card {
+    overflow: hidden;
+    padding: 0 24px 12px;
+}
+
+.bmw-settings-card h2 {
+    margin: 0 -24px;
+    padding: 18px 24px 12px;
+    border-bottom: 1px solid #e2e4e7;
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.bmw-settings-card .form-table {
+    margin: 0 0 18px;
+}
+
+.bmw-settings-card .form-table th {
+    display: none;
+}
+
+.bmw-settings-card .form-table td {
+    width: 100%;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.bmw-switch-field,
+.bmw-select-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+}
+
+.bmw-switch-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.bmw-switch-track {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 9999px;
+    background: #a7aaad;
+    transition: background 0.15s ease;
+}
+
+.bmw-switch-thumb {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease;
+}
+
+.bmw-switch-field:has(.bmw-switch-input:checked) .bmw-switch-track {
+    background: #46a66f;
+}
+
+.bmw-switch-field:has(.bmw-switch-input:checked) .bmw-switch-thumb {
+    transform: translateX(18px);
+}
+
+.bmw-switch-field:has(.bmw-switch-input:focus-visible) .bmw-switch-track {
+    box-shadow: 0 0 0 2px #2271b1;
+}
+
+.bmw-switch-content,
+.bmw-select-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bmw-switch-content h3,
+.bmw-select-field h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bmw-select-field select {
+    min-width: 260px;
+}
+
+.bmw-settings-support p {
+    margin: 0 0 14px;
+    color: #50575e;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.bmw-settings-card .form-table p {
+    margin: 0;
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.bmw-settings-card .submit {
+    margin: 8px 0 0;
+}
+
+.bmw-settings-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bmw-settings-panel {
+    padding: 18px;
+}
+
+.bmw-settings-panel h2 {
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(29, 35, 39, 0.15);
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.bmw-settings-news {
+    border-color: #2271b1;
+    background: #f0f7fc;
+}
+
+.bmw-settings-news ul {
+    margin: 0;
+}
+
+.bmw-settings-news li {
+    margin: 0;
+    padding: 0 0 14px;
+    color: #1d2327;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.bmw-settings-news li:last-child {
+    padding-bottom: 0;
+}
+
+.bmw-settings-news strong,
+.bmw-settings-news span {
+    display: block;
+}
+
+.bmw-settings-news strong {
+    margin-bottom: 3px;
+}
+
+.bmw-settings-news span {
+    color: #50575e;
+}
+
+.bmw-settings-support {
+    border-color: #dba617;
+    background: #fff8dc;
+}
+
+.bmw-settings-support p:last-child {
+    margin-bottom: 0;
+}
+
+.bmw-settings-support .button {
+    margin-bottom: 2px;
+    background: #f0b429;
+    border-color: #d99a05;
+    color: #1d2327;
+    box-shadow: none;
+}
+
+.bmw-settings-support .button:hover {
+    background: #d99a05;
+    border-color: #b98100;
+    color: #1d2327;
+}
+
+.bmw-settings-review a {
+    color: #2271b1;
+}
+
+@media screen and (max-width: 782px) {
+
+    .bmw-settings-layout {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .bmw-settings-card {
+        padding: 0 16px 10px;
+    }
+
+    .bmw-settings-card h2 {
+        margin-right: -16px;
+        margin-left: -16px;
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .bmw-settings-card .form-table th {
+        display: none;
+    }
+
+    .bmw-settings-card .form-table td {
+        padding: 10px 0;
+    }
+
 }
