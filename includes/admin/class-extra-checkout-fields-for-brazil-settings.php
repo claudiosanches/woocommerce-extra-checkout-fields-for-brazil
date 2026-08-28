@@ -48,13 +48,19 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 */
 	public function plugin_settings() {
 		$option = 'wcbcf_settings';
+		$args   = array(
+			'before_section' => '<div class="bmw-settings-card %s">',
+			'after_section'  => '</div>',
+			'section_class'  => 'bmw-settings-section',
+		);
 
 		// Set General Options section.
 		add_settings_section(
 			'options_section',
 			__( 'Custom Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$args
 		);
 
 		// Person Type option.
@@ -194,7 +200,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'design_section',
 			__( 'Design', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$args
 		);
 
 		// Fields Style option.
@@ -221,7 +228,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'jquery_section',
 			__( 'jQuery Options', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$args
 		);
 
 		// Mail Check option.
@@ -259,7 +267,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'validation_section',
 			__( 'Validation', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$args
 		);
 
 		// Validate CPF option.

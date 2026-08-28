@@ -18,12 +18,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="bmw-settings-layout">
 		<main class="bmw-settings-main">
 			<form id="bmw-settings" method="post" action="options.php">
-				<div class="bmw-settings-card">
-					<?php
-					settings_fields( 'wcbcf_settings' );
-					do_settings_sections( 'wcbcf_settings' );
-					?>
-				</div>
+				<?php
+				settings_fields( 'wcbcf_settings' );
+				do_settings_sections( 'wcbcf_settings' );
+				?>
 				<?php submit_button(); ?>
 			</form>
 		</main>

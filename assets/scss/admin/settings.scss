@@ -21,7 +21,8 @@
 
 .bmw-settings-card {
     overflow: hidden;
-    padding: 0 24px 12px;
+    margin-bottom: 24px;
+    padding: 0 24px;
 }
 
 .bmw-settings-card h2 {
@@ -36,7 +37,7 @@
 }
 
 .bmw-settings-card .form-table {
-    margin: 0 0 18px;
+    margin: 0;
 }
 
 .bmw-settings-card .form-table th {
@@ -47,6 +48,11 @@
     width: 100%;
     padding: 14px 0;
     border-bottom: 1px solid #f0f0f1;
+}
+
+.bmw-settings-card .form-table tr:last-child td {
+    padding-bottom: 18px;
+    border-bottom: 0;
 }
 
 .bmw-switch-field,
@@ -135,8 +141,9 @@
     line-height: 1.4;
 }
 
-.bmw-settings-card .submit {
-    margin: 8px 0 0;
+#bmw-settings .submit {
+    margin: 0;
+    padding: 0;
 }
 
 .bmw-settings-sidebar {
@@ -228,7 +235,8 @@
     }
 
     .bmw-settings-card {
-        padding: 0 16px 10px;
+        margin-bottom: 16px;
+        padding: 0 16px;
     }
 
     .bmw-settings-card h2 {
@@ -244,6 +252,10 @@
 
     .bmw-settings-card .form-table td {
         padding: 10px 0;
+    }
+
+    .bmw-settings-card .form-table tr:last-child td {
+        padding-bottom: 14px;
     }
 
 }
