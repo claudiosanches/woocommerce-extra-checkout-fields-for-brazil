@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Select field view.
  *

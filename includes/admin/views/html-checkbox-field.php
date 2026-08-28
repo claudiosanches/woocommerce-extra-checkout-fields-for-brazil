@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Checkbox field view.
  *
