@@ -27,6 +27,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ), 10 );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ), 10 );
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
+		add_filter( 'woocommerce_get_country_locale', array( $this, 'cell_phone_label' ), 20 );
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'restore_company_field' ), 10 );
 
 		// Historic birthdates were never format-checked, and the date mask turns
@@ -508,6 +509,49 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( 1 === $person_type || 3 === $person_type ) {
 			$locales['BR']['company']['hidden']   = false;
 			$locales['BR']['company']['required'] = false;
+		}
+
+		return $locales;
+	}
+
+	/**
+	 * Rename the phone field when the store asks for a cell phone in its place.
+	 *
+	 * The checkout block takes its core field labels from a hardcoded list with
+	 * no filter on it, so the country locale is the only place they can be
+	 * overridden.
+	 *
+	 * The classic checkout needs this too. checkout_billing_fields() renames the
+	 * field in PHP, but WooCommerce's address-i18n script rewrites every label
+	 * from the locale once the form is on screen, which put "Phone" back.
+	 *
+	 * WooCommerce narrows the locale to the countries the store sells and ships
+	 * to right after this filter, so every country is offered a label and the
+	 * ones that do not apply are dropped again.
+	 *
+	 * @param  array $locales Country locales.
+	 * @return array
+	 */
+	public function cell_phone_label( $locales ) {
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( '-1' !== (string) wc_get_var( $settings['cell_phone'], '0' ) ) {
+			return $locales;
+		}
+
+		$label     = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
+		$countries = array_merge(
+			WC()->countries->get_allowed_countries(),
+			WC()->countries->get_shipping_countries()
+		);
+
+		foreach ( array_keys( $countries ) as $country ) {
+			$locales[ $country ]['phone']['label'] = $label;
+
+			// The block appends nothing of its own, so the optional wording has
+			// to be spelled out.
+			/* translators: %s: field label. */
+			$locales[ $country ]['phone']['optionalLabel'] = sprintf( __( '%s (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ), $label );
 		}
 
 		return $locales;
