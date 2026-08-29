@@ -71,8 +71,6 @@ class Extra_Checkout_Fields_For_Brazil_Assets {
 			$meta['version'],
 			true
 		);
-
-		wp_set_script_translations( $handle, 'woocommerce-extra-checkout-fields-for-brazil', plugin_dir_path( CSBMW_PLUGIN_FILE ) . 'languages' );
 	}
 
 	/**
