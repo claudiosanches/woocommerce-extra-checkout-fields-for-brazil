@@ -192,6 +192,21 @@ test.describe( 'Store API validation cannot be skipped', () => {
 		expect( result.message ).toContain( 'CNPJ is not valid' );
 	} );
 
+	test( 'refuses a cell phone that is not a phone number', async ( {
+		page,
+	} ) => {
+		const session = await apiSession( page );
+
+		// The mask keeps letters out of the field, so only a crafted request
+		// gets this far.
+		const result = await attempt( session, {
+			'csbmw/cellphone': 'me liga',
+		} );
+
+		expect( result.accepted ).toBe( false );
+		expect( result.message ).toContain( 'Cell Phone is not valid' );
+	} );
+
 	test( 'refuses missing required fields', async ( { page } ) => {
 		const session = await apiSession( page );
 

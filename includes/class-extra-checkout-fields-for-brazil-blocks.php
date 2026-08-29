@@ -621,6 +621,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			$errors->add( 'woocommerce_invalid_birthdate', __( 'Birthdate is not valid. Use the dd/mm/yyyy format.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
+		// The same check the classic checkout puts on this field through the
+		// WooCommerce phone validator.
+		if ( 'cellphone' === $key && ! WC_Validation::is_phone( $value ) ) {
+			$errors->add( 'woocommerce_invalid_cellphone', __( 'Cell Phone is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+		}
+
 		return $errors->has_errors() ? $errors : true;
 	}
 
