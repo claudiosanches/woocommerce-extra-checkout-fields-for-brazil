@@ -48,11 +48,6 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 */
 	public function plugin_settings() {
 		$option = 'wcbcf_settings';
-		$args   = array(
-			'before_section' => '<div class="bmw-settings-card %s">',
-			'after_section'  => '</div>',
-			'section_class'  => 'bmw-settings-section',
-		);
 
 		// Set General Options section.
 		add_settings_section(
@@ -60,7 +55,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Custom Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$args
+			$this->section_args( 'bmw-section-fields' )
 		);
 
 		// Person Type option.
@@ -93,6 +88,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-only-brazil',
 				'id'    => 'only_brazil',
 				'title' => __( 'Person Type is required only in Brazil?', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked the Individuals and Legal Person options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -108,6 +104,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-rg',
 				'id'    => 'rg',
 				'title' => __( 'Display RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -123,6 +120,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-ie',
 				'id'    => 'ie',
 				'title' => __( 'Display State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -201,7 +199,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Design', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$args
+			$this->section_args( 'bmw-section-design' )
 		);
 
 		// Fields Style option.
@@ -229,7 +227,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'jQuery Options', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$args
+			$this->section_args( 'bmw-section-jquery' )
 		);
 
 		// Mail Check option.
@@ -268,7 +266,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Validation', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$args
+			$this->section_args( 'bmw-section-validation' )
 		);
 
 		// Validate CPF option.
@@ -280,6 +278,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'validation_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-validate-cpf',
 				'id'    => 'validate_cpf',
 				'title' => __( 'Validate CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'Checks if the CPF is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -295,6 +294,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'validation_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-validate-cnpj',
 				'id'    => 'validate_cnpj',
 				'title' => __( 'Validate CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'Checks if the CNPJ is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -303,6 +303,24 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 		// Register settings.
 		register_setting( $option, $option, array( $this, 'validate_options' ) );
+	}
+
+	/**
+	 * Wrapper markup for a settings section.
+	 *
+	 * The %s in before_section is replaced with section_class, which is what
+	 * gives each card a hook of its own.
+	 *
+	 * @param string $section_class Class identifying the section.
+	 *
+	 * @return array
+	 */
+	protected function section_args( $section_class ) {
+		return array(
+			'before_section' => '<div class="bmw-settings-card %s">',
+			'after_section'  => '</div>',
+			'section_class'  => 'bmw-settings-section ' . $section_class,
+		);
 	}
 
 	/**

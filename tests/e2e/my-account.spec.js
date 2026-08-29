@@ -2,6 +2,7 @@ const { test, expect } = require( '@playwright/test' );
 const {
 	ALL_FIELDS,
 	goToBlockCheckout,
+	logIn,
 	seedLegacyCustomer,
 	setSettings,
 	wpCli,
@@ -35,41 +36,6 @@ function customerMeta( key ) {
 	] );
 }
 
-/**
- * Log the fixture customer in.
- *
- * @param {import('@playwright/test').Page} page Page.
- * @return {Promise<void>}
- */
-async function logIn( page ) {
-	// The login page shuffles focus as it settles, and filling through that
-	// has put the password in the username field, so wait for the form, then
-	// check both values before submitting.
-	for ( let attempt = 0; attempt < 2; attempt++ ) {
-		await page.goto( '/wp-login.php', { waitUntil: 'load' } );
-		await page.locator( '#user_login' ).waitFor( { state: 'visible' } );
-
-		await page.fill( '#user_login', CUSTOMER.user );
-		await page.fill( '#user_pass', CUSTOMER.pass );
-
-		if (
-			( await page.inputValue( '#user_login' ) ) !== CUSTOMER.user ||
-			( await page.inputValue( '#user_pass' ) ) !== CUSTOMER.pass
-		) {
-			continue;
-		}
-
-		await page.click( '#wp-submit' );
-		await page.waitForLoadState( 'load' );
-
-		if ( ! page.url().includes( 'wp-login.php' ) ) {
-			return;
-		}
-	}
-
-	throw new Error( 'Could not log the fixture customer in' );
-}
-
 test.describe( 'My account', () => {
 	test.beforeEach( async () => {
 		setSettings( ALL_FIELDS );
@@ -78,7 +44,7 @@ test.describe( 'My account', () => {
 	} );
 
 	test( 'shows Number and Neighborhood once each', async ( { page } ) => {
-		await logIn( page );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
 		await page.goto( '/my-account/edit-address/billing/', {
 			waitUntil: 'domcontentloaded',
 		} );
@@ -112,7 +78,7 @@ test.describe( 'My account', () => {
 	test( 'does not mangle a historic birthdate when the address is saved', async ( {
 		page,
 	} ) => {
-		await logIn( page );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
 		await page.goto( '/my-account/edit-address/billing/', {
 			waitUntil: 'domcontentloaded',
 		} );
@@ -135,7 +101,7 @@ test.describe( 'My account', () => {
 	test( 'saving the address writes both meta families', async ( {
 		page,
 	} ) => {
-		await logIn( page );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
 		await page.goto( '/my-account/edit-address/billing/', {
 			waitUntil: 'domcontentloaded',
 		} );
@@ -161,7 +127,7 @@ test.describe( 'My account', () => {
 	test( 'prefills the block checkout from the historic meta', async ( {
 		page,
 	} ) => {
-		await logIn( page );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
 		await goToBlockCheckout( page );
 
 		// The fixture customer's data was written under the historic keys only,
@@ -198,7 +164,7 @@ test.describe( 'My account', () => {
 		// copies. The account form only edits the historic one.
 		setCustomerMeta( '_wc_other/csbmw/cpf', '123.456.789-09' );
 
-		await logIn( page );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
 		await page.goto( '/my-account/edit-address/billing/', {
 			waitUntil: 'domcontentloaded',
 		} );

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="bmw-select-field">
 	<span class="bmw-select-content">
 		<?php if ( isset( $args['title'] ) ) : ?>
-			<h3><?php echo esc_html( $args['title'] ); ?></h3>
+			<h3><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $args['title'] ); ?></label></h3>
 		<?php endif; ?>
 		<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $menu ); ?>[<?php echo esc_attr( $id ); ?>]">
 			<?php foreach ( $args['options'] as $key => $value ) : ?>

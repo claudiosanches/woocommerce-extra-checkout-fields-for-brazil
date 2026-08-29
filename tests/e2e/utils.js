@@ -233,11 +233,50 @@ function seedLegacyCustomer() {
 	] );
 }
 
+/**
+ * Log a user in through the WordPress form.
+ *
+ * The login page shuffles focus as it settles, and filling through that has
+ * put the password in the username field, so wait for the form, then check
+ * both values before submitting.
+ *
+ * @param {import('@playwright/test').Page} page Page.
+ * @param {string}                          user Login name.
+ * @param {string}                          pass Password.
+ * @return {Promise<void>}
+ */
+async function logIn( page, user, pass ) {
+	for ( let attempt = 0; attempt < 2; attempt++ ) {
+		await page.goto( '/wp-login.php', { waitUntil: 'load' } );
+		await page.locator( '#user_login' ).waitFor( { state: 'visible' } );
+
+		await page.fill( '#user_login', user );
+		await page.fill( '#user_pass', pass );
+
+		if (
+			( await page.inputValue( '#user_login' ) ) !== user ||
+			( await page.inputValue( '#user_pass' ) ) !== pass
+		) {
+			continue;
+		}
+
+		await page.click( '#wp-submit' );
+		await page.waitForLoadState( 'load' );
+
+		if ( ! page.url().includes( 'wp-login.php' ) ) {
+			return;
+		}
+	}
+
+	throw new Error( `Could not log ${ user } in` );
+}
+
 module.exports = {
 	ALL_FIELDS,
 	seedLegacyCustomer,
 	VALID,
 	goToBlockCheckout,
+	logIn,
 	goToClassicCheckout,
 	waitForClassicCheckoutIdle,
 	orderIdFromUrl,
