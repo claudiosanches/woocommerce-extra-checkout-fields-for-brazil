@@ -42,10 +42,14 @@ function setupField( id, { mask, valid } ) {
 		return;
 	}
 
+	// An empty field is not wrong, it is unfilled. Only what was typed gets a
+	// verdict, or every optional field would load flagged as invalid.
 	const flag = () => {
-		const ok = valid( input.value );
+		const filled = '' !== input.value.trim();
+		const ok = filled && valid( input.value );
+
 		input.classList.toggle( 'is-valid', ok );
-		input.classList.toggle( 'is-invalid', ! ok );
+		input.classList.toggle( 'is-invalid', filled && ! ok );
 	};
 
 	bindMask( input, mask );

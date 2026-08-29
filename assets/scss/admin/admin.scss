@@ -8,16 +8,6 @@
 		._billing_ie_field {
 			clear: both !important;
 			width: 100% !important;
-
-            .is-valid {
-                border-color: green;
-                box-shadow: 0 0 3px rgba(40, 167, 69, 0.4);
-            }
-
-            .is-invalid {
-                border-color: red;
-                box-shadow: 0 0 3px rgba(220, 53, 69, 0.4);
-            }
 		}
 
 		._billing_gender_field,
@@ -25,6 +15,17 @@
 		._shipping_number_field {
 			float: right !important;
 			clear: right !important;
+		}
+
+		// Set on the inputs themselves, which sit in several different rows.
+		.is-valid {
+			border-color: green;
+			box-shadow: 0 0 3px rgba(40, 167, 69, 0.4);
+		}
+
+		.is-invalid {
+			border-color: red;
+			box-shadow: 0 0 3px rgba(220, 53, 69, 0.4);
 		}
 	}
 }
