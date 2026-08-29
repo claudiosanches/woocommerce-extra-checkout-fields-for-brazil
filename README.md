@@ -134,9 +134,11 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin, and removed the notice that used to say it was missing.
 - Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
+- Redesigned the settings screen, with each group of options in its own card.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
 - Removed support for the discontinued Flux Checkout plugin.
+- Relicensed from GPLv2 or later to GPLv3 or later.
 
 ### 4.0.2 - 2024/02/17 ###
 
