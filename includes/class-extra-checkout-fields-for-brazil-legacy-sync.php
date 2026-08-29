@@ -401,7 +401,10 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	public function remove_duplicated_account_fields( $fields ) {
 		global $wp;
 
-		if ( ! isset( $wp->query_vars['edit-address'] ) ) {
+		// Nothing to deduplicate when Extra_Checkout_Fields_For_Brazil_Blocks
+		// registered nothing, and dropping them then would leave the form with
+		// no Number or Neighborhood at all.
+		if ( ! Extra_Checkout_Fields_For_Brazil_Blocks::supports_rules() || ! isset( $wp->query_vars['edit-address'] ) ) {
 			return $fields;
 		}
 

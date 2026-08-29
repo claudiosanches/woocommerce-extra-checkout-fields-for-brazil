@@ -88,9 +88,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	/**
 	 * Whether the running WooCommerce evaluates document object rules.
 	 *
+	 * Shipped in WooCommerce 9.8, which the plugin's minimum is above, so this
+	 * only guards a store running something older than it declares support for.
+	 *
 	 * @return bool
 	 */
-	protected function supports_rules() {
+	public static function supports_rules() {
 		return class_exists( \Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFieldsSchema\Validation::class );
 	}
 
@@ -233,7 +236,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		// expressed as document object rules. Without them every document would
 		// be required at once and no order could be placed, so leave the block
 		// checkout alone and let the classic checkout carry the fields.
-		if ( ! $this->supports_rules() ) {
+		if ( ! self::supports_rules() ) {
 			return;
 		}
 
