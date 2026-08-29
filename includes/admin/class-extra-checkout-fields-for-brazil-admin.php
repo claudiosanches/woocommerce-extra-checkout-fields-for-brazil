@@ -29,35 +29,25 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 	 */
 	public function admin_scripts() {
 		$screen = get_current_screen();
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		if ( 'woocommerce_page_wc-orders' === $screen->id ) {
-			// Get plugin settings.
+		if ( 'woocommerce_page_wc-orders' === $screen->id || 'shop_order' === $screen->id ) {
 			$settings = get_option( 'wcbcf_settings' );
 
-			// Styles.
-			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'css/admin/admin.css', array(), Extra_Checkout_Fields_For_Brazil::VERSION );
+			Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', 'admin-order', array( 'jquery' ) );
 
-			// Shop order.
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/shop-order' . $suffix . '.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order-mask', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/shop-order-mask.js', array(), Extra_Checkout_Fields_For_Brazil::VERSION, true );
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-shop-order-field-validation', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/shop-order-field-validation.js', array(), Extra_Checkout_Fields_For_Brazil::VERSION, true );
-
-			// Localize strings.
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-shop-order',
 				'bmwShopOrderParams',
 				array(
 					'load_message' => esc_js( __( 'Load the customer extras data?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 					'copy_message' => esc_js( __( 'Also copy the data of number and neighborhood?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-					'person_type'  => absint( $settings['person_type'] ),
+					'person_type'  => (string) absint( $settings['person_type'] ),
 				)
 			);
 		}
 
 		if ( 'woocommerce_page_woocommerce-extra-checkout-fields-for-brazil' === $screen->id ) {
-			wp_enqueue_style( 'woocommerce-extra-checkout-fields-for-brazil-settings', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'css/admin/settings.css', array(), Extra_Checkout_Fields_For_Brazil::VERSION );
-			wp_enqueue_script( 'woocommerce-extra-checkout-fields-for-brazil-admin', Extra_Checkout_Fields_For_Brazil::get_assets_url() . 'js/admin/admin' . $suffix . '.js', array( 'jquery' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+			Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-settings', 'admin-settings', array( 'jquery' ) );
 		}
 	}
 
