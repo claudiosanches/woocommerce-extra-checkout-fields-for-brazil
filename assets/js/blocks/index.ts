@@ -10,23 +10,41 @@
  * before that render committed would be reverted with it.
  */
 
+import type { Formatter, MaskName } from '../shared/mask';
 import { caretIndex, caretOffset, formatters } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import '../../scss/blocks/blocks.scss';
 
+interface BlocksParams {
+	namespace?: string;
+	maskedinput?: string;
+	mailcheck?: string;
+	suggestText?: string;
+	ieExemptLabel?: string;
+}
+
+declare global {
+	interface Window {
+		bmwBlocksParams?: BlocksParams;
+	}
+}
+
+// The DOM defines this accessor on every input, and going through it is what
+// keeps React's value tracker from discarding the rewrite.
 const NATIVE_VALUE_SETTER = Object.getOwnPropertyDescriptor(
 	window.HTMLInputElement.prototype,
 	'value'
-).set;
+)!.set!;
 
-const params = window.bmwBlocksParams || {};
+const params: BlocksParams = window.bmwBlocksParams || {};
 const namespace = params.namespace || 'csbmw';
 
 // Additional fields render with their id slashes turned into dashes.
-const field = ( group, key ) => `${ group }-${ namespace }-${ key }`;
+const field = ( group: string, key: string ) =>
+	`${ group }-${ namespace }-${ key }`;
 
-const MASKS = {
+const MASKS: Record< string, MaskName > = {
 	[ field( 'contact', 'cpf' ) ]: 'cpf',
 	[ field( 'contact', 'cnpj' ) ]: 'cnpj',
 	[ field( 'contact', 'birthdate' ) ]: 'date',
@@ -34,41 +52,55 @@ const MASKS = {
 };
 
 // Core fields only get a Brazilian mask while the address is Brazilian.
-const BRAZIL_ONLY_MASKS = {
+const BRAZIL_ONLY_MASKS: Record< string, MaskName > = {
 	'billing-postcode': 'cep',
 	'shipping-postcode': 'cep',
 	'billing-phone': 'phone',
 	'shipping-phone': 'phone',
 };
 
+const inputById = ( id: string ): HTMLInputElement | null => {
+	const element = document.getElementById( id );
+
+	return element instanceof window.HTMLInputElement ? element : null;
+};
+
 /**
  * The country currently selected for the address an input belongs to.
  *
- * @param {string} id Input id.
- * @return {string} Country code, or an empty string when unknown.
+ * @param id Input id.
+ * @return Country code, or an empty string when unknown.
  */
-function countryFor( id ) {
+function countryFor( id: string ): string {
 	const group = id.startsWith( 'shipping-' ) ? 'shipping' : 'billing';
-	const select = document.getElementById( `${ group }-country` );
+	const country = document.getElementById( `${ group }-country` );
 
-	return select ? select.value : '';
+	// The block checkout renders the country field as a select or as a
+	// combobox input, depending on the WooCommerce version.
+	return country instanceof window.HTMLSelectElement ||
+		country instanceof window.HTMLInputElement
+		? country.value
+		: '';
 }
 
 /**
  * Formatter that applies to an input, if any.
  *
- * @param {HTMLInputElement} input Input being edited.
- * @return {Function|null} Formatter.
+ * @param input Input being edited.
+ * @return Formatter.
  */
-function formatterFor( input ) {
+function formatterFor( input: HTMLInputElement ): Formatter | null {
 	const id = input.id;
+	const mask = MASKS[ id ];
 
-	if ( MASKS[ id ] ) {
-		return formatters[ MASKS[ id ] ];
+	if ( mask ) {
+		return formatters[ mask ];
 	}
 
-	if ( BRAZIL_ONLY_MASKS[ id ] && 'BR' === countryFor( id ) ) {
-		return formatters[ BRAZIL_ONLY_MASKS[ id ] ];
+	const brazilOnly = BRAZIL_ONLY_MASKS[ id ];
+
+	if ( brazilOnly && 'BR' === countryFor( id ) ) {
+		return formatters[ brazilOnly ];
 	}
 
 	return null;
@@ -77,9 +109,9 @@ function formatterFor( input ) {
 /**
  * Reformat an input in place, before React reads the event.
  *
- * @param {InputEvent} event Input event.
+ * @param event Input event.
  */
-function handleInput( event ) {
+function handleInput( event: Event ): void {
 	const input = event.target;
 
 	if ( ! ( input instanceof window.HTMLInputElement ) ) {
@@ -118,16 +150,16 @@ function handleInput( event ) {
  * Unlike a keystroke this change has no event of its own, so it has to be
  * announced. There is no race here: nothing else is typing.
  *
- * @param {HTMLInputElement} input Input to write to.
- * @param {string}           value Value to write.
+ * @param input Input to write to.
+ * @param value Value to write.
  */
-function writeControlled( input, value ) {
+function writeControlled( input: HTMLInputElement, value: string ): void {
 	NATIVE_VALUE_SETTER.call( input, value );
 	input.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
 }
 
-function setupIeExempt() {
-	const input = document.getElementById( field( 'contact', 'ie' ) );
+function setupIeExempt(): void {
+	const input = inputById( field( 'contact', 'ie' ) );
 
 	if ( input ) {
 		bindIeExempt( input, {
@@ -137,12 +169,12 @@ function setupIeExempt() {
 	}
 }
 
-function setupMailcheck() {
+function setupMailcheck(): void {
 	if ( 'yes' !== params.mailcheck ) {
 		return;
 	}
 
-	const email = document.getElementById( 'email' );
+	const email = inputById( 'email' );
 
 	if ( email && ! email.dataset.bmwMailcheck ) {
 		email.dataset.bmwMailcheck = '1';
@@ -150,7 +182,7 @@ function setupMailcheck() {
 	}
 }
 
-function init() {
+function init(): void {
 	if ( 'yes' === params.maskedinput ) {
 		document.addEventListener( 'input', handleInput, true );
 	}

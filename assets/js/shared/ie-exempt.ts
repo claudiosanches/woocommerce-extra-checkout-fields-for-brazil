@@ -11,13 +11,18 @@
 
 export const EXEMPT_VALUE = 'ISENTO';
 
+export interface IeExemptOptions {
+	label?: string;
+	write?: ( input: HTMLInputElement, value: string ) => void;
+}
+
 /**
  * Whether a value is the exemption marker, whatever case it was typed in.
  *
- * @param {string} value Field value.
- * @return {boolean} True when the value marks an exemption.
+ * @param value Field value.
+ * @return True when the value marks an exemption.
  */
-export const isExempt = ( value ) =>
+export const isExempt = ( value: string | null | undefined ): boolean =>
 	String( value ?? '' )
 		.trim()
 		.toUpperCase() === EXEMPT_VALUE;
@@ -25,13 +30,16 @@ export const isExempt = ( value ) =>
 /**
  * Add an exemption checkbox to a State Registration input.
  *
- * @param {HTMLInputElement} input           State Registration input.
- * @param {Object}           options         Options.
- * @param {string}           options.label   Checkbox label.
- * @param {Function}         [options.write] Writes a value into the input.
- * @return {() => void} Removes the checkbox.
+ * @param input         State Registration input.
+ * @param options       Options.
+ * @param options.label Checkbox label.
+ * @param options.write Writes a value into the input.
+ * @return Removes the checkbox.
  */
-export function bindIeExempt( input, { label, write } = {} ) {
+export function bindIeExempt(
+	input: HTMLInputElement | null | undefined,
+	{ label, write }: IeExemptOptions = {}
+): () => void {
 	if ( ! input || input.dataset.bmwIeExempt ) {
 		return () => {};
 	}
@@ -54,7 +62,11 @@ export function bindIeExempt( input, { label, write } = {} ) {
 		stale.remove();
 	}
 
-	const setValue = write || ( ( target, value ) => ( target.value = value ) );
+	const setValue =
+		write ||
+		( ( target: HTMLInputElement, value: string ) => {
+			target.value = value;
+		} );
 
 	const wrapper = input.ownerDocument.createElement( 'label' );
 	wrapper.className = 'wcbcf-ie-exempt';
@@ -70,7 +82,7 @@ export function bindIeExempt( input, { label, write } = {} ) {
 	anchor.insertAdjacentElement( 'afterend', wrapper );
 
 	// A value carried over from a previous order should show as exempt.
-	const applyState = ( checked ) => {
+	const applyState = ( checked: boolean ) => {
 		input.readOnly = checked;
 		input.classList.toggle( 'wcbcf-ie-exempt-on', checked );
 	};

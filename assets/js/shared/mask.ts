@@ -5,15 +5,23 @@
  * caret getting stuck on the separator while erasing.
  */
 
-const digitsOnly = ( value, limit ) =>
+// The JavaScript entry points still call these with whatever the DOM handed
+// them, so a value is not necessarily a string.
+export type MaskValue = string | null | undefined;
+
+export type Formatter = ( value: MaskValue ) => string;
+
+export type MaskName = 'cep' | 'cnpj' | 'cpf' | 'date' | 'phone';
+
+const digitsOnly = ( value: MaskValue, limit: number ): string =>
 	String( value ?? '' )
 		.replace( /\D/g, '' )
 		.slice( 0, limit );
 
-export const formatCep = ( value ) =>
+export const formatCep: Formatter = ( value ) =>
 	digitsOnly( value, 8 ).replace( /^(\d{5})(\d)/, '$1-$2' );
 
-export const formatPhone = ( value ) => {
+export const formatPhone: Formatter = ( value ) => {
 	const digits = digitsOnly( value, 11 );
 
 	if ( digits.length <= 10 ) {
@@ -25,14 +33,14 @@ export const formatPhone = ( value ) => {
 	return digits.replace( /^(\d{2})(\d{5})(\d)/, '($1) $2-$3' );
 };
 
-export const formatCpf = ( value ) =>
+export const formatCpf: Formatter = ( value ) =>
 	digitsOnly( value, 11 )
 		.replace( /^(\d{3})(\d)/, '$1.$2' )
 		.replace( /(\d{3})(\d)/, '$1.$2' )
 		.replace( /(\d{3})(\d)/, '$1-$2' );
 
 // The 2026 CNPJ format allows letters in the first twelve characters.
-export const formatCnpj = ( value ) =>
+export const formatCnpj: Formatter = ( value ) =>
 	String( value ?? '' )
 		.toUpperCase()
 		.replace( /[^A-Z0-9]/g, '' )
@@ -42,12 +50,12 @@ export const formatCnpj = ( value ) =>
 		.replace( /([A-Z0-9]{3})([A-Z0-9])/, '$1/$2' )
 		.replace( /([A-Z0-9]{4})([A-Z0-9])/, '$1-$2' );
 
-export const formatDate = ( value ) =>
+export const formatDate: Formatter = ( value ) =>
 	digitsOnly( value, 8 )
 		.replace( /^(\d{2})(\d)/, '$1/$2' )
 		.replace( /^(\d{2}\/\d{2})(\d)/, '$1/$2' );
 
-export const formatters = {
+export const formatters: Record< MaskName, Formatter > = {
 	cep: formatCep,
 	cnpj: formatCnpj,
 	cpf: formatCpf,
@@ -61,27 +69,27 @@ export const formatters = {
  * Separators move as a value is reformatted, so the caret is tracked by the
  * character it follows rather than by its offset.
  *
- * @param {string} value Current value.
- * @param {number} caret Caret offset.
- * @return {number} Count of significant characters before the caret.
+ * @param value Current value.
+ * @param caret Caret offset.
+ * @return Count of significant characters before the caret.
  */
-export function caretIndex( value, caret ) {
+export function caretIndex( value: string, caret: number ): number {
 	return value.slice( 0, caret ).replace( /[^A-Z0-9]/gi, '' ).length;
 }
 
 /**
  * Offset that follows a given number of significant characters.
  *
- * @param {string} value Formatted value.
- * @param {number} index Count of significant characters.
- * @return {number} Caret offset.
+ * @param value Formatted value.
+ * @param index Count of significant characters.
+ * @return Caret offset.
  */
-export function caretOffset( value, index ) {
+export function caretOffset( value: string, index: number ): number {
 	let offset = 0;
 	let seen = 0;
 
 	while ( offset < value.length && seen < index ) {
-		if ( /[A-Z0-9]/i.test( value[ offset ] ) ) {
+		if ( /[A-Z0-9]/i.test( value.charAt( offset ) ) ) {
 			seen++;
 		}
 		offset++;
@@ -94,10 +102,13 @@ export function caretOffset( value, index ) {
  * Rewrite an input value through a formatter, keeping the caret on the same
  * character rather than on the same offset.
  *
- * @param {HTMLInputElement}          input  Input to rewrite.
- * @param {(value: string) => string} format Formatter to apply.
+ * @param input  Input to rewrite.
+ * @param format Formatter to apply.
  */
-export function maskInput( input, format ) {
+export function maskInput(
+	input: HTMLInputElement | null | undefined,
+	format: Formatter
+): void {
 	if ( ! input ) {
 		return;
 	}
@@ -135,11 +146,14 @@ export function maskInput( input, format ) {
 /**
  * Attach a mask to an input and apply it to the value already present.
  *
- * @param {HTMLInputElement}                   input  Input to mask.
- * @param {string|((value: string) => string)} format Formatter, or a key of `formatters`.
- * @return {() => void} Detaches the mask.
+ * @param input  Input to mask.
+ * @param format Formatter, or a key of `formatters`.
+ * @return Detaches the mask.
  */
-export function bindMask( input, format ) {
+export function bindMask(
+	input: HTMLInputElement | null | undefined,
+	format: MaskName | Formatter
+): () => void {
 	const formatter =
 		typeof format === 'function' ? format : formatters[ format ];
 

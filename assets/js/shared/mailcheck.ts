@@ -32,7 +32,7 @@ const TOP_LEVEL_DOMAINS = [
 	'gov.br',
 ];
 
-const suggestionNode = ( input ) => {
+const suggestionNode = ( input: HTMLInputElement ): Element => {
 	const existing = input.parentNode?.querySelector(
 		`.${ SUGGESTION_CLASS }`
 	);
@@ -51,11 +51,14 @@ const suggestionNode = ( input ) => {
 /**
  * Suggest a corrected domain below an email input when it looks misspelled.
  *
- * @param {HTMLInputElement} input    Email input to watch.
- * @param {string}           template Message with a `%hint%` placeholder.
- * @return {() => void} Detaches the listener.
+ * @param input    Email input to watch.
+ * @param template Message with a `%hint%` placeholder.
+ * @return Detaches the listener.
  */
-export function bindMailcheck( input, template ) {
+export function bindMailcheck(
+	input: HTMLInputElement | null | undefined,
+	template: string | null | undefined
+): () => void {
 	if ( ! input || ! template ) {
 		return () => {};
 	}

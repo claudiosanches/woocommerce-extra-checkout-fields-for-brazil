@@ -52,4 +52,6 @@ jobs:
 
       - run: npm run lint:css
 
+      - run: npm run lint:types
+
       - run: npm run build

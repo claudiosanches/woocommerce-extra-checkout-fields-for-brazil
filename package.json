@@ -10,7 +10,8 @@
     "lint:js": "wp-scripts lint-js",
     "lint:css": "wp-scripts lint-style",
     "lint:php": "composer run-script phpcs",
-    "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+    "lint:types": "tsc --noEmit",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:types && npm run lint:php",
     "fix:js": "wp-scripts lint-js --fix",
     "fix:css": "wp-scripts lint-style --fix",
     "fix:php": "composer run-script phpcbf",
@@ -34,6 +35,7 @@
     "@playwright/test": "^1.62.1",
     "@wordpress/env": "^11.13.0",
     "@wordpress/scripts": "^34.1.0",
+    "typescript": "^6.0.3",
     "wp-readme-to-markdown": "^1.0.1"
   }
 }

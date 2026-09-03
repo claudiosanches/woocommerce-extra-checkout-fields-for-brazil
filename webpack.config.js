@@ -5,7 +5,7 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		frontend: path.resolve( __dirname, 'assets/js/frontend/frontend.js' ),
-		blocks: path.resolve( __dirname, 'assets/js/blocks/index.js' ),
+		blocks: path.resolve( __dirname, 'assets/js/blocks/index.ts' ),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(
 			__dirname,
