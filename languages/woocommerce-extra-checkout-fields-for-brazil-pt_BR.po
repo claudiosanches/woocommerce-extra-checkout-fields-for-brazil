@@ -4,7 +4,7 @@ msgstr ""
 "(latest release)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-"
 "checkout-fields-for-brazil\n"
-"POT-Creation-Date: 2026-08-29T11:20:30+00:00\n"
+"POT-Creation-Date: 2026-09-03T23:34:35+00:00\n"
 "PO-Revision-Date: 2026-08-23 00:00-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -48,14 +48,6 @@ msgstr "Claudio Sanches"
 #: woocommerce-extra-checkout-fields-for-brazil.php
 msgid "https://claudiosanches.com"
 msgstr "https://claudiosanches.com"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:42
-msgid "Load the customer extras data?"
-msgstr "Carregar informações adicionais do cliente?"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:43
-msgid "Also copy the data of number and neighborhood?"
-msgstr "Copiar também as informações de número e bairro?"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:39
 msgid "Customer Billing Address"
@@ -618,6 +610,12 @@ msgstr "Suporte Premium"
 #: includes/class-extra-checkout-fields-for-brazil.php:136
 msgid "Contribute"
 msgstr "Contribua"
+
+#~ msgid "Load the customer extras data?"
+#~ msgstr "Carregar informações adicionais do cliente?"
+
+#~ msgid "Also copy the data of number and neighborhood?"
+#~ msgstr "Copiar também as informações de número e bairro?"
 
 #~ msgid "Custom Field"
 #~ msgstr "Campos personalizados"
