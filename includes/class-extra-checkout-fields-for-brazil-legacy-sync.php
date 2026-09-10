@@ -21,6 +21,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 
 	/**
+	 * Documents that do not belong to a person type.
+	 *
+	 * @var array
+	 */
+	const UNUSED_DOCUMENTS = array(
+		'1' => array( 'cnpj', 'ie' ),
+		'2' => array( 'cpf', 'rg' ),
+	);
+
+	/**
 	 * Initialize hooks.
 	 */
 	public function __construct() {
@@ -300,16 +310,6 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			$order->update_meta_data( $block_key, $value );
 		}
 	}
-
-	/**
-	 * Documents that do not belong to a person type.
-	 *
-	 * @var array
-	 */
-	const UNUSED_DOCUMENTS = array(
-		'1' => array( 'cnpj', 'ie' ),
-		'2' => array( 'cpf', 'rg' ),
-	);
 
 	/**
 	 * Empty the documents of the person type the order is not for.

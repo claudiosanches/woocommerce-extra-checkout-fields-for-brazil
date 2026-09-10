@@ -39,6 +39,38 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	const ADDRESS_FIELDS = array( 'number', 'neighborhood' );
 
 	/**
+	 * Longest value accepted for each text field.
+	 *
+	 * The `maxLength` attribute only constrains the rendered input, so these
+	 * are enforced again when a value is sanitized.
+	 *
+	 * @var array
+	 */
+	const MAX_LENGTHS = array(
+		'cpf'          => 14,
+		'rg'           => 20,
+		'cnpj'         => 18,
+		'ie'           => 20,
+		'birthdate'    => 10,
+		'cellphone'    => 15,
+		'number'       => 30,
+		'neighborhood' => 100,
+	);
+
+	/**
+	 * Untranslated gender labels, used to recognise values stored by a site
+	 * that has since changed language.
+	 *
+	 * @var array
+	 */
+	const GENDER_SOURCE_LABELS = array(
+		'prefer_not_to_say' => 'Prefer not to say',
+		'female'            => 'Female',
+		'male'              => 'Male',
+		'other'             => 'Other',
+	);
+
+	/**
 	 * Plugin settings.
 	 *
 	 * @var array
@@ -348,38 +380,6 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			}
 		}
 	}
-
-	/**
-	 * Longest value accepted for each text field.
-	 *
-	 * The `maxLength` attribute only constrains the rendered input, so these
-	 * are enforced again when a value is sanitized.
-	 *
-	 * @var array
-	 */
-	const MAX_LENGTHS = array(
-		'cpf'          => 14,
-		'rg'           => 20,
-		'cnpj'         => 18,
-		'ie'           => 20,
-		'birthdate'    => 10,
-		'cellphone'    => 15,
-		'number'       => 30,
-		'neighborhood' => 100,
-	);
-
-	/**
-	 * Untranslated gender labels, used to recognise values stored by a site
-	 * that has since changed language.
-	 *
-	 * @var array
-	 */
-	const GENDER_SOURCE_LABELS = array(
-		'prefer_not_to_say' => 'Prefer not to say',
-		'female'            => 'Female',
-		'male'              => 'Male',
-		'other'             => 'Other',
-	);
 
 	/**
 	 * Gender options, keyed by the value stored against the order.
