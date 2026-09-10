@@ -627,6 +627,11 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			$errors->add( 'woocommerce_invalid_cellphone', __( 'Cell Phone is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
+		if ( ! $errors->has_errors() && in_array( $key, array( 'cpf', 'cnpj' ), true ) && isset( $settings[ 'validate_' . $key ] ) ) {
+			/** This action is documented in includes/class-extra-checkout-fields-for-brazil-front-end.php */
+			do_action( 'wcbcf_document_validated', $value, 'cpf' === $key ? 1 : 2, 'blocks', $errors );
+		}
+
 		return $errors->has_errors() ? $errors : true;
 	}
 

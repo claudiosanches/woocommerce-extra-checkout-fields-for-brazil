@@ -602,9 +602,11 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( 0 === $billing_persontype && 1 === $person_type ) {
 			$errors->add( 'billing_persontype_required', sprintf( '<strong>%s</strong> %s.', __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_persontype' ) );
 		} else {
+			$is_individual   = ( 1 === $person_type && 1 === $billing_persontype ) || 2 === $person_type;
+			$is_legal_entity = ( 1 === $person_type && 2 === $billing_persontype ) || 3 === $person_type;
 
 			// Check CPF.
-			if ( ( 1 === $person_type && 1 === $billing_persontype ) || 2 === $person_type ) {
+			if ( $is_individual ) {
 				if ( empty( $billing_cpf ) ) {
 					$errors->add( 'billing_cpf_required', sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cpf' ) );
 				}
@@ -619,7 +621,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 
 			// Check Company and CNPJ.
-			if ( ( 1 === $person_type && 2 === $billing_persontype ) || 3 === $person_type ) {
+			if ( $is_legal_entity ) {
 				if ( empty( $billing_company ) ) {
 					$errors->add( 'billing_company_required', sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_company' ) );
 				}
@@ -634,6 +636,30 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 				if ( isset( $settings['ie'] ) && empty( $billing_ie ) ) {
 					$errors->add( 'billing_ie_required', sprintf( '<strong>%s</strong> %s.', __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_ie' ) );
+				}
+			}
+
+			if ( $is_individual || $is_legal_entity ) {
+				$field    = $is_individual ? 'billing_cpf' : 'billing_cnpj';
+				$document = $is_individual ? $billing_cpf : $billing_cnpj;
+				$checked  = isset( $settings[ $is_individual ? 'validate_cpf' : 'validate_cnpj' ] );
+
+				if ( $checked && '' !== $document && ! array_intersect( array( $field . '_required', $field . '_invalid' ), $errors->get_error_codes() ) ) {
+					/**
+					 * Fires once a CPF or CNPJ passed the document validation of the checkout.
+					 *
+					 * Only the document itself is taken into account, other fields may
+					 * still be rejected. It does not fire when the document validation
+					 * is turned off in the settings.
+					 *
+					 * @since 5.0.0
+					 *
+					 * @param string   $document    CPF or CNPJ, as submitted.
+					 * @param int      $person_type 1 for an individual, 2 for a legal entity.
+					 * @param string   $checkout    Which checkout validated it: 'classic' or 'blocks'.
+					 * @param WP_Error $errors      Error bag of the validation in progress. Add an error to it to reject the document.
+					 */
+					do_action( 'wcbcf_document_validated', $document, $is_individual ? 1 : 2, 'classic', $errors );
 				}
 			}
 		}
