@@ -40,7 +40,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	 * Render the settings page for this plugin.
 	 */
 	public function html_settings_page() {
-		include dirname( __FILE__ ) . '/views/html-settings-page.php';
+		include __DIR__ . '/views/html-settings-page.php';
 	}
 
 	/**
@@ -52,27 +52,29 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Set General Options section.
 		add_settings_section(
 			'options_section',
-			__( 'Custom Field', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Custom Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$this->section_args( 'bmw-section-fields' )
 		);
 
 		// Person Type option.
 		add_settings_field(
 			'person_type',
-			__( 'Display Person Type:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Enable Person Type', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'select_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'        => $option,
 				'id'          => 'person_type',
+				'title'       => __( 'Enable Person Type', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => __( 'Individuals enables CPF field and Legal Person enables CNPJ field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'options'     => array(
 					0 => __( 'None', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					1 => __( 'Individuals and Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					2 => __( 'Individuals only', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					3 => __( 'Legal Person only', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					2 => __( 'Individuals Only', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					3 => __( 'Legal Person Only', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 			)
 		);
@@ -86,7 +88,9 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-only-brazil',
 				'id'    => 'only_brazil',
+				'title' => __( 'Person Type is required only in Brazil?', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked the Individuals and Legal Person options will be mandatory only in Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -94,13 +98,15 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// RG option.
 		add_settings_field(
 			'rg',
-			__( 'Display RG:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-rg',
 				'id'    => 'rg',
+				'title' => __( 'Display RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -108,13 +114,15 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// State Registration option.
 		add_settings_field(
 			'ie',
-			__( 'Display State Registration:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-ie',
 				'id'    => 'ie',
+				'title' => __( 'Display State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -122,46 +130,50 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Birth Date option.
 		add_settings_field(
 			'birthdate',
-			__( 'Display Birthdate:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'birthdate',
-				'label' => __( 'If checked show the Birthdate field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'title' => __( 'Display Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked show the birthdate field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
 		// Gender option.
 		add_settings_field(
 			'gender',
-			__( 'Display Gender:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'gender',
-				'label' => __( 'If checked show the Gender field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'title' => __( 'Display Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked, show the gender field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
 		// Cell Phone option.
 		add_settings_field(
 			'cell_phone',
-			__( 'Display Cell Phone:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'select_element_callback' ),
 			$option,
 			'options_section',
 			array(
-				'menu'    => $option,
-				'id'      => 'cell_phone',
-				'options' => array(
-					1  => __( 'Show the Cell Phone field as optional.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					2  => __( 'Show the Cell Phone field as required.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					-1 => __( 'Change the label of the Phone field to "Cell Phone".', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					0  => __( 'Disable.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'menu'        => $option,
+				'id'          => 'cell_phone',
+				'title'       => __( 'Display Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Enables the cell phone field on the billing form.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'options'     => array(
+					1  => __( 'Show the Cell Phone field as optional', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					2  => __( 'Show the Cell Phone field as required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					-1 => __( 'Change the label of the Phone field to "Cell Phone"', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					0  => __( 'Disable', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 			)
 		);
@@ -169,14 +181,15 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Neighborhood is required option.
 		add_settings_field(
 			'neighborhood_required',
-			__( 'Display Neighborhood as required:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Display neighborhood as required', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'neighborhood_required',
-				'label' => __( 'If checked show the Neighborhood field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'title' => __( 'Display neighborhood as required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked, the neighborhood field will be a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -185,19 +198,21 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'design_section',
 			__( 'Design', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$this->section_args( 'bmw-section-design' )
 		);
 
 		// Fields Style option.
 		add_settings_field(
 			'fields_style',
-			__( 'Fields Style:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Fields Style', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'select_element_callback' ),
 			$option,
 			'design_section',
 			array(
 				'menu'        => $option,
 				'id'          => 'fields_style',
+				'title'       => __( 'Fields Style', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => __( 'Choose the style of the fields. Note: Use Default if you are having problems with how the fields are displayed.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'options'     => array(
 					'wide'         => __( 'Default (wide fields)', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -211,19 +226,21 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'jquery_section',
 			__( 'jQuery Options', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$this->section_args( 'bmw-section-jquery' )
 		);
 
 		// Mail Check option.
 		add_settings_field(
 			'mailcheck',
-			__( 'Enable Mail Check:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Enable Mail Check', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'jquery_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'mailcheck',
+				'title' => __( 'Enable Mail Check', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked informs typos in email to users.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -231,13 +248,14 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Input Mask option.
 		add_settings_field(
 			'maskedinput',
-			__( 'Enable Input Mask:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Enable Input Mask', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'jquery_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'maskedinput',
+				'title' => __( 'Enable Input Mask', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -245,21 +263,24 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Set Custom Fields section.
 		add_settings_section(
 			'validation_section',
-			__( 'Validation:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Validation', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$option,
+			$this->section_args( 'bmw-section-validation' )
 		);
 
 		// Validate CPF option.
 		add_settings_field(
 			'validate_cpf',
-			__( 'Validate CPF:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Validate CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'validation_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-validate-cpf',
 				'id'    => 'validate_cpf',
+				'title' => __( 'Validate CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'Checks if the CPF is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -267,13 +288,15 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		// Validate CPF option.
 		add_settings_field(
 			'validate_cnpj',
-			__( 'Validate CNPJ:', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Validate CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'checkbox_element_callback' ),
 			$option,
 			'validation_section',
 			array(
 				'menu'  => $option,
+				'class' => 'bmw-row-validate-cnpj',
 				'id'    => 'validate_cnpj',
+				'title' => __( 'Validate CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'label' => __( 'Checks if the CNPJ is valid.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
@@ -283,10 +306,27 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	}
 
 	/**
+	 * Wrapper markup for a settings section.
+	 *
+	 * The %s in before_section is replaced with section_class, which is what
+	 * gives each card a hook of its own.
+	 *
+	 * @param string $section_class Class identifying the section.
+	 *
+	 * @return array
+	 */
+	protected function section_args( $section_class ) {
+		return array(
+			'before_section' => '<div class="bmw-settings-card %s">',
+			'after_section'  => '</div>',
+			'section_class'  => 'bmw-settings-section ' . $section_class,
+		);
+	}
+
+	/**
 	 * Section null fallback.
 	 */
 	public function section_options_callback() {
-
 	}
 
 	/**
@@ -307,7 +347,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 		$current = intval( $current );
 
-		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
+		include __DIR__ . '/views/html-checkbox-field.php';
 	}
 
 	/**
@@ -328,7 +368,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 
 		$current = intval( $current );
 
-		include dirname( __FILE__ ) . '/views/html-radio-field.php';
+		include __DIR__ . '/views/html-radio-field.php';
 	}
 
 	/**
@@ -347,7 +387,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$current = isset( $args['default'] ) ? $args['default'] : 0;
 		}
 
-		include dirname( __FILE__ ) . '/views/html-select-field.php';
+		include __DIR__ . '/views/html-select-field.php';
 	}
 
 	/**

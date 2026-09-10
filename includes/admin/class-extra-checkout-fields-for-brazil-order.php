@@ -164,36 +164,6 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 	}
 
 	/**
-	 * Add custom fields in customer details ajax.
-	 *
-	 * @param  array $data Customer data.
-	 * @return array
-	 */
-	public function customer_details_ajax( $data ) {
-		if ( empty( $_POST['user_id'] ) || empty( $_POST['type_to_load'] ) ) {
-			return $data;
-		}
-
-		$user_id      = absint( wp_unslash( $_POST['user_id'] ) );
-		$type_to_load = sanitize_text_field( wp_unslash( $_POST['type_to_load'] ) );
-
-		$custom_data = array(
-			$type_to_load . '_number'       => get_user_meta( $user_id, $type_to_load . '_number', true ),
-			$type_to_load . '_neighborhood' => get_user_meta( $user_id, $type_to_load . '_neighborhood', true ),
-			$type_to_load . '_persontype'   => get_user_meta( $user_id, $type_to_load . '_persontype', true ),
-			$type_to_load . '_cpf'          => get_user_meta( $user_id, $type_to_load . '_cpf', true ),
-			$type_to_load . '_rg'           => get_user_meta( $user_id, $type_to_load . '_rg', true ),
-			$type_to_load . '_cnpj'         => get_user_meta( $user_id, $type_to_load . '_cnpj', true ),
-			$type_to_load . '_ie'           => get_user_meta( $user_id, $type_to_load . '_ie', true ),
-			$type_to_load . '_birthdate'    => get_user_meta( $user_id, $type_to_load . '_birthdate', true ),
-			$type_to_load . '_gender'       => get_user_meta( $user_id, $type_to_load . '_gender', true ),
-			$type_to_load . '_cellphone'    => get_user_meta( $user_id, $type_to_load . '_cellphone', true ),
-		);
-
-		return array_merge( $data, $custom_data );
-	}
-
-	/**
 	 * Get customer details.
 	 *
 	 * @param  array       $data     Customer data.
@@ -235,7 +205,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			$phone_label = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-order-billing-data.php';
+		include __DIR__ . '/views/html-order-billing-data.php';
 	}
 
 	/**

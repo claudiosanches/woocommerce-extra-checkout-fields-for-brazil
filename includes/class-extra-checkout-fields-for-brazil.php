@@ -19,7 +19,7 @@ class Extra_Checkout_Fields_For_Brazil {
 	*
 	* @var string
 	*/
-	const VERSION = '4.0.2';
+	const VERSION = '5.0.0';
 
 	/**
 	 * Instance of this class.
@@ -36,7 +36,7 @@ class Extra_Checkout_Fields_For_Brazil {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		if ( class_exists( 'WooCommerce' ) ) {
-			add_action( 'before_woocommerce_init', array( $this, 'setup_hpos_compatibility' ) );
+			add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
 
 			if ( is_admin() ) {
 				$this->admin_includes();
@@ -44,8 +44,6 @@ class Extra_Checkout_Fields_For_Brazil {
 
 			$this->includes();
 			add_filter( 'plugin_action_links_' . plugin_basename( CSBMW_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
-		} else {
-			add_action( 'admin_notices', array( $this, 'woocommerce_fallback_notice' ) );
 		}
 	}
 
@@ -61,15 +59,6 @@ class Extra_Checkout_Fields_For_Brazil {
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Get assets url.
-	 *
-	 * @return string
-	 */
-	public static function get_assets_url() {
-		return plugins_url( 'assets/', CSBMW_PLUGIN_FILE );
 	}
 
 	/**
@@ -96,19 +85,17 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
-	 * Setup WooCommerce HPOS compatibility.
+	 * Declare compatibility with the WooCommerce features this plugin supports.
 	 */
-	public function setup_hpos_compatibility() {
-		if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '7.1', '<' ) ) {
+	public function declare_compatibility() {
+		if ( ! class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 			return;
 		}
 
-		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
-				'custom_order_tables',
-				'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php',
-				true
-			);
+		$basename = plugin_basename( CSBMW_PLUGIN_FILE );
+
+		foreach ( array( 'custom_order_tables', 'cart_checkout_blocks' ) as $feature ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( $feature, $basename, true );
 		}
 	}
 
@@ -116,7 +103,10 @@ class Extra_Checkout_Fields_For_Brazil {
 	 * Includes.
 	 */
 	private function includes() {
-		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-formatting.php';
+		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-assets.php';
+		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-validation.php';
+		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-blocks.php';
+		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-legacy-sync.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-front-end.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-integrations.php';
 		include_once dirname( CSBMW_PLUGIN_FILE ) . '/includes/class-extra-checkout-fields-for-brazil-api.php';
@@ -146,23 +136,5 @@ class Extra_Checkout_Fields_For_Brazil {
 		$plugin_links[] = '<a href="https://apoia.se/claudiosanches?utm_source=plugin-bmw" target="_blank" rel="noopener noreferrer">' . __( 'Contribute', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>';
 
 		return array_merge( $plugin_links, $links );
-	}
-
-	/**
-	 * WooCommerce fallback notice.
-	 */
-	public function woocommerce_fallback_notice() {
-		echo '<div class="error"><p>' . wp_kses(
-			sprintf(
-				/* translators: %s: woocommerce link */
-				__( 'Brazilian Market on WooCommerce depends on %s to work!', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'<a href="http://wordpress.org/plugins/woocommerce/">' . __( 'WooCommerce', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
-			),
-			array(
-				'a' => array(
-					'href' => array(),
-				),
-			)
-		) . '</p></div>';
 	}
 }

@@ -33,12 +33,12 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	/**
 	 * Format number.
 	 *
-	 * @param  string $string Number to format.
+	 * @param  string $value Number to format.
 	 *
 	 * @return string
 	 */
-	protected function format_number( $string ) {
-		return str_replace( array( '.', '-', '/' ), '', $string );
+	protected function format_number( $value ) {
+		return str_replace( array( '.', '-', '/' ), '', $value );
 	}
 
 	/**
