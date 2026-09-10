@@ -214,6 +214,41 @@ class BlocksFieldsTest extends WP_UnitTestCase {
 		}
 	}
 
+	public function test_validate_field_fires_the_document_validated_action() {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'person_type'   => 1,
+				'validate_cnpj' => 1,
+			)
+		);
+
+		$captured = array();
+
+		$listener = static function ( $document, $person_type, $checkout, $errors ) use ( &$captured ) {
+			$captured[] = array( $document, $person_type, $checkout, $errors );
+		};
+
+		add_action( 'wcbcf_document_validated', $listener, 10, 4 );
+
+		( new Extra_Checkout_Fields_For_Brazil_Blocks() )->validate_field(
+			'11.222.333/0001-81',
+			array(
+				'id'       => 'csbmw/cnpj',
+				'label'    => 'CNPJ',
+				'required' => true,
+			)
+		);
+
+		remove_action( 'wcbcf_document_validated', $listener, 10 );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( '11.222.333/0001-81', $captured[0][0] );
+		$this->assertSame( 2, $captured[0][1] );
+		$this->assertSame( 'blocks', $captured[0][2] );
+		$this->assertInstanceOf( WP_Error::class, $captured[0][3] );
+	}
+
 	public function test_validate_field_skips_document_checks_when_validation_is_off() {
 		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
 

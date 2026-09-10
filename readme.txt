@@ -128,6 +128,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
 - Removed support for the discontinued Flux Checkout plugin.
 - Relicensed from GPLv2 or later to GPLv3 or later.
+- Added the wcbcf_document_validated action, fired on both checkouts once a CPF or CNPJ passes validation, so other plugins can react to it. (Made possible with help from [Alisson Linneker](https://github.com/alissonlinneker)).
 
 = 4.0.2 - 2024/02/17 =
 

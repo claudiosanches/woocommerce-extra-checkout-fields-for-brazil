@@ -209,6 +209,79 @@ class ClassicValidationTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Run the validation and hand back every wcbcf_document_validated payload.
+	 *
+	 * @param array $settings Plugin settings.
+	 * @param array $data     Checkout posted data.
+	 *
+	 * @return array
+	 */
+	protected function validated_documents( array $settings, array $data ) {
+		$captured = array();
+
+		$listener = static function ( $document, $person_type, $checkout, $errors ) use ( &$captured ) {
+			$captured[] = array( $document, $person_type, $checkout, $errors );
+		};
+
+		add_action( 'wcbcf_document_validated', $listener, 10, 4 );
+
+		$this->errors( $settings, $data );
+
+		remove_action( 'wcbcf_document_validated', $listener, 10 );
+
+		return $captured;
+	}
+
+	public function test_the_document_validated_action_fires_for_a_valid_cpf() {
+		$captured = $this->validated_documents( $this->all_settings(), $this->individual() );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( self::VALID_CPF, $captured[0][0] );
+		$this->assertSame( 1, $captured[0][1] );
+		$this->assertSame( 'classic', $captured[0][2] );
+		$this->assertInstanceOf( WP_Error::class, $captured[0][3] );
+	}
+
+	public function test_the_document_validated_action_fires_for_a_valid_cnpj() {
+		$captured = $this->validated_documents( $this->all_settings(), $this->company() );
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( self::VALID_CNPJ, $captured[0][0] );
+		$this->assertSame( 2, $captured[0][1] );
+		$this->assertSame( 'classic', $captured[0][2] );
+		$this->assertInstanceOf( WP_Error::class, $captured[0][3] );
+	}
+
+	public function test_the_document_validated_action_does_not_fire_for_an_invalid_document() {
+		$captured = $this->validated_documents(
+			$this->all_settings(),
+			$this->individual( array( 'billing_cpf' => '111.444.777-00' ) )
+		);
+
+		$this->assertSame( array(), $captured );
+	}
+
+	public function test_the_document_validated_action_still_fires_when_another_field_fails() {
+		$captured = $this->validated_documents(
+			$this->all_settings(),
+			$this->individual( array( 'billing_rg' => '' ) )
+		);
+
+		$this->assertCount( 1, $captured );
+		$this->assertSame( self::VALID_CPF, $captured[0][0] );
+		$this->assertContains( 'billing_rg_required', $captured[0][3]->get_error_codes() );
+	}
+
+	public function test_the_document_validated_action_does_not_fire_when_validation_is_off() {
+		$settings = $this->all_settings();
+		unset( $settings['validate_cpf'] );
+
+		$captured = $this->validated_documents( $settings, $this->individual() );
+
+		$this->assertSame( array(), $captured );
+	}
+
+	/**
 	 * Missing required fields, by settings and person type.
 	 *
 	 * @return array
