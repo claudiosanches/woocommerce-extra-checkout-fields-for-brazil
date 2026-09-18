@@ -14,7 +14,7 @@
  * Text Domain: woocommerce-extra-checkout-fields-for-brazil
  * Domain Path: /languages
  * WC requires at least: 9.9
- * WC tested up to: 11.0
+ * WC tested up to: 11.1
  *
  * Brazilian Market on WooCommerce is free software: you can
  * redistribute it and/or modify it under the terms of the
