@@ -274,6 +274,10 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			return;
 		}
 
+		// The person type can be changed here too, and the order screen submits
+		// the documents of both types whichever one is selected.
+		$this->clear_unused_documents( $order );
+
 		foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::CONTACT_FIELDS as $key ) {
 			$this->copy_to_block_meta( $order, $key, 'other' );
 		}

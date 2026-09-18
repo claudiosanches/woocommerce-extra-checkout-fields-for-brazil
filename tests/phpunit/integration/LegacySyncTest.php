@@ -350,4 +350,28 @@ class LegacySyncTest extends WP_UnitTestCase {
 		$this->assertSame( '99', $stored->get_meta( '_wc_shipping/csbmw/number' ) );
 		$this->assertSame( '123.456.789-09', $stored->get_meta( '_wc_other/csbmw/cpf' ) );
 	}
+
+	/**
+	 * The order screen submits the documents of both person types, so a save
+	 * has to clear the ones the selected type does not use, as a checkout does.
+	 *
+	 * @return void
+	 */
+	public function test_an_admin_save_clears_the_documents_of_the_other_person_type() {
+		$order = new WC_Order();
+		$order->update_meta_data( '_billing_persontype', '1' );
+		$order->update_meta_data( '_billing_cpf', '111.444.777-35' );
+		$order->update_meta_data( '_billing_cnpj', '11.222.333/0001-81' );
+		$order->update_meta_data( '_billing_ie', 'ISENTO' );
+		$order->save();
+
+		$this->sync->write_block_meta( $order->get_id() );
+
+		$saved = wc_get_order( $order->get_id() );
+
+		$this->assertSame( '111.444.777-35', $saved->get_meta( '_billing_cpf' ) );
+		$this->assertSame( '', $saved->get_meta( '_billing_cnpj' ) );
+		$this->assertSame( '', $saved->get_meta( '_billing_ie' ) );
+	}
+
 }
