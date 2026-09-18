@@ -61,6 +61,11 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		add_filter( 'woocommerce_billing_fields', array( $this, 'remove_duplicated_account_fields' ), 999 );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'remove_duplicated_account_fields' ), 999 );
 		add_filter( 'woocommerce_filter_fields_for_order_confirmation', array( $this, 'hide_address_fields_from_confirmation' ), 10, 2 );
+
+		// WooCommerce prints every registered address field under the address on
+		// My Account, where the formatted address already shows both of these.
+		add_action( 'woocommerce_my_account_after_my_address', array( $this, 'capture_account_address_fields' ), 9 );
+		add_action( 'woocommerce_my_account_after_my_address', array( $this, 'hide_address_fields_from_account' ), 11 );
 	}
 
 	/**
@@ -436,6 +441,46 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		}
 
 		return $show;
+	}
+
+	/**
+	 * Start capturing what WooCommerce prints under an address on My Account.
+	 *
+	 * @return void
+	 */
+	public function capture_account_address_fields() {
+		if ( ! Extra_Checkout_Fields_For_Brazil_Blocks::supports_rules() ) {
+			return;
+		}
+
+		ob_start();
+	}
+
+	/**
+	 * Drop the number and neighborhood printed under an address on My Account.
+	 *
+	 * The formatted address above them already carries both, so each was listed
+	 * twice. WooCommerce builds this markup with no filter over the fields it
+	 * renders, which leaves its output as the only thing to work on.
+	 *
+	 * @return void
+	 */
+	public function hide_address_fields_from_account() {
+		if ( ! Extra_Checkout_Fields_For_Brazil_Blocks::supports_rules() ) {
+			return;
+		}
+
+		$output = ob_get_clean();
+
+		if ( false === $output ) {
+			return;
+		}
+
+		foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::address_field_labels() as $label ) {
+			$output = preg_replace( '#<br><strong>' . preg_quote( $label, '#' ) . '</strong>:[^<]*#', '', $output );
+		}
+
+		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce escaped this markup before it was captured.
 	}
 
 	/**

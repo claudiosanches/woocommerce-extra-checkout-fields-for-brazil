@@ -75,6 +75,24 @@ test.describe( 'My account', () => {
 		await expect( page.locator( '#billing_cpf' ) ).toHaveCount( 1 );
 	} );
 
+	test( 'lists Number and Neighborhood once on the address card', async ( {
+		page,
+	} ) => {
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await page.goto( '/my-account/edit-address/', {
+			waitUntil: 'domcontentloaded',
+		} );
+
+		const card = page.locator( '.woocommerce-Address address' ).first();
+
+		// The Brazilian address format already carries both of them.
+		await expect( card ).toContainText( 'Rua Velha, 42' );
+		await expect( card ).toContainText( 'Centro' );
+
+		// WooCommerce prints every registered address field under the address.
+		await expect( card.locator( 'strong' ) ).toHaveCount( 0 );
+	} );
+
 	test( 'does not mangle a historic birthdate when the address is saved', async ( {
 		page,
 	} ) => {

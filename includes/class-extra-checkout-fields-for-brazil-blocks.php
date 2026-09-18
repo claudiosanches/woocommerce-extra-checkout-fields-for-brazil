@@ -118,6 +118,18 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	}
 
 	/**
+	 * Labels of the address fields, as WooCommerce renders them.
+	 *
+	 * @return array
+	 */
+	public static function address_field_labels() {
+		return array(
+			'number'       => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'neighborhood' => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		);
+	}
+
+	/**
 	 * Whether the running WooCommerce evaluates document object rules.
 	 *
 	 * Shipped in WooCommerce 9.8, which the plugin's minimum is above, so this
@@ -475,10 +487,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 * @return void
 	 */
 	protected function register_address_fields() {
+		$labels = self::address_field_labels();
+
 		$this->register_field(
 			'number',
 			array(
-				'label'      => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'      => $labels['number'],
 				'location'   => 'address',
 				'index'      => 41,
 				'attributes' => $this->text_attributes( 'number' ),
@@ -492,7 +506,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		$this->register_field(
 			'neighborhood',
 			array(
-				'label'      => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'      => $labels['neighborhood'],
 				'location'   => 'address',
 				'index'      => 51,
 				'attributes' => $this->text_attributes( 'neighborhood' ),

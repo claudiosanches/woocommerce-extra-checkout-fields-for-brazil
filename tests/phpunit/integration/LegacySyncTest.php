@@ -374,4 +374,37 @@ class LegacySyncTest extends WP_UnitTestCase {
 		$this->assertSame( '', $saved->get_meta( '_billing_ie' ) );
 	}
 
+	/**
+	 * Render an address card the way WooCommerce does, through the hooks the
+	 * plugin uses to edit it.
+	 *
+	 * @param string $fields Markup WooCommerce prints under the address.
+	 *
+	 * @return string
+	 */
+	protected function account_address_card( $fields ) {
+		ob_start();
+
+		$this->sync->capture_account_address_fields();
+		echo $fields; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Test markup.
+		$this->sync->hide_address_fields_from_account();
+
+		return ob_get_clean();
+	}
+
+	public function test_the_address_card_lists_number_and_neighborhood_once() {
+		$output = $this->account_address_card(
+			'<br><strong>Number</strong>: 77<br><strong>Neighborhood</strong>: Vila Nova'
+		);
+
+		$this->assertSame( '', $output );
+	}
+
+	public function test_the_address_card_keeps_fields_from_other_extensions() {
+		$output = $this->account_address_card(
+			'<br><strong>Number</strong>: 77<br><strong>Delivery window</strong>: Morning'
+		);
+
+		$this->assertSame( '<br><strong>Delivery window</strong>: Morning', $output );
+	}
 }
