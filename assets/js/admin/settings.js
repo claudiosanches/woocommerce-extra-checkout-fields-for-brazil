@@ -39,5 +39,5 @@ jQuery( function ( $ ) {
 					shown.includes( 'validate-cnpj' )
 			);
 		} )
-		.change();
+		.trigger( 'change' );
 } );

@@ -172,7 +172,7 @@ jQuery( function ( $ ) {
 						.on( 'change', function () {
 							handleFields( $( this ).val(), checkCountry );
 						} )
-						.change();
+						.trigger( 'change' );
 				}
 			};
 
@@ -216,7 +216,7 @@ jQuery( function ( $ ) {
 
 						handleFields( personType );
 					} )
-					.change();
+					.trigger( 'change' );
 			}
 		},
 

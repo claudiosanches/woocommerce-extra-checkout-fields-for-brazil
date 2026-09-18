@@ -69,6 +69,6 @@ jQuery( function ( $ ) {
 					).show();
 				}
 			} )
-			.change();
+			.trigger( 'change' );
 	}
 } );
