@@ -117,6 +117,58 @@ describe( 'bindIeExempt', () => {
 		);
 	} );
 
+	it( 'goes inside the row on the classic checkout', () => {
+		document.body.innerHTML =
+			'<div class="woocommerce-billing-fields__field-wrapper">' +
+			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
+			'<p class="form-row" id="billing_city_field"></p>' +
+			'</div>';
+
+		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+
+		const wrapper = document.querySelector( '.wcbcf-ie-exempt' );
+
+		expect( wrapper.parentElement.id ).toBe( 'billing_ie_field' );
+
+		// WooCommerce re-appends the rows it knows whenever the country
+		// changes, and the checkbox has to travel with its own row.
+		const fields = document.querySelector(
+			'.woocommerce-billing-fields__field-wrapper'
+		);
+
+		fields.append( document.getElementById( 'billing_city_field' ) );
+		fields.append( document.getElementById( 'billing_ie_field' ) );
+
+		expect(
+			document.querySelector( '.wcbcf-ie-exempt' ).parentElement.id
+		).toBe( 'billing_ie_field' );
+	} );
+
+	it( 'goes after the field on the block checkout', () => {
+		document.body.innerHTML =
+			'<div class="wc-block-components-text-input"><input id="ie" type="text" /></div>';
+
+		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+
+		const field = document.querySelector(
+			'.wc-block-components-text-input'
+		);
+
+		expect( field.nextElementSibling.className ).toBe( 'wcbcf-ie-exempt' );
+	} );
+
+	it( 'replaces the checkbox a previous render left in the row', () => {
+		document.body.innerHTML =
+			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" />' +
+			'<label class="wcbcf-ie-exempt"></label></p>';
+
+		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+
+		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
+			1
+		);
+	} );
+
 	it( 'removes the checkbox when unbound', () => {
 		const { unbind } = setup();
 

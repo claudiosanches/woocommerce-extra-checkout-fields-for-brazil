@@ -154,6 +154,25 @@ test.describe( 'Classic checkout', () => {
 		);
 	} );
 
+	test( 'keeps the exempt box with the State Registration row', async ( {
+		page,
+	} ) => {
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await waitForClassicCheckoutIdle( page );
+
+		// WooCommerce re-appends every row it knows in locale order, which used
+		// to strand the checkbox at the top of the billing form.
+		await expect(
+			page.locator( '#billing_ie_field .wcbcf-ie-exempt' )
+		).toHaveCount( 1 );
+		await expect(
+			page.locator(
+				'.woocommerce-billing-fields__field-wrapper > .wcbcf-ie-exempt'
+			)
+		).toHaveCount( 0 );
+	} );
+
 	test( 'drops the documents of the person type the customer left behind', async ( {
 		page,
 	} ) => {

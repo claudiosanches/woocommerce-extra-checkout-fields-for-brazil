@@ -48,15 +48,20 @@ export function bindIeExempt(
 
 	// Both checkouts lay a floating label over the input, so the checkbox goes
 	// after the whole field rather than straight after the input, where the
-	// label would swallow its clicks.
-	const anchor =
-		input.closest( '.wc-block-components-text-input' ) ||
-		input.closest( '.form-row' ) ||
-		input;
+	// label would swallow its clicks. On the classic checkout it goes inside
+	// the row: WooCommerce re-appends every field it knows in locale order
+	// whenever the country changes, which would strand a sibling of its own at
+	// the top of the form.
+	const blockField = input.closest( '.wc-block-components-text-input' );
+	const row = blockField ? null : input.closest( '.form-row' );
+	const anchor = blockField || row || input;
+	const position: InsertPosition = row ? 'beforeend' : 'afterend';
 
-	// A re-rendered input arrives without the marker but can still be followed
-	// by the checkbox from the previous render.
-	const stale = anchor.nextElementSibling;
+	// A re-rendered input arrives without the marker but can still carry the
+	// checkbox from the previous render.
+	const stale = row
+		? row.querySelector( ':scope > .wcbcf-ie-exempt' )
+		: anchor.nextElementSibling;
 
 	if ( stale && stale.classList.contains( 'wcbcf-ie-exempt' ) ) {
 		stale.remove();
@@ -79,7 +84,7 @@ export function bindIeExempt(
 	text.textContent = label || 'Exempt';
 
 	wrapper.append( checkbox, text );
-	anchor.insertAdjacentElement( 'afterend', wrapper );
+	anchor.insertAdjacentElement( position, wrapper );
 
 	// A value carried over from a previous order should show as exempt.
 	const applyState = ( checked: boolean ) => {
