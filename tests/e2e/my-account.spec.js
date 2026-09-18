@@ -93,6 +93,33 @@ test.describe( 'My account', () => {
 		await expect( card.locator( 'strong' ) ).toHaveCount( 0 );
 	} );
 
+	test( 'refuses a document the checkout would have rejected', async ( {
+		page,
+	} ) => {
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await page.goto( '/my-account/edit-address/billing/', {
+			waitUntil: 'domcontentloaded',
+		} );
+		await expect(
+			page.locator( 'button[name="save_address"]' )
+		).toBeVisible();
+
+		await page.fill( '#billing_cpf', '111.111.111-11' );
+		await page.fill( '#billing_birthdate', '31/02/1990' );
+		await page.click( 'button[name="save_address"]' );
+
+		await expect(
+			page.locator(
+				'.woocommerce-error, .wc-block-components-notice-banner.is-error'
+			)
+		).toContainText( 'CPF' );
+
+		// The form was the one way into the customer record for a document the
+		// checkout rejects, and the block checkout prefills from it.
+		expect( customerMeta( 'billing_cpf' ) ).toBe( '123.456.789-09' );
+		expect( customerMeta( 'billing_birthdate' ) ).toBe( '1/1/1980' );
+	} );
+
 	test( 'does not mangle a historic birthdate when the address is saved', async ( {
 		page,
 	} ) => {

@@ -41,6 +41,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// Prevents billing company field to be required for CPF, aka billing_person_type 1.
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_ignore_company_required' ), 10, 2 );
 
+		// The My Account address form is the other way a document reaches the
+		// customer record, and the checkout prefills from it.
+		add_action( 'woocommerce_after_save_address_validation', array( $this, 'valid_save_address_fields' ), 10, 4 );
+
 		// Custom address format.
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
 		add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'formatted_address_replacements' ), 1, 2 );
@@ -588,7 +592,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// The birthdate does not depend on the person type, so it is checked
 		// before the person type rules below can return early.
 		if ( isset( $settings['birthdate'] ) && ! empty( $billing_birthdate ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $billing_birthdate ) ) {
-			$errors->add( 'billing_birthdate_invalid', sprintf( '<strong>%s</strong> %s.', __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_birthdate' ) );
+			$errors->add( 'billing_birthdate_invalid', $this->invalid_field_message( __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_birthdate' ) );
 		}
 
 		$person_type    = intval( $settings['person_type'] );
@@ -610,7 +614,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				}
 
 				if ( isset( $settings['validate_cpf'] ) && ! empty( $billing_cpf ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $billing_cpf ) ) {
-					$errors->add( 'billing_cpf_invalid', sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cpf' ) );
+					$errors->add( 'billing_cpf_invalid', $this->invalid_field_message( __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cpf' ) );
 				}
 
 				if ( isset( $settings['rg'] ) && empty( $billing_rg ) ) {
@@ -629,13 +633,79 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				}
 
 				if ( isset( $settings['validate_cnpj'] ) && ! empty( $billing_cnpj ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $billing_cnpj ) ) {
-					$errors->add( 'billing_cnpj_invalid', sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cnpj' ) );
+					$errors->add( 'billing_cnpj_invalid', $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cnpj' ) );
 				}
 
 				if ( isset( $settings['ie'] ) && empty( $billing_ie ) ) {
 					$errors->add( 'billing_ie_required', sprintf( '<strong>%s</strong> %s.', __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_ie' ) );
 				}
 			}
+		}
+	}
+
+	/**
+	 * Message reported for a field whose value is not a valid one.
+	 *
+	 * @param  string $label Field label.
+	 *
+	 * @return string
+	 */
+	protected function invalid_field_message( $label ) {
+		return sprintf( '<strong>%s</strong> %s.', $label, __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+	}
+
+	/**
+	 * Validate the documents saved from the My Account address form.
+	 *
+	 * WooCommerce takes requiredness from the field list, but checks no value
+	 * beyond the ones it knows, so this form accepted a document the checkout
+	 * would have rejected and then prefilled it into the next order.
+	 *
+	 * The values come from the customer, which WooCommerce has already filled
+	 * in with what was posted. What it passes as the address is the field list
+	 * it built the form from, not the submission.
+	 *
+	 * @param  int         $user_id      Customer being saved.
+	 * @param  string      $address_type Address being saved.
+	 * @param  array       $address      Address fields WooCommerce rendered.
+	 * @param  WC_Customer $customer     Customer carrying the posted values.
+	 *
+	 * @return void
+	 */
+	public function valid_save_address_fields( $user_id, $address_type, $address, $customer = null ) {
+		if ( 'billing' !== $address_type || ! $customer instanceof WC_Customer ) {
+			return;
+		}
+
+		if ( apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
+			return;
+		}
+
+		$settings  = (array) get_option( 'wcbcf_settings', array() );
+		$birthdate = (string) $customer->get_meta( 'billing_birthdate' );
+
+		if ( isset( $settings['birthdate'] ) && '' !== $birthdate && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $birthdate ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_birthdate' ) );
+		}
+
+		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+
+		if ( ( isset( $settings['only_brazil'] ) && 'BR' !== $customer->get_billing_country() ) || 0 === $person_type ) {
+			return;
+		}
+
+		$selected   = intval( $customer->get_meta( 'billing_persontype' ) );
+		$individual = ( 1 === $person_type && 1 === $selected ) || 2 === $person_type;
+		$company    = ( 1 === $person_type && 2 === $selected ) || 3 === $person_type;
+		$cpf        = (string) $customer->get_meta( 'billing_cpf' );
+		$cnpj       = (string) $customer->get_meta( 'billing_cnpj' );
+
+		if ( $individual && isset( $settings['validate_cpf'] ) && '' !== $cpf && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $cpf ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_cpf' ) );
+		}
+
+		if ( $company && isset( $settings['validate_cnpj'] ) && '' !== $cnpj && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $cnpj ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_cnpj' ) );
 		}
 	}
 
