@@ -123,6 +123,11 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.
 - Fixed the "Change the label of the Phone field to Cell Phone" option doing nothing on either checkout, because WooCommerce rewrites every label from the country locale after the form loads.
 - The Cell Phone field is now checked as a phone number on the block checkout, as it already was on the classic one.
+- Fixed the block checkout address summary printing `{number}` and `{neighborhood}` where the values belong. WooCommerce formats that summary in the browser and replaces only the fields it ships with.
+- Fixed the My Account address form saving a CPF, a CNPJ or a birthdate the checkout would have refused, which the block checkout then prefilled and carried into the next order.
+- Fixed My Account listing Number and Neighborhood a second time under each address, which already shows both.
+- Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
+- Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
 - Redesigned the settings screen, with each group of options in its own card.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
