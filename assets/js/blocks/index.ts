@@ -14,6 +14,8 @@ import type { Formatter, MaskName } from '../shared/mask';
 import { caretIndex, caretOffset, formatters } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
+import { stripCountryFormats } from '../shared/address-format';
+import type { CountryFormats } from '../shared/address-format';
 import '../../scss/blocks/blocks.scss';
 
 interface BlocksParams {
@@ -27,8 +29,13 @@ interface BlocksParams {
 declare global {
 	interface Window {
 		bmwBlocksParams?: BlocksParams;
+		wcSettings?: { countryData?: CountryFormats };
 	}
 }
+
+// The address card is formatted in the browser, before anything this script
+// does on the page, so the formats are cleaned up as soon as it runs.
+stripCountryFormats( window.wcSettings?.countryData );
 
 // The DOM defines this accessor on every input, and going through it is what
 // keeps React's value tracker from discarding the rewrite.

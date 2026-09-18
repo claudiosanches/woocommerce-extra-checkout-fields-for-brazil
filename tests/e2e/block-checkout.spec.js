@@ -82,6 +82,23 @@ test.describe( 'Block checkout', () => {
 		await expect( page.locator( field( 'rg' ) ) ).toBeHidden();
 	} );
 
+	test( "formats an address without this plugin's tokens", async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+
+		// The address card is formatted in the browser from a fixed list of
+		// core tokens, so the ones only PHP can replace were printed as they
+		// are written.
+		const format = await page.evaluate(
+			() => window.wcSettings?.countryData?.BR?.format
+		);
+
+		expect( format ).not.toContain( '{number}' );
+		expect( format ).not.toContain( '{neighborhood}' );
+		await expect( page.locator( 'body' ) ).not.toContainText( '{number}' );
+	} );
+
 	test( 'masks the Brazilian fields as they are typed', async ( {
 		page,
 	} ) => {
