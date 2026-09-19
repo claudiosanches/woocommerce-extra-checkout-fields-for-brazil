@@ -129,6 +129,10 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
 - Fixed the "Exempt from State Registration" checkbox piling up on the block checkout, one copy for every person type change.
+- Fixed the account details form in My Account refusing to save for a Brazilian customer, because it asked for a CPF it never showed.
+- Fixed the company name missing from every Brazilian address the store renders, since the format the plugin registers replaces the one WooCommerce ships with.
+- Added the date mask to the Birthdate field on the order screen, where a date typed without it was stored as it stood.
+- The Gender field on the order screen is now picked from the same list as both checkouts, instead of accepting any text.
 - Redesigned the settings screen, with each group of options in its own card.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
