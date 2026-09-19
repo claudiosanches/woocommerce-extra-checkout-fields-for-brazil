@@ -142,6 +142,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed My Account listing Number and Neighborhood a second time under each address, which already shows both.
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
+- Fixed the "Exempt from State Registration" checkbox piling up on the block checkout, one copy for every person type change.
 - Redesigned the settings screen, with each group of options in its own card.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
