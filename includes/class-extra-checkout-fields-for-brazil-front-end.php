@@ -717,7 +717,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array          New BR format.
 	 */
 	public function localisation_address_formats( $formats ) {
-		$formats['BR'] = "{name}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
+		$formats['BR'] = "{name}\n{company}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
 
 		return $formats;
 	}
