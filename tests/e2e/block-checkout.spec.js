@@ -316,6 +316,22 @@ test.describe( 'Block checkout', () => {
 		} );
 	} );
 
+	test( 'keeps one exempt box through person type changes', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+
+		// The block unmounts the State Registration field, leaving the checkbox
+		// this plugin added behind for the next render to trip over.
+		for ( let round = 0; round < 2; round++ ) {
+			await page.selectOption( field( 'persontype' ), '2' );
+			await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 1 );
+
+			await page.selectOption( field( 'persontype' ), '1' );
+			await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 0 );
+		}
+	} );
+
 	test( 'clears the State Registration when the exempt box is unticked', async ( {
 		page,
 	} ) => {

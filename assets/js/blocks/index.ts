@@ -166,14 +166,23 @@ function writeControlled( input: HTMLInputElement, value: string ): void {
 }
 
 function setupIeExempt(): void {
-	const input = inputById( field( 'contact', 'ie' ) );
+	const id = field( 'contact', 'ie' );
+	const input = inputById( id );
 
-	if ( input ) {
-		bindIeExempt( input, {
-			label: params.ieExemptLabel,
-			write: writeControlled,
-		} );
+	if ( ! input ) {
+		// Switching person type unmounts the field, and React leaves the
+		// checkbox this script added behind.
+		document
+			.querySelectorAll( `.wcbcf-ie-exempt[data-bmw-for="${ id }"]` )
+			.forEach( ( element ) => element.remove() );
+
+		return;
 	}
+
+	bindIeExempt( input, {
+		label: params.ieExemptLabel,
+		write: writeControlled,
+	} );
 }
 
 function setupMailcheck(): void {

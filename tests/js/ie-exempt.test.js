@@ -169,6 +169,30 @@ describe( 'bindIeExempt', () => {
 		);
 	} );
 
+	it( 'removes a checkbox a re-render left elsewhere on the page', () => {
+		document.body.innerHTML =
+			'<label class="wcbcf-ie-exempt" data-bmw-for="ie"></label>' +
+			'<div class="wc-block-components-text-input">' +
+			'<input id="ie" type="text" /></div>';
+
+		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+
+		const wrappers = document.querySelectorAll( '.wcbcf-ie-exempt' );
+
+		expect( wrappers ).toHaveLength( 1 );
+		expect( wrappers[ 0 ].previousElementSibling.className ).toBe(
+			'wc-block-components-text-input'
+		);
+	} );
+
+	it( 'marks the checkbox with the field it belongs to', () => {
+		setup();
+
+		expect(
+			document.querySelector( '.wcbcf-ie-exempt' ).dataset.bmwFor
+		).toBe( 'ie' );
+	} );
+
 	it( 'removes the checkbox when unbound', () => {
 		const { unbind } = setup();
 

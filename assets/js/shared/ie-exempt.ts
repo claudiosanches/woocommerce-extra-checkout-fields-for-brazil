@@ -57,15 +57,25 @@ export function bindIeExempt(
 	const anchor = blockField || row || input;
 	const position: InsertPosition = row ? 'beforeend' : 'afterend';
 
-	// A re-rendered input arrives without the marker but can still carry the
-	// checkbox from the previous render.
-	const stale = row
+	// A re-rendered input arrives without the marker, and the checkbox from the
+	// previous render can be left behind anywhere the unmounted field used to
+	// be, so everything that belongs to this input goes first.
+	const alongside = row
 		? row.querySelector( ':scope > .wcbcf-ie-exempt' )
 		: anchor.nextElementSibling;
+	const owned = input.id
+		? Array.from(
+				input.ownerDocument.querySelectorAll(
+					`.wcbcf-ie-exempt[data-bmw-for="${ input.id }"]`
+				)
+		  )
+		: [];
 
-	if ( stale && stale.classList.contains( 'wcbcf-ie-exempt' ) ) {
-		stale.remove();
-	}
+	[ alongside, ...owned ].forEach( ( element ) => {
+		if ( element && element.classList.contains( 'wcbcf-ie-exempt' ) ) {
+			element.remove();
+		}
+	} );
 
 	const setValue =
 		write ||
@@ -75,6 +85,10 @@ export function bindIeExempt(
 
 	const wrapper = input.ownerDocument.createElement( 'label' );
 	wrapper.className = 'wcbcf-ie-exempt';
+
+	if ( input.id ) {
+		wrapper.dataset.bmwFor = input.id;
+	}
 
 	const checkbox = input.ownerDocument.createElement( 'input' );
 	checkbox.type = 'checkbox';
