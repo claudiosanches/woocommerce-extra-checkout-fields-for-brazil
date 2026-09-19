@@ -32,6 +32,13 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	const CONTACT_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'ie', 'birthdate', 'gender', 'cellphone' );
 
 	/**
+	 * Contact fields whose visibility follows the person type.
+	 *
+	 * @var array
+	 */
+	const PERSON_TYPE_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'ie' );
+
+	/**
 	 * Address fields, in registration order.
 	 *
 	 * @var array
@@ -86,6 +93,34 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		add_action( 'init', array( $this, 'register_fields' ), 20 );
 		add_action( 'woocommerce_checkout_validate_order_before_payment', array( $this, 'validate_company' ), 10, 2 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		// Ahead of WC_Form_Handler::save_account_details(), which runs on this
+		// hook at the default priority.
+		add_action( 'template_redirect', array( $this, 'remove_documents_from_account_details' ), 5 );
+	}
+
+	/**
+	 * Keep the person type and its documents off the account details form.
+	 *
+	 * WooCommerce renders that form from a document object holding none of the
+	 * values these fields are conditional on, so each document is hidden there
+	 * and then required when the form is submitted, which no field on the page
+	 * can satisfy. They belong to the address form, which does render them.
+	 *
+	 * @return void
+	 */
+	public function remove_documents_from_account_details() {
+		if ( ! function_exists( '__internal_woocommerce_blocks_deregister_checkout_field' ) ) {
+			return;
+		}
+
+		if ( ! function_exists( 'is_wc_endpoint_url' ) || ! is_wc_endpoint_url( 'edit-account' ) ) {
+			return;
+		}
+
+		foreach ( self::PERSON_TYPE_FIELDS as $key ) {
+			__internal_woocommerce_blocks_deregister_checkout_field( self::field_id( $key ) );
+		}
 	}
 
 	/**
