@@ -5,6 +5,7 @@ import {
 	isCellphone,
 	isCnpj,
 	isCpf,
+	isDate,
 	isPhone,
 	isPostcode,
 } from '../shared/validation';
@@ -15,6 +16,7 @@ const MASKED_FIELDS = {
 	_billing_cnpj: { mask: 'cnpj', valid: isCnpj },
 	_billing_phone: { mask: 'phone', valid: isPhone },
 	_billing_cellphone: { mask: 'phone', valid: isCellphone },
+	_billing_birthdate: { mask: 'date', valid: isDate },
 	_billing_postcode: { mask: 'cep', valid: isPostcode },
 	_shipping_postcode: { mask: 'cep', valid: isPostcode },
 };
