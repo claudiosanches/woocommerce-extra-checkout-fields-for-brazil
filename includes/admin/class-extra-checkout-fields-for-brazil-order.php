@@ -98,9 +98,13 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 		}
 
 		if ( isset( $settings['gender'] ) ) {
+			$labels = Extra_Checkout_Fields_For_Brazil_Blocks::get_gender_options();
+
 			$billing_data['gender'] = array(
-				'label' => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'show'  => false,
+				'type'    => 'select',
+				'label'   => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'show'    => false,
+				'options' => array( '' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ) ) + array_combine( $labels, $labels ),
 			);
 		}
 
