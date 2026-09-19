@@ -46,7 +46,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 
 		// The order screen submits them too, and its person type can be changed.
 		// WooCommerce saves that screen's fields at priority 40, so this has to
-		// run after it, on the object it saved.
+		// run after it to see the person type that was chosen.
 		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_documents' ), 45 );
 
 		foreach ( $this->get_keys() as $key ) {
