@@ -358,7 +358,14 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 
 		foreach ( self::UNUSED_DOCUMENTS[ $selected ] as $key ) {
 			$order->update_meta_data( self::get_legacy_key( $key, 'other', $order ), '' );
-			$order->update_meta_data( self::get_block_key( $key, 'other' ), '' );
+
+			// An order from the classic checkout has no block meta, and an
+			// empty document is no reason to give it some.
+			$block_key = self::get_block_key( $key, 'other' );
+
+			if ( $order->meta_exists( $block_key ) ) {
+				$order->update_meta_data( $block_key, '' );
+			}
 		}
 	}
 

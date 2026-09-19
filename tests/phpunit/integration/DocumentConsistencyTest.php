@@ -79,6 +79,25 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * An order from the classic checkout carries no block meta, and clearing a
+	 * document it never had is no reason to start.
+	 *
+	 * @return void
+	 */
+	public function test_clearing_does_not_invent_block_meta() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$order = new WC_Order();
+		$order->update_meta_data( '_billing_persontype', '1' );
+		$order->update_meta_data( '_billing_cnpj', 'value-cnpj' );
+
+		$this->sync->clear_unused_documents( $order );
+
+		$this->assertSame( '', $order->get_meta( '_billing_cnpj' ) );
+		$this->assertFalse( $order->meta_exists( '_wc_other/csbmw/cnpj' ) );
+	}
+
 	public function test_nothing_is_cleared_when_documents_are_switched_off() {
 		update_option( 'wcbcf_settings', array( 'person_type' => 0 ) );
 
