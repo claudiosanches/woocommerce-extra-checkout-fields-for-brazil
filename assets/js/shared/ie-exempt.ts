@@ -28,6 +28,57 @@ export const isExempt = ( value: string | null | undefined ): boolean =>
 		.toUpperCase() === EXEMPT_VALUE;
 
 /**
+ * The element the checkbox is placed after.
+ *
+ * Both checkouts lay a floating label over the input, so the checkbox goes
+ * after the whole field rather than straight after the input, where the label
+ * would swallow its clicks.
+ *
+ * @param input State Registration input.
+ * @return Element the checkbox follows.
+ */
+const anchorFor = ( input: HTMLInputElement ): Element =>
+	input.closest( '.wc-block-components-text-input' ) ||
+	input.closest( '.form-row' ) ||
+	input;
+
+/**
+ * The checkbox already added for an input, wherever it currently sits.
+ *
+ * @param input State Registration input.
+ * @return The checkbox wrapper, or null.
+ */
+const wrapperFor = ( input: HTMLInputElement ): Element | null =>
+	input.id
+		? input.ownerDocument.querySelector(
+				`.wcbcf-ie-exempt[data-bmw-for="${ input.id }"]`
+		  )
+		: null;
+
+/**
+ * Put the checkbox back after its field.
+ *
+ * The classic checkout re-appends every row WooCommerce knows in locale order
+ * whenever the country changes, which leaves the checkbox stranded at the top
+ * of the form. It cannot live inside the row instead: WooCommerce reads an
+ * unticked checkbox there as an empty required field and paints the row red.
+ *
+ * @param input State Registration input.
+ */
+export function placeIeExempt( input: HTMLInputElement | null | undefined ) {
+	if ( ! input ) {
+		return;
+	}
+
+	const wrapper = wrapperFor( input );
+	const anchor = anchorFor( input );
+
+	if ( wrapper && anchor.nextElementSibling !== wrapper ) {
+		anchor.insertAdjacentElement( 'afterend', wrapper );
+	}
+}
+
+/**
  * Add an exemption checkbox to a State Registration input.
  *
  * @param input         State Registration input.
@@ -40,38 +91,24 @@ export function bindIeExempt(
 	input: HTMLInputElement | null | undefined,
 	{ label, write }: IeExemptOptions = {}
 ): () => void {
-	if ( ! input || input.dataset.bmwIeExempt ) {
+	if ( ! input ) {
+		return () => {};
+	}
+
+	if ( input.dataset.bmwIeExempt ) {
+		placeIeExempt( input );
+
 		return () => {};
 	}
 
 	input.dataset.bmwIeExempt = '1';
 
-	// Both checkouts lay a floating label over the input, so the checkbox goes
-	// after the whole field rather than straight after the input, where the
-	// label would swallow its clicks. On the classic checkout it goes inside
-	// the row: WooCommerce re-appends every field it knows in locale order
-	// whenever the country changes, which would strand a sibling of its own at
-	// the top of the form.
-	const blockField = input.closest( '.wc-block-components-text-input' );
-	const row = blockField ? null : input.closest( '.form-row' );
-	const anchor = blockField || row || input;
-	const position: InsertPosition = row ? 'beforeend' : 'afterend';
+	const anchor = anchorFor( input );
 
 	// A re-rendered input arrives without the marker, and the checkbox from the
 	// previous render can be left behind anywhere the unmounted field used to
 	// be, so everything that belongs to this input goes first.
-	const alongside = row
-		? row.querySelector( ':scope > .wcbcf-ie-exempt' )
-		: anchor.nextElementSibling;
-	const owned = input.id
-		? Array.from(
-				input.ownerDocument.querySelectorAll(
-					`.wcbcf-ie-exempt[data-bmw-for="${ input.id }"]`
-				)
-		  )
-		: [];
-
-	[ alongside, ...owned ].forEach( ( element ) => {
+	[ anchor.nextElementSibling, wrapperFor( input ) ].forEach( ( element ) => {
 		if ( element && element.classList.contains( 'wcbcf-ie-exempt' ) ) {
 			element.remove();
 		}
@@ -98,7 +135,7 @@ export function bindIeExempt(
 	text.textContent = label || 'Exempt';
 
 	wrapper.append( checkbox, text );
-	anchor.insertAdjacentElement( position, wrapper );
+	anchor.insertAdjacentElement( 'afterend', wrapper );
 
 	// A value carried over from a previous order should show as exempt.
 	const applyState = ( checked: boolean ) => {

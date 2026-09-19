@@ -6,6 +6,7 @@ import {
 	EXEMPT_VALUE,
 	bindIeExempt,
 	isExempt,
+	placeIeExempt,
 } from '../../assets/js/shared/ie-exempt';
 
 const setup = ( value = '' ) => {
@@ -117,7 +118,7 @@ describe( 'bindIeExempt', () => {
 		);
 	} );
 
-	it( 'goes inside the row on the classic checkout', () => {
+	it( 'goes after the row on the classic checkout', () => {
 		document.body.innerHTML =
 			'<div class="woocommerce-billing-fields__field-wrapper">' +
 			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
@@ -126,12 +127,30 @@ describe( 'bindIeExempt', () => {
 
 		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
 
-		const wrapper = document.querySelector( '.wcbcf-ie-exempt' );
+		// Inside the row, WooCommerce reads the unticked box as an empty
+		// required field and marks the whole row invalid.
+		expect(
+			document.querySelector( '#billing_ie_field .wcbcf-ie-exempt' )
+		).toBeNull();
+		expect(
+			document.getElementById( 'billing_ie_field' ).nextElementSibling
+				.className
+		).toBe( 'wcbcf-ie-exempt' );
+	} );
 
-		expect( wrapper.parentElement.id ).toBe( 'billing_ie_field' );
+	it( 'follows the row WooCommerce re-sorted', () => {
+		document.body.innerHTML =
+			'<div class="woocommerce-billing-fields__field-wrapper">' +
+			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
+			'<p class="form-row" id="billing_city_field"></p>' +
+			'</div>';
 
-		// WooCommerce re-appends the rows it knows whenever the country
-		// changes, and the checkbox has to travel with its own row.
+		const input = document.getElementById( 'ie' );
+
+		bindIeExempt( input, { label: 'Exempt' } );
+
+		// WooCommerce re-appends every row it knows in locale order, which
+		// leaves the checkbox where the row used to be.
 		const fields = document.querySelector(
 			'.woocommerce-billing-fields__field-wrapper'
 		);
@@ -139,9 +158,15 @@ describe( 'bindIeExempt', () => {
 		fields.append( document.getElementById( 'billing_city_field' ) );
 		fields.append( document.getElementById( 'billing_ie_field' ) );
 
+		placeIeExempt( input );
+
 		expect(
-			document.querySelector( '.wcbcf-ie-exempt' ).parentElement.id
-		).toBe( 'billing_ie_field' );
+			document.getElementById( 'billing_ie_field' ).nextElementSibling
+				.className
+		).toBe( 'wcbcf-ie-exempt' );
+		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
+			1
+		);
 	} );
 
 	it( 'goes after the field on the block checkout', () => {
@@ -157,10 +182,10 @@ describe( 'bindIeExempt', () => {
 		expect( field.nextElementSibling.className ).toBe( 'wcbcf-ie-exempt' );
 	} );
 
-	it( 'replaces the checkbox a previous render left in the row', () => {
+	it( 'replaces the checkbox a previous render left behind', () => {
 		document.body.innerHTML =
-			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" />' +
-			'<label class="wcbcf-ie-exempt"></label></p>';
+			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
+			'<label class="wcbcf-ie-exempt"></label>';
 
 		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
 

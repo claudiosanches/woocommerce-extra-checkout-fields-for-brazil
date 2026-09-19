@@ -2,7 +2,7 @@
 
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
-import { bindIeExempt } from '../shared/ie-exempt';
+import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
 import '../../scss/frontend/frontend.scss';
 
 /**
@@ -84,6 +84,20 @@ jQuery( function ( $ ) {
 			bindIeExempt( document.getElementById( 'billing_ie' ), {
 				label: bmwPublicParams.ie_exempt,
 			} );
+
+			// Changing the country re-appends every row WooCommerce knows, in
+			// locale order, which leaves the checkbox behind at the top of the
+			// form. The sorting runs on the same event, so this waits for it.
+			$( document.body ).on(
+				'country_to_state_changed updated_checkout',
+				function () {
+					window.setTimeout( function () {
+						placeIeExempt(
+							document.getElementById( 'billing_ie' )
+						);
+					}, 0 );
+				}
+			);
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck(

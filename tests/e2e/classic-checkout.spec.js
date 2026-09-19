@@ -154,22 +154,59 @@ test.describe( 'Classic checkout', () => {
 		);
 	} );
 
-	test( 'keeps the exempt box with the State Registration row', async ( {
+	test( 'keeps the exempt box beside the State Registration row', async ( {
 		page,
 	} ) => {
 		await goToClassicCheckout( page );
 		await page.selectOption( '#billing_persontype', '2' );
 		await waitForClassicCheckoutIdle( page );
 
-		// WooCommerce re-appends every row it knows in locale order, which used
-		// to strand the checkbox at the top of the billing form.
+		await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 1 );
+
+		// Inside the row, WooCommerce reads the unticked box as an empty
+		// required field and marks the row invalid.
 		await expect(
 			page.locator( '#billing_ie_field .wcbcf-ie-exempt' )
+		).toHaveCount( 0 );
+		await expect(
+			page.locator( '#billing_ie_field + .wcbcf-ie-exempt' )
 		).toHaveCount( 1 );
+
+		// Changing the country re-appends every row WooCommerce knows, in
+		// locale order, which used to strand the checkbox at the top.
+		await page.selectOption( '#billing_country', 'US' );
+		await waitForClassicCheckoutIdle( page );
+		await page.selectOption( '#billing_country', 'BR' );
+		await waitForClassicCheckoutIdle( page );
+
+		await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 1 );
+		await expect(
+			page.locator( '#billing_ie_field + .wcbcf-ie-exempt' )
+		).toHaveCount( 1 );
+	} );
+
+	test( 'leaves the State Registration row alone when another field fails', async ( {
+		page,
+	} ) => {
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await page.fill( '#billing_company', 'Empresa Ltda' );
+		await page.fill( '#billing_cnpj', '11222333000199' );
+		await page.fill( '#billing_ie', '123456789' );
+		await fillCommonFields( page );
+		await waitForClassicCheckoutIdle( page );
+
+		await page.click( '#place_order' );
+
 		await expect(
 			page.locator(
-				'.woocommerce-billing-fields__field-wrapper > .wcbcf-ie-exempt'
+				'.woocommerce-error, .wc-block-components-notice-banner.is-error'
 			)
+		).toContainText( 'CNPJ', { timeout: 30_000 } );
+
+		// A filled field has nothing wrong with it, whatever else failed.
+		await expect(
+			page.locator( '#billing_ie_field.woocommerce-invalid' )
 		).toHaveCount( 0 );
 	} );
 
