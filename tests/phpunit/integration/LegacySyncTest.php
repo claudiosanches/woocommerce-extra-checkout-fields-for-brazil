@@ -352,26 +352,76 @@ class LegacySyncTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An order carrying the documents of both person types.
+	 *
+	 * @return WC_Order
+	 */
+	protected function order_with_both_documents() {
+		$order = new WC_Order();
+		$order->update_meta_data( '_billing_persontype', '1' );
+		$order->update_meta_data( '_billing_cpf', '111.444.777-35' );
+		$order->update_meta_data( '_billing_rg', '998877' );
+		$order->update_meta_data( '_billing_cnpj', '11.222.333/0001-81' );
+		$order->update_meta_data( '_billing_ie', 'ISENTO' );
+		$order->save();
+
+		return $order;
+	}
+
+	/**
 	 * The order screen submits the documents of both person types, so a save
 	 * has to clear the ones the selected type does not use, as a checkout does.
 	 *
 	 * @return void
 	 */
-	public function test_an_admin_save_clears_the_documents_of_the_other_person_type() {
-		$order = new WC_Order();
-		$order->update_meta_data( '_billing_persontype', '1' );
-		$order->update_meta_data( '_billing_cpf', '111.444.777-35' );
-		$order->update_meta_data( '_billing_cnpj', '11.222.333/0001-81' );
-		$order->update_meta_data( '_billing_ie', 'ISENTO' );
-		$order->save();
+	public function test_an_order_screen_save_clears_the_documents_of_the_other_person_type() {
+		$order = $this->order_with_both_documents();
 
-		$this->sync->write_block_meta( $order->get_id() );
+		$this->sync->clear_order_documents( $order->get_id() );
 
 		$saved = wc_get_order( $order->get_id() );
 
 		$this->assertSame( '111.444.777-35', $saved->get_meta( '_billing_cpf' ) );
+		$this->assertSame( '998877', $saved->get_meta( '_billing_rg' ) );
 		$this->assertSame( '', $saved->get_meta( '_billing_cnpj' ) );
 		$this->assertSame( '', $saved->get_meta( '_billing_ie' ) );
+	}
+
+	/**
+	 * WooCommerce saves the order screen's own fields from a WC_Order it holds
+	 * on to, so clearing a second instance of the same order is undone.
+	 *
+	 * @return void
+	 */
+	public function test_the_order_woocommerce_passes_is_the_one_cleared() {
+		$order = $this->order_with_both_documents();
+
+		$this->sync->clear_order_documents( $order->get_id(), $order );
+
+		$this->assertSame( '', $order->get_meta( '_billing_cnpj' ) );
+	}
+
+	/**
+	 * And that only holds if the clearing runs after WooCommerce has written
+	 * what the screen submitted, which it does at priority 40.
+	 *
+	 * @return void
+	 */
+	public function test_the_documents_are_cleared_after_the_order_screen_is_saved() {
+		$priority = null;
+
+		foreach ( $GLOBALS['wp_filter']['woocommerce_process_shop_order_meta'] as $registered => $hooks ) {
+			foreach ( $hooks as $hook ) {
+				if ( is_array( $hook['function'] )
+					&& $hook['function'][0] instanceof Extra_Checkout_Fields_For_Brazil_Legacy_Sync
+					&& 'clear_order_documents' === $hook['function'][1] ) {
+					$priority = $registered;
+				}
+			}
+		}
+
+		$this->assertNotNull( $priority, 'The clearing is not hooked on the order screen save.' );
+		$this->assertGreaterThan( 40, $priority );
 	}
 
 	/**

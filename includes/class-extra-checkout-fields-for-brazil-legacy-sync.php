@@ -44,6 +44,11 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		add_action( 'woocommerce_checkout_create_order', array( $this, 'clear_unused_documents' ), 20 );
 		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'clear_unused_documents' ), 20 );
 
+		// The order screen submits them too, and its person type can be changed.
+		// WooCommerce saves that screen's fields at priority 40, so this has to
+		// run after it, on the object it saved.
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_documents' ), 45, 2 );
+
 		foreach ( $this->get_keys() as $key ) {
 			add_filter(
 				'woocommerce_get_default_value_for_' . Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ),
@@ -279,10 +284,6 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			return;
 		}
 
-		// The person type can be changed here too, and the order screen submits
-		// the documents of both types whichever one is selected.
-		$this->clear_unused_documents( $order );
-
 		foreach ( Extra_Checkout_Fields_For_Brazil_Blocks::CONTACT_FIELDS as $key ) {
 			$this->copy_to_block_meta( $order, $key, 'other' );
 		}
@@ -359,6 +360,28 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			$order->update_meta_data( self::get_legacy_key( $key, 'other', $order ), '' );
 			$order->update_meta_data( self::get_block_key( $key, 'other' ), '' );
 		}
+	}
+
+	/**
+	 * Clear the documents of the other person type after an order screen save.
+	 *
+	 * @param int   $order_id Order being saved.
+	 * @param mixed $order    Order WooCommerce is saving, or the post behind it
+	 *                        on a store still using the posts table.
+	 *
+	 * @return void
+	 */
+	public function clear_order_documents( $order_id, $order = null ) {
+		if ( ! $order instanceof WC_Order ) {
+			$order = wc_get_order( $order_id );
+		}
+
+		if ( ! $order ) {
+			return;
+		}
+
+		$this->clear_unused_documents( $order );
+		$order->save();
 	}
 
 	/**
