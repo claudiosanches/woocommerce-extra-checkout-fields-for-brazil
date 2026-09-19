@@ -47,7 +47,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		// The order screen submits them too, and its person type can be changed.
 		// WooCommerce saves that screen's fields at priority 40, so this has to
 		// run after it, on the object it saved.
-		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_documents' ), 45, 2 );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_documents' ), 45 );
 
 		foreach ( $this->get_keys() as $key ) {
 			add_filter(
@@ -365,16 +365,16 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	/**
 	 * Clear the documents of the other person type after an order screen save.
 	 *
-	 * @param int   $order_id Order being saved.
-	 * @param mixed $order    Order WooCommerce is saving, or the post behind it
-	 *                        on a store still using the posts table.
+	 * The order WooCommerce hands this action was loaded before the screen was
+	 * saved and still carries the person type the order is moving away from, so
+	 * the order is read back as it now stands instead.
+	 *
+	 * @param int $order_id Order being saved.
 	 *
 	 * @return void
 	 */
-	public function clear_order_documents( $order_id, $order = null ) {
-		if ( ! $order instanceof WC_Order ) {
-			$order = wc_get_order( $order_id );
-		}
+	public function clear_order_documents( $order_id ) {
+		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
 			return;

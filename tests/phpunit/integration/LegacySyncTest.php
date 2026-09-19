@@ -388,17 +388,26 @@ class LegacySyncTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * WooCommerce saves the order screen's own fields from a WC_Order it holds
-	 * on to, so clearing a second instance of the same order is undone.
+	 * The person type the screen saved is the one that decides, not the one the
+	 * order carried when the request started.
 	 *
 	 * @return void
 	 */
-	public function test_the_order_woocommerce_passes_is_the_one_cleared() {
+	public function test_the_saved_person_type_is_the_one_followed() {
 		$order = $this->order_with_both_documents();
 
-		$this->sync->clear_order_documents( $order->get_id(), $order );
+		// What the screen submitted, as WooCommerce has already stored it.
+		$order->update_meta_data( '_billing_persontype', '2' );
+		$order->save();
 
-		$this->assertSame( '', $order->get_meta( '_billing_cnpj' ) );
+		$this->sync->clear_order_documents( $order->get_id() );
+
+		$saved = wc_get_order( $order->get_id() );
+
+		$this->assertSame( '', $saved->get_meta( '_billing_cpf' ) );
+		$this->assertSame( '', $saved->get_meta( '_billing_rg' ) );
+		$this->assertSame( '11.222.333/0001-81', $saved->get_meta( '_billing_cnpj' ) );
+		$this->assertSame( 'ISENTO', $saved->get_meta( '_billing_ie' ) );
 	}
 
 	/**
@@ -409,6 +418,7 @@ class LegacySyncTest extends WP_UnitTestCase {
 	 */
 	public function test_the_documents_are_cleared_after_the_order_screen_is_saved() {
 		$priority = null;
+		$accepted = null;
 
 		foreach ( $GLOBALS['wp_filter']['woocommerce_process_shop_order_meta'] as $registered => $hooks ) {
 			foreach ( $hooks as $hook ) {
@@ -416,12 +426,14 @@ class LegacySyncTest extends WP_UnitTestCase {
 					&& $hook['function'][0] instanceof Extra_Checkout_Fields_For_Brazil_Legacy_Sync
 					&& 'clear_order_documents' === $hook['function'][1] ) {
 					$priority = $registered;
+					$accepted = $hook['accepted_args'];
 				}
 			}
 		}
 
 		$this->assertNotNull( $priority, 'The clearing is not hooked on the order screen save.' );
 		$this->assertGreaterThan( 40, $priority );
+		$this->assertSame( 1, $accepted, 'The order WooCommerce passes predates the save.' );
 	}
 
 	/**
