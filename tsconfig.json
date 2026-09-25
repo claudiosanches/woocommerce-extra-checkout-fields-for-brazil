@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": [ "DOM", "DOM.Iterable", "ES2022" ],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"isolatedModules": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		// Babel strips the types, so nothing is emitted from here.
+		"noEmit": true,
+		// The jQuery entry points are still JavaScript and import from these
+		// modules, so they have to resolve without being type checked.
+		"allowJs": true,
+		"checkJs": false
+	},
+	"include": [ "assets/js" ]
+}
