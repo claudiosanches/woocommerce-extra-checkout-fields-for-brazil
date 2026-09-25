@@ -3,7 +3,13 @@ const defaultConfig = require( '@wordpress/scripts/config/eslint.config.cjs' );
 module.exports = [
 	...defaultConfig,
 	{
-		ignores: [ 'build/**', 'node_modules/**', 'vendor/**', 'languages/**' ],
+		ignores: [
+			'artifacts/**',
+			'build/**',
+			'node_modules/**',
+			'vendor/**',
+			'languages/**',
+		],
 	},
 	{
 		languageOptions: {
