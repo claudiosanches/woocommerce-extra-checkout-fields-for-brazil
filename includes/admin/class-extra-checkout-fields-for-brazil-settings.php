@@ -215,8 +215,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 				'title'       => __( 'Fields Style', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => __( 'Choose the style of the fields. Note: Use Default if you are having problems with how the fields are displayed.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'options'     => array(
-					'wide'         => __( 'Default (wide fields)', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'side_by_side' => __( 'Plugin\'s old styling (fields side by side)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'wide'         => __( 'Default (full-width fields)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'side_by_side' => __( 'Side-by-side fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				),
 			)
 		);

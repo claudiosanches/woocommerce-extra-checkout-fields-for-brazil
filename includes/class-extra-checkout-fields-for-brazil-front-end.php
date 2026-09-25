@@ -376,7 +376,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['shipping_address_1'] ) ) {
 			$new_fields['shipping_address_1']          = $fields['shipping_address_1'];
-			$new_fields['shipping_address_1']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_address_1']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['shipping_number'] = array(
@@ -390,7 +390,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $fields['shipping_address_2'] ) ) {
 			$new_fields['shipping_address_2']          = $fields['shipping_address_2'];
 			$new_fields['shipping_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
-			$new_fields['shipping_address_2']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_address_2']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['shipping_neighborhood'] = array(
@@ -403,7 +403,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['shipping_city'] ) ) {
 			$new_fields['shipping_city']          = $fields['shipping_city'];
-			$new_fields['shipping_city']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_city']['class'] = array( $last_class, 'address-field' );
 		}
 
 		if ( isset( $fields['shipping_state'] ) ) {
