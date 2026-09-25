@@ -302,11 +302,11 @@ msgid "Choose the style of the fields. Note: Use Default if you are having probl
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
-msgid "Default (wide fields)"
+msgid "Default (full-width fields)"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:219
-msgid "Plugin's old styling (fields side by side)"
+msgid "Side-by-side fields"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:227

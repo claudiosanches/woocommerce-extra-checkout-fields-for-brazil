@@ -321,12 +321,12 @@ msgstr ""
 "com a forma com que os campos são exibidos no seu site."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
-msgid "Default (wide fields)"
-msgstr "Padrão (campos largos)"
+msgid "Default (full-width fields)"
+msgstr "Padrão (campos em largura total)"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:219
-msgid "Plugin's old styling (fields side by side)"
-msgstr "Estilo antigo do plugin (campos lado a lado)"
+msgid "Side-by-side fields"
+msgstr "Campos lado a lado"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:227
 msgid "jQuery Options"
