@@ -47,6 +47,38 @@ Values entered on the block checkout are also written to the historic meta keys 
 
 Brazilian addresses are rendered in the local format, with the street number after the street name and the neighborhood on its own line. This applies to the order confirmation page, order emails, the admin order screen and shipping labels.
 
+### Shipping calculators that ask only for the CEP ###
+
+Customers type their CEP and the plugin works out the rest.
+
+* **Cart** - the shipping calculator asks only for the CEP and fills the state and city from it. The cart block, which has no calculator since WooCommerce 10, gets one of its own in the order summary.
+* **Product page** - a Shipping Calculator block lists the shipping options and prices for the product before it goes into the cart. Classic themes can show it below the add to cart button with a setting.
+* **Checkout and My Account** - the street, neighborhood, city and state are filled once the customer enters a CEP, on the block and classic checkouts alike.
+
+Every calculator links to the Correios CEP search for customers who do not know theirs.
+
+The calculators work when WooCommerce sells and ships only to Brazil. The settings screen explains how to set that up, and can do it for you.
+
+### WooCommerce Correios integration ###
+
+When [WooCommerce Correios](https://wordpress.org/plugins/woocommerce-correios/) is active with its Correios Web Services (CWS) connection set up, addresses are looked up through it first, using your Correios contract.
+
+Both plugins keep the addresses they find in the same database table, so a CEP looked up by one is never fetched again by the other. The table is created when the first CEP is looked up, and left in place when this plugin is uninstalled, since WooCommerce Correios may still use it.
+
+On the classic checkout, the address autofill of WooCommerce Correios takes precedence when it is on with CWS, so the address is not filled twice.
+
+### Address lookup services ###
+
+Thanks to [ViaCEP](https://viacep.com.br/) and [BrasilAPI](https://brasilapi.com.br/) for their free CEP lookup services.
+
+A CEP that is not yet in the database, and that WooCommerce Correios could not find, is sent from your store's server to ViaCEP, and to BrasilAPI when ViaCEP does not answer. Only the CEP is sent, and only when a customer uses one of the shipping calculators or has an address filled from the CEP.
+
+### Privacy ###
+
+The CEP a customer enters is kept in a cookie, `csbmw_postcode`, so the next product page can show its shipping options. It is deleted when the browser closes or the customer logs out. With a consent plugin that supports the [WP Consent API](https://wordpress.org/plugins/wp-consent-api/), it is kept for 30 days once the customer agrees to have preferences remembered, and deleted as soon as that consent is withdrawn.
+
+Suggested text for your privacy policy is available under Settings > Privacy.
+
 ### Compatibility ###
 
 Compatible with High-Performance Order Storage (HPOS) and with the cart and checkout blocks.
@@ -55,6 +87,8 @@ Known to work with:
 
 * **[WooCommerce](https://wordpress.org/plugins/woocommerce)** (requires WooCommerce 9.9 or newer)
 * **[PagSeguro for WooCommerce](https://wordpress.org/plugins/woocommerce-pagseguro)** (uses **neighborhood**, **CPF**, and **street number** fields)
+* **[WooCommerce Correios](https://wordpress.org/plugins/woocommerce-correios/)** (shares its CEP database and address lookup)
+* **[WP Consent API](https://wordpress.org/plugins/wp-consent-api/)** (remembers the CEP for longer with consent to preferences)
 
 ### Questions? ###
 
@@ -63,7 +97,10 @@ Known to work with:
 
 ### Credits ###
 
-This plugin uses [Mailcheck](https://github.com/mailcheck/mailcheck).
+This plugin uses:
+
+* [Mailcheck](https://github.com/mailcheck/mailcheck), to suggest corrections for misspelled email domains.
+* [Heroicons](https://heroicons.com/) by Tailwind Labs, MIT license, for the shipping calculator icons.
 
 ### Contributing ###
 
@@ -86,6 +123,32 @@ Yes. The plugin keeps reading and writing the same meta keys it always has, so e
 ### Can I use it on a store that also sells outside Brazil? ###
 
 Yes. Person type and the document fields can be made required only for Brazilian addresses, leaving international checkouts untouched.
+
+The shipping calculators that ask only for the CEP are the exception: they need the store to sell and ship only to Brazil.
+
+### How do I add the shipping calculator to product pages? ###
+
+On a block theme, open Appearance > Editor, edit the Single Product template and add the Shipping Calculator block. On a classic theme, turn on "Shipping calculator on product pages" in the plugin settings.
+
+### How do I change the look of the shipping calculator? ###
+
+It follows your theme and WooCommerce's styles. To change a detail, add CSS in Appearance > Editor > Styles > Additional CSS, or Appearance > Customize > Additional CSS on a classic theme. For example:
+
+    .csbmw-shipping-calculator-destination {
+        border-bottom-color: #0a7d32;
+    }
+
+    .csbmw-shipping-calculator-rate-cost {
+        color: #0a7d32;
+    }
+
+The main classes are:
+
+* `.csbmw-shipping-calculator`: the product page calculator.
+* `.csbmw-shipping-calculator-destination`: the line with the CEP's city.
+* `.csbmw-shipping-calculator-rate`: each shipping option, with `-rate-name` and `-rate-cost` inside.
+* `.csbmw-shipping-calculator-dialog`: the dialog for changing the CEP.
+* `.csbmw-cart-shipping-calculator`: the cart block calculator.
 
 ### Where are the settings? ###
 
@@ -124,6 +187,9 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 ### 5.0.0 - 2026/08/23 ###
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
+- Added shipping calculators that ask only for the CEP, on the cart, the cart block and product pages, with a Shipping Calculator block for block themes.
+- Added address autofill from the CEP on the block and classic checkouts and in My Account.
+- Addresses are looked up through WooCommerce Correios when it is set up for it, then ViaCEP and BrasilAPI, and cached in the table WooCommerce Correios uses.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
 - Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieuhal](https://github.com/Matthieuhal)).
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
@@ -247,4 +313,4 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 
 ### 5.0.0 ###
 
-Adds support for the WooCommerce block checkout, keeping the same fields, masks and validation as the classic checkout. Values are still written to the historic meta keys, so gateways and other integrations are unaffected. Minimum requirements are now WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
+Adds support for the WooCommerce block checkout, keeping the same fields, masks and validation as the classic checkout. Adds shipping calculators and address autofill that ask only for the CEP. Values are still written to the historic meta keys, so gateways and other integrations are unaffected. Minimum requirements are now WordPress 6.7, PHP 7.4 and WooCommerce 9.9.

@@ -82,17 +82,31 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'bmwPublicParams',
 			array(
-				'state'        => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'required'     => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'mailcheck'    => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
-				'maskedinput'  => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-				'person_type'  => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
-				'ie_exempt'    => esc_js( __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'only_brazil'  => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
+				'state'             => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'required'          => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'mailcheck'         => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+				'maskedinput'       => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+				'person_type'       => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
+				'ie_exempt'         => esc_js( __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 				/* translators: %hint%: email hint */
-				'suggest_text' => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'suggest_text'      => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'postcode_autofill' => isset( $settings['postcode_autofill'] ) && ! self::correios_fills_addresses() ? 'yes' : 'no',
+				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)
 		);
+	}
+
+	/**
+	 * Whether WooCommerce Correios fills the classic address forms itself.
+	 *
+	 * Its autofill looks addresses up through CWS, so without it nothing is
+	 * filled and this plugin takes over.
+	 *
+	 * @return bool
+	 */
+	protected static function correios_fills_addresses() {
+		return class_exists( 'WC_Correios' ) && apply_filters( 'woocommerce_correios_enable_autofill_addresses', false ) && apply_filters( 'woocommerce_correios_cws_is_enabled', false );
 	}
 
 	/**

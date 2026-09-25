@@ -1,0 +1,239 @@
+/*
+ * Product page and cart shipping calculators. Inputs, buttons, notices and the
+ * cart's shipping options use WooCommerce's own classes, so these rules mostly
+ * lay them out.
+ */
+
+// WooCommerce's separator color, as its cart and checkout use, which a theme
+// can set. Otherwise it follows the text color, so dark themes get light lines.
+$border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transparent));
+
+.csbmw-shipping-calculator {
+	margin: 1.5em 0;
+	max-width: 30rem;
+
+	// WooCommerce pads every child after the first inside the add to cart
+	// form block, which the classic hook prints the calculator into.
+	padding-left: 0;
+	padding-right: 0;
+
+	.screen-reader-text {
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+}
+
+.csbmw-shipping-calculator-card,
+.csbmw-shipping-calculator-dialog {
+	// Product pages often set large body text.
+	font-size: var(--wp--preset--font-size--medium, 1em);
+}
+
+.csbmw-shipping-calculator-icon {
+	flex: none;
+	height: 20px;
+	width: 20px;
+}
+
+.csbmw-shipping-calculator-label {
+	display: block;
+	font-size: var(--wp--preset--font-size--small, 0.875em);
+	margin-bottom: 0.5em;
+}
+
+.csbmw-shipping-calculator-row {
+	display: flex;
+	gap: 0.75em;
+}
+
+.csbmw-shipping-calculator-input {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+// The field style WooCommerce gives its own checkout fields, so a theme that
+// restyles those restyles this one too.
+.csbmw-shipping-calculator .csbmw-shipping-calculator-input {
+	background-color: var(--wc-form-color-background, #fff);
+	border: var(--wc-form-border-width, 1px) solid var(--wc-form-border-color, rgba(32, 7, 7, 0.8));
+	border-radius: var(--wc-form-border-radius, 4px);
+	box-sizing: border-box;
+	color: var(--wc-form-color-text, #000);
+}
+
+.csbmw-shipping-calculator-button {
+	flex: none;
+}
+
+.csbmw-shipping-calculator-find {
+	align-items: center;
+	display: inline-flex;
+	font-size: var(--wp--preset--font-size--small, 0.8125em);
+	gap: 0.25em;
+	margin-top: 0.5em;
+
+	.csbmw-shipping-calculator-icon {
+		height: 14px;
+		width: 14px;
+	}
+}
+
+.csbmw-shipping-calculator-error {
+	margin-top: 0.75em;
+
+	&:empty {
+		display: none;
+	}
+
+	> * {
+		margin: 0;
+	}
+}
+
+.csbmw-shipping-calculator-destination {
+	align-items: center;
+	background: none;
+	border: 0;
+	border-bottom: 1px solid $border;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	gap: 0.75em;
+	padding: 0 0 14px;
+	text-align: left;
+	width: 100%;
+
+	&:focus-visible {
+		outline: 2px solid currentcolor;
+		outline-offset: 4px;
+	}
+
+	.csbmw-shipping-calculator-icon:last-child {
+		opacity: 0.6;
+	}
+}
+
+.csbmw-shipping-calculator-place {
+	flex: 1;
+}
+
+.csbmw-shipping-calculator-results {
+	padding-top: 14px;
+
+	&[aria-busy="true"] {
+		opacity: 0.5;
+	}
+
+	> * {
+		margin: 0;
+	}
+}
+
+.csbmw-shipping-calculator-message {
+	font-size: var(--wp--preset--font-size--small, 0.875em);
+	opacity: 0.8;
+}
+
+ul.csbmw-shipping-calculator-rates {
+	display: grid;
+	gap: 10px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.csbmw-shipping-calculator-rate {
+	align-items: center;
+	display: grid;
+	gap: 0.75em;
+	grid-template-columns: auto 1fr auto;
+}
+
+.csbmw-shipping-calculator-rate > svg {
+	height: 16px;
+	width: 16px;
+}
+
+.csbmw-shipping-calculator-rate-name,
+.csbmw-shipping-calculator-rate-cost {
+	font-weight: 600;
+}
+
+.csbmw-shipping-calculator-rate-delivery:not(:empty) {
+	margin-left: 0.25em;
+}
+
+.csbmw-shipping-calculator-rate-cost {
+	white-space: nowrap;
+}
+
+.csbmw-shipping-calculator-dialog {
+	background: var(--wp--preset--color--base, #fff);
+	border: 1px solid $border;
+	border-radius: var(--wc-card-border-radius, 8px);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast, inherit);
+	max-width: calc(100vw - 32px);
+	padding: 24px;
+	width: 28rem;
+
+	&::backdrop {
+		background: rgba(0, 0, 0, 0.45);
+	}
+
+	// A click on its padding focuses the dialog itself. The fields and
+	// buttons inside keep their own focus rings.
+	&:focus,
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.csbmw-shipping-calculator-dialog-header {
+	align-items: flex-start;
+	display: flex;
+	gap: 1em;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+
+.csbmw-shipping-calculator-dialog-title {
+	font-size: var(--wp--preset--font-size--medium, 1.125em);
+	font-weight: 600;
+	margin: 0;
+}
+
+.csbmw-shipping-calculator-close {
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	line-height: 0;
+	margin: -4px -4px 0 0;
+	padding: 4px;
+}
+
+.csbmw-cart-shipping-calculator {
+	margin: 0;
+
+	&[aria-busy="true"] .csbmw-shipping-calculator-results {
+		opacity: 0.6;
+	}
+
+	fieldset.csbmw-shipping-calculator-rates {
+		border: 0;
+		margin: 0;
+		min-width: 0;
+		padding: 0;
+	}
+
+	.wc-block-components-validation-error {
+		margin-top: 4px;
+	}
+}

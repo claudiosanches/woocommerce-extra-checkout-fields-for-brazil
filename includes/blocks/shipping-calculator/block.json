@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "csbmw/shipping-calculator",
+	"title": "Shipping Calculator",
+	"category": "woocommerce",
+	"icon": "car",
+	"description": "Lets customers check the shipping options for this product by entering their CEP.",
+	"keywords": [ "cep", "frete", "shipping" ],
+	"textdomain": "woocommerce-extra-checkout-fields-for-brazil",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"editorScript": "woocommerce-extra-checkout-fields-for-brazil-shipping-editor",
+	"viewScript": "woocommerce-extra-checkout-fields-for-brazil-shipping",
+	"style": "woocommerce-extra-checkout-fields-for-brazil-shipping"
+}

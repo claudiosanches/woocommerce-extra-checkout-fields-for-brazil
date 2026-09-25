@@ -3,6 +3,7 @@
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
+import { createAutofill } from '../shared/postcode';
 import '../../scss/frontend/frontend.scss';
 
 /**
@@ -108,6 +109,64 @@ jQuery( function ( $ ) {
 
 			if ( $().select2 ) {
 				$( '.wc-ecfb-select' ).select2();
+			}
+
+			if ( 'yes' === bmwPublicParams.postcode_autofill ) {
+				this.autofill( 'billing' );
+				this.autofill( 'shipping' );
+			}
+		},
+
+		/**
+		 * Fill an address from its CEP once the CEP is complete.
+		 *
+		 * @param {string} group Address group, billing or shipping.
+		 */
+		autofill( group ) {
+			// My Account renders the neighborhood as the block checkout's
+			// additional field, under its own name.
+			const fields = {
+				address_1: `#${ group }_address_1`,
+				neighborhood: `#${ group }_neighborhood, [name="_wc_${ group }/csbmw/neighborhood"]`,
+				city: `#${ group }_city`,
+				state: `#${ group }_state`,
+			};
+
+			const fill = createAutofill( {
+				url: bmwPublicParams.postcode_url,
+				postcode: () =>
+					'BR' === $( `#${ group }_country` ).val()
+						? $( `#${ group }_postcode` ).val()
+						: '',
+				read: () =>
+					Object.fromEntries(
+						Object.entries( fields ).map( ( [ key, selector ] ) => [
+							key,
+							$( selector ).val() || '',
+						] )
+					),
+				write: ( values ) => {
+					Object.entries( values ).forEach( ( [ key, value ] ) => {
+						const field = $( fields[ key ] ).val( value );
+
+						// The change event updates select2 and the checkout
+						// totals; validate clears a required field's error.
+						field.trigger(
+							'state' === key ? 'change' : 'validate'
+						);
+					} );
+				},
+			} );
+
+			$( document.body ).on(
+				'input change',
+				`#${ group }_postcode`,
+				fill
+			);
+
+			// A saved CEP with no street yet, as the cart calculator leaves it.
+			if ( ! $( fields.address_1 ).val() ) {
+				fill();
 			}
 		},
 

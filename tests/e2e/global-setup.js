@@ -1,4 +1,4 @@
-const { seedLegacyCustomer, wpCli } = require( './utils' );
+const { seedLegacyCustomer, seedPostcodes, wpCli } = require( './utils' );
 
 /**
  * Put the store into a state the specs can rely on: one purchasable product, a
@@ -76,4 +76,73 @@ module.exports = async function globalSetup() {
 	// A returning customer carrying only the historic meta, to prove the block
 	// checkout prefills from it.
 	seedLegacyCustomer();
+
+	// A physical product and two Brazilian rates for the shipping calculators.
+	const shippedId = wpCli( [
+		'eval',
+		`
+		$existing = get_page_by_path( 'csbmw-e2e-shipped-product', OBJECT, 'product' );
+		if ( $existing ) {
+			echo $existing->ID;
+			return;
+		}
+		$product = new WC_Product_Simple();
+		$product->set_name( 'CSBMW E2E Shipped Product' );
+		$product->set_slug( 'csbmw-e2e-shipped-product' );
+		$product->set_regular_price( '50.00' );
+		$product->set_weight( '1' );
+		$product->set_catalog_visibility( 'visible' );
+		$product->set_status( 'publish' );
+		echo $product->save();
+		`,
+	] );
+
+	wpCli( [ 'option', 'update', 'csbmw_e2e_shipped_product', shippedId ] );
+
+	wpCli( [
+		'eval',
+		`
+		foreach ( WC_Shipping_Zones::get_zones() as $zone ) {
+			if ( 'CSBMW E2E Brasil' === $zone['zone_name'] ) {
+				return;
+			}
+		}
+		$zone = new WC_Shipping_Zone();
+		$zone->set_zone_name( 'CSBMW E2E Brasil' );
+		$zone->add_location( 'BR', 'country' );
+		$zone->save();
+		foreach ( array( 'PAC E2E' => '12', 'SEDEX E2E' => '30' ) as $title => $cost ) {
+			$instance = $zone->add_shipping_method( 'flat_rate' );
+			update_option( 'woocommerce_flat_rate_' . $instance . '_settings', array(
+				'title'      => $title,
+				'cost'       => $cost,
+				'tax_status' => 'none',
+			) );
+		}
+		`,
+	] );
+
+	// A shortcode cart, which the classic calculator lives on.
+	const classicCart = wpCli( [
+		'eval',
+		`
+		$existing = get_page_by_path( 'csbmw-classic-cart' );
+		if ( $existing ) {
+			echo $existing->ID;
+			return;
+		}
+		echo wp_insert_post( array(
+			'post_title'   => 'CSBMW Classic Cart',
+			'post_name'    => 'csbmw-classic-cart',
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_content' => '[woocommerce_cart]',
+		) );
+		`,
+	] );
+
+	wpCli( [ 'option', 'update', 'csbmw_e2e_classic_cart_page', classicCart ] );
+
+	// The e2e store asks no CEP service, so every CEP a spec uses is seeded.
+	seedPostcodes();
 };

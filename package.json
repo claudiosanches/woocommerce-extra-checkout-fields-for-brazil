@@ -16,7 +16,8 @@
     "fix:css": "wp-scripts lint-style --fix",
     "fix:php": "composer run-script phpcbf",
     "test:unit": "wp-scripts test-unit-js",
-    "build:pot": "composer run-script makepot",
+    "build:pot": "npm run build && composer run-script makepot",
+    "build:json": "composer run-script makejson",
     "build:md": "wp-readme-to-md --screenshot-url=https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/{screenshot}.png",
     "plugin-zip": "wp-scripts plugin-zip",
     "env": "wp-env",
@@ -29,6 +30,7 @@
     "env:tests": "wp-env start --config .wp-env.tests.json"
   },
   "dependencies": {
+    "@wordpress/i18n": "^6.29.0",
     "mailcheck": "^1.1.1"
   },
   "devDependencies": {

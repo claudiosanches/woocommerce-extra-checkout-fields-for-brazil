@@ -20,6 +20,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
 		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
+		add_action( 'admin_post_csbmw_ship_only_to_brazil', array( $this, 'ship_only_to_brazil' ) );
 	}
 
 	/**
@@ -193,6 +194,61 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Set Shipping section.
+		add_settings_section(
+			'shipping_section',
+			__( 'Shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'shipping_section_callback' ),
+			$option,
+			$this->section_args( 'bmw-section-shipping' )
+		);
+
+		// Address autofill option.
+		add_settings_field(
+			'postcode_autofill',
+			__( 'Fill the address from the CEP', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'shipping_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'postcode_autofill',
+				'title' => __( 'Fill the address from the CEP', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked, the street, neighborhood, city and state are filled once the customer enters a CEP at checkout or in My Account.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
+		// CEP-only cart calculator option.
+		add_settings_field(
+			'postcode_only_calculator',
+			__( 'Ask only for the CEP in the cart', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'shipping_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'postcode_only_calculator',
+				'title' => __( 'Ask only for the CEP in the cart', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'If checked, the cart shipping calculator asks only for the CEP and fills the state and city from it. The cart block gets a calculator of its own.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
+		// Product page calculator option.
+		add_settings_field(
+			'product_shipping_calculator',
+			__( 'Shipping calculator on product pages', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'shipping_section',
+			array(
+				'menu'        => $option,
+				'id'          => 'product_shipping_calculator',
+				'title'       => __( 'Shipping calculator on product pages', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'       => __( 'If checked, the shipping calculator shows below the add to cart button.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Block themes can place the Shipping Calculator block in the product template instead, which then takes its place.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
 		// Set Design section.
 		add_settings_section(
 			'design_section',
@@ -321,6 +377,40 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			'after_section'  => '</div>',
 			'section_class'  => 'bmw-settings-section ' . $section_class,
 		);
+	}
+
+	/**
+	 * Explain what the CEP calculators need, and offer to set it up.
+	 */
+	public function shipping_section_callback() {
+		if ( Extra_Checkout_Fields_For_Brazil_Shipping::is_brazil_only() ) {
+			return;
+		}
+
+		$url = wp_nonce_url( admin_url( 'admin-post.php?action=csbmw_ship_only_to_brazil' ), 'csbmw_ship_only_to_brazil' );
+
+		include __DIR__ . '/views/html-shipping-notice.php';
+	}
+
+	/**
+	 * Restrict the store to Brazil, from the button in the shipping section.
+	 */
+	public function ship_only_to_brazil() {
+		check_admin_referer( 'csbmw_ship_only_to_brazil' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to change the store settings.', 'woocommerce-extra-checkout-fields-for-brazil' ), 403 );
+		}
+
+		update_option( 'woocommerce_allowed_countries', 'specific' );
+		update_option( 'woocommerce_specific_allowed_countries', array( 'BR' ) );
+		update_option( 'woocommerce_ship_to_countries', '' );
+
+		add_settings_error( 'wcbcf_settings', 'csbmw_ship_only_to_brazil', __( 'The store now sells and ships only to Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' ), 'success' );
+		set_transient( 'settings_errors', get_settings_errors(), 30 );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=woocommerce-extra-checkout-fields-for-brazil&settings-updated=true' ) );
+		exit;
 	}
 
 	/**
