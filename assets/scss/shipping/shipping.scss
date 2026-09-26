@@ -82,6 +82,10 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 	}
 }
 
+.csbmw-shipping-calculator-find-icon {
+	display: contents;
+}
+
 .csbmw-shipping-calculator-error {
 	margin-top: 0.75em;
 

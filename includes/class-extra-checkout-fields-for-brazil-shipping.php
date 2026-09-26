@@ -190,11 +190,12 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			self::HANDLE,
 			'bmwShippingParams',
 			array(
-				'postcodeUrl'     => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
-				'estimateUrl'     => WC_AJAX::get_endpoint( self::ESTIMATE_ENDPOINT ),
-				'findPostcodeUrl' => self::find_postcode_url(),
-				'postcodeOnly'    => self::is_postcode_only() ? 'yes' : 'no',
-				'notices'         => array(
+				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
+				'estimateUrl'      => WC_AJAX::get_endpoint( self::ESTIMATE_ENDPOINT ),
+				'findPostcodeUrl'  => self::find_postcode_url(),
+				'findPostcodeIcon' => self::icon( 'arrow-top-right-on-square' ),
+				'postcodeOnly'     => self::is_postcode_only() ? 'yes' : 'no',
+				'notices'          => array(
 					'error'  => self::notice_template( 'error' ),
 					'notice' => self::notice_template( 'notice' ),
 				),

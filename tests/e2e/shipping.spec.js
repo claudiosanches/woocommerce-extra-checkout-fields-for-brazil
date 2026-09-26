@@ -159,6 +159,10 @@ test.describe( 'Shipping calculators', () => {
 
 		const calculator = page.locator( '.csbmw-cart-shipping-calculator' );
 
+		await expect(
+			calculator.locator( '.csbmw-shipping-calculator-find svg' )
+		).toHaveCount( 1 );
+
 		await calculator
 			.getByLabel( 'CEP' )
 			.pressSequentially( POSTCODES.rio.postcode );
@@ -267,6 +271,9 @@ test.describe( 'Shipping calculators', () => {
 			await expect(
 				form.locator( '#calc_shipping_postcode_field label' )
 			).toHaveText( 'CEP' );
+			await expect(
+				form.locator( '.csbmw-shipping-calculator-find svg' )
+			).toHaveCount( 1 );
 
 			await form
 				.locator( '#calc_shipping_postcode' )

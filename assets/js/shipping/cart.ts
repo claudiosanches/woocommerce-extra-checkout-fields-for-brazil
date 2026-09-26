@@ -478,7 +478,13 @@ function Calculator( { cart }: { cart: Cart } ) {
 			__(
 				"I don't know my CEP",
 				'woocommerce-extra-checkout-fields-for-brazil'
-			)
+			),
+			el( 'span', {
+				className: 'csbmw-shipping-calculator-find-icon',
+				dangerouslySetInnerHTML: {
+					__html: params.findPostcodeIcon || '',
+				},
+			} )
 		),
 		el(
 			'div',

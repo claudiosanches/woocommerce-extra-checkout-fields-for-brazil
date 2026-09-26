@@ -18,6 +18,8 @@ export interface ShippingParams {
 	postcodeUrl?: string;
 	estimateUrl?: string;
 	findPostcodeUrl?: string;
+	// Trusted SVG markup printed by the plugin.
+	findPostcodeIcon?: string;
 	postcodeOnly?: string;
 	notices?: Partial< Record< NoticeType, string > >;
 }
@@ -569,6 +571,7 @@ function enhanceCartCalculator(): void {
 	link.href = params.findPostcodeUrl || '';
 	link.target = '_blank';
 	link.rel = 'noopener noreferrer';
+	link.insertAdjacentHTML( 'beforeend', params.findPostcodeIcon || '' );
 	row.append( link );
 }
 
