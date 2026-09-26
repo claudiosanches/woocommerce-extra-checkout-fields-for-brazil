@@ -1,3 +1,5 @@
+/// <reference types="jquery" />
+
 declare module '*.scss';
 
 declare module 'mailcheck' {
