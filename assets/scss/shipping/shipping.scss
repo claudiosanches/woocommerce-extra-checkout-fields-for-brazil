@@ -31,9 +31,10 @@ $small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
 	}
 }
 
-// A step below the product summary text, as secondary information.
+// A step below the product summary text, as secondary information, and no
+// larger than the root text on themes with large body text.
 .csbmw-shipping-calculator-card {
-	font-size: 0.875em;
+	font-size: min(0.875em, 1rem);
 }
 
 .csbmw-shipping-calculator-icon {
