@@ -26,8 +26,6 @@ interface BlocksParams {
 	namespace?: string;
 	maskedinput?: string;
 	mailcheck?: string;
-	suggestText?: string;
-	ieExemptLabel?: string;
 	postcodeAutofill?: string;
 	postcodeUrl?: string;
 }
@@ -308,10 +306,7 @@ function setupIeExempt(): void {
 		return;
 	}
 
-	bindIeExempt( input, {
-		label: params.ieExemptLabel,
-		write: writeControlled,
-	} );
+	bindIeExempt( input, { write: writeControlled } );
 }
 
 function setupMailcheck(): void {
@@ -323,7 +318,7 @@ function setupMailcheck(): void {
 
 	if ( email && ! email.dataset.bmwMailcheck ) {
 		email.dataset.bmwMailcheck = '1';
-		bindMailcheck( email, params.suggestText );
+		bindMailcheck( email );
 	}
 }
 

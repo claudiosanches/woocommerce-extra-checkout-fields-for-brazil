@@ -77,21 +77,17 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function enqueue_scripts() {
 		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic', array( 'jquery' ) );
 		Extra_Checkout_Fields_For_Brazil_Assets::register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic' );
+		Extra_Checkout_Fields_For_Brazil_Assets::set_translations( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 
 		$settings = get_option( 'wcbcf_settings' );
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'bmwPublicParams',
 			array(
-				'state'             => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'required'          => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 				'mailcheck'         => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 				'maskedinput'       => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 				'person_type'       => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
-				'ie_exempt'         => esc_js( __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
-				/* translators: %hint%: email hint */
-				'suggest_text'      => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
 				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)

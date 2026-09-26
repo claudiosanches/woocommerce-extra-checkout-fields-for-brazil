@@ -738,6 +738,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		$settings = (array) get_option( 'wcbcf_settings', array() );
 
 		Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-blocks', 'checkout' );
+		Extra_Checkout_Fields_For_Brazil_Assets::set_translations( 'woocommerce-extra-checkout-fields-for-brazil-blocks' );
 
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-blocks',
@@ -746,9 +747,6 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'namespace'        => self::FIELD_NAMESPACE,
 				'mailcheck'        => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
 				'maskedinput'      => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-				/* translators: %hint%: email hint */
-				'suggestText'      => __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'ieExemptLabel'    => __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'postcodeAutofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)

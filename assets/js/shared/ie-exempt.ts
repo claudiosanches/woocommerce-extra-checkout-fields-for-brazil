@@ -9,10 +9,11 @@
  * checkbox exists: the field still holds a plain string.
  */
 
+import { __ } from '@wordpress/i18n';
+
 export const EXEMPT_VALUE = 'ISENTO';
 
 export interface IeExemptOptions {
-	label?: string;
 	write?: ( input: HTMLInputElement, value: string ) => void;
 }
 
@@ -83,13 +84,12 @@ export function placeIeExempt( input: HTMLInputElement | null | undefined ) {
  *
  * @param input         State Registration input.
  * @param options       Options.
- * @param options.label Checkbox label.
  * @param options.write Writes a value into the input.
  * @return Removes the checkbox.
  */
 export function bindIeExempt(
 	input: HTMLInputElement | null | undefined,
-	{ label, write }: IeExemptOptions = {}
+	{ write }: IeExemptOptions = {}
 ): () => void {
 	if ( ! input ) {
 		return () => {};
@@ -132,7 +132,10 @@ export function bindIeExempt(
 	checkbox.className = 'wcbcf-ie-exempt-input';
 
 	const text = input.ownerDocument.createElement( 'span' );
-	text.textContent = label || 'Exempt';
+	text.textContent = __(
+		'Exempt from State Registration',
+		'woocommerce-extra-checkout-fields-for-brazil'
+	);
 
 	wrapper.append( checkbox, text );
 	anchor.insertAdjacentElement( 'afterend', wrapper );

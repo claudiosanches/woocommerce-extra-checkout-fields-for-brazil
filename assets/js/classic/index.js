@@ -1,5 +1,6 @@
 /* global bmwPublicParams */
 
+import { __ } from '@wordpress/i18n';
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
@@ -82,9 +83,7 @@ jQuery( function ( $ ) {
 				this.maskGeneral();
 			}
 
-			bindIeExempt( document.getElementById( 'billing_ie' ), {
-				label: bmwPublicParams.ie_exempt,
-			} );
+			bindIeExempt( document.getElementById( 'billing_ie' ) );
 
 			// Changing the country re-appends every row WooCommerce knows, in
 			// locale order, which leaves the checkbox behind at the top of the
@@ -101,10 +100,7 @@ jQuery( function ( $ ) {
 			);
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
-				bindMailcheck(
-					document.getElementById( 'billing_email' ),
-					bmwPublicParams.suggest_text
-				);
+				bindMailcheck( document.getElementById( 'billing_email' ) );
 			}
 
 			if ( $().select2 ) {
@@ -174,6 +170,24 @@ jQuery( function ( $ ) {
 
 		personTypeFields() {
 			/**
+			 * Mark the person type as required, as WooCommerce marks its own
+			 * fields.
+			 */
+			const markPersonTypeRequired = function () {
+				$( '.person-type-field label .required' ).remove();
+				$( '.person-type-field label' ).append(
+					' ',
+					$( '<abbr class="required">*</abbr>' ).attr(
+						'title',
+						__(
+							'required',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						)
+					)
+				);
+			};
+
+			/**
 			 * Control person type fields
 			 *
 			 * @param {string}  personType
@@ -227,12 +241,7 @@ jQuery( function ( $ ) {
 				}
 
 				if ( 'BR' === country ) {
-					$( '.person-type-field label .required' ).remove();
-					$( '.person-type-field label' ).append(
-						' <abbr class="required" title="' +
-							bmwPublicParams.required +
-							'">*</abbr>'
-					);
+					markPersonTypeRequired();
 				}
 			};
 
@@ -252,12 +261,7 @@ jQuery( function ( $ ) {
 			};
 
 			if ( 'no' === bmwPublicParams.only_brazil ) {
-				$( '.person-type-field label .required' ).remove();
-				$( '.person-type-field label' ).append(
-					' <abbr class="required" title="' +
-						bmwPublicParams.required +
-						'">*</abbr>'
-				);
+				markPersonTypeRequired();
 
 				maybeRunHandleFields();
 			} else {

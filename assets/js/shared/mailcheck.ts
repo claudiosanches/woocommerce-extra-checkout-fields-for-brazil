@@ -2,6 +2,7 @@
  * Email domain typo suggestions.
  */
 
+import { __, sprintf } from '@wordpress/i18n';
 import Mailcheck from 'mailcheck';
 
 const SUGGESTION_CLASS = 'wcbcf-mailsuggest';
@@ -32,18 +33,27 @@ const TOP_LEVEL_DOMAINS = [
 	'gov.br',
 ];
 
-const suggestionNode = ( input: HTMLInputElement ): Element => {
-	const existing = input.parentNode?.querySelector(
-		`.${ SUGGESTION_CLASS }`
-	);
+/**
+ * Where the suggestion goes: after the block checkout's field wrapper, which
+ * has a fixed height the text would overflow, or else after the input.
+ *
+ * @param input Email input.
+ * @return Element the suggestion follows.
+ */
+const anchorFor = ( input: HTMLInputElement ): Element =>
+	input.closest( '.wc-block-components-text-input' ) || input;
 
-	if ( existing ) {
+const suggestionNode = ( input: HTMLInputElement ): Element => {
+	const anchor = anchorFor( input );
+	const existing = anchor.nextElementSibling;
+
+	if ( existing?.classList.contains( SUGGESTION_CLASS ) ) {
 		return existing;
 	}
 
 	const node = document.createElement( 'div' );
 	node.className = SUGGESTION_CLASS;
-	input.insertAdjacentElement( 'afterend', node );
+	anchor.insertAdjacentElement( 'afterend', node );
 
 	return node;
 };
@@ -51,15 +61,13 @@ const suggestionNode = ( input: HTMLInputElement ): Element => {
 /**
  * Suggest a corrected domain below an email input when it looks misspelled.
  *
- * @param input    Email input to watch.
- * @param template Message with a `%hint%` placeholder.
+ * @param input Email input to watch.
  * @return Detaches the listener.
  */
 export function bindMailcheck(
-	input: HTMLInputElement | null | undefined,
-	template: string | null | undefined
+	input: HTMLInputElement | null | undefined
 ): () => void {
-	if ( ! input || ! template ) {
+	if ( ! input ) {
 		return () => {};
 	}
 
@@ -72,8 +80,12 @@ export function bindMailcheck(
 			topLevelDomains: TOP_LEVEL_DOMAINS,
 			email: input.value,
 			suggested: ( suggestion ) => {
-				node.textContent = template.replace(
-					'%hint%',
+				node.textContent = sprintf(
+					/* translators: %s: email address with the domain corrected */
+					__(
+						'Did you mean: %s?',
+						'woocommerce-extra-checkout-fields-for-brazil'
+					),
 					suggestion.full
 				);
 			},
