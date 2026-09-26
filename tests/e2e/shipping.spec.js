@@ -306,6 +306,12 @@ test.describe( 'Shipping calculators', () => {
 		await page.waitForSelector( '#shipping-postcode' );
 		await page.waitForLoadState( 'networkidle' );
 
+		// The filled address is saved to the server, and its answer resets
+		// the form, so the next CEP is typed after it.
+		const saved = page.waitForResponse( ( response ) =>
+			response.url().includes( '/wc/store/v1/batch' )
+		);
+
 		await page
 			.locator( '#shipping-postcode' )
 			.pressSequentially( POSTCODES.saoPaulo.postcode );
@@ -334,6 +340,7 @@ test.describe( 'Shipping calculators', () => {
 			.toBe( 'Rua E2E da Sé' );
 
 		// Another CEP takes the number of the old street with it.
+		await saved;
 		await page.locator( '#shipping-csbmw-number' ).fill( '100' );
 		await page.locator( '#shipping-postcode' ).fill( '' );
 		await page
