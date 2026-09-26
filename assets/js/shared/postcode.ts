@@ -231,23 +231,28 @@ export function describeAddress( address: PostcodeAddress ): string {
 		.join( ', ' );
 }
 
-export type AutofillKey = 'address_1' | 'neighborhood' | 'city' | 'state';
+export type AutofillKey =
+	| 'address_1'
+	| 'address_2'
+	| 'number'
+	| 'neighborhood'
+	| 'city'
+	| 'state';
 
 export type AutofillValues = Record< AutofillKey, string >;
 
-const AUTOFILL_KEYS: AutofillKey[] = [
-	'address_1',
-	'neighborhood',
-	'city',
-	'state',
-];
+type FoundKey = 'address_1' | 'neighborhood' | 'city' | 'state';
+
+const FOUND_KEYS: FoundKey[] = [ 'address_1', 'neighborhood', 'city', 'state' ];
 
 /**
  * Values to write into an address form once a lookup answers.
  *
  * A field the customer edited while the lookup ran is left alone. A field the
  * address has no value for, as with a CEP covering a whole city, is cleared
- * only when it still holds what an earlier lookup put there.
+ * when it still holds what an earlier lookup put there, or when the CEP moved
+ * to another city. The number and complement go with the street they
+ * belonged to.
  *
  * @param address Address found.
  * @param current Form values now.
@@ -261,25 +266,47 @@ export function planAutofill(
 	started: AutofillValues,
 	filled: Partial< AutofillValues >
 ): Partial< AutofillValues > {
-	const found: AutofillValues = {
+	const found: Record< FoundKey, string > = {
 		address_1: address.address,
 		neighborhood: address.neighborhood,
 		city: address.city,
 		state: address.state,
 	};
 	const plan: Partial< AutofillValues > = {};
+	const untouched = ( key: AutofillKey ): boolean =>
+		current[ key ] === started[ key ];
+	const moved =
+		( !! started.city &&
+			0 !==
+				started.city.localeCompare( address.city, 'pt-BR', {
+					sensitivity: 'base',
+				} ) ) ||
+		( !! started.state && started.state !== address.state );
 
-	AUTOFILL_KEYS.forEach( ( key ) => {
-		if ( current[ key ] !== started[ key ] ) {
+	FOUND_KEYS.forEach( ( key ) => {
+		if ( ! untouched( key ) ) {
 			return;
 		}
 
 		if ( found[ key ] ) {
 			plan[ key ] = found[ key ];
-		} else if ( current[ key ] && current[ key ] === filled[ key ] ) {
+		} else if (
+			current[ key ] &&
+			( moved || current[ key ] === filled[ key ] )
+		) {
 			plan[ key ] = '';
 		}
 	} );
+
+	const street = plan.address_1 ?? current.address_1;
+
+	if ( moved || ( current.address_1 && street !== current.address_1 ) ) {
+		( [ 'address_2', 'number' ] as AutofillKey[] ).forEach( ( key ) => {
+			if ( untouched( key ) && current[ key ] ) {
+				plan[ key ] = '';
+			}
+		} );
+	}
 
 	return plan;
 }

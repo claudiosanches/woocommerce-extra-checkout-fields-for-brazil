@@ -332,6 +332,20 @@ test.describe( 'Shipping calculators', () => {
 				)
 			)
 			.toBe( 'Rua E2E da Sé' );
+
+		// Another CEP takes the number of the old street with it.
+		await page.locator( '#shipping-csbmw-number' ).fill( '100' );
+		await page.locator( '#shipping-postcode' ).fill( '' );
+		await page
+			.locator( '#shipping-postcode' )
+			.pressSequentially( POSTCODES.rio.postcode );
+
+		await expect( page.locator( '#shipping-address_1' ) ).toHaveValue(
+			'Avenida E2E Pio X'
+		);
+		await expect( page.locator( '#shipping-csbmw-number' ) ).toHaveValue(
+			''
+		);
 	} );
 
 	test( 'fills the classic checkout address from the CEP', async ( {
@@ -354,6 +368,18 @@ test.describe( 'Shipping calculators', () => {
 			'Rio de Janeiro'
 		);
 		await expect( page.locator( '#billing_state' ) ).toHaveValue( 'RJ' );
+
+		// Another CEP takes the number of the old street with it.
+		await page.fill( '#billing_number', '100' );
+		await page.fill( '#billing_postcode', '' );
+		await page
+			.locator( '#billing_postcode' )
+			.pressSequentially( POSTCODES.saoPaulo.postcode );
+
+		await expect( page.locator( '#billing_address_1' ) ).toHaveValue(
+			'Rua E2E da Sé'
+		);
+		await expect( page.locator( '#billing_number' ) ).toHaveValue( '' );
 	} );
 
 	test( 'offers to restrict the store to Brazil', async ( { page } ) => {

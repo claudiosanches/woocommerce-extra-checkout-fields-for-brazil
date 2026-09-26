@@ -207,6 +207,7 @@ const autofills: Partial< Record< Group, () => void > > = {};
  */
 function autofillFor( group: Group ): () => void {
 	const neighborhood = `${ namespace }/neighborhood`;
+	const number = `${ namespace }/number`;
 	const address = (): Record< string, string > => {
 		const data = window.wp?.data
 			?.select( 'wc/store/cart' )
@@ -233,6 +234,8 @@ function autofillFor( group: Group ): () => void {
 
 			return {
 				address_1: current.address_1 || '',
+				address_2: current.address_2 || '',
+				number: current[ number ] || '',
 				neighborhood: current[ neighborhood ] || '',
 				city: current.city || '',
 				state: current.state || '',
@@ -245,7 +248,11 @@ function autofillFor( group: Group ): () => void {
 				return;
 			}
 
-			const { neighborhood: value, ...rest } = values;
+			const {
+				neighborhood: neighborhoodValue,
+				number: numberValue,
+				...rest
+			} = values;
 			const update: Record< string, string > = {
 				...rest,
 				postcode: formatCep(
@@ -253,8 +260,12 @@ function autofillFor( group: Group ): () => void {
 				),
 			};
 
-			if ( undefined !== value ) {
-				update[ neighborhood ] = value;
+			if ( undefined !== neighborhoodValue ) {
+				update[ neighborhood ] = neighborhoodValue;
+			}
+
+			if ( undefined !== numberValue ) {
+				update[ number ] = numberValue;
 			}
 
 			if ( 'billing' === group ) {

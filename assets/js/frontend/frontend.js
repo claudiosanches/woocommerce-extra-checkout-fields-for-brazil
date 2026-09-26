@@ -123,10 +123,12 @@ jQuery( function ( $ ) {
 		 * @param {string} group Address group, billing or shipping.
 		 */
 		autofill( group ) {
-			// My Account renders the neighborhood as the block checkout's
-			// additional field, under its own name.
+			// My Account renders the number and neighborhood as the block
+			// checkout's additional fields, under their own names.
 			const fields = {
 				address_1: `#${ group }_address_1`,
+				address_2: `#${ group }_address_2`,
+				number: `#${ group }_number, [name="_wc_${ group }/csbmw/number"]`,
 				neighborhood: `#${ group }_neighborhood, [name="_wc_${ group }/csbmw/neighborhood"]`,
 				city: `#${ group }_city`,
 				state: `#${ group }_state`,

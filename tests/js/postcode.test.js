@@ -96,7 +96,14 @@ describe( 'lookupPostcode', () => {
 } );
 
 describe( 'planAutofill', () => {
-	const EMPTY = { address_1: '', neighborhood: '', city: '', state: '' };
+	const EMPTY = {
+		address_1: '',
+		address_2: '',
+		number: '',
+		neighborhood: '',
+		city: '',
+		state: '',
+	};
 
 	it( 'fills every field the address has', () => {
 		expect( planAutofill( ADDRESS, EMPTY, EMPTY, {} ) ).toEqual( {
@@ -146,6 +153,85 @@ describe( 'planAutofill', () => {
 			planAutofill( citywide, current, current, {} ).address_1
 		).toBeUndefined();
 	} );
+
+	it( 'clears what the customer typed when the CEP moves to another city', () => {
+		const current = {
+			address_1: 'Rua digitada',
+			address_2: 'Apto 51',
+			number: '12',
+			neighborhood: 'Centro',
+			city: 'Poconé',
+			state: 'MT',
+		};
+		const citywide = {
+			...ADDRESS,
+			address: '',
+			neighborhood: '',
+			city: 'Águas Vermelhas',
+			state: 'MG',
+		};
+
+		expect( planAutofill( citywide, current, current, {} ) ).toEqual( {
+			address_1: '',
+			address_2: '',
+			number: '',
+			neighborhood: '',
+			city: 'Águas Vermelhas',
+			state: 'MG',
+		} );
+	} );
+
+	it( 'keeps a typed street when a CEP of the same city is corrected', () => {
+		const current = {
+			...EMPTY,
+			address_1: 'Rua digitada',
+			number: '12',
+			city: 'Pocone',
+			state: 'MT',
+		};
+		const citywide = {
+			...ADDRESS,
+			address: '',
+			neighborhood: '',
+			city: 'Poconé',
+			state: 'MT',
+		};
+		const plan = planAutofill( citywide, current, current, {} );
+
+		expect( plan.address_1 ).toBeUndefined();
+		expect( plan.number ).toBeUndefined();
+	} );
+
+	it( 'clears the number and complement of a replaced street', () => {
+		const current = {
+			...EMPTY,
+			address_1: 'Rua Direita',
+			address_2: 'Sala 3',
+			number: '100',
+			city: 'São Paulo',
+			state: 'SP',
+		};
+		const plan = planAutofill( ADDRESS, current, current, {} );
+
+		expect( plan.address_1 ).toBe( 'Praça da Sé' );
+		expect( plan.address_2 ).toBe( '' );
+		expect( plan.number ).toBe( '' );
+	} );
+
+	it( 'keeps the number when the same street is found again', () => {
+		const current = {
+			...EMPTY,
+			address_1: 'Praça da Sé',
+			number: '100',
+			neighborhood: 'Sé',
+			city: 'São Paulo',
+			state: 'SP',
+		};
+
+		expect(
+			planAutofill( ADDRESS, current, current, current ).number
+		).toBeUndefined();
+	} );
 } );
 
 describe( 'createAutofill', () => {
@@ -168,6 +254,8 @@ describe( 'createAutofill', () => {
 			postcode: () => '04538-133',
 			read: () => ( {
 				address_1: '',
+				address_2: '',
+				number: '',
 				neighborhood: '',
 				city: '',
 				state: '',
