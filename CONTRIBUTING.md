@@ -97,8 +97,9 @@ changes.
 
 ```
 assets/js/shared/     modules shared by both checkouts
-assets/js/blocks/     block checkout enhancements
-assets/js/frontend/   classic checkout, jQuery based
+assets/js/checkout/   block checkout enhancements
+assets/js/blocks/     blocks, one folder each with its block.json
+assets/js/classic/    classic checkout and My Account forms, jQuery based
 assets/js/admin/      order screen and settings
 includes/             plugin classes
 ```

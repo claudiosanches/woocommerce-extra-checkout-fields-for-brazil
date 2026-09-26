@@ -74,8 +74,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
-		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', 'frontend', array( 'jquery' ) );
-		Extra_Checkout_Fields_For_Brazil_Assets::register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', 'frontend' );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic', array( 'jquery' ) );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic' );
 
 		$settings = get_option( 'wcbcf_settings' );
 		wp_localize_script(

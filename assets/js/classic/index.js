@@ -3,7 +3,7 @@
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
-import '../../scss/frontend/frontend.scss';
+import '../../scss/classic/classic.scss';
 
 /**
  * Classic (shortcode) checkout and account address form.
