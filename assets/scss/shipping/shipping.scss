@@ -27,12 +27,6 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 	}
 }
 
-.csbmw-shipping-calculator-card,
-.csbmw-shipping-calculator-dialog {
-	// Product pages often set large body text.
-	font-size: var(--wp--preset--font-size--medium, 1em);
-}
-
 .csbmw-shipping-calculator-icon {
 	flex: none;
 	height: 20px;
@@ -249,7 +243,7 @@ ul.csbmw-shipping-calculator-rates {
 }
 
 .csbmw-shipping-calculator-dialog-title {
-	font-size: var(--wp--preset--font-size--medium, 1.125em);
+	font-size: 1.125em;
 	font-weight: 600;
 	margin: 0;
 }
