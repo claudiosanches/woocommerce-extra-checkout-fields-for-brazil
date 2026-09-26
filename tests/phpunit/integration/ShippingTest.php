@@ -187,6 +187,45 @@ class ShippingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The CEP entered on a product page reaches the cart once.
+	 */
+	public function test_cart_takes_the_remembered_postcode_once() {
+		if ( null === WC()->session ) {
+			wc_load_cart();
+		}
+
+		$zone = new WC_Shipping_Zone();
+		$zone->set_zone_name( 'Brasil' );
+		$zone->add_location( 'BR', 'country' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+
+		$product = new WC_Product_Simple();
+		$product->set_regular_price( '10' );
+		$product->save();
+
+		WC()->cart->empty_cart();
+		WC()->cart->add_to_cart( $product->get_id() );
+		WC()->session->set( Extra_Checkout_Fields_For_Brazil_Shipping::APPLIED_POSTCODE, null );
+
+		$_COOKIE[ Extra_Checkout_Fields_For_Brazil_Privacy::POSTCODE_COOKIE ] = '20040020';
+
+		$this->shipping->apply_remembered_postcode( WC()->cart );
+
+		$this->assertSame( '20040-020', WC()->customer->get_shipping_postcode() );
+		$this->assertSame( 'Praça Pio X', WC()->customer->get_shipping_address_1() );
+
+		// A CEP typed at checkout afterwards stays.
+		WC()->customer->set_shipping_postcode( '01001-000' );
+		$this->shipping->apply_remembered_postcode( WC()->cart );
+
+		$this->assertSame( '01001-000', WC()->customer->get_shipping_postcode() );
+
+		unset( $_COOKIE[ Extra_Checkout_Fields_For_Brazil_Privacy::POSTCODE_COOKIE ] );
+		WC()->cart->empty_cart();
+	}
+
+	/**
 	 * A guest's session keeps the number and neighborhood the classic
 	 * checkout reads.
 	 */

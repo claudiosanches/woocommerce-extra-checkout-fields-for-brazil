@@ -176,6 +176,31 @@ test.describe( 'Shipping calculators', () => {
 		await expect( shipping ).toContainText( /30[.,]00/ );
 	} );
 
+	test( 'quotes the cart for the CEP entered on the product page', async ( {
+		page,
+	} ) => {
+		const calculator = await openProduct( page );
+		const empty = calculator.locator( '.csbmw-shipping-calculator-empty' );
+
+		await empty
+			.locator( 'input[name="postcode"]' )
+			.pressSequentially( POSTCODES.rio.postcode );
+		await empty.getByRole( 'button', { name: 'Get quote' } ).click();
+		await expect(
+			calculator.locator( '.csbmw-shipping-calculator-destination' )
+		).toContainText( 'Rio de Janeiro - RJ' );
+
+		await addShippedProduct( page );
+		await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+		await expect(
+			page.locator( '.csbmw-cart-shipping-calculator' )
+		).toContainText( 'Avenida E2E Pio X, Centro E2E, Rio de Janeiro - RJ' );
+		await expect(
+			page.locator( '.wc-block-components-totals-shipping' )
+		).toContainText( 'PAC E2E' );
+	} );
+
 	test( 'asks only for the CEP in the classic cart', async ( { page } ) => {
 		const cartPage = wpCli( [
 			'option',

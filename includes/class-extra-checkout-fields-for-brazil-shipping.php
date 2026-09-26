@@ -36,6 +36,13 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	const FIND_POSTCODE_URL = 'https://buscacepinter.correios.com.br/app/endereco/index.php';
 
 	/**
+	 * Session key of the remembered CEP last written to the customer.
+	 *
+	 * @var string
+	 */
+	const APPLIED_POSTCODE = 'csbmw_applied_postcode';
+
+	/**
 	 * Products whose calculator was already printed on this page.
 	 *
 	 * @var int[]
@@ -83,6 +90,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		add_filter( 'woocommerce_cart_calculate_shipping_address', array( $this, 'calculator_address' ) );
 		add_action( 'woocommerce_calculated_shipping', array( $this, 'remember_calculator_address' ) );
 		add_filter( 'woocommerce_customer_allowed_session_meta_keys', array( $this, 'session_meta_keys' ) );
+		add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'apply_remembered_postcode' ) );
 		add_action( 'woocommerce_before_shipping_calculator', array( $this, 'enqueue_calculator_script' ) );
 
 		// Cart block.
@@ -473,8 +481,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	/**
 	 * Keep the street and neighborhood the classic calculator found.
 	 *
-	 * WooCommerce saves only the country, state, city and CEP, and fills the
-	 * billing address too while the customer has not given a name.
+	 * WooCommerce saves only the country, state, city and CEP.
 	 *
 	 * @return void
 	 */
@@ -483,16 +490,65 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			return;
 		}
 
+		self::save_customer_address( WC()->customer, $this->calculated['found'], $this->calculated['shipping'], $this->calculated['billing'] );
+		$this->calculated = null;
+	}
+
+	/**
+	 * Quote the cart for the CEP the customer last entered elsewhere, such as
+	 * on a product page.
+	 *
+	 * Each CEP is applied once, so an address changed later in the cart or at
+	 * checkout is not overwritten.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return void
+	 */
+	public function apply_remembered_postcode( $cart ) {
+		$cookie   = Extra_Checkout_Fields_For_Brazil_Privacy::POSTCODE_COOKIE;
+		$postcode = isset( $_COOKIE[ $cookie ] ) ? Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( wp_unslash( $_COOKIE[ $cookie ] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reduced to digits.
 		$customer = WC()->customer;
 
-		self::set_customer_address( $customer, 'shipping', $this->calculated['found'], $this->calculated['shipping'] );
+		if ( 8 !== strlen( $postcode ) || null === WC()->session || ! $customer instanceof WC_Customer || ! self::is_brazil_only() || ! $cart->needs_shipping() ) {
+			return;
+		}
+
+		if ( WC()->session->get( self::APPLIED_POSTCODE ) === $postcode ) {
+			return;
+		}
+
+		WC()->session->set( self::APPLIED_POSTCODE, $postcode );
+
+		$found = Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( $postcode );
+
+		if ( null === $found ) {
+			return;
+		}
+
+		self::save_customer_address( $customer, $found, $customer->get_shipping_postcode(), $customer->get_billing_postcode() );
+		$customer->set_calculated_shipping( true );
+	}
+
+	/**
+	 * Save an address found by CEP as the customer's shipping address, and as
+	 * the billing address too while the customer has not given a name.
+	 *
+	 * @param WC_Customer $customer Customer.
+	 * @param array       $found    Address found by CEP.
+	 * @param string      $shipping CEP the shipping address held before.
+	 * @param string      $billing  CEP the billing address held before.
+	 *
+	 * @return void
+	 */
+	protected static function save_customer_address( $customer, $found, $shipping, $billing ) {
+		self::set_customer_address( $customer, 'shipping', $found, $shipping );
 
 		if ( ! $customer->get_billing_first_name() ) {
-			self::set_customer_address( $customer, 'billing', $this->calculated['found'], $this->calculated['billing'] );
+			self::set_customer_address( $customer, 'billing', $found, $billing );
 		}
 
 		$customer->save();
-		$this->calculated = null;
 	}
 
 	/**
