@@ -559,3 +559,28 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil.php:136
 msgid "Contribute"
 msgstr ""
+
+#: assets/js/blocks/order-customer-data/block.json
+msgctxt "block title"
+msgid "Customer Data"
+msgstr ""
+
+#: assets/js/blocks/order-customer-data/block.json
+msgctxt "block description"
+msgid "Shows the customer's documents, birthdate, gender and cell phone on the order confirmation."
+msgstr ""
+
+#: assets/js/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "cpf"
+msgstr ""
+
+#: assets/js/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "cnpj"
+msgstr ""
+
+#: assets/js/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "order"
+msgstr ""

@@ -210,6 +210,23 @@ test.describe( 'Block checkout', () => {
 		// Gender is a stable key in the block store and a label in the historic one.
 		expect( meta[ '_wc_other/csbmw/gender' ] ).toBe( 'female' );
 		expect( meta._billing_gender ).toBe( 'Female' );
+
+		// The confirmation lists them in a section of their own, away from
+		// WooCommerce's additional information.
+		// The block the order confirmation template gets from block hooks.
+		const customerData = page.locator(
+			'.wp-block-csbmw-order-customer-data'
+		);
+
+		await expect( customerData ).toContainText( 'Customer data' );
+		await expect( customerData ).toContainText( 'Female' );
+		await expect( page.getByText( VALID.cpf ) ).toHaveCount( 1 );
+		await expect(
+			customerData.getByText( VALID.cpf, { exact: true } )
+		).toBeVisible();
+		await expect(
+			page.getByRole( 'heading', { name: 'Additional information' } )
+		).toHaveCount( 0 );
 	} );
 
 	test( 'requires a company from a legal person', async ( { page } ) => {

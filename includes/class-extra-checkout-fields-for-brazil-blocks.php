@@ -737,7 +737,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 
 		$settings = (array) get_option( 'wcbcf_settings', array() );
 
-		Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-blocks', 'blocks' );
+		Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-blocks', 'checkout' );
 
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-blocks',
