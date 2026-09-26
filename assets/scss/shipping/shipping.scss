@@ -8,6 +8,10 @@
 // can set. Otherwise it follows the text color, so dark themes get light lines.
 $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transparent));
 
+// The theme's small size, as WooCommerce gives its fields on block themes,
+// but never above a step below the card text, as some themes set it large.
+$small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
+
 .csbmw-shipping-calculator {
 	margin: 1.5em 0;
 	max-width: 30rem;
@@ -40,7 +44,7 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 
 .csbmw-shipping-calculator-label {
 	display: block;
-	font-size: 0.875em;
+	font-size: $small-text;
 	margin-bottom: 0.5em;
 }
 
@@ -78,7 +82,7 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 .csbmw-shipping-calculator-find {
 	align-items: center;
 	display: inline-flex;
-	font-size: 0.875em;
+	font-size: $small-text;
 	gap: 0.25em;
 	margin-top: 0.5em;
 
