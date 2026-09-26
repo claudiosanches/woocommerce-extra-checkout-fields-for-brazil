@@ -743,12 +743,14 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			'woocommerce-extra-checkout-fields-for-brazil-blocks',
 			'bmwBlocksParams',
 			array(
-				'namespace'     => self::FIELD_NAMESPACE,
-				'mailcheck'     => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
-				'maskedinput'   => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+				'namespace'        => self::FIELD_NAMESPACE,
+				'mailcheck'        => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+				'maskedinput'      => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 				/* translators: %hint%: email hint */
-				'suggestText'   => __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'ieExemptLabel' => __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'suggestText'      => __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'ieExemptLabel'    => __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'postcodeAutofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
+				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)
 		);
 	}

@@ -10,8 +10,12 @@
  * before that render committed would be reverted with it.
  */
 
+import { dispatch, select } from '@wordpress/data';
+import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
+import { getSetting } from '@woocommerce/settings';
 import type { Formatter, MaskName } from '../shared/mask';
-import { caretIndex, caretOffset, formatters } from '../shared/mask';
+import { caretIndex, caretOffset, formatCep, formatters } from '../shared/mask';
+import { createAutofill } from '../shared/postcode';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { stripCountryFormats } from '../shared/address-format';
@@ -24,18 +28,31 @@ interface BlocksParams {
 	mailcheck?: string;
 	suggestText?: string;
 	ieExemptLabel?: string;
+	postcodeAutofill?: string;
+	postcodeUrl?: string;
+}
+
+interface CartAddressStore {
+	setBillingAddress: ( address: Record< string, string > ) => void;
+	setShippingAddress: ( address: Record< string, string > ) => void;
+}
+
+interface CustomerData {
+	billingAddress?: Record< string, string >;
+	shippingAddress?: Record< string, string >;
 }
 
 declare global {
 	interface Window {
 		bmwBlocksParams?: BlocksParams;
-		wcSettings?: { countryData?: CountryFormats };
 	}
 }
 
 // The address card is formatted in the browser, before anything this script
 // does on the page, so the formats are cleaned up as soon as it runs.
-stripCountryFormats( window.wcSettings?.countryData );
+stripCountryFormats(
+	getSetting< CountryFormats | undefined >( 'countryData' )
+);
 
 // The DOM defines this accessor on every input, and going through it is what
 // keeps React's value tracker from discarding the rewrite.
@@ -165,6 +182,118 @@ function writeControlled( input: HTMLInputElement, value: string ): void {
 	input.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
 }
 
+type Group = 'billing' | 'shipping';
+
+const autofills: Partial< Record< Group, () => void > > = {};
+
+/**
+ * Address autofill for one address form.
+ *
+ * The values go through the cart store rather than the inputs, since the
+ * state is a select and the neighborhood an additional field. Writing to the
+ * store skips the form's own change handler, which is what copies shipping
+ * into billing while "Use same address for billing" is ticked, so that copy
+ * is made here too.
+ *
+ * @param group Address group.
+ * @return Call whenever the CEP may have changed.
+ */
+function autofillFor( group: Group ): () => void {
+	const neighborhood = `${ namespace }/neighborhood`;
+	const number = `${ namespace }/number`;
+	const address = (): Record< string, string > => {
+		const data: CustomerData = select( CART_STORE_KEY ).getCustomerData();
+
+		return (
+			( 'shipping' === group
+				? data?.shippingAddress
+				: data?.billingAddress ) || {}
+		);
+	};
+
+	return createAutofill( {
+		url: params.postcodeUrl || '',
+		postcode: () => {
+			const id = `${ group }-postcode`;
+
+			return 'BR' === countryFor( id )
+				? inputById( id )?.value || ''
+				: '';
+		},
+		read: () => {
+			const current = address();
+
+			return {
+				address_1: current.address_1 || '',
+				address_2: current.address_2 || '',
+				number: current[ number ] || '',
+				neighborhood: current[ neighborhood ] || '',
+				city: current.city || '',
+				state: current.state || '',
+			};
+		},
+		write: ( values ) => {
+			const store = dispatch( CART_STORE_KEY ) as CartAddressStore;
+
+			const {
+				neighborhood: neighborhoodValue,
+				number: numberValue,
+				...rest
+			} = values;
+			const update: Record< string, string > = {
+				...rest,
+				postcode: formatCep(
+					inputById( `${ group }-postcode` )?.value
+				),
+			};
+
+			if ( undefined !== neighborhoodValue ) {
+				update[ neighborhood ] = neighborhoodValue;
+			}
+
+			if ( undefined !== numberValue ) {
+				update[ number ] = numberValue;
+			}
+
+			if ( 'billing' === group ) {
+				store.setBillingAddress( update );
+
+				return;
+			}
+
+			store.setShippingAddress( update );
+
+			if ( select( CHECKOUT_STORE_KEY ).getUseShippingAsBilling() ) {
+				store.setBillingAddress( { ...address(), ...update } );
+			}
+		},
+	} );
+}
+
+/**
+ * Fill an address from its CEP once the CEP is complete.
+ *
+ * @param event Input event.
+ */
+function handleAutofill( event: Event ): void {
+	const input = event.target;
+
+	if ( ! ( input instanceof window.HTMLInputElement ) ) {
+		return;
+	}
+
+	const group = /^(billing|shipping)-postcode$/.exec( input.id )?.[ 1 ] as
+		| Group
+		| undefined;
+
+	if ( ! group ) {
+		return;
+	}
+
+	autofills[ group ] ??= autofillFor( group );
+	autofills[ group ]();
+}
+
 function setupIeExempt(): void {
 	const id = field( 'contact', 'ie' );
 	const input = inputById( id );
@@ -201,6 +330,10 @@ function setupMailcheck(): void {
 function init(): void {
 	if ( 'yes' === params.maskedinput ) {
 		document.addEventListener( 'input', handleInput, true );
+	}
+
+	if ( 'yes' === params.postcodeAutofill ) {
+		document.addEventListener( 'input', handleAutofill );
 	}
 
 	setupIeExempt();

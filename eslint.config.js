@@ -3,13 +3,26 @@ const defaultConfig = require( '@wordpress/scripts/config/eslint.config.cjs' );
 module.exports = [
 	...defaultConfig,
 	{
-		ignores: [ 'build/**', 'node_modules/**', 'vendor/**', 'languages/**' ],
+		ignores: [
+			'artifacts/**',
+			'build/**',
+			'node_modules/**',
+			'vendor/**',
+			'languages/**',
+		],
 	},
 	{
 		languageOptions: {
 			globals: {
 				jQuery: 'readonly',
 			},
+		},
+	},
+	{
+		// The cart rates copy WooCommerce's radio control, whose label text
+		// sits a few elements inside the label.
+		rules: {
+			'jsx-a11y/label-has-associated-control': [ 'error', { depth: 5 } ],
 		},
 	},
 	{

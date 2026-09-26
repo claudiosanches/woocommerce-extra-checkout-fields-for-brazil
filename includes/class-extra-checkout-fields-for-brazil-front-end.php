@@ -20,6 +20,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function __construct() {
 		// Load public-facing scripts.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'replace_correios_autofill' ), 20 );
 		add_action( 'woocommerce_after_edit_account_address_form', array( $this, 'load_scripts' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'load_scripts' ) );
 
@@ -82,17 +83,36 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'bmwPublicParams',
 			array(
-				'state'        => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'required'     => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'mailcheck'    => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
-				'maskedinput'  => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-				'person_type'  => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
-				'ie_exempt'    => esc_js( __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'only_brazil'  => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
+				'state'             => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'required'          => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'mailcheck'         => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+				'maskedinput'       => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+				'person_type'       => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
+				'ie_exempt'         => esc_js( __( 'Exempt from State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 				/* translators: %hint%: email hint */
-				'suggest_text' => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'suggest_text'      => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
+				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)
 		);
+	}
+
+	/**
+	 * Leave the address autofill to this plugin alone.
+	 *
+	 * WooCommerce Correios writes the neighborhood into the second address
+	 * line on forms without its classic field, as My Account renders it. The
+	 * lookup here asks Correios first and shares its table, so nothing is lost.
+	 *
+	 * @return void
+	 */
+	public function replace_correios_autofill() {
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( isset( $settings['postcode_autofill'] ) ) {
+			wp_dequeue_script( 'woocommerce-correios-autofill-addresses' );
+		}
 	}
 
 	/**

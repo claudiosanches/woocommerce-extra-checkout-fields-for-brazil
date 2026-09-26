@@ -98,6 +98,83 @@ const ALL_FIELDS = {
 	validate_cnpj: 1,
 };
 
+/**
+ * Addresses seeded into the CEP table. The streets are made up, so a spec that
+ * sees them knows the table answered rather than a lookup service.
+ */
+const POSTCODES = {
+	saoPaulo: {
+		postcode: '01001000',
+		address: 'Rua E2E da Sé',
+		neighborhood: 'Centro E2E',
+		city: 'São Paulo',
+		state: 'SP',
+	},
+	rio: {
+		postcode: '20040020',
+		address: 'Avenida E2E Pio X',
+		neighborhood: 'Centro E2E',
+		city: 'Rio de Janeiro',
+		state: 'RJ',
+	},
+};
+
+/** A CEP no fixture holds. */
+const UNKNOWN_POSTCODE = '00000000';
+
+/**
+ * Seed the CEP table with the fixture addresses.
+ *
+ * @return {void}
+ */
+function seedPostcodes() {
+	wpCli( [
+		'eval',
+		`
+		Extra_Checkout_Fields_For_Brazil_Postcodes::maybe_install();
+		global $wpdb;
+		$table = Extra_Checkout_Fields_For_Brazil_Postcodes::table();
+		foreach ( json_decode( '${ JSON.stringify(
+			Object.values( POSTCODES )
+		) }', true ) as $row ) {
+			$wpdb->delete( $table, array( 'postcode' => $row['postcode'] ) );
+			$wpdb->insert( $table, $row );
+		}
+		`,
+	] );
+}
+
+/**
+ * Sell and ship to Brazil alone, which the CEP calculators need.
+ *
+ * @return {void}
+ */
+function shipOnlyToBrazil() {
+	wpCli( [
+		'option',
+		'update',
+		'woocommerce_allowed_countries',
+		'specific',
+	] );
+	wpCli( [
+		'option',
+		'update',
+		'woocommerce_specific_allowed_countries',
+		'["BR"]',
+		'--format=json',
+	] );
+	wpCli( [ 'option', 'update', 'woocommerce_ship_to_countries', '' ] );
+}
+
+/**
+ * Sell and ship everywhere, as the other specs expect.
+ *
+ * @return {void}
+ */
+function shipEverywhere() {
+	wpCli( [ 'option', 'update', 'woocommerce_allowed_countries', 'all' ] );
+}
+
 /** A CPF and CNPJ whose check digits are valid. */
 const VALID = {
 	cpf: '111.444.777-35',
@@ -273,6 +350,11 @@ async function logIn( page, user, pass ) {
 
 module.exports = {
 	ALL_FIELDS,
+	POSTCODES,
+	UNKNOWN_POSTCODE,
+	seedPostcodes,
+	shipEverywhere,
+	shipOnlyToBrazil,
 	seedLegacyCustomer,
 	VALID,
 	goToBlockCheckout,
