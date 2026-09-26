@@ -12,3 +12,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 delete_option( 'wcbcf_settings' );
 delete_option( 'wcbcf_version' );
+
+// The CEP table is shared with WooCommerce Correios, so it stays.
+delete_option( 'wcbcf_postcodes_db_version' );

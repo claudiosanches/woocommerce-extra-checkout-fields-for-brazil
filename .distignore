@@ -3,10 +3,16 @@
 *.md
 *.xml
 *.zip
-/assets/scss/
+/assets/
 /node_modules/
+/artifacts/
+/tests/
 /vendor/
 composer.*
+eslint.config.js
 package-lock.json
 package.json
+tsconfig.json
 README.md
+playwright.config.js
+webpack.config.js

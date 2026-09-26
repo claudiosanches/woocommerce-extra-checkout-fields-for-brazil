@@ -1,0 +1,12 @@
+@use "../ie-exempt";
+
+// The person type decides whether these are required, so WooCommerce's
+// optional mark is swapped for the plugin's own.
+.person-type-required .optional {
+	display: none;
+}
+
+.wcbcf-mailsuggest {
+	color: #c00;
+	font-size: small;
+}

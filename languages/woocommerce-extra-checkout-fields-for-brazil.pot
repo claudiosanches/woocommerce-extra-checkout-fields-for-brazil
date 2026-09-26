@@ -1,45 +1,44 @@
-# Copyright (C) 2024 Claudio Sanches
-# This file is distributed under the GPLv2 or later.
+# Copyright (C) 2026 Claudio Sanches
+# This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Brazilian Market on WooCommerce 4.0.2\n"
+"Project-Id-Version: Brazilian Market on WooCommerce 5.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-extra-checkout-fields-for-brazil\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-17T16:13:32-03:00\n"
+"POT-Creation-Date: 2026-09-26T14:59:41+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
 
 #. Plugin Name of the plugin
+#: woocommerce-extra-checkout-fields-for-brazil.php
+#: includes/class-extra-checkout-fields-for-brazil-privacy.php:50
+#: includes/class-extra-checkout-fields-for-brazil-privacy.php:72
 msgid "Brazilian Market on WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: woocommerce-extra-checkout-fields-for-brazil.php
 msgid "https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil"
 msgstr ""
 
 #. Description of the plugin
+#: woocommerce-extra-checkout-fields-for-brazil.php
 msgid "Adds new checkout fields, field masks and other things necessary to properly work with WooCommerce on Brazil."
 msgstr ""
 
 #. Author of the plugin
+#: woocommerce-extra-checkout-fields-for-brazil.php
 msgid "Claudio Sanches"
 msgstr ""
 
 #. Author URI of the plugin
+#: woocommerce-extra-checkout-fields-for-brazil.php
 msgid "https://claudiosanches.com"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:49
-msgid "Load the customer extras data?"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-admin.php:50
-msgid "Also copy the data of number and neighborhood?"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:39
@@ -49,77 +48,109 @@ msgstr ""
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:47
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:59
 #: includes/admin/views/html-order-billing-data.php:20
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:145
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:160
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:459
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:463
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:377
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:173
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:652
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:656
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:748
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:123
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:239
 msgid "CPF"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:53
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:64
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:123
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:131
 #: includes/admin/views/html-order-billing-data.php:22
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:153
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:467
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:394
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:182
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:660
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:124
 msgid "RG"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:62
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:76
 #: includes/admin/views/html-order-billing-data.php:28
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:179
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:194
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:478
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:482
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:408
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:204
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:671
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:675
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:752
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:125
 msgid "CNPJ"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:68
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:81
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:139
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:147
 #: includes/admin/views/html-order-billing-data.php:31
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:187
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:486
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:441
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:219
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:679
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:683
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:756
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:126
 msgid "State Registration"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:79
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:95
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:155
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:162
 #: includes/admin/views/html-order-billing-data.php:39
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:212
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:483
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:231
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:634
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:731
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:127
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:243
 msgid "Birthdate"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:86
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:102
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:105
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:169
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:176
 #: includes/admin/views/html-order-billing-data.php:43
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:223
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:502
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:244
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:128
 msgid "Gender"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:93
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:123
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:109
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:150
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:256
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:380
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:113
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:154
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:163
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:277
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:419
 msgid "Number"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:98
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:128
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:114
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:155
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:270
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:394
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:118
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:159
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:164
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:291
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:433
 msgid "Neighborhood"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:109
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:126
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:235
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:130
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:209
 #: includes/admin/views/html-order-billing-data.php:49
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:296
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:318
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:530
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:317
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:339
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:585
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:129
+#: includes/class-extra-checkout-fields-for-brazil-order-details.php:247
 msgid "Cell Phone"
 msgstr ""
 
@@ -128,23 +159,27 @@ msgid "Customer Shipping Address"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:47
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:130
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:453
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:351
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:157
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:646
 msgid "Person type"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:50
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:229
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:107
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:250
 msgid "Select"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:51
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:135
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:357
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:162
 msgid "Individuals"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:52
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:136
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:361
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:163
 msgid "Legal Person"
 msgstr ""
 
@@ -155,206 +190,343 @@ msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:88
 #: includes/admin/views/html-order-billing-data.php:35
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:474
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:667
 msgid "Company"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:230
+#: includes/admin/class-extra-checkout-fields-for-brazil-order.php:204
 msgid "Phone"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:31
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:32
-msgid "Checkout Fields"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:33
+msgid "Brazilian Market"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:55
-msgid "Custom Field"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:56
+msgid "Custom Fields"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:63
-msgid "Display Person Type:"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:70
-msgid "Individuals enables CPF field and Legal Person enables CNPJ field."
-msgstr ""
-
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:65
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:72
-msgid "None"
+msgid "Enable Person Type"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:73
-msgid "Individuals and Legal Person"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:74
-msgid "Individuals only"
+msgid "Individuals enables CPF field and Legal Person enables CNPJ field."
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:75
-msgid "Legal Person only"
+msgid "None"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:83
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:76
+msgid "Individuals and Legal Person"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:77
+msgid "Individuals Only"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:78
+msgid "Legal Person Only"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:86
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:94
 msgid "Person Type is required only in Brazil?"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:90
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:95
 msgid "If checked the Individuals and Legal Person options will be mandatory only in Brazil."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:97
-msgid "Display RG:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:102
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:110
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:426
+msgid "Company name"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:104
-msgid "If checked show the RG field in billing options."
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:114
+msgid "Ask legal persons only, as required"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:111
-msgid "Display State Registration:"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:118
-msgid "If checked show the State Registration field in billing options."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:125
-msgid "Display Birthdate:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:115
+msgid "Follow the WooCommerce setting"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:132
-msgid "If checked show the Birthdate field in billing options."
+msgid "Asked of individuals."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:139
-msgid "Display Gender:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:148
+msgid "Asked of legal persons, who can also declare themselves exempt."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:146
-msgid "If checked show the Gender field in billing options."
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:183
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:190
+msgid "Display Cell Phone"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:153
-msgid "Display Cell Phone:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:191
+msgid "Enables the cell phone field on the billing form."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:161
-msgid "Show the Cell Phone field as optional."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:162
-msgid "Show the Cell Phone field as required."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:163
-msgid "Change the label of the Phone field to \"Cell Phone\"."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:164
-msgid "Disable."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:172
-msgid "Display Neighborhood as required:"
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:179
-msgid "If checked show the Neighborhood field will be a required field."
-msgstr ""
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:186
-msgid "Design"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:193
+msgid "Show the Cell Phone field as optional"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:194
-msgid "Fields Style:"
+msgid "Show the Cell Phone field as required"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:201
-msgid "Choose the style of the fields. Note: Use Default if you are having problems with how the fields are displayed."
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:195
+msgid "Change the label of the Phone field to \"Cell Phone\""
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:203
-msgid "Default (wide fields)"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:196
+msgid "Disable"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:204
-msgid "Plugin's old styling (fields side by side)"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
+msgid "Display neighborhood as required"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:212
+msgid "If checked, the neighborhood field will be a required field."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:219
+msgid "Shipping"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:228
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:235
+msgid "Fill the address from the CEP"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:236
+msgid "If checked, the street, neighborhood, city and state are filled once the customer enters a CEP at checkout or in My Account."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:243
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:250
+msgid "Ask only for the CEP in the cart"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:251
+msgid "If checked, the cart shipping calculator asks only for the CEP and fills the state and city from it. The cart block gets a calculator of its own."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:258
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
+msgid "Shipping calculator on product pages"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:266
+msgid "If checked, the shipping calculator shows below the add to cart button."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:267
+msgid "Block themes can place the Shipping Calculator block in the product template instead, which then takes its place."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:274
+msgid "Design"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:283
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:290
+msgid "Fields Style"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:291
+msgid "Choose the style of the fields. Note: Use Default if you are having problems with how the fields are displayed."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:293
+msgid "Default (full-width fields)"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:294
+msgid "Side-by-side fields"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:302
 msgid "jQuery Options"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:220
-msgid "Enable Mail Check:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:311
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:318
+msgid "Enable Mail Check"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:227
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:319
 msgid "If checked informs typos in email to users."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:234
-msgid "Enable Input Mask:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:326
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:333
+msgid "Enable Input Mask"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:241
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:334
 msgid "If checked create masks fill for in fields of CPF, CNPJ, Birthdate, Phone and Cell Phone."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:248
-msgid "Validation:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:341
+msgid "Validation"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:256
-msgid "Validate CPF:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:350
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:358
+msgid "Validate CPF"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:263
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:359
 msgid "Checks if the CPF is valid."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:270
-msgid "Validate CNPJ:"
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:366
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:374
+msgid "Validate CNPJ"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:277
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:375
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:20
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:421
+msgid "You do not have permission to change the store settings."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:428
+msgid "The store now sells and ships only to Brazil."
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:495
+msgid "Disabled"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:496
+msgid "Optional"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:497
+msgid "Required"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
+msgid "hidden"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:511
+msgid "optional"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:512
+#: build/classic.js:2
+msgid "required"
+msgstr ""
+
+#. translators: %s: hidden, optional or required.
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:518
+#, php-format
+msgid "Asking legal persons only overrides WooCommerce for the customers the documents apply to. The company field is currently %s in WooCommerce, which sets it in the checkout page editor or in the Customizer."
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:13
+msgid "Important announcements"
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:16
+msgid "Version 5.0.0 released"
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:17
+msgid "Block checkout support, shipping calculators that ask only for the CEP and address autofill from the CEP."
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:20
+msgid "Shipping by CEP"
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:21
+msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section."
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:24
+msgid "New integration guidance"
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:25
+msgid "Existing checkout field meta keys remain available for gateways, ERPs and invoicing integrations."
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:28
+msgid "Keep WooCommerce updated"
+msgstr ""
+
+#: includes/admin/views/html-admin-announcements.php:29
+msgid "Use the latest supported WooCommerce release for the best checkout experience."
+msgstr ""
+
+#: includes/admin/views/html-admin-support.php:18
 msgid "Support this plugin's author"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:21
-msgid "Apoia.se"
-msgstr ""
-
-#: includes/admin/views/html-admin-support.php:22
+#: includes/admin/views/html-admin-support.php:19
 msgid "Be a member of Apoia.se and help in the development of many free plugins for WooCommerce, including the Brazilian Market on WooCommerce, depending on the amount of your support you can report bugs and vote on what will be prioritized in monthly releases and updates, in addition to having access to an exclusive support system for supporters that I intend to answer during working days between 12:00 and 19:00."
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:23
+#: includes/admin/views/html-admin-support.php:20
 msgid "Become a member at Apoia.se"
 msgstr ""
 
-#: includes/admin/views/html-admin-support.php:24
-#: includes/admin/views/html-admin-support.php:26
-msgid "Make a review"
-msgstr ""
-
-#: includes/admin/views/html-admin-support.php:25
-msgid "Help this plugin by rating with &#9733;&#9733;&#9733;&#9733;&#9733; on WordPress.org."
+#: includes/admin/views/html-admin-support.php:21
+msgid "Help this plugin by rating with &#9733;&#9733;&#9733;&#9733;&#9733; on WordPress.org"
 msgstr ""
 
 #: includes/admin/views/html-order-billing-data.php:15
+#: includes/views/emails/html-order-customer-data.php:15
+#: includes/views/emails/plain-order-customer-data.php:14
+#: includes/views/html-order-customer-data.php:17
 msgid "Customer data"
 msgstr ""
 
 #: includes/admin/views/html-order-billing-data.php:52
 msgid "Email"
+msgstr ""
+
+#: includes/admin/views/html-privacy-policy.php:12
+msgid "This text applies when the shipping calculators or the address autofill from the CEP are turned on."
+msgstr ""
+
+#: includes/admin/views/html-privacy-policy.php:13
+msgid "Shipping calculation by CEP"
+msgstr ""
+
+#: includes/admin/views/html-privacy-policy.php:14
+msgid "When you enter a CEP to calculate shipping or to fill in your address, we keep it in a cookie named csbmw_postcode, so the next product page can show its shipping options. The cookie is deleted when you close the browser or log out. If you agree to have your preferences remembered, it is kept for up to 30 days."
+msgstr ""
+
+#: includes/admin/views/html-privacy-policy.php:15
+msgid "To find the address of a CEP, we may send the CEP, and nothing else about you, to ViaCEP (viacep.com.br), BrasilAPI (brasilapi.com.br) and, when the store uses its contract, Correios (correios.com.br). The addresses found are kept by the store without any link to you."
+msgstr ""
+
+#. translators: %s: link to the WooCommerce general settings
+#: includes/admin/views/html-shipping-notice.php:19
+#, php-format
+msgid "The shipping calculators ask only for the CEP, so they work when the store sells and ships only to Brazil. Change it in %s, or let the plugin do it."
+msgstr ""
+
+#: includes/admin/views/html-shipping-notice.php:20
+msgid "WooCommerce > Settings > General"
+msgstr ""
+
+#: includes/admin/views/html-shipping-notice.php:24
+msgid "Sell and ship only to Brazil"
 msgstr ""
 
 #: includes/class-extra-checkout-fields-for-brazil-api.php:276
@@ -399,71 +571,287 @@ msgstr ""
 msgid "Cell Phone."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:81
-msgid "State"
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:382
+msgid "Enter a valid CPF"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:82
-msgid "required"
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:413
+msgid "Enter a valid CNPJ"
 msgstr ""
 
-#. translators: %hint%: email hint
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:88
-msgid "Did you mean: %hint%?"
-msgstr ""
-
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:230
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:463
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:251
 msgid "Prefer not to say"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:231
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:464
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:252
 msgid "Female"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:232
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:465
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:253
 msgid "Male"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:233
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:466
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:254
 msgid "Other"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:265
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:389
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:488
+msgid "Enter a valid birthdate as dd/mm/yyyy"
+msgstr ""
+
+#. translators: %s: field label.
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:601
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:597
+#, php-format
+msgid "%s (optional)"
+msgstr ""
+
+#. translators: %s: field label.
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:675
+#, php-format
+msgid "%s is a required field."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:690
+msgid "CPF is not valid."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:694
+msgid "CNPJ is not valid."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:698
+msgid "State Registration is not valid."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:702
+msgid "Birthdate is not valid. Use the dd/mm/yyyy format."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:708
+msgid "Cell Phone is not valid."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:286
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:428
 msgid "Address line 2"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:453
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:459
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:467
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:474
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:478
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:486
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:646
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:652
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:660
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:667
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:671
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:679
 msgid "is a required field"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:463
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:482
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:697
 msgid "is not valid"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:144
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:396
+msgid "CEP lookup is disabled."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:737
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "Enter a valid CEP."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:410
+msgid "CEP not found."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-privacy.php:52
+msgid "Session, or 30 days with consent to preferences"
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-privacy.php:53
+msgid "Remembers the CEP used to calculate shipping."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-privacy.php:54
+#: includes/views/html-product-shipping-calculator.php:47
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "CEP"
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:508
+msgid "Enter your CEP."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:514
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:743
+#: build/shipping-cart.js:1
+msgid "CEP not found. Check the number and try again."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:729
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:733
+#: build/shipping.js:1
+msgid "Could not calculate shipping. Try again."
+msgstr ""
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:910
+#: build/shipping-cart.js:1
+msgid "Free"
+msgstr ""
+
+#. translators: %d: number of working days
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:912
+#, php-format
+msgid "Delivery within %d working day"
+msgid_plural "Delivery within %d working days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-extra-checkout-fields-for-brazil.php:179
+#: build/blocks/shipping-calculator/index.js:1
 msgid "Settings"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:145
+#: includes/class-extra-checkout-fields-for-brazil.php:180
 msgid "Premium Support"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:146
+#: includes/class-extra-checkout-fields-for-brazil.php:181
 msgid "Contribute"
 msgstr ""
 
-#. translators: %s: woocommerce link
-#: includes/class-extra-checkout-fields-for-brazil.php:158
-msgid "Brazilian Market on WooCommerce depends on %s to work!"
+#: includes/views/html-postcode-form.php:20
+msgid "Enter your CEP"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil.php:159
-msgid "WooCommerce"
+#: includes/views/html-postcode-form.php:21
+msgid "Get quote"
+msgstr ""
+
+#: includes/views/html-postcode-form.php:23
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "I don't know my CEP"
+msgstr ""
+
+#: includes/views/html-product-shipping-calculator.php:25
+msgid "Calculate shipping and delivery time"
+msgstr ""
+
+#: includes/views/html-product-shipping-calculator.php:33
+msgid "Change CEP"
+msgstr ""
+
+#: includes/views/html-product-shipping-calculator.php:42
+msgid "Enter a CEP to see the shipping options"
+msgstr ""
+
+#: includes/views/html-product-shipping-calculator.php:43
+msgid "Close"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Change CEP in"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "A dialog"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "The block itself"
+msgstr ""
+
+#: build/checkout.js:1
+#: build/classic.js:1
+msgid "Exempt from State Registration"
+msgstr ""
+
+#: build/checkout.js:1
+#: build/classic.js:1
+msgid "Exempt"
+msgstr ""
+
+#. translators: %s: email address with the domain corrected
+#: build/checkout.js:2
+#: build/classic.js:2
+#, js-format
+msgid "Did you mean: %s?"
+msgstr ""
+
+#: build/shipping-cart.js:1
+msgid "Shipping options"
+msgstr ""
+
+#: build/shipping-cart.js:1
+msgid "Calculate shipping"
+msgstr ""
+
+#: build/shipping-cart.js:1
+msgid "Calculate"
+msgstr ""
+
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "No shipping options for this CEP."
+msgstr ""
+
+#: build/shipping.js:1
+msgid "Choose the product options first."
+msgstr ""
+
+#: build/blocks/order-customer-data/block.json
+msgctxt "block title"
+msgid "Customer Data"
+msgstr ""
+
+#: build/blocks/order-customer-data/block.json
+msgctxt "block description"
+msgid "Shows the customer's documents, birthdate, gender and cell phone on the order confirmation."
+msgstr ""
+
+#: build/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "cpf"
+msgstr ""
+
+#: build/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "cnpj"
+msgstr ""
+
+#: build/blocks/order-customer-data/block.json
+msgctxt "block keyword"
+msgid "order"
+msgstr ""
+
+#: build/blocks/shipping-calculator/block.json
+msgctxt "block title"
+msgid "Shipping Calculator"
+msgstr ""
+
+#: build/blocks/shipping-calculator/block.json
+msgctxt "block description"
+msgid "Lets customers check the shipping options for this product by entering their CEP."
+msgstr ""
+
+#: build/blocks/shipping-calculator/block.json
+msgctxt "block keyword"
+msgid "cep"
+msgstr ""
+
+#: build/blocks/shipping-calculator/block.json
+msgctxt "block keyword"
+msgid "frete"
+msgstr ""
+
+#: build/blocks/shipping-calculator/block.json
+msgctxt "block keyword"
+msgid "shipping"
 msgstr ""

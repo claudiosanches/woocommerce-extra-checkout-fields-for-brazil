@@ -20,6 +20,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function __construct() {
 		// Load public-facing scripts.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'replace_correios_autofill' ), 20 );
 		add_action( 'woocommerce_after_edit_account_address_form', array( $this, 'load_scripts' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'load_scripts' ) );
 
@@ -27,12 +28,26 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ), 10 );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ), 10 );
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
+		add_filter( 'woocommerce_get_country_locale', array( $this, 'cell_phone_label' ), 20 );
+		add_filter( 'woocommerce_default_address_fields', array( $this, 'restore_company_field' ), 10 );
+
+		// Historic birthdates were never format-checked, and the date mask turns
+		// one like 1/1/1980 into 11/19/80 the moment a form renders it.
+		add_filter( 'default_checkout_billing_birthdate', array( $this, 'normalize_birthdate_value' ) );
+		add_filter( 'woocommerce_address_to_edit', array( $this, 'normalize_birthdate_to_edit' ), 10 );
+
+		add_filter( 'woocommerce_process_checkout_field_billing_ie', array( 'Extra_Checkout_Fields_For_Brazil_Validation', 'normalize_ie' ) );
+		add_filter( 'woocommerce_process_myaccount_field_billing_ie', array( 'Extra_Checkout_Fields_For_Brazil_Validation', 'normalize_ie' ) );
 
 		// Valid checkout fields.
-		add_action( 'woocommerce_checkout_process', array( $this, 'valid_checkout_fields' ), 10 );
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'valid_checkout_fields' ), 10, 2 );
 
 		// Prevents billing company field to be required for CPF, aka billing_person_type 1.
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'maybe_ignore_company_required' ), 10, 2 );
+
+		// The My Account address form is the other way a document reaches the
+		// customer record, and the checkout prefills from it.
+		add_action( 'woocommerce_after_save_address_validation', array( $this, 'valid_save_address_fields' ), 10, 4 );
 
 		// Custom address format.
 		add_filter( 'woocommerce_localisation_address_formats', array( $this, 'localisation_address_formats' ) );
@@ -54,6 +69,10 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return void
 	 */
 	public function maybe_ignore_company_required( $data, $errors ) {
+		if ( ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
+			return;
+		}
+
 		if ( isset( $data['billing_persontype'] ) && '1' === $data['billing_persontype'] ) {
 			$errors->remove( 'billing_company_required' );
 		}
@@ -63,31 +82,40 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * Register scripts.
 	 */
 	public function enqueue_scripts() {
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		wp_register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/css/frontend/frontend.css', plugin_dir_path( __FILE__ ) ), array(), Extra_Checkout_Fields_For_Brazil::VERSION, 'all' );
-
-		wp_register_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask/jquery.mask' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.14.10', true );
-
-		wp_register_script( 'mailcheck', plugins_url( 'assets/js/mailcheck/mailcheck' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
-
-		wp_register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', plugins_url( 'assets/js/frontend/frontend' . $suffix . '.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'jquery-mask', 'mailcheck' ), Extra_Checkout_Fields_For_Brazil::VERSION, true );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic', array( 'jquery' ) );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_style( 'woocommerce-extra-checkout-fields-for-brazil-front', 'classic' );
+		Extra_Checkout_Fields_For_Brazil_Assets::set_translations( 'woocommerce-extra-checkout-fields-for-brazil-front' );
 
 		$settings = get_option( 'wcbcf_settings' );
 		wp_localize_script(
 			'woocommerce-extra-checkout-fields-for-brazil-front',
 			'bmwPublicParams',
 			array(
-				'state'        => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'required'     => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'mailcheck'    => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
-				'maskedinput'  => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
-				'person_type'  => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
-				'only_brazil'  => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
-				/* translators: %hint%: email hint */
-				'suggest_text' => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+				'mailcheck'         => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+				'maskedinput'       => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
+				'person_type'       => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
+				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
+				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
+				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)
 		);
+	}
+
+	/**
+	 * Leave the address autofill to this plugin alone.
+	 *
+	 * WooCommerce Correios writes the neighborhood into the second address
+	 * line on forms without its classic field, as My Account renders it. The
+	 * lookup here asks Correios first and shares its table, so nothing is lost.
+	 *
+	 * @return void
+	 */
+	public function replace_correios_autofill() {
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( isset( $settings['postcode_autofill'] ) ) {
+			wp_dequeue_script( 'woocommerce-correios-autofill-addresses' );
+		}
 	}
 
 	/**
@@ -109,8 +137,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$new_fields = array();
 
 		// Get plugin settings.
-		$settings     = get_option( 'wcbcf_settings' );
-		$person_type  = intval( $settings['person_type'] );
+		$settings     = (array) get_option( 'wcbcf_settings', array() );
+		$person_type  = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
 		$style_option = wc_get_var( $settings['fields_style'], 'side_by_side' );
 		$first_class  = 'wide' === $style_option ? 'form-row-wide' : 'form-row-first';
 		$last_class   = 'wide' === $style_option ? 'form-row-wide' : 'form-row-last';
@@ -123,108 +151,101 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$new_fields['billing_last_name'] = $fields['billing_last_name'];
 		}
 
-		if ( 0 !== $person_type ) {
-			if ( 1 === $person_type ) {
-				$new_fields['billing_persontype'] = array(
-					'type'        => 'select',
-					'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'       => array( 'form-row-wide', 'person-type-field' ),
-					'input_class' => array( 'wc-ecfb-select' ),
-					'required'    => false,
-					'options'     => array(
-						'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					),
-					'priority'    => 22,
+		if ( 1 === $person_type ) {
+			$new_fields['billing_persontype'] = array(
+				'type'        => 'select',
+				'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'class'       => array( 'form-row-wide', 'person-type-field', 'person-type-required' ),
+				'input_class' => array( 'wc-ecfb-select' ),
+				'required'    => false,
+				'options'     => array(
+					'1' => __( 'Individuals', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'2' => __( 'Legal Person', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+				'priority'    => 22,
+			);
+		}
+
+		if ( 1 === $person_type || 2 === $person_type ) {
+			$rg = Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', $settings );
+
+			$new_fields['billing_cpf'] = array(
+				'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'class'    => array( 'disabled' === $rg ? 'form-row-wide' : $first_class, 'person-type-field', 'person-type-required' ),
+				'required' => false,
+				'type'     => 'tel',
+				'priority' => 23,
+			);
+
+			if ( 'disabled' !== $rg ) {
+				$new_fields['billing_rg'] = array(
+					'label'    => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'class'    => $this->person_type_classes( $last_class, 'required' === $rg ),
+					'required' => false,
+					'priority' => 24,
 				);
-			}
-
-			if ( 1 === $person_type || 2 === $person_type ) {
-				if ( isset( $settings['rg'] ) ) {
-					$new_fields['billing_cpf'] = array(
-						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => false,
-						'type'     => 'tel',
-						'priority' => 23,
-					);
-
-					$new_fields['billing_rg'] = array(
-						'label'    => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( $last_class, 'person-type-field' ),
-						'required' => false,
-						'priority' => 24,
-					);
-				} else {
-					$new_fields['billing_cpf'] = array(
-						'label'    => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => false,
-						'type'     => 'tel',
-						'priority' => 23,
-					);
-				}
-			}
-
-			if ( 1 === $person_type || 3 === $person_type ) {
-				if ( isset( $fields['billing_company'] ) ) {
-					$new_fields['billing_company']             = $fields['billing_company'];
-					$new_fields['billing_company']['class']    = array( 'form-row-wide', 'person-type-field' );
-					$new_fields['billing_company']['clear']    = true;
-					$new_fields['billing_company']['priority'] = 25;
-				}
-
-				if ( isset( $settings['ie'] ) ) {
-					$new_fields['billing_cnpj'] = array(
-						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( $first_class, 'person-type-field' ),
-						'required' => false,
-						'type'     => 'tel',
-						'priority' => 26,
-					);
-
-					$new_fields['billing_ie'] = array(
-						'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( $last_class, 'person-type-field' ),
-						'required' => false,
-						'priority' => 27,
-					);
-				} else {
-					$new_fields['billing_cnpj'] = array(
-						'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'class'    => array( 'form-row-wide', 'person-type-field' ),
-						'required' => false,
-						'type'     => 'tel',
-						'priority' => 26,
-					);
-				}
-			}
-		} else {
-			if ( isset( $fields['billing_company'] ) ) {
-				$new_fields['billing_company']          = $fields['billing_company'];
-				$new_fields['billing_company']['class'] = array( 'form-row-wide', 'person-type-field' );
-				$new_fields['billing_company']['clear'] = true;
 			}
 		}
 
-		if ( isset( $settings['birthdate'] ) ) {
+		$dynamic_company = Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings );
+
+		// Otherwise it is WooCommerce's own field, left as it is.
+		if ( isset( $fields['billing_company'] ) ) {
+			$new_fields['billing_company']             = $fields['billing_company'];
+			$new_fields['billing_company']['priority'] = 25;
+		}
+
+		if ( 1 === $person_type || 3 === $person_type ) {
+			$ie = Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $settings );
+
+			// Asked of legal persons, the company goes beside the CNPJ it
+			// identifies and the State Registration takes the next row.
+			$new_fields['billing_cnpj'] = array(
+				'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'class'    => array( $dynamic_company || 'disabled' !== $ie ? $first_class : 'form-row-wide', 'person-type-field', 'person-type-required' ),
+				'required' => false,
+				'type'     => 'tel',
+				'priority' => 26,
+			);
+
+			if ( $dynamic_company && isset( $new_fields['billing_company'] ) ) {
+				$new_fields['billing_company']['class']    = $this->person_type_classes( $last_class, true );
+				$new_fields['billing_company']['clear']    = true;
+				$new_fields['billing_company']['priority'] = 27;
+			}
+
+			if ( 'disabled' !== $ie ) {
+				$new_fields['billing_ie'] = array(
+					'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'class'    => $this->person_type_classes( $dynamic_company ? 'form-row-wide' : $last_class, 'required' === $ie ),
+					'required' => false,
+					'priority' => 28,
+				);
+			}
+		}
+
+		$birthdate = Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $settings );
+
+		if ( 'disabled' !== $birthdate ) {
 			$new_fields['billing_birthdate'] = array(
 				'label'    => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'    => array( 'form-row-wide' ),
 				'clear'    => false,
-				'required' => true,
+				'required' => 'required' === $birthdate,
 				'priority' => 31,
 			);
 		}
 
-		if ( isset( $settings['gender'] ) ) {
+		$gender = Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', $settings );
+
+		if ( 'disabled' !== $gender ) {
 			$new_fields['billing_gender'] = array(
 				'type'        => 'select',
 				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'class'       => array( 'form-row-wide' ),
 				'input_class' => array( 'wc-ecfb-select' ),
 				'clear'       => true,
-				'required'    => true,
+				'required'    => 'required' === $gender,
 				'options'     => array(
 					'' => __( 'Select', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					__( 'Prefer not to say', 'woocommerce-extra-checkout-fields-for-brazil' ) => __( 'Prefer not to say', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -331,6 +352,24 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
+	 * Classes for a row the person type shows and hides.
+	 *
+	 * @param string $layout   Layout class.
+	 * @param bool   $required Whether the row is required when it applies.
+	 *
+	 * @return array
+	 */
+	protected function person_type_classes( $layout, $required ) {
+		$classes = array( $layout, 'person-type-field' );
+
+		if ( $required ) {
+			$classes[] = 'person-type-required';
+		}
+
+		return $classes;
+	}
+
+	/**
 	 * New checkout shipping fields
 	 *
 	 * @param  array $fields Default fields.
@@ -373,7 +412,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['shipping_address_1'] ) ) {
 			$new_fields['shipping_address_1']          = $fields['shipping_address_1'];
-			$new_fields['shipping_address_1']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_address_1']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['shipping_number'] = array(
@@ -387,7 +426,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $fields['shipping_address_2'] ) ) {
 			$new_fields['shipping_address_2']          = $fields['shipping_address_2'];
 			$new_fields['shipping_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
-			$new_fields['shipping_address_2']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_address_2']['class'] = array( $last_class, 'address-field' );
 		}
 
 		$new_fields['shipping_neighborhood'] = array(
@@ -400,7 +439,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( isset( $fields['shipping_city'] ) ) {
 			$new_fields['shipping_city']          = $fields['shipping_city'];
-			$new_fields['shipping_city']['class'] = array( 'form-row-last', 'address-field' );
+			$new_fields['shipping_city']['class'] = array( $last_class, 'address-field' );
 		}
 
 		if ( isset( $fields['shipping_state'] ) ) {
@@ -413,17 +452,150 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
+	 * Normalise the birthdate the classic checkout prefills.
+	 *
+	 * @param mixed $value Stored value.
+	 *
+	 * @return mixed
+	 */
+	public function normalize_birthdate_value( $value ) {
+		return $this->normalized_birthdate( $value );
+	}
+
+	/**
+	 * Normalise the birthdate the My Account address form prefills.
+	 *
+	 * @param array $address Address fields being edited.
+	 *
+	 * @return array
+	 */
+	public function normalize_birthdate_to_edit( $address ) {
+		if ( isset( $address['billing_birthdate']['value'] ) ) {
+			$address['billing_birthdate']['value'] = $this->normalized_birthdate( $address['billing_birthdate']['value'] );
+		}
+
+		return $address;
+	}
+
+	/**
+	 * A birthdate in dd/mm/yyyy, or the value untouched when it cannot be read.
+	 *
+	 * @param mixed $value Stored value.
+	 *
+	 * @return mixed
+	 */
+	protected function normalized_birthdate( $value ) {
+		if ( ! is_string( $value ) || '' === $value ) {
+			return $value;
+		}
+
+		$normalized = Extra_Checkout_Fields_For_Brazil_Legacy_Sync::normalize_birthdate( $value );
+
+		// Never blank out something the customer typed; only reshape what is
+		// unambiguous, and leave anything else for them to correct.
+		return '' === $normalized ? $value : $normalized;
+	}
+
+	/**
+	 * Put the company field back when the store hides it.
+	 *
+	 * @param  array $fields Default address fields.
+	 * @return array
+	 */
+	public function restore_company_field( $fields ) {
+		// WooCommerce drops company before country locales are applied when the
+		// store hides it, which is the default. Legal persons need it back.
+		if ( isset( $fields['company'] ) || ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
+			return $fields;
+		}
+
+		// Never required here: this filter feeds billing and shipping, every
+		// country, and the default locale. Whether a company is mandatory
+		// depends on the billing person type, which valid_checkout_fields()
+		// decides.
+		$fields['company'] = array(
+			'label'        => __( 'Company name', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Reuses the WooCommerce label.
+			'class'        => array( 'form-row-wide' ),
+			'autocomplete' => 'organization',
+			'priority'     => 30,
+			'required'     => false,
+		);
+
+		return $fields;
+	}
+
+	/**
 	 * Update address fields priority.
 	 *
 	 * @param  array $locales Default WooCommerce locales.
 	 * @return array
 	 */
 	public function address_fields_priority( $locales ) {
-		$locales['BR'] = array(
-			'postcode' => array(
-				'priority' => 45,
-			),
+		if ( ! isset( $locales['BR'] ) ) {
+			$locales['BR'] = array();
+		}
+
+		$locales['BR']['postcode']['priority'] = 45;
+
+		if ( ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
+			return $locales;
+		}
+
+		// Whether the company is mandatory is decided by the person type, so
+		// WooCommerce's own Company setting must not require it of everyone.
+		// The checkout block asks for it in a field of its own and keeps
+		// WooCommerce's hidden, see Extra_Checkout_Fields_For_Brazil_Blocks.
+		$countries = array_merge(
+			WC()->countries->get_allowed_countries(),
+			WC()->countries->get_shipping_countries()
 		);
+
+		foreach ( array_keys( $countries ) as $country ) {
+			$locales[ $country ]['company']['required'] = false;
+		}
+
+		return $locales;
+	}
+
+	/**
+	 * Rename the phone field when the store asks for a cell phone in its place.
+	 *
+	 * The checkout block takes its core field labels from a hardcoded list with
+	 * no filter on it, so the country locale is the only place they can be
+	 * overridden.
+	 *
+	 * The classic checkout needs this too. checkout_billing_fields() renames the
+	 * field in PHP, but WooCommerce's address-i18n script rewrites every label
+	 * from the locale once the form is on screen, which put "Phone" back.
+	 *
+	 * WooCommerce narrows the locale to the countries the store sells and ships
+	 * to right after this filter, so every country is offered a label and the
+	 * ones that do not apply are dropped again.
+	 *
+	 * @param  array $locales Country locales.
+	 * @return array
+	 */
+	public function cell_phone_label( $locales ) {
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( '-1' !== (string) wc_get_var( $settings['cell_phone'], '0' ) ) {
+			return $locales;
+		}
+
+		$label     = __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' );
+		$countries = array_merge(
+			WC()->countries->get_allowed_countries(),
+			WC()->countries->get_shipping_countries()
+		);
+
+		foreach ( array_keys( $countries ) as $country ) {
+			$locales[ $country ]['phone']['label'] = $label;
+
+			// The block appends nothing of its own, so the optional wording has
+			// to be spelled out.
+			/* translators: %s: field label. */
+			$locales[ $country ]['phone']['optionalLabel'] = sprintf( __( '%s (optional)', 'woocommerce-extra-checkout-fields-for-brazil' ), $label );
+		}
 
 		return $locales;
 	}
@@ -431,61 +603,157 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * Valid checkout fields.
 	 *
-	 * @return string Displays the error message.
+	 * @param  array    $data   Checkout posted data.
+	 * @param  WP_Error $errors Checkout errors.
+	 * @return void
 	 */
-	public function valid_checkout_fields() {
+	public function valid_checkout_fields( $data, $errors ) {
+		if ( ! is_wp_error( $errors ) ) {
+			return;
+		}
+
 		if ( apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
 			return;
 		}
 
 		// Get plugin settings.
-		$settings           = get_option( 'wcbcf_settings' );
-		$person_type        = intval( $settings['person_type'] );
-		$only_brazil        = isset( $settings['only_brazil'] ) ? true : false;
-		$billing_persontype = isset( $_POST['billing_persontype'] ) ? intval( wp_unslash( $_POST['billing_persontype'] ) ) : 0;
-		$country_is_br      = isset( $_POST['billing_country'] ) ? 'BR' !== sanitize_text_field( wp_unslash( $_POST['billing_country'] ) ) : false;
+		$settings = (array) get_option( 'wcbcf_settings', array() );
 
-		if ( $only_brazil && $country_is_br || 0 === $person_type ) {
+		$billing_persontype = intval( wp_unslash( $data['billing_persontype'] ?? $_POST['billing_persontype'] ?? 0 ) );
+		$billing_birthdate  = sanitize_text_field( wp_unslash( $data['billing_birthdate'] ?? $_POST['billing_birthdate'] ?? '' ) );
+		$billing_country    = sanitize_text_field( wp_unslash( $data['billing_country'] ?? $_POST['billing_country'] ?? '' ) );
+		$billing_cpf        = sanitize_text_field( wp_unslash( $data['billing_cpf'] ?? $_POST['billing_cpf'] ?? '' ) );
+		$billing_rg         = sanitize_text_field( wp_unslash( $data['billing_rg'] ?? $_POST['billing_rg'] ?? '' ) );
+		$billing_company    = sanitize_text_field( wp_unslash( $data['billing_company'] ?? $_POST['billing_company'] ?? '' ) );
+		$billing_cnpj       = sanitize_text_field( wp_unslash( $data['billing_cnpj'] ?? $_POST['billing_cnpj'] ?? '' ) );
+		$billing_ie         = sanitize_text_field( wp_unslash( $data['billing_ie'] ?? $_POST['billing_ie'] ?? '' ) );
+
+		// The birthdate does not depend on the person type, so it is checked
+		// before the person type rules below can return early.
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $settings ) && ! empty( $billing_birthdate ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $billing_birthdate ) ) {
+			$errors->add( 'billing_birthdate_invalid', $this->invalid_field_message( __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_birthdate' ) );
+		}
+
+		$person_type    = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+		$only_brazil    = isset( $settings['only_brazil'] ) ? true : false;
+		$outside_brazil = 'BR' !== $billing_country;
+
+		if ( ( $only_brazil && $outside_brazil ) || 0 === $person_type ) {
 			return;
 		}
 
 		if ( 0 === $billing_persontype && 1 === $person_type ) {
-			wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+			$errors->add( 'billing_persontype_required', sprintf( '<strong>%s</strong> %s.', __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_persontype' ) );
 		} else {
 
 			// Check CPF.
 			if ( ( 1 === $person_type && 1 === $billing_persontype ) || 2 === $person_type ) {
-				if ( empty( $_POST['billing_cpf'] ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( empty( $billing_cpf ) ) {
+					$errors->add( 'billing_cpf_required', sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cpf' ) );
 				}
 
-				if ( isset( $settings['validate_cpf'] ) && ! empty( $_POST['billing_cpf'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( sanitize_text_field( wp_unslash( $_POST['billing_cpf'] ) ) ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( isset( $settings['validate_cpf'] ) && ! empty( $billing_cpf ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $billing_cpf ) ) {
+					$errors->add( 'billing_cpf_invalid', $this->invalid_field_message( __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cpf' ) );
 				}
 
-				if ( isset( $settings['rg'] ) && empty( $_POST['billing_rg'] ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( 'required' === Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', $settings ) && empty( $billing_rg ) ) {
+					$errors->add( 'billing_rg_required', sprintf( '<strong>%s</strong> %s.', __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_rg' ) );
 				}
 			}
 
 			// Check Company and CNPJ.
 			if ( ( 1 === $person_type && 2 === $billing_persontype ) || 3 === $person_type ) {
-				if ( empty( $_POST['billing_company'] ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) && empty( $billing_company ) ) {
+					$errors->add( 'billing_company_required', sprintf( '<strong>%s</strong> %s.', __( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_company' ) );
 				}
 
-				if ( empty( $_POST['billing_cnpj'] ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( empty( $billing_cnpj ) ) {
+					$errors->add( 'billing_cnpj_required', sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cnpj' ) );
 				}
 
-				if ( isset( $settings['validate_cnpj'] ) && ! empty( $_POST['billing_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( sanitize_text_field( wp_unslash( $_POST['billing_cnpj'] ) ) ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( isset( $settings['validate_cnpj'] ) && ! empty( $billing_cnpj ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $billing_cnpj ) ) {
+					$errors->add( 'billing_cnpj_invalid', $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cnpj' ) );
 				}
 
-				if ( isset( $settings['ie'] ) && empty( $_POST['billing_ie'] ) ) {
-					wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error' );
+				if ( 'required' === Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $settings ) && empty( $billing_ie ) ) {
+					$errors->add( 'billing_ie_required', sprintf( '<strong>%s</strong> %s.', __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ), __( 'is a required field', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_ie' ) );
+				}
+
+				if ( ! empty( $billing_ie ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $billing_ie ) ) {
+					$errors->add( 'billing_ie_invalid', $this->invalid_field_message( __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_ie' ) );
 				}
 			}
+		}
+	}
+
+	/**
+	 * Message reported for a field whose value is not a valid one.
+	 *
+	 * @param  string $label Field label.
+	 *
+	 * @return string
+	 */
+	protected function invalid_field_message( $label ) {
+		return sprintf( '<strong>%s</strong> %s.', $label, __( 'is not valid', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+	}
+
+	/**
+	 * Validate the documents saved from the My Account address form.
+	 *
+	 * WooCommerce takes requiredness from the field list, but checks no value
+	 * beyond the ones it knows, so this form accepted a document the checkout
+	 * would have rejected and then prefilled it into the next order.
+	 *
+	 * The values come from the customer, which WooCommerce has already filled
+	 * in with what was posted. What it passes as the address is the field list
+	 * it built the form from, not the submission.
+	 *
+	 * @param  int         $user_id      Customer being saved.
+	 * @param  string      $address_type Address being saved.
+	 * @param  array       $address      Address fields WooCommerce rendered.
+	 * @param  WC_Customer $customer     Customer carrying the posted values.
+	 *
+	 * @return void
+	 */
+	public function valid_save_address_fields( $user_id, $address_type, $address, $customer = null ) {
+		if ( 'billing' !== $address_type || ! $customer instanceof WC_Customer ) {
+			return;
+		}
+
+		if ( apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
+			return;
+		}
+
+		$settings  = (array) get_option( 'wcbcf_settings', array() );
+		$birthdate = (string) $customer->get_meta( 'billing_birthdate' );
+
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $settings ) && '' !== $birthdate && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $birthdate ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_birthdate' ) );
+		}
+
+		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+
+		if ( ( isset( $settings['only_brazil'] ) && 'BR' !== $customer->get_billing_country() ) || 0 === $person_type ) {
+			return;
+		}
+
+		$selected   = intval( $customer->get_meta( 'billing_persontype' ) );
+		$individual = ( 1 === $person_type && 1 === $selected ) || 2 === $person_type;
+		$company    = ( 1 === $person_type && 2 === $selected ) || 3 === $person_type;
+		$cpf        = (string) $customer->get_meta( 'billing_cpf' );
+		$cnpj       = (string) $customer->get_meta( 'billing_cnpj' );
+		$ie         = (string) $customer->get_meta( 'billing_ie' );
+
+		if ( $individual && isset( $settings['validate_cpf'] ) && '' !== $cpf && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cpf( $cpf ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_cpf' ) );
+		}
+
+		if ( $company && isset( $settings['validate_cnpj'] ) && '' !== $cnpj && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $cnpj ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_cnpj' ) );
+		}
+
+		if ( $company && '' !== $ie && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $ie ) ) {
+			wc_add_notice( $this->invalid_field_message( __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_ie' ) );
 		}
 	}
 
@@ -497,7 +765,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return array          New BR format.
 	 */
 	public function localisation_address_formats( $formats ) {
-		$formats['BR'] = "{name}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
+		$formats['BR'] = "{name}\n{company}\n{address_1}, {number}\n{address_2}\n{neighborhood}\n{city}\n{state}\n{postcode}\n{country}";
 
 		return $formats;
 	}

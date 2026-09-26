@@ -1,0 +1,310 @@
+<?php
+/**
+ * Tests for the checkout block field registration.
+ *
+ * @package Extra_Checkout_Fields_For_Brazil/Tests
+ */
+
+use Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields;
+use Automattic\WooCommerce\Blocks\Package;
+
+/**
+ * Extra_Checkout_Fields_For_Brazil_Blocks tests.
+ */
+class BlocksFieldsTest extends WP_UnitTestCase {
+
+	/**
+	 * Register the plugin fields for a given settings array and return them.
+	 *
+	 * @param array $settings Plugin settings.
+	 *
+	 * @return array Registered fields keyed by id.
+	 */
+	protected function register_with( array $settings ) {
+		update_option( 'wcbcf_settings', $settings );
+
+		$controller = Package::container()->get( CheckoutFields::class );
+
+		foreach ( array_keys( $controller->get_additional_fields() ) as $field_id ) {
+			if ( '' !== Extra_Checkout_Fields_For_Brazil_Blocks::field_key( $field_id ) ) {
+				__internal_woocommerce_blocks_deregister_checkout_field( $field_id );
+			}
+		}
+
+		( new Extra_Checkout_Fields_For_Brazil_Blocks() )->register_fields();
+
+		return array_filter(
+			$controller->get_additional_fields(),
+			static function ( $field_id ) {
+				return '' !== Extra_Checkout_Fields_For_Brazil_Blocks::field_key( $field_id );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+	}
+
+	public function test_registers_nothing_extra_when_person_type_is_disabled() {
+		$fields = $this->register_with( array( 'person_type' => 0 ) );
+
+		$this->assertSame(
+			array( 'csbmw/number', 'csbmw/neighborhood' ),
+			array_keys( $fields )
+		);
+	}
+
+	public function test_registers_both_document_sets_for_person_type_one() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'rg'          => 1,
+				'ie'          => 1,
+			)
+		);
+
+		foreach ( array( 'persontype', 'cpf', 'rg', 'cnpj', 'ie' ) as $key ) {
+			$this->assertArrayHasKey( Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ), $fields );
+		}
+	}
+
+	public function test_registers_only_cpf_for_individuals() {
+		$fields = $this->register_with( array( 'person_type' => 2 ) );
+
+		$this->assertArrayHasKey( 'csbmw/cpf', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/cnpj', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/persontype', $fields );
+	}
+
+	public function test_registers_only_cnpj_for_legal_persons() {
+		$fields = $this->register_with( array( 'person_type' => 3 ) );
+
+		$this->assertArrayHasKey( 'csbmw/cnpj', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/cpf', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/persontype', $fields );
+	}
+
+	public function test_optional_fields_follow_their_settings() {
+		$fields = $this->register_with( array( 'person_type' => 2 ) );
+
+		$this->assertArrayNotHasKey( 'csbmw/rg', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/birthdate', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/gender', $fields );
+		$this->assertArrayNotHasKey( 'csbmw/cellphone', $fields );
+
+		$fields = $this->register_with(
+			array(
+				'person_type' => 2,
+				'rg'          => 1,
+				'birthdate'   => 1,
+				'gender'      => 1,
+				'cell_phone'  => '2',
+			)
+		);
+
+		$this->assertArrayHasKey( 'csbmw/rg', $fields );
+		$this->assertArrayHasKey( 'csbmw/birthdate', $fields );
+		$this->assertArrayHasKey( 'csbmw/gender', $fields );
+		$this->assertTrue( $fields['csbmw/cellphone']['required'] );
+	}
+
+	public function test_cell_phone_is_optional_when_set_to_one() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 0,
+				'cell_phone'  => '1',
+			)
+		);
+
+		$this->assertFalse( $fields['csbmw/cellphone']['required'] );
+	}
+
+	public function test_documents_are_conditional_when_both_person_types_are_accepted() {
+		$fields = $this->register_with( array( 'person_type' => 1 ) );
+
+		// A rule rather than a boolean means the block resolves it per request.
+		$this->assertIsArray( $fields['csbmw/cpf']['required'] );
+		$this->assertIsArray( $fields['csbmw/cpf']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/cnpj']['hidden'] );
+	}
+
+	public function test_documents_are_unconditional_for_a_single_person_type() {
+		$fields = $this->register_with( array( 'person_type' => 2 ) );
+
+		$this->assertTrue( $fields['csbmw/cpf']['required'] );
+		$this->assertFalse( $fields['csbmw/cpf']['hidden'] );
+	}
+
+	public function test_neighborhood_requiredness_follows_its_setting() {
+		$fields = $this->register_with( array( 'person_type' => 0 ) );
+		$this->assertFalse( $fields['csbmw/neighborhood']['required'] );
+
+		$fields = $this->register_with(
+			array(
+				'person_type'           => 0,
+				'neighborhood_required' => '1',
+			)
+		);
+		$this->assertTrue( $fields['csbmw/neighborhood']['required'] );
+	}
+
+	public function test_validate_field_reports_missing_required_values() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 2 ) );
+
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+		$result = $blocks->validate_field(
+			'',
+			array(
+				'id'       => 'csbmw/cpf',
+				'label'    => 'CPF',
+				'required' => true,
+			)
+		);
+
+		$this->assertWPError( $result );
+		$this->assertSame( 'woocommerce_required_checkout_field', $result->get_error_code() );
+	}
+
+	public function test_validate_field_allows_empty_optional_values() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 2 ) );
+
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+
+		$this->assertTrue(
+			$blocks->validate_field(
+				'',
+				array(
+					'id'       => 'csbmw/cpf',
+					'label'    => 'CPF',
+					'required' => false,
+				)
+			)
+		);
+	}
+
+	public function test_validate_field_rejects_malformed_documents() {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'person_type'   => 1,
+				'validate_cpf'  => 1,
+				'validate_cnpj' => 1,
+			)
+		);
+
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+
+		$cases = array(
+			'csbmw/cpf'       => array( '111.444.777-00', 'woocommerce_invalid_cpf' ),
+			'csbmw/cnpj'      => array( '11.222.333/0001-00', 'woocommerce_invalid_cnpj' ),
+			'csbmw/birthdate' => array( '31/02/1990', 'woocommerce_invalid_birthdate' ),
+		);
+
+		foreach ( $cases as $field_id => $case ) {
+			list( $value, $code ) = $case;
+
+			$result = $blocks->validate_field(
+				$value,
+				array(
+					'id'       => $field_id,
+					'label'    => $field_id,
+					'required' => true,
+				)
+			);
+
+			$this->assertWPError( $result, $field_id );
+			$this->assertSame( $code, $result->get_error_code(), $field_id );
+		}
+	}
+
+	public function test_validate_field_skips_document_checks_when_validation_is_off() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+
+		$this->assertTrue(
+			$blocks->validate_field(
+				'111.444.777-00',
+				array(
+					'id'       => 'csbmw/cpf',
+					'label'    => 'CPF',
+					'required' => true,
+				)
+			)
+		);
+	}
+
+	public function test_optional_fields_are_registered_as_optional() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'rg'          => 'optional',
+				'ie'          => 'optional',
+				'birthdate'   => 'optional',
+				'gender'      => 'optional',
+			)
+		);
+
+		foreach ( array( 'rg', 'ie', 'birthdate', 'gender' ) as $key ) {
+			$this->assertFalse( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], $key );
+		}
+
+		// Still shown only for the person type they belong to.
+		$this->assertIsArray( $fields['csbmw/rg']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/ie']['hidden'] );
+	}
+
+	public function test_the_state_registration_is_normalized_and_checked() {
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+		$field  = array(
+			'id'       => 'csbmw/ie',
+			'label'    => 'State Registration',
+			'required' => true,
+		);
+
+		$this->assertSame( 'ISENTO', $blocks->sanitize_field( ' isento ', $field ) );
+		$this->assertTrue( $blocks->validate_field( '110.042.490.114', $field ) );
+
+		$result = $blocks->validate_field( '12A45678', $field );
+		$this->assertWPError( $result );
+		$this->assertSame( 'woocommerce_invalid_ie', $result->get_error_code() );
+	}
+
+	/**
+	 * Asked of legal persons beside the CNPJ, in place of WooCommerce's own.
+	 */
+	public function test_the_company_is_asked_beside_the_cnpj() {
+		$fields = $this->register_with( array( 'person_type' => 1 ) );
+
+		$this->assertArrayHasKey( 'csbmw/company', $fields );
+		$this->assertIsArray( $fields['csbmw/company']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/company']['required'] );
+
+		$order = array_keys( $fields );
+		$this->assertSame( array_search( 'csbmw/cnpj', $order, true ) + 1, array_search( 'csbmw/company', $order, true ) );
+
+		$this->assertSame( 'hidden', ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
+
+	public function test_the_company_follows_woocommerce_when_asked() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'company'     => 'woocommerce',
+			)
+		);
+
+		$this->assertArrayNotHasKey( 'csbmw/company', $fields );
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
+
+	/**
+	 * The checkout page editor reads and saves the option, so it must see the
+	 * stored value.
+	 */
+	public function test_the_core_company_is_only_hidden_on_the_front_end() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+		set_current_screen( 'edit-page' );
+
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+
+		set_current_screen( 'front' );
+	}
+}

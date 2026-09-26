@@ -1,0 +1,12 @@
+@use "../ie-exempt";
+
+/* Block checkout tweaks. */
+
+.wcbcf-mailsuggest {
+	font-size: var(--wp--preset--font-size--small, 0.875em);
+	margin-top: 0.5em;
+
+	&:empty {
+		display: none;
+	}
+}
