@@ -152,7 +152,7 @@ The main classes are:
 
 ### Where are the settings? ###
 
-Under WooCommerce > Settings > Checkout Fields.
+Under WooCommerce > Brazilian Market.
 
 ### What is the plugin license? ###
 

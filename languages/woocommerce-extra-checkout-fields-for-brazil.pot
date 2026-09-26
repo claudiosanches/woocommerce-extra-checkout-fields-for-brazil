@@ -183,7 +183,7 @@ msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:32
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:33
-msgid "Checkout Fields"
+msgid "Brazilian Market"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:56

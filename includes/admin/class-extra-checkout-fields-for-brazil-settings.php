@@ -29,8 +29,8 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	public function settings_menu() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Checkout Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			__( 'Checkout Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Brazilian Market', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Brazilian Market', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'manage_options',
 			'woocommerce-extra-checkout-fields-for-brazil',
 			array( $this, 'html_settings_page' )
