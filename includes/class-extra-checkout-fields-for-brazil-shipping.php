@@ -68,8 +68,15 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		'arrow-path'                => 'M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99',
 		'truck'                     => 'M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12',
 		'arrow-top-right-on-square' => 'M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25',
-		'x-mark'                    => 'M6 18 18 6M6 6l12 12',
 	);
+
+	/**
+	 * The close icon WooCommerce's block dialogs use, from the WordPress
+	 * icons package. Filled, where the others are outlines.
+	 *
+	 * @var string
+	 */
+	const CLOSE_ICON = 'm13.06 12 6.47-6.47-1.06-1.06L12 10.94 5.53 4.47 4.47 5.53 10.94 12l-6.47 6.47 1.06 1.06L12 13.06l6.47 6.47 1.06-1.06L13.06 12Z';
 
 	/**
 	 * Initialize hooks.
@@ -240,6 +247,10 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	 * @return string
 	 */
 	public static function icon( $name ) {
+		if ( 'close' === $name ) {
+			return '<svg class="csbmw-shipping-calculator-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="' . esc_attr( self::CLOSE_ICON ) . '" fill="currentColor"/></svg>';
+		}
+
 		return '<svg class="csbmw-shipping-calculator-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="' . esc_attr( self::ICONS[ $name ] ) . '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 	}
 

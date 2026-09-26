@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<dialog class="csbmw-shipping-calculator-dialog" aria-labelledby="<?php echo esc_attr( $prefix ); ?>-title">
 		<div class="csbmw-shipping-calculator-dialog-header">
 			<h2 class="csbmw-shipping-calculator-dialog-title" id="<?php echo esc_attr( $prefix ); ?>-title"><?php esc_html_e( 'Enter a CEP to see the shipping options', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></h2>
-			<button class="csbmw-shipping-calculator-close" type="button" aria-label="<?php esc_attr_e( 'Close', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>"><?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'x-mark' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></button>
+			<button class="csbmw-shipping-calculator-close" type="button" aria-label="<?php esc_attr_e( 'Close', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>"><?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'close' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></button>
 		</div>
 		<?php
 		$form_id    = $prefix . '-dialog-postcode';

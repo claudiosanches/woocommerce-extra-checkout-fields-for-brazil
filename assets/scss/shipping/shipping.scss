@@ -278,6 +278,18 @@ ul.csbmw-shipping-calculator-rates {
 	}
 }
 
+.csbmw-shipping-calculator-close > svg {
+	opacity: 0.6;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: opacity 0.2s;
+	}
+}
+
+.csbmw-shipping-calculator-close:is(:hover, :focus-visible) > svg {
+	opacity: 1;
+}
+
 // Keyboard focus rings the icon alone, as focus comes back here each time
 // the dialog closes.
 .csbmw-shipping-calculator-close:focus-visible:not(#csbmw) > .csbmw-shipping-calculator-icon,
