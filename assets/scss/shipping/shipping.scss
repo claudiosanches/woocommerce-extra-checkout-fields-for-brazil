@@ -40,7 +40,7 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 
 .csbmw-shipping-calculator-label {
 	display: block;
-	font-size: var(--wp--preset--font-size--small, 0.875em);
+	font-size: 0.875em;
 	margin-bottom: 0.5em;
 }
 
@@ -62,6 +62,13 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 	border-radius: var(--wc-form-border-radius, 4px);
 	box-sizing: border-box;
 	color: var(--wc-form-color-text, #000);
+
+	// WooCommerce pads its form fields this way, but only reaches this one
+	// through the add to cart form, which the block is not inside.
+	font-family: inherit;
+	font-size: inherit;
+	line-height: normal;
+	padding: 0.9rem 1.1rem;
 }
 
 .csbmw-shipping-calculator-button {
