@@ -20,6 +20,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	public function __construct() {
 		// Load public-facing scripts.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'replace_correios_autofill' ), 20 );
 		add_action( 'woocommerce_after_edit_account_address_form', array( $this, 'load_scripts' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'load_scripts' ) );
 
@@ -91,22 +92,27 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 				/* translators: %hint%: email hint */
 				'suggest_text'      => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
-				'postcode_autofill' => isset( $settings['postcode_autofill'] ) && ! self::correios_fills_addresses() ? 'yes' : 'no',
+				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 			)
 		);
 	}
 
 	/**
-	 * Whether WooCommerce Correios fills the classic address forms itself.
+	 * Leave the address autofill to this plugin alone.
 	 *
-	 * Its autofill looks addresses up through CWS, so without it nothing is
-	 * filled and this plugin takes over.
+	 * WooCommerce Correios writes the neighborhood into the second address
+	 * line on forms without its classic field, as My Account renders it. The
+	 * lookup here asks Correios first and shares its table, so nothing is lost.
 	 *
-	 * @return bool
+	 * @return void
 	 */
-	protected static function correios_fills_addresses() {
-		return class_exists( 'WC_Correios' ) && apply_filters( 'woocommerce_correios_enable_autofill_addresses', false ) && apply_filters( 'woocommerce_correios_cws_is_enabled', false );
+	public function replace_correios_autofill() {
+		$settings = get_option( 'wcbcf_settings' );
+
+		if ( isset( $settings['postcode_autofill'] ) ) {
+			wp_dequeue_script( 'woocommerce-correios-autofill-addresses' );
+		}
 	}
 
 	/**

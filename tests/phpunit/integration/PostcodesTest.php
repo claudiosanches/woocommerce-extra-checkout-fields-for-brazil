@@ -145,4 +145,19 @@ class PostcodesTest extends WP_UnitTestCase {
 		$this->assertNull( Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( '0100' ) );
 		$this->assertSame( array(), $this->requests );
 	}
+
+	/**
+	 * The address autofill here replaces the one in WooCommerce Correios.
+	 */
+	public function test_replaces_the_correios_autofill() {
+		wp_enqueue_script( 'woocommerce-correios-autofill-addresses', 'https://example.com/autofill.js', array(), '1', true );
+
+		update_option( 'wcbcf_settings', array() );
+		( new Extra_Checkout_Fields_For_Brazil_Front_End() )->replace_correios_autofill();
+		$this->assertTrue( wp_script_is( 'woocommerce-correios-autofill-addresses' ) );
+
+		update_option( 'wcbcf_settings', array( 'postcode_autofill' => '1' ) );
+		( new Extra_Checkout_Fields_For_Brazil_Front_End() )->replace_correios_autofill();
+		$this->assertFalse( wp_script_is( 'woocommerce-correios-autofill-addresses' ) );
+	}
 }

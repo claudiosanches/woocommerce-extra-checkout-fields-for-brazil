@@ -65,7 +65,7 @@ When [WooCommerce Correios](https://wordpress.org/plugins/woocommerce-correios/)
 
 Both plugins keep the addresses they find in the same database table, so a CEP looked up by one is never fetched again by the other. The table is created when the first CEP is looked up, and left in place when this plugin is uninstalled, since WooCommerce Correios may still use it.
 
-On the classic checkout, the address autofill of WooCommerce Correios takes precedence when it is on with CWS, so the address is not filled twice.
+When the address autofill here is on, it replaces the one in WooCommerce Correios, so the address is not filled twice. It looks addresses up the same way, and fills the Neighborhood field where WooCommerce Correios would use the second address line.
 
 = Address lookup services =
 
