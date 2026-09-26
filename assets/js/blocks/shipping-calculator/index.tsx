@@ -1,53 +1,24 @@
 /**
- * Editor preview of the product shipping calculator block.
+ * Editor preview of the product shipping calculator block, rendered by PHP
+ * from the same view as the page, and inert so its form cannot be sent.
  */
 
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import type { BlockConfiguration } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
+import { Disabled } from '@wordpress/components';
+import ServerSideRender from '@wordpress/server-side-render';
 import metadata from './block.json';
 
-function Edit() {
+function Edit( { attributes }: { attributes: Record< string, unknown > } ) {
 	return (
-		<div { ...useBlockProps( { className: 'csbmw-shipping-calculator' } ) }>
-			<div className="csbmw-shipping-calculator-card">
-				<div className="csbmw-shipping-calculator-form">
-					<span className="csbmw-shipping-calculator-label">
-						{ __(
-							'Calculate shipping and delivery time',
-							'woocommerce-extra-checkout-fields-for-brazil'
-						) }
-					</span>
-					<div className="csbmw-shipping-calculator-row">
-						<input
-							className="csbmw-shipping-calculator-input"
-							type="text"
-							placeholder={ __(
-								'Enter your CEP',
-								'woocommerce-extra-checkout-fields-for-brazil'
-							) }
-							disabled
-						/>
-						<button
-							className="csbmw-shipping-calculator-button wp-element-button"
-							type="button"
-							disabled
-						>
-							{ __(
-								'Get quote',
-								'woocommerce-extra-checkout-fields-for-brazil'
-							) }
-						</button>
-					</div>
-					<span className="csbmw-shipping-calculator-find">
-						{ __(
-							"I don't know my CEP",
-							'woocommerce-extra-checkout-fields-for-brazil'
-						) }
-					</span>
-				</div>
-			</div>
+		<div { ...useBlockProps() }>
+			<Disabled>
+				<ServerSideRender
+					block={ metadata.name }
+					attributes={ attributes }
+				/>
+			</Disabled>
 		</div>
 	);
 }

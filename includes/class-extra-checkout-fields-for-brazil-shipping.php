@@ -162,21 +162,12 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'shipping' );
 		self::set_script_translations( self::HANDLE );
 
-		$block = register_block_type(
+		register_block_type(
 			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/shipping-calculator',
 			array(
 				'render_callback' => array( $this, 'render_block' ),
 			)
 		);
-
-		// WordPress registers the editor script from block.json, and looks for
-		// its translations where WordPress.org installs them, not in the
-		// plugin.
-		if ( $block ) {
-			foreach ( $block->editor_script_handles as $handle ) {
-				self::set_script_translations( $handle );
-			}
-		}
 	}
 
 	/**
@@ -324,6 +315,21 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	 * @return string
 	 */
 	public function render_block( $attributes, $content, $block ) {
+		// The editor previews the empty calculator, as a template has no
+		// product to quote.
+		if ( wp_is_serving_rest_request() && current_user_can( 'edit_theme_options' ) ) {
+			$wrapper_attributes = 'class="csbmw-shipping-calculator"';
+			$product_id         = 0;
+			$variable           = false;
+			$postcode           = '';
+			$prefix             = 'csbmw-shipping-preview';
+
+			ob_start();
+			include __DIR__ . '/views/html-product-shipping-calculator.php';
+
+			return (string) ob_get_clean();
+		}
+
 		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : get_the_ID();
 		$product = wc_get_product( $post_id );
 
