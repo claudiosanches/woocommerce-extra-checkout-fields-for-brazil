@@ -112,11 +112,6 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 	text-align: left;
 	width: 100%;
 
-	&:focus-visible {
-		outline: 2px solid currentcolor;
-		outline-offset: 4px;
-	}
-
 	.csbmw-shipping-calculator-icon:last-child {
 		opacity: 0.6;
 
@@ -269,17 +264,6 @@ ul.csbmw-shipping-calculator-rates {
 	padding: 4px;
 }
 
-.csbmw-shipping-calculator-close > svg {
-
-	@media (prefers-reduced-motion: no-preference) {
-		transition: transform 0.2s ease;
-	}
-}
-
-.csbmw-shipping-calculator-close:is(:hover, :focus-visible) > svg {
-	transform: rotate(90deg);
-}
-
 // Themes restyle every button on hover, often with selectors that outrank a
 // class. The id in :not() lifts these above them, and keeps the card's look.
 .csbmw-shipping-calculator-destination,
@@ -289,8 +273,18 @@ ul.csbmw-shipping-calculator-rates {
 		background: none;
 		box-shadow: none;
 		color: inherit;
+		outline: none;
 		text-decoration: none;
 	}
+}
+
+// Keyboard focus rings the icon alone, as focus comes back here each time
+// the dialog closes.
+.csbmw-shipping-calculator-close:focus-visible:not(#csbmw) > .csbmw-shipping-calculator-icon,
+.csbmw-shipping-calculator-destination:focus-visible:not(#csbmw) > .csbmw-shipping-calculator-icon:last-child {
+	border-radius: 50%;
+	outline: 2px solid currentcolor;
+	outline-offset: 3px;
 }
 
 .csbmw-cart-shipping-calculator {
