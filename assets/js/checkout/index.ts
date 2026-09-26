@@ -17,7 +17,7 @@ import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { stripCountryFormats } from '../shared/address-format';
 import type { CountryFormats } from '../shared/address-format';
-import '../../scss/blocks/blocks.scss';
+import '../../scss/checkout/checkout.scss';
 
 interface BlocksParams {
 	namespace?: string;

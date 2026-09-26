@@ -4,8 +4,8 @@
   "version": "5.0.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "build": "wp-scripts build --webpack-src-dir=assets/js",
+    "start": "wp-scripts start --webpack-src-dir=assets/js",
     "format": "wp-scripts format",
     "lint:js": "wp-scripts lint-js",
     "lint:css": "wp-scripts lint-style",
@@ -35,8 +35,13 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@types/wordpress__block-editor": "^15.0.6",
+    "@wordpress/block-editor": "^18.0.0",
+    "@wordpress/blocks": "^16.1.0",
+    "@wordpress/element": "^8.8.0",
     "@wordpress/env": "^11.13.0",
     "@wordpress/scripts": "^34.1.0",
+    "@wordpress/server-side-render": "^6.32.0",
     "typescript": "^6.0.3",
     "wp-readme-to-markdown": "^1.0.1"
   }
