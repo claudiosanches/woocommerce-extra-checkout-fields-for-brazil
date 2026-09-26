@@ -847,3 +847,8 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:681
 msgid "State Registration is not valid."
 msgstr "Inscrição Estadual não é válida."
+
+#: build/checkout.js:1
+#: build/classic.js:1
+msgid "Exempt"
+msgstr "Isento"

@@ -3,7 +3,7 @@
 import { __ } from '@wordpress/i18n';
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
-import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
+import { bindIeExempt } from '../shared/ie-exempt';
 import { createAutofill } from '../shared/postcode';
 import '../../scss/classic/classic.scss';
 
@@ -43,10 +43,6 @@ jQuery( function ( $ ) {
 
 	const bmwFrontEnd = {
 		init() {
-			// Ahead of the person type, which shows and hides it with the row
-			// it belongs to.
-			bindIeExempt( document.getElementById( 'billing_ie' ) );
-
 			if ( '0' !== bmwPublicParams.person_type ) {
 				this.personTypeFields();
 			}
@@ -87,19 +83,7 @@ jQuery( function ( $ ) {
 				this.maskGeneral();
 			}
 
-			// Changing the country re-appends every row WooCommerce knows, in
-			// locale order, which leaves the checkbox behind at the top of the
-			// form. The sorting runs on the same event, so this waits for it.
-			$( document.body ).on(
-				'country_to_state_changed updated_checkout',
-				function () {
-					window.setTimeout( function () {
-						placeIeExempt(
-							document.getElementById( 'billing_ie' )
-						);
-					}, 0 );
-				}
-			);
+			bindIeExempt( document.getElementById( 'billing_ie' ) );
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck( document.getElementById( 'billing_email' ) );
@@ -193,7 +177,7 @@ jQuery( function ( $ ) {
 			// it, which is when it carries the person type class.
 			const ROWS = {
 				1: '#billing_cpf_field, #billing_rg_field',
-				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field, .wcbcf-ie-exempt',
+				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field',
 			};
 
 			/**

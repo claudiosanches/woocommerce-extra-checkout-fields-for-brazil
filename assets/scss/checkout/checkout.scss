@@ -1,3 +1,5 @@
+@use "../ie-exempt";
+
 /* Block checkout tweaks. */
 
 .wcbcf-mailsuggest {
@@ -7,14 +9,4 @@
 	&:empty {
 		display: none;
 	}
-}
-
-// Close enough to the State Registration to read as part of it.
-.wc-block-components-checkbox.wcbcf-ie-exempt {
-	font-size: var(--wp--preset--font-size--small, 0.875em);
-	margin-top: 0.75em;
-}
-
-.wcbcf-ie-exempt-on {
-	opacity: 0.7;
 }

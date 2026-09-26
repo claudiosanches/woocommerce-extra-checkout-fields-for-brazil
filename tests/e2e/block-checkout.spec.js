@@ -358,7 +358,9 @@ test.describe( 'Block checkout', () => {
 		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
 		await page.fill( field( 'cnpj' ), VALID.cnpj );
 
-		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+		const exempt = page.getByRole( 'checkbox', {
+			name: 'Exempt from State Registration',
+		} );
 		await expect( exempt ).toBeVisible();
 
 		await exempt.check();
@@ -402,7 +404,9 @@ test.describe( 'Block checkout', () => {
 		await page.selectOption( field( 'persontype' ), '2' );
 		await page.waitForTimeout( 1500 );
 
-		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+		const exempt = page.getByRole( 'checkbox', {
+			name: 'Exempt from State Registration',
+		} );
 
 		await exempt.check();
 		await expect( page.locator( field( 'ie' ) ) ).toHaveValue( 'ISENTO' );

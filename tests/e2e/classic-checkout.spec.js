@@ -178,7 +178,9 @@ test.describe( 'Classic checkout', () => {
 		await fillCommonFields( page );
 		await waitForClassicCheckoutIdle( page );
 
-		await page.locator( '.wcbcf-ie-exempt-input' ).check();
+		await page
+			.getByRole( 'checkbox', { name: 'Exempt from State Registration' } )
+			.check();
 		await expect( page.locator( '#billing_ie' ) ).toHaveValue( 'ISENTO' );
 
 		await page.click( '#place_order' );
@@ -192,35 +194,32 @@ test.describe( 'Classic checkout', () => {
 		);
 	} );
 
-	test( 'keeps the exempt box beside the State Registration row', async ( {
+	test( 'keeps the exempt box inside the State Registration field', async ( {
 		page,
 	} ) => {
 		await goToClassicCheckout( page );
 		await page.selectOption( '#billing_persontype', '2' );
 		await waitForClassicCheckoutIdle( page );
 
-		await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 1 );
+		const inField = page.locator(
+			'#billing_ie_field .woocommerce-input-wrapper > button.wcbcf-ie-exempt'
+		);
 
-		// Inside the row, WooCommerce reads the unticked box as an empty
-		// required field and marks the row invalid.
-		await expect(
-			page.locator( '#billing_ie_field .wcbcf-ie-exempt' )
-		).toHaveCount( 0 );
-		await expect(
-			page.locator( '#billing_ie_field + .wcbcf-ie-exempt' )
-		).toHaveCount( 1 );
+		await expect( inField ).toBeVisible();
 
 		// Changing the country re-appends every row WooCommerce knows, in
-		// locale order, which used to strand the checkbox at the top.
+		// locale order; the box goes with its row.
 		await page.selectOption( '#billing_country', 'US' );
 		await waitForClassicCheckoutIdle( page );
 		await page.selectOption( '#billing_country', 'BR' );
 		await waitForClassicCheckoutIdle( page );
 
 		await expect( page.locator( '.wcbcf-ie-exempt' ) ).toHaveCount( 1 );
-		await expect(
-			page.locator( '#billing_ie_field + .wcbcf-ie-exempt' )
-		).toHaveCount( 1 );
+		await expect( inField ).toHaveCount( 1 );
+
+		// Hidden with the row for individuals.
+		await page.selectOption( '#billing_persontype', '1' );
+		await expect( inField ).toBeHidden();
 	} );
 
 	test( 'leaves the State Registration row alone when another field fails', async ( {

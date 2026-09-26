@@ -1,3 +1,5 @@
+@use "../ie-exempt";
+
 // The person type decides whether these are required, so WooCommerce's
 // optional mark is swapped for the plugin's own.
 .person-type-required .optional {
@@ -7,35 +9,4 @@
 .wcbcf-mailsuggest {
 	color: #c00;
 	font-size: small;
-}
-
-// A row of its own under the State Registration, in the same column. The
-// label rules match WooCommerce's own, which themes build on.
-.woocommerce form .form-row.wcbcf-ie-exempt {
-	padding-top: 0;
-
-	&.form-row-first {
-		clear: left;
-	}
-
-	&.form-row-last {
-		clear: right;
-	}
-
-	label {
-		align-items: center;
-		display: flex;
-		font-size: 0.875em;
-		gap: 0.5em;
-		line-height: 1.4;
-	}
-
-	input {
-		margin: 0;
-		width: auto;
-	}
-}
-
-.wcbcf-ie-exempt-on {
-	opacity: 0.7;
 }
