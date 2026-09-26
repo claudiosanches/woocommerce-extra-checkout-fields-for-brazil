@@ -151,12 +151,7 @@ ul.csbmw-shipping-calculator-rates {
 	align-items: center;
 	display: grid;
 	gap: 0.75em;
-	grid-template-columns: auto 1fr auto;
-}
-
-.csbmw-shipping-calculator-rate > svg {
-	height: 16px;
-	width: 16px;
+	grid-template-columns: 1fr auto;
 }
 
 .csbmw-shipping-calculator-rate-name,

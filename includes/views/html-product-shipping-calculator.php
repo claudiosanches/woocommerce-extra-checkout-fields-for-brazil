@@ -47,7 +47,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</dialog>
 	<template class="csbmw-shipping-calculator-rate-template">
 		<li class="csbmw-shipping-calculator-rate">
-			<?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'truck' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<span class="csbmw-shipping-calculator-rate-label">
 				<strong class="csbmw-shipping-calculator-rate-name"></strong>
 				<span class="csbmw-shipping-calculator-rate-delivery"></span>
