@@ -430,6 +430,31 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	}
 
 	/**
+	 * Whether a product has anything to ship.
+	 *
+	 * A variable product does when one of its variations is not virtual.
+	 *
+	 * @param WC_Product $product Product.
+	 *
+	 * @return bool
+	 */
+	protected static function ships( $product ) {
+		if ( ! $product->is_type( 'variable' ) ) {
+			return $product->needs_shipping();
+		}
+
+		foreach ( $product->get_visible_children() as $variation_id ) {
+			$variation = wc_get_product( $variation_id );
+
+			if ( $variation && $variation->needs_shipping() ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Product shipping calculator markup.
 	 *
 	 * @param WC_Product $product            Product.
@@ -443,7 +468,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		$product_id = $product->get_id();
 
 		// A block theme can hold the block and also fire the classic hook.
-		if ( ! self::is_brazil_only() || ! $product->needs_shipping() || ! $product->is_in_stock() || in_array( $product_id, $this->rendered, true ) ) {
+		if ( ! self::is_brazil_only() || ! self::ships( $product ) || ! $product->is_in_stock() || in_array( $product_id, $this->rendered, true ) ) {
 			return '';
 		}
 

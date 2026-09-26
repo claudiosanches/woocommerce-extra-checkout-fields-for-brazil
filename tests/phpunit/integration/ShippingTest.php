@@ -254,6 +254,45 @@ class ShippingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A variable product gets the calculator only when a variation ships.
+	 */
+	public function test_variable_product_needs_a_variation_that_ships() {
+		$product = new WC_Product_Variable();
+		$product->set_regular_price( '10' );
+
+		$attribute = new WC_Product_Attribute();
+		$attribute->set_name( 'Tipo' );
+		$attribute->set_options( array( 'Fisico', 'Digital' ) );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$product->set_attributes( array( $attribute ) );
+		$product->save();
+
+		$variations = array();
+
+		foreach ( array( 'Fisico', 'Digital' ) as $option ) {
+			$variation = new WC_Product_Variation();
+			$variation->set_parent_id( $product->get_id() );
+			$variation->set_attributes( array( 'tipo' => $option ) );
+			$variation->set_regular_price( '10' );
+			$variation->set_virtual( true );
+			$variation->save();
+
+			$variations[ $option ] = $variation;
+		}
+
+		WC_Product_Variable::sync( $product->get_id() );
+		$product = wc_get_product( $product->get_id() );
+
+		$this->assertSame( '', $this->shipping->get_product_calculator( $product ) );
+
+		$variations['Fisico']->set_virtual( false );
+		$variations['Fisico']->save();
+
+		$this->assertStringContainsString( 'csbmw-shipping-calculator', ( new Extra_Checkout_Fields_For_Brazil_Shipping() )->get_product_calculator( $product ) );
+	}
+
+	/**
 	 * Free shipping counts the quoted quantity toward its minimum.
 	 */
 	public function test_free_shipping_minimum_counts_the_quoted_product() {

@@ -43,7 +43,13 @@ declare global {
 	interface Window {
 		bmwShippingParams?: ShippingParams;
 		jQuery?: ( target: unknown ) => {
-			on: ( events: string, handler: () => void ) => void;
+			on: (
+				events: string,
+				handler: (
+					event: unknown,
+					variation?: { is_virtual?: boolean }
+				) => void
+			) => void;
 		};
 	}
 }
@@ -538,7 +544,20 @@ function bindProductCalculator( root: HTMLElement ): void {
 			requote();
 		}
 	} );
-	window.jQuery?.( cart ).on( 'found_variation reset_data', requote );
+
+	// A virtual variation has nothing to ship, so the calculator steps aside
+	// while one is chosen.
+	window.jQuery?.( cart ).on( 'found_variation', ( event, variation ) => {
+		root.hidden = !! variation?.is_virtual;
+
+		if ( ! root.hidden ) {
+			requote();
+		}
+	} );
+	window.jQuery?.( cart ).on( 'reset_data', () => {
+		root.hidden = false;
+		requote();
+	} );
 
 	if ( postcode ) {
 		quote( postcode );

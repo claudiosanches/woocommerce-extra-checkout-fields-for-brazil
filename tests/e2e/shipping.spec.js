@@ -445,6 +445,53 @@ test.describe( 'Shipping calculators', () => {
 		}
 	} );
 
+	test( 'steps aside while a virtual variation is chosen', async ( {
+		page,
+	} ) => {
+		const productId = wpCli( [
+			'eval',
+			`$p = new WC_Product_Variable();
+			$p->set_name( 'CSBMW E2E Mixed Product' );
+			$a = new WC_Product_Attribute();
+			$a->set_name( 'Tipo' );
+			$a->set_options( array( 'Fisico', 'Digital' ) );
+			$a->set_visible( true );
+			$a->set_variation( true );
+			$p->set_attributes( array( $a ) );
+			$p->set_status( 'publish' );
+			$id = $p->save();
+			foreach ( array( 'Fisico' => false, 'Digital' => true ) as $o => $v ) {
+				$x = new WC_Product_Variation();
+				$x->set_parent_id( $id );
+				$x->set_attributes( array( 'tipo' => $o ) );
+				$x->set_regular_price( '50' );
+				$x->set_virtual( $v );
+				$x->save();
+			}
+			WC_Product_Variable::sync( $id );
+			echo $id;`,
+		] );
+
+		try {
+			await page.goto( `/?p=${ productId }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			const calculator = page.locator( '.csbmw-shipping-calculator' );
+			const options = page.locator( 'select[name="attribute_tipo"]' );
+
+			await expect( calculator ).toBeVisible();
+
+			await options.selectOption( 'Digital' );
+			await expect( calculator ).toBeHidden();
+
+			await options.selectOption( 'Fisico' );
+			await expect( calculator ).toBeVisible();
+		} finally {
+			wpCli( [ 'post', 'delete', productId, '--force' ] );
+		}
+	} );
+
 	test( 'offers to restrict the store to Brazil', async ( { page } ) => {
 		shipEverywhere();
 
