@@ -4,7 +4,6 @@
 	"name": "csbmw/shipping-calculator",
 	"title": "Shipping Calculator",
 	"category": "woocommerce",
-	"icon": "car",
 	"description": "Lets customers check the shipping options for this product by entering their CEP.",
 	"keywords": [ "cep", "frete", "shipping" ],
 	"textdomain": "woocommerce-extra-checkout-fields-for-brazil",
