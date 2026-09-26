@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div class="csbmw-shipping-calculator-summary" hidden>
 			<button class="csbmw-shipping-calculator-destination" type="button" aria-haspopup="dialog" aria-describedby="<?php echo esc_attr( $prefix ); ?>-change">
-				<?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'globe-americas' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'truck' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="csbmw-shipping-calculator-place"></span>
 				<span class="screen-reader-text" id="<?php echo esc_attr( $prefix ); ?>-change"><?php esc_html_e( 'Change CEP', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
 				<?php echo Extra_Checkout_Fields_For_Brazil_Shipping::icon( 'arrow-path' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
