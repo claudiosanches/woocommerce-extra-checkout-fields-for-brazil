@@ -233,9 +233,11 @@ function bindProductCalculator( root: HTMLElement ): void {
 	const results = root.querySelector< HTMLElement >(
 		'.csbmw-shipping-calculator-results'
 	);
+	// Absent when the block changes the CEP in the card itself.
 	const dialog = root.querySelector< HTMLDialogElement >(
 		'.csbmw-shipping-calculator-dialog'
 	);
+	const inline = 'block' === root.dataset.changePostcodeIn;
 	const rateTemplate = root.querySelector< HTMLTemplateElement >(
 		'.csbmw-shipping-calculator-rate-template'
 	);
@@ -246,7 +248,7 @@ function bindProductCalculator( root: HTMLElement ): void {
 		! place ||
 		! destination ||
 		! results ||
-		! dialog ||
+		( ! dialog && ! inline ) ||
 		! rateTemplate ||
 		root.dataset.bmwBound
 	) {
@@ -461,17 +463,19 @@ function bindProductCalculator( root: HTMLElement ): void {
 
 			formError( form, '' );
 
-			if ( ( await quote( digits, form ) ) && dialog.open ) {
+			if ( ( await quote( digits, form ) ) && dialog?.open ) {
 				dialog.close();
 			}
 		} );
 	} );
 
+	const changer = dialog || empty;
+
 	destination.addEventListener( 'click', () => {
-		const input = dialog.querySelector< HTMLInputElement >(
+		const input = changer.querySelector< HTMLInputElement >(
 			'input[name="postcode"]'
 		);
-		const form = dialog.querySelector( 'form' );
+		const form = changer.querySelector( 'form' );
 
 		if ( input ) {
 			input.value = formatCep( postcode );
@@ -481,22 +485,42 @@ function bindProductCalculator( root: HTMLElement ): void {
 			formError( form, '' );
 		}
 
-		dialog.showModal();
+		if ( dialog ) {
+			dialog.showModal();
+		} else {
+			// The card's own form takes the summary's place until a quote
+			// brings it back.
+			summary.hidden = true;
+			empty.hidden = false;
+			input?.focus();
+		}
+
 		input?.select();
 	} );
 
-	dialog
-		.querySelector( '.csbmw-shipping-calculator-close' )
-		?.addEventListener( 'click', () => dialog.close() );
+	if ( dialog ) {
+		dialog
+			.querySelector( '.csbmw-shipping-calculator-close' )
+			?.addEventListener( 'click', () => dialog.close() );
 
-	// A click on the backdrop lands on the dialog itself.
-	dialog.addEventListener( 'click', ( event ) => {
-		if ( event.target === dialog ) {
-			dialog.close();
-		}
-	} );
+		// A click on the backdrop lands on the dialog itself.
+		dialog.addEventListener( 'click', ( event ) => {
+			if ( event.target === dialog ) {
+				dialog.close();
+			}
+		} );
 
-	dialog.addEventListener( 'close', () => destination.focus() );
+		dialog.addEventListener( 'close', () => destination.focus() );
+	} else {
+		// Escape goes back to the quote the customer had.
+		empty.addEventListener( 'keydown', ( event ) => {
+			if ( 'Escape' === event.key && postcode && place.textContent ) {
+				empty.hidden = true;
+				summary.hidden = false;
+				destination.focus();
+			}
+		} );
+	}
 
 	// Quote again whenever the options or quantity change.
 	let timer = 0;

@@ -389,6 +389,62 @@ test.describe( 'Shipping calculators', () => {
 		await expect( page.locator( '#billing_number' ) ).toHaveValue( '' );
 	} );
 
+	test( 'changes the CEP in the block itself when set to', async ( {
+		page,
+	} ) => {
+		// A product template holding the block, as a store saves it from the
+		// Site Editor.
+		const template = wpCli( [
+			'eval',
+			`$t = get_block_template( 'woocommerce/woocommerce//single-product' );
+			$c = str_replace( '<!-- wp:woocommerce/add-to-cart-form /-->', '<!-- wp:woocommerce/add-to-cart-form /--><!-- wp:csbmw/shipping-calculator {"changePostcodeIn":"block"} /-->', $t->content );
+			$id = wp_insert_post( array( 'post_type' => 'wp_template', 'post_status' => 'publish', 'post_name' => 'single-product', 'post_title' => 'Single Product', 'post_content' => $c ) );
+			wp_set_post_terms( $id, get_stylesheet(), 'wp_theme' );
+			echo $id;`,
+		] );
+
+		try {
+			const calculator = await openProduct( page );
+			const empty = calculator.locator(
+				'.csbmw-shipping-calculator-empty'
+			);
+			const input = empty.locator( 'input[name="postcode"]' );
+			const destination = calculator.locator(
+				'.csbmw-shipping-calculator-destination'
+			);
+
+			await expect( calculator ).toHaveCount( 1 );
+			await expect( calculator.locator( 'dialog' ) ).toHaveCount( 0 );
+
+			await input.pressSequentially( POSTCODES.saoPaulo.postcode );
+			await empty.getByRole( 'button', { name: 'Get quote' } ).click();
+			await expect( destination ).toContainText( 'São Paulo - SP' );
+
+			// The card's own form comes back, holding the current CEP.
+			await calculator
+				.getByRole( 'button', { name: 'Change CEP' } )
+				.click();
+			await expect( empty ).toBeVisible();
+			await expect( destination ).toBeHidden();
+			await expect( input ).toHaveValue( '01001-000' );
+
+			// Escape returns to the quote.
+			await input.press( 'Escape' );
+			await expect( destination ).toBeVisible();
+
+			await calculator
+				.getByRole( 'button', { name: 'Change CEP' } )
+				.click();
+			await input.fill( '' );
+			await input.pressSequentially( POSTCODES.rio.postcode );
+			await empty.getByRole( 'button', { name: 'Get quote' } ).click();
+			await expect( destination ).toContainText( 'Rio de Janeiro - RJ' );
+			await expect( empty ).toBeHidden();
+		} finally {
+			wpCli( [ 'post', 'delete', template, '--force' ] );
+		}
+	} );
+
 	test( 'offers to restrict the store to Brazil', async ( { page } ) => {
 		shipEverywhere();
 

@@ -3,20 +3,71 @@
  * from the same view as the page, and inert so its form cannot be sent.
  */
 
+import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import type { BlockConfiguration } from '@wordpress/blocks';
-import { useBlockProps } from '@wordpress/block-editor';
-import { Disabled } from '@wordpress/components';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { Disabled, PanelBody, RadioControl } from '@wordpress/components';
 import ServerSideRender from '@wordpress/server-side-render';
 import metadata from './block.json';
 
-function Edit( { attributes }: { attributes: Record< string, unknown > } ) {
+// A type rather than an interface, which the block types' record
+// constraint does not accept.
+type Attributes = {
+	changePostcodeIn: 'dialog' | 'block';
+};
+
+function Edit( {
+	attributes,
+	setAttributes,
+}: {
+	attributes: Attributes;
+	setAttributes: ( attributes: Partial< Attributes > ) => void;
+} ) {
 	return (
 		<div { ...useBlockProps() }>
+			<InspectorControls>
+				<PanelBody
+					title={ __(
+						'Settings',
+						'woocommerce-extra-checkout-fields-for-brazil'
+					) }
+				>
+					<RadioControl
+						label={ __(
+							'Change CEP in',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+						selected={ attributes.changePostcodeIn }
+						options={ [
+							{
+								label: __(
+									'A dialog',
+									'woocommerce-extra-checkout-fields-for-brazil'
+								),
+								value: 'dialog',
+							},
+							{
+								label: __(
+									'The block itself',
+									'woocommerce-extra-checkout-fields-for-brazil'
+								),
+								value: 'block',
+							},
+						] }
+						onChange={ ( value ) =>
+							setAttributes( {
+								changePostcodeIn:
+									value as Attributes[ 'changePostcodeIn' ],
+							} )
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
 			<Disabled>
 				<ServerSideRender
 					block={ metadata.name }
-					attributes={ attributes }
+					attributes={ { ...attributes } }
 				/>
 			</Disabled>
 		</div>
@@ -42,7 +93,7 @@ const icon = (
 );
 
 // JSON imports widen literals such as the alignments to plain strings.
-registerBlockType( metadata as BlockConfiguration, {
+registerBlockType( metadata as BlockConfiguration< Attributes >, {
 	icon,
 	edit: Edit,
 	save: () => null,

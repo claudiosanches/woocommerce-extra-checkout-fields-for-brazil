@@ -162,12 +162,21 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'shipping' );
 		self::set_script_translations( self::HANDLE );
 
-		register_block_type(
+		$block = register_block_type(
 			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/shipping-calculator',
 			array(
 				'render_callback' => array( $this, 'render_block' ),
 			)
 		);
+
+		// WordPress registers the editor script from block.json, and looks for
+		// its translations where WordPress.org installs them, not in the
+		// plugin.
+		if ( $block ) {
+			foreach ( $block->editor_script_handles as $handle ) {
+				self::set_script_translations( $handle );
+			}
+		}
 	}
 
 	/**
@@ -323,6 +332,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			$variable           = false;
 			$postcode           = '';
 			$prefix             = 'csbmw-shipping-preview';
+			$inline             = false;
 
 			ob_start();
 			include __DIR__ . '/views/html-product-shipping-calculator.php';
@@ -337,7 +347,9 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			return '';
 		}
 
-		return $this->get_product_calculator( $product, get_block_wrapper_attributes( array( 'class' => 'csbmw-shipping-calculator' ) ) );
+		$inline = isset( $attributes['changePostcodeIn'] ) && 'block' === $attributes['changePostcodeIn'];
+
+		return $this->get_product_calculator( $product, get_block_wrapper_attributes( array( 'class' => 'csbmw-shipping-calculator' ) ), $inline );
 	}
 
 	/**
@@ -422,10 +434,12 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	 *
 	 * @param WC_Product $product            Product.
 	 * @param string     $wrapper_attributes Attributes of the wrapper element.
+	 * @param bool       $inline             Whether the CEP is changed in the
+	 *                                       card instead of a dialog.
 	 *
 	 * @return string
 	 */
-	public function get_product_calculator( $product, $wrapper_attributes = 'class="csbmw-shipping-calculator"' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- The view prints it.
+	public function get_product_calculator( $product, $wrapper_attributes = 'class="csbmw-shipping-calculator"', $inline = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- The view prints them.
 		$product_id = $product->get_id();
 
 		// A block theme can hold the block and also fire the classic hook.

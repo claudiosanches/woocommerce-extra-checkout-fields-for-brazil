@@ -561,6 +561,7 @@ msgid "is a required field"
 msgstr "é um campo obrigatório"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:138
+#: build/blocks/shipping-calculator/index.js:1
 msgid "Settings"
 msgstr "Configurações"
 
@@ -630,7 +631,7 @@ msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:709
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:723
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
@@ -654,18 +655,18 @@ msgstr "Calcular"
 msgid "I don't know my CEP"
 msgstr "Não sei meu CEP"
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:480
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:494
 msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:486
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:715
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:500
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:729
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:701
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:705
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:715
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:719
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -674,13 +675,13 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:882
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:896
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:884
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:898
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -693,7 +694,7 @@ msgid "No shipping options for this CEP."
 msgstr "Nenhuma opção de entrega para este CEP."
 
 #: includes/class-extra-checkout-fields-for-brazil-privacy.php:54
-#: includes/views/html-product-shipping-calculator.php:44
+#: includes/views/html-product-shipping-calculator.php:47
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "CEP"
@@ -732,19 +733,19 @@ msgstr "Opções de entrega"
 msgid "Enter your CEP"
 msgstr "Digite seu CEP"
 
-#: includes/views/html-product-shipping-calculator.php:23
+#: includes/views/html-product-shipping-calculator.php:25
 msgid "Calculate shipping and delivery time"
 msgstr "Calcular frete e prazo"
 
-#: includes/views/html-product-shipping-calculator.php:31
+#: includes/views/html-product-shipping-calculator.php:33
 msgid "Change CEP"
 msgstr "Alterar CEP"
 
-#: includes/views/html-product-shipping-calculator.php:39
+#: includes/views/html-product-shipping-calculator.php:42
 msgid "Enter a CEP to see the shipping options"
 msgstr "Informe um CEP para ver as opções de entrega"
 
-#: includes/views/html-product-shipping-calculator.php:40
+#: includes/views/html-product-shipping-calculator.php:43
 msgid "Close"
 msgstr "Fechar"
 
@@ -816,3 +817,15 @@ msgstr "cnpj"
 msgctxt "block keyword"
 msgid "order"
 msgstr "pedido"
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Change CEP in"
+msgstr "Alterar CEP em"
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "A dialog"
+msgstr "Uma janela"
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "The block itself"
+msgstr "No próprio bloco"
