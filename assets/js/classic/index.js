@@ -43,6 +43,10 @@ jQuery( function ( $ ) {
 
 	const bmwFrontEnd = {
 		init() {
+			// Ahead of the person type, which shows and hides it with the row
+			// it belongs to.
+			bindIeExempt( document.getElementById( 'billing_ie' ) );
+
 			if ( '0' !== bmwPublicParams.person_type ) {
 				this.personTypeFields();
 			}
@@ -82,8 +86,6 @@ jQuery( function ( $ ) {
 
 				this.maskGeneral();
 			}
-
-			bindIeExempt( document.getElementById( 'billing_ie' ) );
 
 			// Changing the country re-appends every row WooCommerce knows, in
 			// locale order, which leaves the checkbox behind at the top of the
@@ -191,7 +193,7 @@ jQuery( function ( $ ) {
 			// it, which is when it carries the person type class.
 			const ROWS = {
 				1: '#billing_cpf_field, #billing_rg_field',
-				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field',
+				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field, .wcbcf-ie-exempt',
 			};
 
 			/**

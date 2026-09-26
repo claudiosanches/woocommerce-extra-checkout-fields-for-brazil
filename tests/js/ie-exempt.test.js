@@ -133,9 +133,25 @@ describe( 'bindIeExempt', () => {
 			document.querySelector( '#billing_ie_field .wcbcf-ie-exempt' )
 		).toBeNull();
 		expect(
-			document.getElementById( 'billing_ie_field' ).nextElementSibling
-				.className
-		).toBe( 'wcbcf-ie-exempt' );
+			document
+				.getElementById( 'billing_ie_field' )
+				.nextElementSibling.classList.contains( 'wcbcf-ie-exempt' )
+		).toBe( true );
+	} );
+
+	it( 'takes the column and the next priority of the row', () => {
+		document.body.innerHTML =
+			'<p class="form-row form-row-last person-type-field person-type-required validate-required" id="billing_ie_field" data-priority="27"><input id="ie" type="text" /></p>';
+
+		bindIeExempt( document.getElementById( 'ie' ) );
+
+		const row = document.querySelector( '.wcbcf-ie-exempt' );
+
+		// Never validate-required, or WooCommerce would want it ticked.
+		expect( row.className ).toBe(
+			'form-row form-row-last person-type-field wcbcf-ie-exempt'
+		);
+		expect( row.dataset.priority ).toBe( '28' );
 	} );
 
 	it( 'follows the row WooCommerce re-sorted', () => {
@@ -161,9 +177,10 @@ describe( 'bindIeExempt', () => {
 		placeIeExempt( input );
 
 		expect(
-			document.getElementById( 'billing_ie_field' ).nextElementSibling
-				.className
-		).toBe( 'wcbcf-ie-exempt' );
+			document
+				.getElementById( 'billing_ie_field' )
+				.nextElementSibling.classList.contains( 'wcbcf-ie-exempt' )
+		).toBe( true );
 		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
 			1
 		);
@@ -179,7 +196,9 @@ describe( 'bindIeExempt', () => {
 			'.wc-block-components-text-input'
 		);
 
-		expect( field.nextElementSibling.className ).toBe( 'wcbcf-ie-exempt' );
+		expect( field.nextElementSibling.className ).toBe(
+			'wc-block-components-checkbox wcbcf-ie-exempt'
+		);
 	} );
 
 	it( 'replaces the checkbox a previous render left behind', () => {

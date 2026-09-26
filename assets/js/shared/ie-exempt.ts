@@ -80,6 +80,101 @@ export function placeIeExempt( input: HTMLInputElement | null | undefined ) {
 }
 
 /**
+ * The checkbox as a row of the classic form, in WooCommerce's markup.
+ *
+ * It takes the column of the State Registration row, and the priority right
+ * after it, which is what WooCommerce sorts rows by when the country changes.
+ * The row carries no validate-required class, so WooCommerce does not read
+ * the unticked box as a missing value.
+ *
+ * @param row      State Registration row.
+ * @param checkbox Checkbox.
+ * @param text     Label text.
+ * @return The row.
+ */
+function classicCheckbox(
+	row: Element,
+	checkbox: HTMLInputElement,
+	text: HTMLElement
+): HTMLElement {
+	const doc = row.ownerDocument;
+	const wrapper = doc.createElement( 'p' );
+	const label = doc.createElement( 'label' );
+
+	wrapper.className = [ 'form-row', ...row.classList ]
+		.filter( ( name ) =>
+			[
+				'form-row',
+				'form-row-first',
+				'form-row-last',
+				'form-row-wide',
+				'person-type-field',
+			].includes( name )
+		)
+		.join( ' ' );
+
+	const priority = parseInt( row.getAttribute( 'data-priority' ) || '', 10 );
+
+	if ( ! Number.isNaN( priority ) ) {
+		wrapper.dataset.priority = String( priority + 1 );
+	}
+
+	label.className =
+		'woocommerce-form__label woocommerce-form__label-for-checkbox checkbox';
+	checkbox.className =
+		'woocommerce-form__input woocommerce-form__input-checkbox input-checkbox';
+
+	label.append( checkbox, ' ', text );
+	wrapper.append( label );
+
+	return wrapper;
+}
+
+/**
+ * The checkbox in the markup of the checkout block's own checkboxes.
+ *
+ * @param input    State Registration input.
+ * @param checkbox Checkbox.
+ * @param text     Label text.
+ * @return The checkbox wrapper.
+ */
+function blockCheckbox(
+	input: HTMLInputElement,
+	checkbox: HTMLInputElement,
+	text: HTMLElement
+): HTMLElement {
+	const doc = input.ownerDocument;
+	const wrapper = doc.createElement( 'div' );
+	const label = doc.createElement( 'label' );
+
+	wrapper.className = 'wc-block-components-checkbox';
+	checkbox.className = 'wc-block-components-checkbox__input';
+	text.className = 'wc-block-components-checkbox__label';
+
+	if ( input.id ) {
+		checkbox.id = `${ input.id }-exempt`;
+		label.htmlFor = checkbox.id;
+	}
+
+	const mark = doc.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+	mark.setAttribute( 'class', 'wc-block-components-checkbox__mark' );
+	mark.setAttribute( 'aria-hidden', 'true' );
+	mark.setAttribute( 'viewBox', '0 0 24 20' );
+
+	const path = doc.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
+	path.setAttribute(
+		'd',
+		'M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'
+	);
+	mark.append( path );
+
+	label.append( checkbox, mark, text );
+	wrapper.append( label );
+
+	return wrapper;
+}
+
+/**
  * Add an exemption checkbox to a State Registration input.
  *
  * @param input         State Registration input.
@@ -120,16 +215,8 @@ export function bindIeExempt(
 			target.value = value;
 		} );
 
-	const wrapper = input.ownerDocument.createElement( 'label' );
-	wrapper.className = 'wcbcf-ie-exempt';
-
-	if ( input.id ) {
-		wrapper.dataset.bmwFor = input.id;
-	}
-
 	const checkbox = input.ownerDocument.createElement( 'input' );
 	checkbox.type = 'checkbox';
-	checkbox.className = 'wcbcf-ie-exempt-input';
 
 	const text = input.ownerDocument.createElement( 'span' );
 	text.textContent = __(
@@ -137,7 +224,17 @@ export function bindIeExempt(
 		'woocommerce-extra-checkout-fields-for-brazil'
 	);
 
-	wrapper.append( checkbox, text );
+	const wrapper = anchor.classList.contains( 'form-row' )
+		? classicCheckbox( anchor, checkbox, text )
+		: blockCheckbox( input, checkbox, text );
+
+	wrapper.classList.add( 'wcbcf-ie-exempt' );
+	checkbox.classList.add( 'wcbcf-ie-exempt-input' );
+
+	if ( input.id ) {
+		wrapper.dataset.bmwFor = input.id;
+	}
+
 	anchor.insertAdjacentElement( 'afterend', wrapper );
 
 	// A value carried over from a previous order should show as exempt.

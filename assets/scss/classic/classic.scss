@@ -9,11 +9,26 @@
 	font-size: small;
 }
 
-.wcbcf-ie-exempt {
-	align-items: center;
-	display: flex;
-	gap: 0.5em;
-	margin-top: 0.5em;
+// A row of its own under the State Registration, in the same column. The
+// label rules match WooCommerce's own, which themes build on.
+.woocommerce form .form-row.wcbcf-ie-exempt {
+	padding-top: 0;
+
+	&.form-row-first {
+		clear: left;
+	}
+
+	&.form-row-last {
+		clear: right;
+	}
+
+	label {
+		align-items: center;
+		display: flex;
+		font-size: 0.875em;
+		gap: 0.5em;
+		line-height: 1.4;
+	}
 
 	input {
 		margin: 0;
