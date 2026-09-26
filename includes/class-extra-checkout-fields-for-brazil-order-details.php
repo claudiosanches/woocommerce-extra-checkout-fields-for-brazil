@@ -273,22 +273,70 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	 * Print the customer data on an order page.
 	 *
 	 * An order confirmation template that has the block, or had it removed
-	 * in the Site Editor, leaves it to the block. A removed hooked block stays
-	 * named in its anchor's metadata, so both mention it. One the block could
-	 * not be hooked into gets the section here.
+	 * in the Site Editor, leaves it to the block. One the block could not be
+	 * hooked into gets the section here.
 	 *
 	 * @param WC_Order $order Order.
 	 *
 	 * @return void
 	 */
 	public function order_details( $order ) {
-		global $_wp_current_template_content;
-
-		if ( ! $order instanceof WC_Order || ( is_order_received_page() && false !== strpos( (string) $_wp_current_template_content, self::BLOCK ) ) ) {
+		if ( ! $order instanceof WC_Order || ( is_order_received_page() && self::template_has_block() ) ) {
 			return;
 		}
 
 		echo self::render_fields( self::get_fields( $order ), 'class="wc-block-order-confirmation-additional-fields-wrapper csbmw-order-customer-data"' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the view.
+	}
+
+	/**
+	 * Whether the current block template has the block or had it removed,
+	 * template parts included.
+	 *
+	 * @return bool
+	 */
+	protected static function template_has_block() {
+		global $_wp_current_template_content;
+
+		if ( ! wp_is_block_theme() || empty( $_wp_current_template_content ) ) {
+			return false;
+		}
+
+		return self::blocks_contain( parse_blocks( $_wp_current_template_content ) );
+	}
+
+	/**
+	 * Whether a block list has the block or had it removed.
+	 *
+	 * A hooked block removed in the Site Editor stays named in the metadata
+	 * of the block it was hooked to, so it is not inserted again.
+	 *
+	 * @param array $blocks Parsed blocks.
+	 *
+	 * @return bool
+	 */
+	protected static function blocks_contain( $blocks ) {
+		foreach ( $blocks as $block ) {
+			$ignored = isset( $block['attrs']['metadata']['ignoredHookedBlocks'] ) ? (array) $block['attrs']['metadata']['ignoredHookedBlocks'] : array();
+
+			if ( self::BLOCK === $block['blockName'] || in_array( self::BLOCK, $ignored, true ) ) {
+				return true;
+			}
+
+			if ( 'core/template-part' === $block['blockName'] && ! empty( $block['attrs']['slug'] ) ) {
+				$theme = isset( $block['attrs']['theme'] ) ? $block['attrs']['theme'] : get_stylesheet();
+				$part  = get_block_template( $theme . '//' . $block['attrs']['slug'], 'wp_template_part' );
+
+				if ( $part && self::blocks_contain( parse_blocks( $part->content ) ) ) {
+					return true;
+				}
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && self::blocks_contain( $block['innerBlocks'] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

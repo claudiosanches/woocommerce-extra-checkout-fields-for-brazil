@@ -148,11 +148,27 @@ class OrderDetailsTest extends WP_UnitTestCase {
 	public function test_classic_hook_stands_aside_for_the_block() {
 		global $_wp_current_template_content;
 
+		if ( ! wp_get_theme( 'twentytwentyfive' )->exists() ) {
+			$this->markTestSkipped( 'Needs the Twenty Twenty-Five block theme.' );
+		}
+
+		switch_theme( 'twentytwentyfive' );
 		add_filter( 'woocommerce_is_order_received_page', '__return_true' );
+
+		$part = wp_insert_post(
+			array(
+				'post_type'    => 'wp_template_part',
+				'post_status'  => 'publish',
+				'post_name'    => 'csbmw-order-part',
+				'post_content' => '<!-- wp:group --><div class="wp-block-group"><!-- wp:csbmw/order-customer-data /--></div><!-- /wp:group -->',
+			)
+		);
+		wp_set_post_terms( $part, 'twentytwentyfive', 'wp_theme' );
 
 		$templates = array(
 			'hooked'   => array( '<!-- wp:csbmw/order-customer-data /-->', '' ),
 			'removed'  => array( '<!-- wp:woocommerce/order-confirmation-totals-wrapper {"metadata":{"ignoredHookedBlocks":["csbmw/order-customer-data"]}} /-->', '' ),
+			'part'     => array( '<!-- wp:template-part {"slug":"csbmw-order-part","theme":"twentytwentyfive"} /-->', '' ),
 			'unhooked' => array( '<!-- wp:woocommerce/order-confirmation-totals /-->', 'Customer data' ),
 		);
 
