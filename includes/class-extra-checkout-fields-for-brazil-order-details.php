@@ -24,6 +24,7 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_filter_fields_for_order_confirmation', array( $this, 'hide_contact_fields' ), 10, 2 );
+		add_filter( 'render_block_woocommerce/order-confirmation-additional-fields-wrapper', array( $this, 'drop_empty_additional_fields' ) );
 
 		// Classic thank you page, My Account and the order confirmation block,
 		// whose totals fire the same hook after the order table.
@@ -50,6 +51,21 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 		}
 
 		return $show;
+	}
+
+	/**
+	 * Drop the order confirmation's additional information when no field is
+	 * left in it.
+	 *
+	 * The block decides to show its heading from the stored values, before
+	 * the fields are filtered, so hiding them all left the heading alone.
+	 *
+	 * @param string $content Rendered block.
+	 *
+	 * @return string
+	 */
+	public function drop_empty_additional_fields( $content ) {
+		return false === strpos( $content, 'wc-block-components-additional-fields-list' ) ? '' : $content;
 	}
 
 	/**

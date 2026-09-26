@@ -221,6 +221,9 @@ test.describe( 'Block checkout', () => {
 		await expect(
 			customerData.getByText( VALID.cpf, { exact: true } )
 		).toBeVisible();
+		await expect(
+			page.getByRole( 'heading', { name: 'Additional information' } )
+		).toHaveCount( 0 );
 	} );
 
 	test( 'requires a company from a legal person', async ( { page } ) => {

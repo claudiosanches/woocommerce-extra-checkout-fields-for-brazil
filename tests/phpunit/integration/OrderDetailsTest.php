@@ -48,6 +48,19 @@ class OrderDetailsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The confirmation's additional information goes with its last field.
+	 */
+	public function test_drops_an_empty_additional_information_section() {
+		$heading = '<div class="wp-block-woocommerce-order-confirmation-additional-fields-wrapper"><h2>Additional information</h2>';
+
+		$this->assertSame( '', $this->details->drop_empty_additional_fields( $heading . '</div>' ) );
+
+		$filled = $heading . '<dl class="wc-block-components-additional-fields-list"><dt>Gift</dt><dd>Yes</dd></dl></div>';
+
+		$this->assertSame( $filled, $this->details->drop_empty_additional_fields( $filled ) );
+	}
+
+	/**
 	 * Empty values are skipped and the gender is shown by its label.
 	 */
 	public function test_lists_the_filled_values() {
