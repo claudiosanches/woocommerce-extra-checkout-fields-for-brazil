@@ -160,18 +160,23 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	public function register_block() {
 		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE, 'shipping' );
 		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'shipping' );
-		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-editor', 'shipping-editor', array( 'wp-blocks', 'wp-block-editor', 'wp-element' ) );
+		self::set_script_translations( self::HANDLE );
 
-		foreach ( array( self::HANDLE, self::HANDLE . '-editor' ) as $handle ) {
-			self::set_script_translations( $handle );
-		}
-
-		register_block_type(
-			dirname( CSBMW_PLUGIN_FILE ) . '/includes/blocks/shipping-calculator',
+		$block = register_block_type(
+			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/shipping-calculator',
 			array(
 				'render_callback' => array( $this, 'render_block' ),
 			)
 		);
+
+		// WordPress registers the editor script from block.json, and looks for
+		// its translations where WordPress.org installs them, not in the
+		// plugin.
+		if ( $block ) {
+			foreach ( $block->editor_script_handles as $handle ) {
+				self::set_script_translations( $handle );
+			}
+		}
 	}
 
 	/**
@@ -662,7 +667,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			return;
 		}
 
-		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-cart', 'shipping-cart', array( 'wp-data', 'wp-element', 'wp-plugins', 'wc-blocks-checkout', 'wc-blocks-data-store', 'wc-price-format', 'wc-settings', self::HANDLE ) );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-cart', 'shipping-cart', array( self::HANDLE ) );
 		self::set_script_translations( self::HANDLE . '-cart' );
 
 		wp_enqueue_script( self::HANDLE . '-cart' );

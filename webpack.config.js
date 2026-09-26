@@ -1,8 +1,17 @@
 const path = require( 'path' );
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
+const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );
 
 module.exports = {
 	...defaultConfig,
+	// WooCommerce's also maps its @woocommerce/* packages to their globals.
+	plugins: [
+		...defaultConfig.plugins.filter(
+			( plugin ) =>
+				plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'
+		),
+		new WooCommerceDependencyExtractionWebpackPlugin(),
+	],
 	entry: {
 		classic: path.resolve( __dirname, 'assets/js/classic/index.js' ),
 		checkout: path.resolve( __dirname, 'assets/js/checkout/index.ts' ),
@@ -11,14 +20,14 @@ module.exports = {
 			__dirname,
 			'assets/js/blocks/order-customer-data/index.tsx'
 		),
+		'blocks/shipping-calculator/index': path.resolve(
+			__dirname,
+			'assets/js/blocks/shipping-calculator/index.tsx'
+		),
 		shipping: path.resolve( __dirname, 'assets/js/shipping/shipping.ts' ),
 		'shipping-cart': path.resolve(
 			__dirname,
 			'assets/js/shipping/cart.ts'
-		),
-		'shipping-editor': path.resolve(
-			__dirname,
-			'assets/js/shipping/editor.ts'
 		),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(

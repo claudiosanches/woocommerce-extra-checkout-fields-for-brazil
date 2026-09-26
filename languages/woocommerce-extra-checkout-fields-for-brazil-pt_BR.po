@@ -630,7 +630,7 @@ msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:698
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:703
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
@@ -649,24 +649,24 @@ msgid "Calculate"
 msgstr "Calcular"
 
 #: includes/views/html-postcode-form.php:23
+#: build/blocks/shipping-calculator/index.js:1
 #: build/shipping-cart.js:1
-#: build/shipping-editor.js:1
 #: build/shipping.js:1
 msgid "I don't know my CEP"
 msgstr "Não sei meu CEP"
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:469
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:474
 msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:475
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:704
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:480
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:709
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:690
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:694
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:695
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:699
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -675,13 +675,13 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:871
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:876
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:873
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:878
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -700,27 +700,27 @@ msgstr "Nenhuma opção de entrega para este CEP."
 msgid "CEP"
 msgstr "CEP"
 
-#: includes/blocks/shipping-calculator/block.json
+#: build/blocks/shipping-calculator/block.json
 msgctxt "block title"
 msgid "Shipping Calculator"
 msgstr "Calculadora de Frete"
 
-#: includes/blocks/shipping-calculator/block.json
+#: build/blocks/shipping-calculator/block.json
 msgctxt "block description"
 msgid "Lets customers check the shipping options for this product by entering their CEP."
 msgstr "Permite que o cliente consulte as opções de entrega deste produto informando o CEP."
 
-#: includes/blocks/shipping-calculator/block.json
+#: build/blocks/shipping-calculator/block.json
 msgctxt "block keyword"
 msgid "cep"
 msgstr "cep"
 
-#: includes/blocks/shipping-calculator/block.json
+#: build/blocks/shipping-calculator/block.json
 msgctxt "block keyword"
 msgid "frete"
 msgstr "frete"
 
-#: includes/blocks/shipping-calculator/block.json
+#: build/blocks/shipping-calculator/block.json
 msgctxt "block keyword"
 msgid "shipping"
 msgstr "entrega"
@@ -730,12 +730,12 @@ msgid "Shipping options"
 msgstr "Opções de entrega"
 
 #: includes/views/html-postcode-form.php:20
-#: build/shipping-editor.js:1
+#: build/blocks/shipping-calculator/index.js:1
 msgid "Enter your CEP"
 msgstr "Digite seu CEP"
 
 #: includes/views/html-product-shipping-calculator.php:23
-#: build/shipping-editor.js:1
+#: build/blocks/shipping-calculator/index.js:1
 msgid "Calculate shipping and delivery time"
 msgstr "Calcular frete e prazo"
 
@@ -776,7 +776,7 @@ msgid "Remembers the CEP used to calculate shipping."
 msgstr "Lembra o CEP usado para calcular o frete."
 
 #: includes/views/html-postcode-form.php:21
-#: build/shipping-editor.js:1
+#: build/blocks/shipping-calculator/index.js:1
 msgid "Get quote"
 msgstr "Consultar"
 

@@ -10,6 +10,9 @@
  * before that render committed would be reverted with it.
  */
 
+import { dispatch, select } from '@wordpress/data';
+import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
+import { getSetting } from '@woocommerce/settings';
 import type { Formatter, MaskName } from '../shared/mask';
 import { caretIndex, caretOffset, formatCep, formatters } from '../shared/mask';
 import { createAutofill } from '../shared/postcode';
@@ -39,27 +42,17 @@ interface CustomerData {
 	shippingAddress?: Record< string, string >;
 }
 
-interface StoreSelectors {
-	getCustomerData: () => CustomerData;
-	getUseShippingAsBilling?: () => boolean;
-}
-
 declare global {
 	interface Window {
 		bmwBlocksParams?: BlocksParams;
-		wcSettings?: { countryData?: CountryFormats };
-		wp?: {
-			data?: {
-				dispatch: ( store: string ) => CartAddressStore;
-				select: ( store: string ) => StoreSelectors;
-			};
-		};
 	}
 }
 
 // The address card is formatted in the browser, before anything this script
 // does on the page, so the formats are cleaned up as soon as it runs.
-stripCountryFormats( window.wcSettings?.countryData );
+stripCountryFormats(
+	getSetting< CountryFormats | undefined >( 'countryData' )
+);
 
 // The DOM defines this accessor on every input, and going through it is what
 // keeps React's value tracker from discarding the rewrite.
@@ -209,9 +202,7 @@ function autofillFor( group: Group ): () => void {
 	const neighborhood = `${ namespace }/neighborhood`;
 	const number = `${ namespace }/number`;
 	const address = (): Record< string, string > => {
-		const data = window.wp?.data
-			?.select( 'wc/store/cart' )
-			.getCustomerData();
+		const data: CustomerData = select( CART_STORE_KEY ).getCustomerData();
 
 		return (
 			( 'shipping' === group
@@ -242,11 +233,7 @@ function autofillFor( group: Group ): () => void {
 			};
 		},
 		write: ( values ) => {
-			const store = window.wp?.data?.dispatch( 'wc/store/cart' );
-
-			if ( ! store ) {
-				return;
-			}
+			const store = dispatch( CART_STORE_KEY ) as CartAddressStore;
 
 			const {
 				neighborhood: neighborhoodValue,
@@ -276,11 +263,7 @@ function autofillFor( group: Group ): () => void {
 
 			store.setShippingAddress( update );
 
-			if (
-				window.wp?.data
-					?.select( 'wc/store/checkout' )
-					.getUseShippingAsBilling?.()
-			) {
+			if ( select( CHECKOUT_STORE_KEY ).getUseShippingAsBilling() ) {
 				store.setBillingAddress( { ...address(), ...update } );
 			}
 		},

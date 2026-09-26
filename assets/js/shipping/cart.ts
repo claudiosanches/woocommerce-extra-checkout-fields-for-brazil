@@ -8,6 +8,16 @@
  */
 
 import { __ } from '@wordpress/i18n';
+import { createElement as el, useState } from '@wordpress/element';
+import { select, subscribe, useDispatch } from '@wordpress/data';
+import { registerPlugin } from '@wordpress/plugins';
+import { ExperimentalOrderMeta } from '@woocommerce/blocks-checkout';
+import { CART_STORE_KEY } from '@woocommerce/block-data';
+import {
+	formatPrice,
+	getCurrencyFromPriceResponse,
+} from '@woocommerce/price-format';
+import { getSetting } from '@woocommerce/settings';
 import { formatCep } from '../shared/mask';
 import {
 	describeAddress,
@@ -56,58 +66,9 @@ interface CartStore {
 	) => Promise< unknown >;
 }
 
-interface Globals {
-	wp: {
-		element: {
-			createElement: (
-				type: unknown,
-				props?: unknown,
-				...children: unknown[]
-			) => unknown;
-			useState: < T >(
-				initial: T | ( () => T )
-			) => [ T, ( value: T ) => void ];
-		};
-		data: {
-			useDispatch: ( store: string ) => CartStore;
-			select: ( store: string ) => {
-				isCustomerDataUpdating: () => boolean;
-			};
-			subscribe: ( listener: () => void, store?: string ) => () => void;
-		};
-		plugins: {
-			registerPlugin: (
-				name: string,
-				settings: { render: () => unknown; scope: string }
-			) => void;
-		};
-	};
-	wc: {
-		blocksCheckout: { ExperimentalOrderMeta: unknown };
-		priceFormat: {
-			formatPrice: ( value: number, currency: unknown ) => string;
-			getCurrencyFromPriceResponse: ( rate: CartRate ) => unknown;
-		};
-		wcSettings: {
-			getSetting: < T >( name: string, fallback: T ) => T;
-		};
-	};
-}
-
-const { wp, wc } = window as unknown as Globals;
-const { createElement: el, useState } = wp.element;
-
-// WooCommerce checks that a script reading its globals declared them as
-// dependencies, which it can only tell while the script first runs.
-const { ExperimentalOrderMeta } = wc.blocksCheckout;
-const { formatPrice, getCurrencyFromPriceResponse } = wc.priceFormat;
-const includeTaxes = wc.wcSettings.getSetting(
-	'displayCartPricesIncludingTax',
-	false
-);
+const includeTaxes = getSetting( 'displayCartPricesIncludingTax', false );
 
 const params: ShippingParams = window.bmwShippingParams || {};
-const CART_STORE = 'wc/store/cart';
 const NEIGHBORHOOD = 'csbmw/neighborhood';
 const NUMBER = 'csbmw/number';
 const INPUT_ID = 'csbmw-cart-postcode';
@@ -192,17 +153,15 @@ function addressSaved(): Promise< void > {
 		let started = false;
 		let timer = 0;
 
-		const unsubscribe = wp.data.subscribe( () => {
-			const updating = wp.data
-				.select( CART_STORE )
-				.isCustomerDataUpdating();
+		const unsubscribe = subscribe( () => {
+			const updating = select( CART_STORE_KEY ).isCustomerDataUpdating();
 
 			if ( updating ) {
 				started = true;
 			} else if ( started ) {
 				done();
 			}
-		}, CART_STORE );
+		}, CART_STORE_KEY );
 
 		function done() {
 			unsubscribe();
@@ -215,7 +174,7 @@ function addressSaved(): Promise< void > {
 }
 
 function Rates( { cart }: { cart: Cart } ) {
-	const { selectShippingRate } = wp.data.useDispatch( CART_STORE );
+	const { selectShippingRate } = useDispatch( CART_STORE_KEY ) as CartStore;
 
 	return el(
 		'fieldset',
@@ -316,8 +275,9 @@ function Calculator( { cart }: { cart: Cart } ) {
 	const [ focused, setFocused ] = useState( false );
 	const [ error, setError ] = useState( '' );
 	const [ busy, setBusy ] = useState( false );
-	const { setBillingAddress, setShippingAddress } =
-		wp.data.useDispatch( CART_STORE );
+	const { setBillingAddress, setShippingAddress } = useDispatch(
+		CART_STORE_KEY
+	) as CartStore;
 
 	const saved =
 		'BR' === cart.shippingAddress.country
@@ -520,7 +480,7 @@ function CartOnly( { cart, context }: { cart?: Cart; context?: string } ) {
 		: null;
 }
 
-wp.plugins.registerPlugin( 'csbmw-cart-shipping-calculator', {
-	render: () => el( ExperimentalOrderMeta as string, null, el( CartOnly ) ),
+registerPlugin( 'csbmw-cart-shipping-calculator', {
+	render: () => el( ExperimentalOrderMeta, null, el( CartOnly ) ),
 	scope: 'woocommerce-checkout',
 } );

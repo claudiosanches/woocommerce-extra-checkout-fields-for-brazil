@@ -8,6 +8,7 @@
 	"description": "Lets customers check the shipping options for this product by entering their CEP.",
 	"keywords": [ "cep", "frete", "shipping" ],
 	"textdomain": "woocommerce-extra-checkout-fields-for-brazil",
+	"attributes": {},
 	"usesContext": [ "postId", "postType" ],
 	"supports": {
 		"html": false,
@@ -20,7 +21,7 @@
 			"fontSize": true
 		}
 	},
-	"editorScript": "woocommerce-extra-checkout-fields-for-brazil-shipping-editor",
+	"editorScript": "file:./index.tsx",
 	"viewScript": "woocommerce-extra-checkout-fields-for-brazil-shipping",
 	"style": "woocommerce-extra-checkout-fields-for-brazil-shipping"
 }
