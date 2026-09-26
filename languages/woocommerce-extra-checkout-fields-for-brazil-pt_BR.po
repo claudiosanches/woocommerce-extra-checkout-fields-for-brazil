@@ -366,23 +366,19 @@ msgstr "Avisos importantes"
 msgid "Version 5.0.0 released"
 msgstr "Versão 5.0.0 lançada"
 
-#: includes/admin/views/html-admin-announcements.php:17
-msgid "Block checkout support and improved compatibility with current WooCommerce versions."
-msgstr "Suporte à finalização de compra em blocos e compatibilidade melhorada com as versões atuais do WooCommerce."
-
-#: includes/admin/views/html-admin-announcements.php:20
+#: includes/admin/views/html-admin-announcements.php:24
 msgid "New integration guidance"
 msgstr "Novas orientações de integração"
 
-#: includes/admin/views/html-admin-announcements.php:21
+#: includes/admin/views/html-admin-announcements.php:25
 msgid "Existing checkout field meta keys remain available for gateways, ERPs and invoicing integrations."
 msgstr "As chaves de meta dos campos de finalização de compra continuam disponíveis para gateways, ERPs e integrações de emissão de nota fiscal."
 
-#: includes/admin/views/html-admin-announcements.php:24
+#: includes/admin/views/html-admin-announcements.php:28
 msgid "Keep WooCommerce updated"
 msgstr "Mantenha o WooCommerce atualizado"
 
-#: includes/admin/views/html-admin-announcements.php:25
+#: includes/admin/views/html-admin-announcements.php:29
 msgid "Use the latest supported WooCommerce release for the best checkout experience."
 msgstr "Use a versão compatível mais recente do WooCommerce para a melhor experiência de finalização de compra."
 
@@ -621,7 +617,7 @@ msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:616
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:687
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
@@ -646,18 +642,18 @@ msgstr "Calcular"
 msgid "I don't know my CEP"
 msgstr "Não sei meu CEP"
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:435
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:458
 msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:441
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:622
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:464
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:693
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:608
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:612
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:679
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:683
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -666,13 +662,13 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:789
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:860
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:791
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:862
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -774,3 +770,15 @@ msgstr "Consultar"
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:248
 msgid "Block themes can place the Shipping Calculator block in the product template instead, which then takes its place."
 msgstr "Temas de blocos podem usar o bloco Calculadora de Frete no modelo de produto, que então ocupa o lugar desta opção."
+
+#: includes/admin/views/html-admin-announcements.php:17
+msgid "Block checkout support, shipping calculators that ask only for the CEP and address autofill from the CEP."
+msgstr "Suporte à finalização de compra em blocos, calculadoras de frete que pedem só o CEP e preenchimento do endereço pelo CEP."
+
+#: includes/admin/views/html-admin-announcements.php:20
+msgid "Shipping by CEP"
+msgstr "Frete pelo CEP"
+
+#: includes/admin/views/html-admin-announcements.php:21
+msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section."
+msgstr "Os clientes podem consultar o frete nas páginas de produto e no carrinho só com o CEP. Ative na seção Entrega."

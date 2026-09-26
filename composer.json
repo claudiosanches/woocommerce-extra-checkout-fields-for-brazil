@@ -22,7 +22,7 @@
             "phpcbf --standard=.phpcs.xml"
         ],
         "makepot": [
-            "wp i18n make-pot . languages/woocommerce-extra-checkout-fields-for-brazil.pot --exclude=vendor,node_modules,tests,assets"
+            "wp i18n make-pot . languages/woocommerce-extra-checkout-fields-for-brazil.pot --exclude=vendor,node_modules,tests,assets,artifacts"
         ],
         "makejson": [
             "wp i18n make-json languages --no-purge"

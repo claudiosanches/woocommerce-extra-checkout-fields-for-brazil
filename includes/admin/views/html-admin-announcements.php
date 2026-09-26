@@ -14,7 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<ul>
 		<li>
 			<strong><?php esc_html_e( 'Version 5.0.0 released', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></strong>
-			<span><?php esc_html_e( 'Block checkout support and improved compatibility with current WooCommerce versions.', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
+			<span><?php esc_html_e( 'Block checkout support, shipping calculators that ask only for the CEP and address autofill from the CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
+		</li>
+		<li>
+			<strong><?php esc_html_e( 'Shipping by CEP', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></strong>
+			<span><?php esc_html_e( 'Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section.', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
 		</li>
 		<li>
 			<strong><?php esc_html_e( 'New integration guidance', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></strong>
