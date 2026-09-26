@@ -27,6 +27,11 @@ $border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transpar
 	}
 }
 
+// A step below the product summary text, as secondary information.
+.csbmw-shipping-calculator-card {
+	font-size: 0.875em;
+}
+
 .csbmw-shipping-calculator-icon {
 	flex: none;
 	height: 20px;
