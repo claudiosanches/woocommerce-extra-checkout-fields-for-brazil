@@ -199,6 +199,29 @@ test.describe( 'Shipping calculators', () => {
 		await expect(
 			page.locator( '.wc-block-components-totals-shipping' )
 		).toContainText( 'PAC E2E' );
+
+		// A CEP changed on the product page afterwards follows too.
+		await openProduct( page );
+		await calculator
+			.locator( '.csbmw-shipping-calculator-destination' )
+			.click();
+
+		const dialog = calculator.locator( 'dialog' );
+
+		await dialog.locator( 'input[name="postcode"]' ).fill( '' );
+		await dialog
+			.locator( 'input[name="postcode"]' )
+			.pressSequentially( POSTCODES.saoPaulo.postcode );
+		await dialog.getByRole( 'button', { name: 'Get quote' } ).click();
+		await expect(
+			calculator.locator( '.csbmw-shipping-calculator-destination' )
+		).toContainText( 'São Paulo - SP' );
+
+		await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+		await expect(
+			page.locator( '.csbmw-cart-shipping-calculator' )
+		).toContainText( 'Rua E2E da Sé, Centro E2E, São Paulo - SP' );
 	} );
 
 	test( 'asks only for the CEP in the classic cart', async ( { page } ) => {
