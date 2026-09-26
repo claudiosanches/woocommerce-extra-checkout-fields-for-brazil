@@ -6,9 +6,10 @@ module.exports = {
 	entry: {
 		frontend: path.resolve( __dirname, 'assets/js/frontend/frontend.js' ),
 		blocks: path.resolve( __dirname, 'assets/js/blocks/index.ts' ),
-		'order-customer-data-editor': path.resolve(
+		// Beside the block.json the build copies from the source folder.
+		'blocks/order-customer-data/index': path.resolve(
 			__dirname,
-			'assets/js/order-customer-data/editor.tsx'
+			'assets/js/blocks/order-customer-data/index.tsx'
 		),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(

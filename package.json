@@ -4,8 +4,8 @@
   "version": "5.0.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "build": "wp-scripts build --webpack-src-dir=assets/js",
+    "start": "wp-scripts start --webpack-src-dir=assets/js",
     "format": "wp-scripts format",
     "lint:js": "wp-scripts lint-js",
     "lint:css": "wp-scripts lint-style",

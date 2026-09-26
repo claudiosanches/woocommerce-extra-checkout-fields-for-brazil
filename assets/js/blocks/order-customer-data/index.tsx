@@ -7,7 +7,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import type { BlockConfiguration } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
-import metadata from '../../../includes/blocks/order-customer-data/block.json';
+import metadata from './block.json';
 
 function Edit( { attributes }: { attributes: Record< string, unknown > } ) {
 	return (

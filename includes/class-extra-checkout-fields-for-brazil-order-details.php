@@ -135,7 +135,7 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	}
 
 	/**
-	 * Register the order confirmation block and its editor preview.
+	 * Register the order confirmation block.
 	 *
 	 * Block hooks place it after the order totals, so it shows in the order
 	 * confirmation template and can be moved or removed there.
@@ -143,10 +143,8 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	 * @return void
 	 */
 	public function register_block() {
-		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-order-customer-data-editor', 'order-customer-data-editor' );
-
 		register_block_type(
-			dirname( CSBMW_PLUGIN_FILE ) . '/includes/blocks/order-customer-data',
+			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/order-customer-data',
 			array(
 				'render_callback' => array( $this, 'render_block' ),
 			)

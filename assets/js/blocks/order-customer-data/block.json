@@ -26,6 +26,6 @@
 	"blockHooks": {
 		"woocommerce/order-confirmation-totals-wrapper": "after"
 	},
-	"editorScript": "woocommerce-extra-checkout-fields-for-brazil-order-customer-data-editor",
+	"editorScript": "file:./index.tsx",
 	"style": "wc-blocks-style-order-confirmation-additional-fields"
 }
