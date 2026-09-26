@@ -142,6 +142,39 @@ class OrderDetailsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The order confirmation leaves the section to the block when its
+	 * template has it or had it removed, and prints it when not.
+	 */
+	public function test_classic_hook_stands_aside_for_the_block() {
+		global $_wp_current_template_content;
+
+		add_filter( 'woocommerce_is_order_received_page', '__return_true' );
+
+		$templates = array(
+			'hooked'   => array( '<!-- wp:csbmw/order-customer-data /-->', '' ),
+			'removed'  => array( '<!-- wp:woocommerce/order-confirmation-totals-wrapper {"metadata":{"ignoredHookedBlocks":["csbmw/order-customer-data"]}} /-->', '' ),
+			'unhooked' => array( '<!-- wp:woocommerce/order-confirmation-totals /-->', 'Customer data' ),
+		);
+
+		foreach ( $templates as $name => list( $content, $expected ) ) {
+			$_wp_current_template_content = $content;
+
+			ob_start();
+			$this->details->order_details( $this->order );
+			$output = ob_get_clean();
+
+			if ( '' === $expected ) {
+				$this->assertSame( '', $output, $name );
+			} else {
+				$this->assertStringContainsString( $expected, $output, $name );
+			}
+		}
+
+		$_wp_current_template_content = null;
+		remove_filter( 'woocommerce_is_order_received_page', '__return_true' );
+	}
+
+	/**
 	 * An order without any of the data prints nothing.
 	 */
 	public function test_prints_nothing_without_data() {

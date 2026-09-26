@@ -272,8 +272,10 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	/**
 	 * Print the customer data on an order page.
 	 *
-	 * The order confirmation template shows it through the block instead,
-	 * where the store can move or remove it.
+	 * An order confirmation template that has the block, or had it removed
+	 * in the Site Editor, leaves it to the block. A removed hooked block stays
+	 * named in its anchor's metadata, so both mention it. One the block could
+	 * not be hooked into gets the section here.
 	 *
 	 * @param WC_Order $order Order.
 	 *
@@ -282,7 +284,7 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	public function order_details( $order ) {
 		global $_wp_current_template_content;
 
-		if ( ! $order instanceof WC_Order || ( is_order_received_page() && ! empty( $_wp_current_template_content ) ) ) {
+		if ( ! $order instanceof WC_Order || ( is_order_received_page() && false !== strpos( (string) $_wp_current_template_content, self::BLOCK ) ) ) {
 			return;
 		}
 
