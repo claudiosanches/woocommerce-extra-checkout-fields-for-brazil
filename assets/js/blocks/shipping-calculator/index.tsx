@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import type { BlockConfiguration } from '@wordpress/blocks';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Disabled, PanelBody, RadioControl } from '@wordpress/components';
+import { Disabled, PanelBody, SelectControl } from '@wordpress/components';
 import ServerSideRender from '@wordpress/server-side-render';
 import metadata from './block.json';
 
@@ -33,12 +33,14 @@ function Edit( {
 						'woocommerce-extra-checkout-fields-for-brazil'
 					) }
 				>
-					<RadioControl
+					<SelectControl
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
 						label={ __(
 							'Change CEP in',
 							'woocommerce-extra-checkout-fields-for-brazil'
 						) }
-						selected={ attributes.changePostcodeIn }
+						value={ attributes.changePostcodeIn }
 						options={ [
 							{
 								label: __(
