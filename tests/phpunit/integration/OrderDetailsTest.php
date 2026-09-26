@@ -61,6 +61,41 @@ class OrderDetailsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The editor preview of the additional information gets no field of ours.
+	 */
+	public function test_hides_contact_fields_from_the_editor() {
+		update_option( 'wcbcf_settings', array( 'person_type' => '1' ) );
+
+		$container  = Automattic\WooCommerce\Blocks\Package::container();
+		$controller = $container->get( Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields::class );
+
+		foreach ( array_keys( $controller->get_additional_fields() ) as $field_id ) {
+			if ( '' !== Extra_Checkout_Fields_For_Brazil_Blocks::field_key( $field_id ) ) {
+				__internal_woocommerce_blocks_deregister_checkout_field( $field_id );
+			}
+		}
+
+		( new Extra_Checkout_Fields_For_Brazil_Blocks() )->register_fields();
+
+		$contact = $controller->get_fields_for_location( 'contact' );
+
+		$this->assertArrayHasKey( 'csbmw/cpf', $contact );
+
+		$registry = $container->get( Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class );
+		$data     = new ReflectionProperty( $registry, 'data' );
+		$data->setAccessible( true );
+		$values = $data->getValue( $registry );
+		unset( $values['additionalContactFields'] );
+		$data->setValue( $registry, $values );
+
+		$this->details->hide_contact_fields_from_editor();
+
+		$published = $data->getValue( $registry )['additionalContactFields'];
+
+		$this->assertSame( array(), array_filter( array_keys( $published ), static fn( $id ) => 0 === strpos( $id, 'csbmw/' ) ) );
+	}
+
+	/**
 	 * Empty values are skipped and the gender is shown by its label.
 	 */
 	public function test_lists_the_filled_values() {

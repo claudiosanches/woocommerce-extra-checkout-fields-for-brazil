@@ -34,6 +34,9 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 		add_filter( 'woocommerce_filter_fields_for_order_confirmation', array( $this, 'hide_contact_fields' ), 10, 2 );
 		add_filter( 'render_block_woocommerce/order-confirmation-additional-fields-wrapper', array( $this, 'drop_empty_additional_fields' ) );
 
+		// Before WooCommerce's order confirmation blocks add theirs.
+		add_action( 'enqueue_block_editor_assets', array( $this, 'hide_contact_fields_from_editor' ), 5 );
+
 		// Classic thank you page and My Account.
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'order_details' ) );
 
@@ -58,6 +61,37 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 		}
 
 		return $show;
+	}
+
+	/**
+	 * Keep this plugin's contact fields out of the editor preview of the order
+	 * confirmation's additional information.
+	 *
+	 * The preview lists the contact fields WooCommerce publishes to the
+	 * editor, without the filter the order confirmation applies. WooCommerce
+	 * keeps the first value registered under a key, so the list without them
+	 * is registered first.
+	 *
+	 * @return void
+	 */
+	public function hide_contact_fields_from_editor() {
+		if ( ! class_exists( Automattic\WooCommerce\Blocks\Package::class ) ) {
+			return;
+		}
+
+		$container = Automattic\WooCommerce\Blocks\Package::container();
+		$fields    = $container->get( Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields::class )->get_fields_for_location( 'contact' );
+
+		$container->get( Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class )->add(
+			'additionalContactFields',
+			array_filter(
+				$fields,
+				static function ( $id ) {
+					return ! in_array( Extra_Checkout_Fields_For_Brazil_Blocks::field_key( $id ), Extra_Checkout_Fields_For_Brazil_Blocks::CONTACT_FIELDS, true );
+				},
+				ARRAY_FILTER_USE_KEY
+			)
+		);
 	}
 
 	/**
