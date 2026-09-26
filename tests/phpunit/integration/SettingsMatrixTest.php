@@ -215,6 +215,7 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 			'cpf'          => $individual,
 			'rg'           => $individual && '' !== $rg,
 			'cnpj'         => $company,
+			'company'      => $company,
 			'ie'           => $company && '' !== $ie,
 			'birthdate'    => '' !== $birthdate,
 			'gender'       => '' !== $gender,

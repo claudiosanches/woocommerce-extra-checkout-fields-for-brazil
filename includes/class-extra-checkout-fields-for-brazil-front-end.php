@@ -187,34 +187,39 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			}
 		}
 
+		$dynamic_company = Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings );
+
+		// Otherwise it is WooCommerce's own field, left as it is.
 		if ( isset( $fields['billing_company'] ) ) {
 			$new_fields['billing_company']             = $fields['billing_company'];
 			$new_fields['billing_company']['priority'] = 25;
-
-			// Otherwise it is WooCommerce's own field, left as it is.
-			if ( Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
-				$new_fields['billing_company']['class'] = $this->person_type_classes( 'form-row-wide', true );
-				$new_fields['billing_company']['clear'] = true;
-			}
 		}
 
 		if ( 1 === $person_type || 3 === $person_type ) {
 			$ie = Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $settings );
 
+			// Asked of legal persons, the company goes beside the CNPJ it
+			// identifies and the State Registration takes the next row.
 			$new_fields['billing_cnpj'] = array(
 				'label'    => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'class'    => array( 'disabled' === $ie ? 'form-row-wide' : $first_class, 'person-type-field', 'person-type-required' ),
+				'class'    => array( $dynamic_company || 'disabled' !== $ie ? $first_class : 'form-row-wide', 'person-type-field', 'person-type-required' ),
 				'required' => false,
 				'type'     => 'tel',
 				'priority' => 26,
 			);
 
+			if ( $dynamic_company && isset( $new_fields['billing_company'] ) ) {
+				$new_fields['billing_company']['class']    = $this->person_type_classes( $last_class, true );
+				$new_fields['billing_company']['clear']    = true;
+				$new_fields['billing_company']['priority'] = 27;
+			}
+
 			if ( 'disabled' !== $ie ) {
 				$new_fields['billing_ie'] = array(
 					'label'    => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-					'class'    => $this->person_type_classes( $last_class, 'required' === $ie ),
+					'class'    => $this->person_type_classes( $dynamic_company ? 'form-row-wide' : $last_class, 'required' === $ie ),
 					'required' => false,
-					'priority' => 27,
+					'priority' => 28,
 				);
 			}
 		}
@@ -506,8 +511,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		// Never required here: this filter feeds billing and shipping, every
 		// country, and the default locale. Whether a company is mandatory
-		// depends on the billing person type, which valid_checkout_fields() and
-		// Extra_Checkout_Fields_For_Brazil_Blocks::validate_company() decide.
+		// depends on the billing person type, which valid_checkout_fields()
+		// decides.
 		$fields['company'] = array(
 			'label'        => __( 'Company name', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Reuses the WooCommerce label.
 			'class'        => array( 'form-row-wide' ),
@@ -536,17 +541,16 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			return $locales;
 		}
 
-		// The checkout block hides company by default, and takes nothing from
-		// the default locale. Legal persons have to be able to fill it in
-		// wherever they check out; whether it is mandatory is decided when the
-		// order is validated, where the billing person type is known.
+		// Whether the company is mandatory is decided by the person type, so
+		// WooCommerce's own Company setting must not require it of everyone.
+		// The checkout block asks for it in a field of its own and keeps
+		// WooCommerce's hidden, see Extra_Checkout_Fields_For_Brazil_Blocks.
 		$countries = array_merge(
 			WC()->countries->get_allowed_countries(),
 			WC()->countries->get_shipping_countries()
 		);
 
 		foreach ( array_keys( $countries ) as $country ) {
-			$locales[ $country ]['company']['hidden']   = false;
 			$locales[ $country ]['company']['required'] = false;
 		}
 

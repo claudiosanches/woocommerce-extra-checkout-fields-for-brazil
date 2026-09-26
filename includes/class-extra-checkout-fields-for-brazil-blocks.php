@@ -29,14 +29,14 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 *
 	 * @var array
 	 */
-	const CONTACT_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'ie', 'birthdate', 'gender', 'cellphone' );
+	const CONTACT_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'company', 'ie', 'birthdate', 'gender', 'cellphone' );
 
 	/**
 	 * Contact fields whose visibility follows the person type.
 	 *
 	 * @var array
 	 */
-	const PERSON_TYPE_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'ie' );
+	const PERSON_TYPE_FIELDS = array( 'persontype', 'cpf', 'rg', 'cnpj', 'company', 'ie' );
 
 	/**
 	 * Address fields, in registration order.
@@ -57,6 +57,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		'cpf'          => 14,
 		'rg'           => 20,
 		'cnpj'         => 18,
+		'company'      => 100,
 		'ie'           => 20,
 		'birthdate'    => 10,
 		'cellphone'    => 15,
@@ -91,7 +92,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		// Runs after Extra_Checkout_Fields_For_Brazil::load_plugin_textdomain(),
 		// so labels and option labels are registered translated.
 		add_action( 'init', array( $this, 'register_fields' ), 20 );
-		add_action( 'woocommerce_checkout_validate_order_before_payment', array( $this, 'validate_company' ), 10, 2 );
+		add_filter( 'pre_option_woocommerce_checkout_company_field', array( $this, 'hide_core_company' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		// Ahead of WC_Form_Handler::save_account_details(), which runs on this
@@ -415,6 +416,22 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				$this->conditions( $company, $brazil_only )
 			);
 
+			// Beside the CNPJ it identifies, in place of WooCommerce's own
+			// field, which Extra_Checkout_Fields_For_Brazil_Legacy_Sync keeps
+			// filled from it.
+			if ( Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $this->settings ) ) {
+				$this->register_field(
+					'company',
+					array(
+						'label'      => __( 'Company name', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'location'   => 'contact',
+						'index'      => 9,
+						'attributes' => array_merge( $this->text_attributes( 'company' ), array( 'autocomplete' => 'organization' ) ),
+					),
+					$this->conditions( $company, $brazil_only )
+				);
+			}
+
 			$ie = Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $this->settings );
 
 			if ( 'disabled' !== $ie ) {
@@ -423,7 +440,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					array(
 						'label'      => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'location'   => 'contact',
-						'index'      => 9,
+						'index'      => 10,
 						'attributes' => $this->text_attributes( 'ie' ),
 					),
 					$this->conditions( $company, $brazil_only, 'required' === $ie )
@@ -465,7 +482,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				array(
 					'label'      => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
-					'index'      => 10,
+					'index'      => 11,
 					'attributes' => $this->text_attributes(
 						'birthdate',
 						__( 'Enter a valid birthdate as dd/mm/yyyy', 'woocommerce-extra-checkout-fields-for-brazil' )
@@ -485,7 +502,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					'label'    => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location' => 'contact',
 					'type'     => 'select',
-					'index'    => 11,
+					'index'    => 12,
 					'options'  => array_map(
 						function ( $value, $label ) {
 							return array(
@@ -512,7 +529,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				array(
 					'label'      => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
-					'index'      => 12,
+					'index'      => 13,
 					'attributes' => $this->text_attributes( 'cellphone' ),
 				),
 				array(
@@ -695,41 +712,38 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	}
 
 	/**
-	 * Require the billing company when the customer checks out as a legal person.
+	 * Hide WooCommerce's company from the checkout block while the plugin asks
+	 * for it beside the CNPJ.
 	 *
-	 * Company is a core address field, so it cannot carry our conditional rules.
+	 * The block takes the field's visibility from this option alone. The
+	 * classic checkout gets its field back from
+	 * Extra_Checkout_Fields_For_Brazil_Front_End::restore_company_field().
+	 * Admin screens and REST requests, where the checkout page editor reads
+	 * and saves the option, see the stored value.
 	 *
-	 * @param WC_Order $order  Order being validated.
-	 * @param WP_Error $errors Errors collected so far.
+	 * @param mixed $value Value short-circuiting the option, false for none.
 	 *
-	 * @return void
+	 * @return mixed
 	 */
-	public function validate_company( $order, $errors ) {
-		$settings    = (array) get_option( 'wcbcf_settings', array() );
-		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
-
-		if ( ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
-			return;
+	public function hide_core_company( $value ) {
+		if ( is_admin() || self::is_rest_request() || ! self::supports_rules() || ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
+			return $value;
 		}
 
-		if ( isset( $settings['only_brazil'] ) && 'BR' !== $order->get_billing_country() ) {
-			return;
+		return 'hidden';
+	}
+
+	/**
+	 * Whether this is a REST API request.
+	 *
+	 * @return bool
+	 */
+	protected static function is_rest_request() {
+		if ( function_exists( 'wp_is_serving_rest_request' ) ) {
+			return wp_is_serving_rest_request();
 		}
 
-		$is_company = 3 === $person_type || '2' === (string) $order->get_meta( '_billing_persontype' );
-
-		if ( ! $is_company || '' !== trim( (string) $order->get_billing_company() ) ) {
-			return;
-		}
-
-		$errors->add(
-			'woocommerce_required_billing_company',
-			sprintf(
-				/* translators: %s: field label. */
-				__( '%s is a required field.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				__( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' )
-			)
-		);
+		return defined( 'REST_REQUEST' ) && REST_REQUEST;
 	}
 
 	/**

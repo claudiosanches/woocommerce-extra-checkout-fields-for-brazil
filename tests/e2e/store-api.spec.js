@@ -178,15 +178,12 @@ test.describe( 'Store API validation cannot be skipped', () => {
 	test( 'refuses a malformed CNPJ', async ( { page } ) => {
 		const session = await apiSession( page );
 
-		const result = await attempt(
-			session,
-			{
-				'csbmw/persontype': '2',
-				'csbmw/cnpj': '11.222.333/0001-00',
-				'csbmw/ie': '110042490114',
-			},
-			{ company: 'Acme' }
-		);
+		const result = await attempt( session, {
+			'csbmw/persontype': '2',
+			'csbmw/cnpj': '11.222.333/0001-00',
+			'csbmw/ie': '110042490114',
+			'csbmw/company': 'Acme',
+		} );
 
 		expect( result.accepted ).toBe( false );
 		expect( result.message ).toContain( 'CNPJ is not valid' );
@@ -254,15 +251,12 @@ test.describe( 'Store API validation cannot be skipped', () => {
 		).toBe( true );
 		expect(
 			(
-				await attempt(
-					session,
-					{
-						'csbmw/persontype': '2',
-						'csbmw/cnpj': VALID.cnpjAlphanumeric,
-						'csbmw/ie': '110042490114',
-					},
-					{ company: 'Acme' }
-				)
+				await attempt( session, {
+					'csbmw/persontype': '2',
+					'csbmw/cnpj': VALID.cnpjAlphanumeric,
+					'csbmw/ie': '110042490114',
+					'csbmw/company': 'Acme',
+				} )
 			).accepted
 		).toBe( true );
 	} );
@@ -273,15 +267,12 @@ test.describe( 'Store API validation cannot be skipped', () => {
 		const session = await apiSession( page );
 
 		for ( const company of [ '', '   ' ] ) {
-			const result = await attempt(
-				session,
-				{
-					'csbmw/persontype': '2',
-					'csbmw/cnpj': VALID.cnpj,
-					'csbmw/ie': '110042490114',
-				},
-				{ company }
-			);
+			const result = await attempt( session, {
+				'csbmw/persontype': '2',
+				'csbmw/cnpj': VALID.cnpj,
+				'csbmw/company': company,
+				'csbmw/ie': '110042490114',
+			} );
 
 			expect( result.accepted, JSON.stringify( company ) ).toBe( false );
 			expect( result.message ).toContain( 'Company' );
@@ -314,22 +305,27 @@ test.describe( 'Store API validation cannot be skipped', () => {
 			'_wc_other/csbmw/cnpj': '',
 		} );
 
-		const company = await attempt(
-			session,
-			{
-				'csbmw/persontype': '2',
-				'csbmw/cnpj': VALID.cnpj,
-				'csbmw/ie': '110042490114',
-				'csbmw/cpf': '000.000.000-00',
-				'csbmw/rg': 'JUNK-RG',
-			},
-			{ company: 'Acme' }
-		);
+		const company = await attempt( session, {
+			'csbmw/persontype': '2',
+			'csbmw/cnpj': VALID.cnpj,
+			'csbmw/ie': '110042490114',
+			'csbmw/cpf': '000.000.000-00',
+			'csbmw/rg': 'JUNK-RG',
+			'csbmw/company': 'Acme',
+		} );
 
 		expect( company.accepted ).toBe( true );
 		expect(
 			orderMetaAll( company.orderId, [ '_billing_cpf', '_billing_rg' ] )
 		).toEqual( { _billing_cpf: '', _billing_rg: '' } );
+
+		// The company field stands in for WooCommerce's own.
+		expect(
+			wpCli( [
+				'eval',
+				`echo wc_get_order( ${ company.orderId } )->get_billing_company();`,
+			] )
+		).toBe( 'Acme' );
 	} );
 
 	test( 'caps an oversized value instead of storing it whole', async ( {

@@ -187,8 +187,8 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Added validation to the Birthdate field, which used to accept dates that do not exist.
 - RG, State Registration, Birthdate and Gender can now be optional as well as required. Stores that had them turned on keep them required.
 - Added a Company name setting: ask it of legal persons only, as before, or follow WooCommerce's own Company setting.
+- Company name is now asked right after the CNPJ on both checkouts. On the block checkout it moves from the address form to the contact information, and is still saved as the billing company.
 - The State Registration is stored in capitals, with ISENTO however it was typed, and rejected unless it is ISENTO or has 8 to 14 digits.
-- Fixed the block checkout hiding the company from a legal person outside Brazil while still requiring it, when documents are asked in every country.
 - Fixed the classic checkout dropping the company field for stores that accept individuals only.
 - Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin, and removed the notice that used to say it was missing.
 - Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.

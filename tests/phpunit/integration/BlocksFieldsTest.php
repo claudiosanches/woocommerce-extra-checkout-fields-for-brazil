@@ -268,25 +268,43 @@ class BlocksFieldsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Following WooCommerce, the company is left to its own required check.
+	 * Asked of legal persons beside the CNPJ, in place of WooCommerce's own.
 	 */
+	public function test_the_company_is_asked_beside_the_cnpj() {
+		$fields = $this->register_with( array( 'person_type' => 1 ) );
+
+		$this->assertArrayHasKey( 'csbmw/company', $fields );
+		$this->assertIsArray( $fields['csbmw/company']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/company']['required'] );
+
+		$order = array_keys( $fields );
+		$this->assertSame( array_search( 'csbmw/cnpj', $order, true ) + 1, array_search( 'csbmw/company', $order, true ) );
+
+		$this->assertSame( 'hidden', ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
+
 	public function test_the_company_follows_woocommerce_when_asked() {
-		$order = wc_create_order();
-		$order->set_billing_country( 'BR' );
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'company'     => 'woocommerce',
+			)
+		);
 
-		foreach ( array( 'dynamic' => 1, 'woocommerce' => 0 ) as $mode => $expected ) {
-			update_option(
-				'wcbcf_settings',
-				array(
-					'person_type' => 3,
-					'company'     => $mode,
-				)
-			);
+		$this->assertArrayNotHasKey( 'csbmw/company', $fields );
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
 
-			$errors = new WP_Error();
-			( new Extra_Checkout_Fields_For_Brazil_Blocks() )->validate_company( $order, $errors );
+	/**
+	 * The checkout page editor reads and saves the option, so it must see the
+	 * stored value.
+	 */
+	public function test_the_core_company_is_only_hidden_on_the_front_end() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+		set_current_screen( 'edit-page' );
 
-			$this->assertCount( $expected, $errors->get_error_codes(), $mode );
-		}
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+
+		set_current_screen( 'front' );
 	}
 }

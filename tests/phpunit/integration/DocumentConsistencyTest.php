@@ -247,22 +247,22 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 
 		$locales = $front->address_fields_priority( array() );
 		$this->assertFalse( $locales['BR']['company']['required'] );
-		$this->assertFalse( $locales['BR']['company']['hidden'] );
 	}
 
 	/**
-	 * The checkout block reads nothing from the default locale, so a country
-	 * left out would hide a company the order then requires.
+	 * WooCommerce's own Company setting must not require it of everyone,
+	 * wherever the store sells. The locale leaves it visible for the classic
+	 * checkout, which hides it by person type itself.
 	 */
-	public function test_a_dynamic_company_is_shown_wherever_the_store_sells() {
+	public function test_a_dynamic_company_is_never_required_by_the_locale() {
 		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
 		update_option( 'woocommerce_allowed_countries', 'specific' );
 		update_option( 'woocommerce_specific_allowed_countries', array( 'BR', 'PT' ) );
 
 		$locales = ( new Extra_Checkout_Fields_For_Brazil_Front_End() )->address_fields_priority( array() );
 
-		$this->assertFalse( $locales['PT']['company']['hidden'] );
 		$this->assertFalse( $locales['PT']['company']['required'] );
+		$this->assertArrayNotHasKey( 'hidden', $locales['PT']['company'] );
 	}
 
 	public function test_a_company_following_woocommerce_is_left_alone() {

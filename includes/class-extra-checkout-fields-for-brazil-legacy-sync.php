@@ -140,6 +140,48 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	}
 
 	/**
+	 * Historic value of a field.
+	 *
+	 * The company has always been WooCommerce's own billing company rather
+	 * than meta of this plugin.
+	 *
+	 * @param string  $key       Field key without the namespace.
+	 * @param string  $group     Field group (billing|shipping|other).
+	 * @param WC_Data $wc_object Order or customer.
+	 *
+	 * @return mixed
+	 */
+	public static function get_legacy_value( $key, $group, $wc_object ) {
+		if ( 'company' === $key ) {
+			return is_callable( array( $wc_object, 'get_billing_company' ) ) ? $wc_object->get_billing_company() : '';
+		}
+
+		return $wc_object->get_meta( self::get_legacy_key( $key, $group, $wc_object ) );
+	}
+
+	/**
+	 * Store the historic value of a field.
+	 *
+	 * @param string  $key       Field key without the namespace.
+	 * @param string  $group     Field group (billing|shipping|other).
+	 * @param WC_Data $wc_object Order or customer.
+	 * @param mixed   $value     Value to store.
+	 *
+	 * @return void
+	 */
+	public static function set_legacy_value( $key, $group, $wc_object, $value ) {
+		if ( 'company' === $key ) {
+			if ( is_callable( array( $wc_object, 'set_billing_company' ) ) ) {
+				$wc_object->set_billing_company( $value );
+			}
+
+			return;
+		}
+
+		$wc_object->update_meta_data( self::get_legacy_key( $key, $group, $wc_object ), $value );
+	}
+
+	/**
 	 * Meta key the checkout block stores a field under.
 	 *
 	 * @param string $key   Field key without the namespace.
@@ -264,7 +306,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			return;
 		}
 
-		$wc_object->update_meta_data( self::get_legacy_key( $key, $group, $wc_object ), self::to_legacy_value( $key, $value ) );
+		self::set_legacy_value( $key, $group, $wc_object, self::to_legacy_value( $key, $value ) );
 	}
 
 	/**
@@ -314,7 +356,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			return;
 		}
 
-		$value = self::to_block_value( $key, $order->get_meta( self::get_legacy_key( $key, $group, $order ) ) );
+		$value = self::to_block_value( $key, self::get_legacy_value( $key, $group, $order ) );
 
 		if ( (string) $value !== (string) $order->get_meta( $block_key ) ) {
 			$order->update_meta_data( $block_key, $value );
@@ -416,7 +458,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 			return $value;
 		}
 
-		$legacy = $wc_object->get_meta( self::get_legacy_key( $key, $group, $wc_object ) );
+		$legacy = self::get_legacy_value( $key, $group, $wc_object );
 
 		return '' === (string) $legacy ? $value : self::to_block_value( $key, $legacy );
 	}
