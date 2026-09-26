@@ -27,7 +27,7 @@ module.exports = {
 		shipping: path.resolve( __dirname, 'assets/js/shipping/shipping.ts' ),
 		'shipping-cart': path.resolve(
 			__dirname,
-			'assets/js/shipping/cart.ts'
+			'assets/js/shipping/cart.tsx'
 		),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(

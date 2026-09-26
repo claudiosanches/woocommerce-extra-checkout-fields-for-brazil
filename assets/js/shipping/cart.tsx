@@ -8,7 +8,8 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { createElement as el, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
+import type { ChangeEvent, FormEvent } from 'react';
 import { select, subscribe, useDispatch } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { ExperimentalOrderMeta } from '@woocommerce/blocks-checkout';
@@ -176,95 +177,69 @@ function addressSaved(): Promise< void > {
 function Rates( { cart }: { cart: Cart } ) {
 	const { selectShippingRate } = useDispatch( CART_STORE_KEY ) as CartStore;
 
-	return el(
-		'fieldset',
-		{ className: 'csbmw-shipping-calculator-rates' },
-		el(
-			'legend',
-			{ className: 'screen-reader-text' },
-			__(
-				'Shipping options',
-				'woocommerce-extra-checkout-fields-for-brazil'
-			)
-		),
-		cart.shippingRates.map( ( pack ) =>
-			el(
-				'div',
-				{
-					key: pack.package_id,
-					className: 'wc-block-components-radio-control',
-				},
-				pack.shipping_rates.map( ( rate ) => {
-					const id = `csbmw-rate-${ pack.package_id }-${ rate.rate_id }`;
+	return (
+		<fieldset className="csbmw-shipping-calculator-rates">
+			<legend className="screen-reader-text">
+				{ __(
+					'Shipping options',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+			</legend>
+			{ cart.shippingRates.map( ( pack ) => (
+				<div
+					key={ pack.package_id }
+					className="wc-block-components-radio-control"
+				>
+					{ pack.shipping_rates.map( ( rate ) => {
+						const id = `csbmw-rate-${ pack.package_id }-${ rate.rate_id }`;
 
-					return el(
-						'label',
-						{
-							key: rate.rate_id,
-							htmlFor: id,
-							className:
-								'wc-block-components-radio-control__option' +
-								( rate.selected
-									? ' wc-block-components-radio-control__option-checked'
-									: '' ),
-						},
-						el( 'input', {
-							id,
-							className:
-								'wc-block-components-radio-control__input',
-							type: 'radio',
-							name: `csbmw-rate-${ pack.package_id }`,
-							value: rate.rate_id,
-							checked: rate.selected,
-							'aria-describedby': `${ id }__secondary-label`,
-							onChange: () =>
-								selectShippingRate(
-									rate.rate_id,
-									pack.package_id
-								),
-						} ),
-						el(
-							'div',
-							{
-								className:
-									'wc-block-components-radio-control__option-layout',
-							},
-							el(
-								'div',
-								{
-									className:
-										'wc-block-components-radio-control__label-group',
-								},
-								el(
-									'span',
-									{
-										className:
-											'wc-block-components-radio-control__label',
-									},
-									rate.name
-								),
-								el(
-									'span',
-									{
-										id: `${ id }__secondary-label`,
-										className:
-											'wc-block-components-radio-control__secondary-label',
-									},
-									el(
-										'span',
-										{
-											className:
-												'wc-block-formatted-money-amount wc-block-components-formatted-money-amount',
-										},
-										ratePrice( rate )
-									)
-								)
-							)
-						)
-					);
-				} )
-			)
-		)
+						return (
+							<label
+								key={ rate.rate_id }
+								htmlFor={ id }
+								className={
+									'wc-block-components-radio-control__option' +
+									( rate.selected
+										? ' wc-block-components-radio-control__option-checked'
+										: '' )
+								}
+							>
+								<input
+									id={ id }
+									className="wc-block-components-radio-control__input"
+									type="radio"
+									name={ `csbmw-rate-${ pack.package_id }` }
+									value={ rate.rate_id }
+									checked={ rate.selected }
+									aria-describedby={ `${ id }__secondary-label` }
+									onChange={ () =>
+										selectShippingRate(
+											rate.rate_id,
+											pack.package_id
+										)
+									}
+								/>
+								<div className="wc-block-components-radio-control__option-layout">
+									<div className="wc-block-components-radio-control__label-group">
+										<span className="wc-block-components-radio-control__label">
+											{ rate.name }
+										</span>
+										<span
+											id={ `${ id }__secondary-label` }
+											className="wc-block-components-radio-control__secondary-label"
+										>
+											<span className="wc-block-formatted-money-amount wc-block-components-formatted-money-amount">
+												{ ratePrice( rate ) }
+											</span>
+										</span>
+									</div>
+								</div>
+							</label>
+						);
+					} ) }
+				</div>
+			) ) }
+		</fieldset>
 	);
 }
 
@@ -289,7 +264,7 @@ function Calculator( { cart }: { cart: Cart } ) {
 		( pack ) => pack.shipping_rates.length
 	);
 
-	const submit = async ( event: Event ) => {
+	const submit = async ( event: FormEvent< HTMLFormElement > ) => {
 		event.preventDefault();
 
 		if ( busy ) {
@@ -343,144 +318,136 @@ function Calculator( { cart }: { cart: Cart } ) {
 		setBusy( false );
 	};
 
-	return el(
-		'div',
-		{
-			className:
-				'csbmw-shipping-calculator csbmw-cart-shipping-calculator',
-			'aria-busy': busy,
-		},
-		el(
-			'span',
-			{ className: 'csbmw-shipping-calculator-label' },
-			__(
-				'Calculate shipping',
-				'woocommerce-extra-checkout-fields-for-brazil'
-			)
-		),
-		el(
-			'form',
-			{
-				className:
-					'wc-block-components-totals-coupon__form csbmw-shipping-calculator-form',
-				noValidate: true,
-				onSubmit: submit,
-			},
-			el(
-				'div',
-				{
-					className:
+	return (
+		<div
+			className="csbmw-shipping-calculator csbmw-cart-shipping-calculator"
+			aria-busy={ busy }
+		>
+			<span className="csbmw-shipping-calculator-label">
+				{ __(
+					'Calculate shipping',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+			</span>
+			<form
+				className="wc-block-components-totals-coupon__form csbmw-shipping-calculator-form"
+				noValidate
+				onSubmit={ submit }
+			>
+				<div
+					className={
 						'wc-block-components-text-input wc-block-components-totals-coupon__input' +
 						( focused || postcode ? ' is-active' : '' ) +
-						( error ? ' has-error' : '' ),
-				},
-				el( 'input', {
-					id: INPUT_ID,
-					type: 'text',
-					inputMode: 'numeric',
-					autoComplete: 'postal-code',
-					value: postcode,
-					'aria-invalid': error ? 'true' : 'false',
-					'aria-describedby': error ? ERROR_ID : undefined,
-					onFocus: () => setFocused( true ),
-					onBlur: () => setFocused( false ),
-					onChange: ( event: { target: HTMLInputElement } ) => {
-						setTyped( formatCep( event.target.value ) );
-						setError( '' );
-					},
-				} ),
-				el(
-					'label',
-					{ htmlFor: INPUT_ID },
-					__( 'CEP', 'woocommerce-extra-checkout-fields-for-brazil' )
-				)
-			),
-			el(
-				'button',
-				{
-					className:
-						'wc-block-components-button wp-element-button wc-block-components-totals-coupon__button contained',
-					type: 'submit',
-					disabled: busy,
-				},
-				busy &&
-					el( 'span', {
-						className: 'wc-block-components-spinner',
-						'aria-hidden': true,
-					} ),
-				el(
-					'span',
-					{ className: 'wc-block-components-button__text' },
-					__(
-						'Calculate',
-						'woocommerce-extra-checkout-fields-for-brazil'
-					)
-				)
-			)
-		),
-		error &&
-			el(
-				'div',
-				{
-					className: 'wc-block-components-validation-error',
-					role: 'alert',
-				},
-				el( 'p', { id: ERROR_ID }, el( 'span', null, error ) )
-			),
-		el(
-			'a',
-			{
-				className: 'csbmw-shipping-calculator-find',
-				href: params.findPostcodeUrl,
-				target: '_blank',
-				rel: 'noopener noreferrer',
-			},
-			__(
-				"I don't know my CEP",
-				'woocommerce-extra-checkout-fields-for-brazil'
-			),
-			el( 'span', {
-				className: 'csbmw-shipping-calculator-find-icon',
-				dangerouslySetInnerHTML: {
-					__html: params.findPostcodeIcon || '',
-				},
-			} )
-		),
-		el(
-			'div',
-			{
-				className: 'csbmw-shipping-calculator-results',
-				'aria-live': 'polite',
-			},
-			place &&
-				el(
-					'p',
-					{ className: 'csbmw-shipping-calculator-address' },
-					place
-				),
-			place &&
-				( hasRates
-					? el( Rates, { cart } )
-					: el(
-							'p',
-							{ className: 'csbmw-shipping-calculator-message' },
-							__(
+						( error ? ' has-error' : '' )
+					}
+				>
+					<input
+						id={ INPUT_ID }
+						type="text"
+						inputMode="numeric"
+						autoComplete="postal-code"
+						value={ postcode }
+						aria-invalid={ error ? 'true' : 'false' }
+						aria-describedby={ error ? ERROR_ID : undefined }
+						onFocus={ () => setFocused( true ) }
+						onBlur={ () => setFocused( false ) }
+						onChange={ (
+							event: ChangeEvent< HTMLInputElement >
+						) => {
+							setTyped( formatCep( event.target.value ) );
+							setError( '' );
+						} }
+					/>
+					<label htmlFor={ INPUT_ID }>
+						{ __(
+							'CEP',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+					</label>
+				</div>
+				<button
+					className="wc-block-components-button wp-element-button wc-block-components-totals-coupon__button contained"
+					type="submit"
+					disabled={ busy }
+				>
+					{ busy && (
+						<span
+							className="wc-block-components-spinner"
+							aria-hidden
+						/>
+					) }
+					<span className="wc-block-components-button__text">
+						{ __(
+							'Calculate',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+					</span>
+				</button>
+			</form>
+			{ error && (
+				<div
+					className="wc-block-components-validation-error"
+					role="alert"
+				>
+					<p id={ ERROR_ID }>
+						<span>{ error }</span>
+					</p>
+				</div>
+			) }
+			<a
+				className="csbmw-shipping-calculator-find"
+				href={ params.findPostcodeUrl }
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{ __(
+					"I don't know my CEP",
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+				<span
+					className="csbmw-shipping-calculator-find-icon"
+					dangerouslySetInnerHTML={ {
+						__html: params.findPostcodeIcon || '',
+					} }
+				/>
+			</a>
+			<div
+				className="csbmw-shipping-calculator-results"
+				aria-live="polite"
+			>
+				{ place && (
+					<p className="csbmw-shipping-calculator-address">
+						{ place }
+					</p>
+				) }
+				{ place &&
+					( hasRates ? (
+						<Rates cart={ cart } />
+					) : (
+						<p className="csbmw-shipping-calculator-message">
+							{ __(
 								'No shipping options for this CEP.',
 								'woocommerce-extra-checkout-fields-for-brazil'
-							)
-					  ) )
-		)
+							) }
+						</p>
+					) ) }
+			</div>
+		</div>
 	);
 }
 
 // The order summary slot also renders on the checkout.
 function CartOnly( { cart, context }: { cart?: Cart; context?: string } ) {
-	return 'woocommerce/cart' === context && cart?.cartNeedsShipping
-		? el( Calculator, { cart } )
-		: null;
+	return 'woocommerce/cart' === context && cart?.cartNeedsShipping ? (
+		<Calculator cart={ cart } />
+	) : null;
 }
 
 registerPlugin( 'csbmw-cart-shipping-calculator', {
-	render: () => el( ExperimentalOrderMeta, null, el( CartOnly ) ),
+	render: () => (
+		<ExperimentalOrderMeta>
+			<CartOnly />
+		</ExperimentalOrderMeta>
+	),
 	scope: 'woocommerce-checkout',
 } );

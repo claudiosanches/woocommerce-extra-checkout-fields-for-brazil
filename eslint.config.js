@@ -19,6 +19,13 @@ module.exports = [
 		},
 	},
 	{
+		// The cart rates copy WooCommerce's radio control, whose label text
+		// sits a few elements inside the label.
+		rules: {
+			'jsx-a11y/label-has-associated-control': [ 'error', { depth: 5 } ],
+		},
+	},
+	{
 		// Jest reads the environment for a test file from this docblock tag.
 		files: [ 'tests/js/**/*.js' ],
 		rules: {
