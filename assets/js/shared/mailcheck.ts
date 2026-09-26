@@ -2,6 +2,7 @@
  * Email domain typo suggestions.
  */
 
+import { __, sprintf } from '@wordpress/i18n';
 import Mailcheck from 'mailcheck';
 
 const SUGGESTION_CLASS = 'wcbcf-mailsuggest';
@@ -51,15 +52,13 @@ const suggestionNode = ( input: HTMLInputElement ): Element => {
 /**
  * Suggest a corrected domain below an email input when it looks misspelled.
  *
- * @param input    Email input to watch.
- * @param template Message with a `%hint%` placeholder.
+ * @param input Email input to watch.
  * @return Detaches the listener.
  */
 export function bindMailcheck(
-	input: HTMLInputElement | null | undefined,
-	template: string | null | undefined
+	input: HTMLInputElement | null | undefined
 ): () => void {
-	if ( ! input || ! template ) {
+	if ( ! input ) {
 		return () => {};
 	}
 
@@ -72,8 +71,12 @@ export function bindMailcheck(
 			topLevelDomains: TOP_LEVEL_DOMAINS,
 			email: input.value,
 			suggested: ( suggestion ) => {
-				node.textContent = template.replace(
-					'%hint%',
+				node.textContent = sprintf(
+					/* translators: %s: email address with the domain corrected */
+					__(
+						'Did you mean: %s?',
+						'woocommerce-extra-checkout-fields-for-brazil'
+					),
 					suggestion.full
 				);
 			},

@@ -15,7 +15,7 @@ const setup = ( value = '' ) => {
 	const input = document.getElementById( 'ie' );
 	input.value = value;
 
-	const unbind = bindIeExempt( input, { label: 'Exempt' } );
+	const unbind = bindIeExempt( input );
 	const checkbox = document.querySelector( '.wcbcf-ie-exempt-input' );
 
 	return { checkbox, input, unbind };
@@ -102,7 +102,7 @@ describe( 'bindIeExempt', () => {
 		const input = document.getElementById( 'ie' );
 		const write = jest.fn();
 
-		bindIeExempt( input, { label: 'Exempt', write } );
+		bindIeExempt( input, { write } );
 		toggle( document.querySelector( '.wcbcf-ie-exempt-input' ), true );
 
 		expect( write ).toHaveBeenCalledWith( input, EXEMPT_VALUE );
@@ -111,7 +111,7 @@ describe( 'bindIeExempt', () => {
 	it( 'binds only once per input', () => {
 		const { input } = setup();
 
-		bindIeExempt( input, { label: 'Exempt' } );
+		bindIeExempt( input );
 
 		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
 			1
@@ -125,7 +125,7 @@ describe( 'bindIeExempt', () => {
 			'<p class="form-row" id="billing_city_field"></p>' +
 			'</div>';
 
-		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+		bindIeExempt( document.getElementById( 'ie' ) );
 
 		// Inside the row, WooCommerce reads the unticked box as an empty
 		// required field and marks the whole row invalid.
@@ -147,7 +147,7 @@ describe( 'bindIeExempt', () => {
 
 		const input = document.getElementById( 'ie' );
 
-		bindIeExempt( input, { label: 'Exempt' } );
+		bindIeExempt( input );
 
 		// WooCommerce re-appends every row it knows in locale order, which
 		// leaves the checkbox where the row used to be.
@@ -173,7 +173,7 @@ describe( 'bindIeExempt', () => {
 		document.body.innerHTML =
 			'<div class="wc-block-components-text-input"><input id="ie" type="text" /></div>';
 
-		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+		bindIeExempt( document.getElementById( 'ie' ) );
 
 		const field = document.querySelector(
 			'.wc-block-components-text-input'
@@ -187,7 +187,7 @@ describe( 'bindIeExempt', () => {
 			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
 			'<label class="wcbcf-ie-exempt"></label>';
 
-		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+		bindIeExempt( document.getElementById( 'ie' ) );
 
 		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
 			1
@@ -200,7 +200,7 @@ describe( 'bindIeExempt', () => {
 			'<div class="wc-block-components-text-input">' +
 			'<input id="ie" type="text" /></div>';
 
-		bindIeExempt( document.getElementById( 'ie' ), { label: 'Exempt' } );
+		bindIeExempt( document.getElementById( 'ie' ) );
 
 		const wrappers = document.querySelectorAll( '.wcbcf-ie-exempt' );
 

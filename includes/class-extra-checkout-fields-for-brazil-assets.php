@@ -95,6 +95,17 @@ class Extra_Checkout_Fields_For_Brazil_Assets {
 	}
 
 	/**
+	 * Load the JSON translations of a script from the plugin.
+	 *
+	 * @param string $handle Script handle.
+	 *
+	 * @return void
+	 */
+	public static function set_translations( $handle ) {
+		wp_set_script_translations( $handle, 'woocommerce-extra-checkout-fields-for-brazil', plugin_dir_path( CSBMW_PLUGIN_FILE ) . 'languages' );
+	}
+
+	/**
 	 * Register and enqueue a script with its stylesheet.
 	 *
 	 * @param string $handle     Handle used for both the script and the style.

@@ -10,7 +10,7 @@ const suggestFor = ( email ) => {
 	const input = document.getElementById( 'email' );
 	input.value = email;
 
-	bindMailcheck( input, 'Did you mean: %hint%?' );
+	bindMailcheck( input );
 	input.dispatchEvent( new window.Event( 'blur' ) );
 
 	return document.querySelector( '.wcbcf-mailsuggest' ).textContent;
