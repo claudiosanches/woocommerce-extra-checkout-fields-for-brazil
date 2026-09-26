@@ -366,7 +366,7 @@ function Calculator( { cart }: { cart: Cart } ) {
 					</label>
 				</div>
 				<button
-					className="wc-block-components-button wp-element-button wc-block-components-totals-coupon__button contained"
+					className="wc-block-components-button wp-element-button wc-block-components-totals-coupon__button contained csbmw-shipping-calculator-button"
 					type="submit"
 					disabled={ busy }
 				>
