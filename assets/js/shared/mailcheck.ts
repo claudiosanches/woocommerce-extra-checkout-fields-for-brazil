@@ -33,18 +33,27 @@ const TOP_LEVEL_DOMAINS = [
 	'gov.br',
 ];
 
-const suggestionNode = ( input: HTMLInputElement ): Element => {
-	const existing = input.parentNode?.querySelector(
-		`.${ SUGGESTION_CLASS }`
-	);
+/**
+ * Where the suggestion goes: after the block checkout's field wrapper, which
+ * has a fixed height the text would overflow, or else after the input.
+ *
+ * @param input Email input.
+ * @return Element the suggestion follows.
+ */
+const anchorFor = ( input: HTMLInputElement ): Element =>
+	input.closest( '.wc-block-components-text-input' ) || input;
 
-	if ( existing ) {
+const suggestionNode = ( input: HTMLInputElement ): Element => {
+	const anchor = anchorFor( input );
+	const existing = anchor.nextElementSibling;
+
+	if ( existing?.classList.contains( SUGGESTION_CLASS ) ) {
 		return existing;
 	}
 
 	const node = document.createElement( 'div' );
 	node.className = SUGGESTION_CLASS;
-	input.insertAdjacentElement( 'afterend', node );
+	anchor.insertAdjacentElement( 'afterend', node );
 
 	return node;
 };
