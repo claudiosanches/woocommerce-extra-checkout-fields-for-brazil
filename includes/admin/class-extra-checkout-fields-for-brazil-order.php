@@ -59,7 +59,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 					'label' => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'show'  => false,
 				);
-				if ( isset( $settings['rg'] ) ) {
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', (array) $settings ) ) {
 					$billing_data['rg'] = array(
 						'label' => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'show'  => false,
@@ -76,7 +76,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 					'label' => __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'show'  => false,
 				);
-				if ( isset( $settings['ie'] ) ) {
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', (array) $settings ) ) {
 					$billing_data['ie'] = array(
 						'label' => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'show'  => false,
@@ -90,14 +90,14 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 			);
 		}
 
-		if ( isset( $settings['birthdate'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', (array) $settings ) ) {
 			$billing_data['birthdate'] = array(
 				'label' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'show'  => false,
 			);
 		}
 
-		if ( isset( $settings['gender'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', (array) $settings ) ) {
 			$labels = Extra_Checkout_Fields_For_Brazil_Blocks::get_gender_options();
 
 			$billing_data['gender'] = array(
@@ -246,7 +246,7 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 					$order->update_meta_data( '_billing_cpf', sanitize_text_field( wp_unslash( $_POST['_billing_cpf'] ) ) );
 				}
 
-				if ( isset( $settings['rg'] ) && isset( $_POST['_billing_rg'] ) ) {
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', (array) $settings ) && isset( $_POST['_billing_rg'] ) ) {
 					$order->update_meta_data( '_billing_rg', sanitize_text_field( wp_unslash( $_POST['_billing_rg'] ) ) );
 				}
 			}
@@ -256,19 +256,19 @@ class Extra_Checkout_Fields_For_Brazil_Order {
 					$order->update_meta_data( '_billing_cnpj', sanitize_text_field( wp_unslash( $_POST['_billing_cnpj'] ) ) );
 				}
 
-				if ( isset( $settings['ie'] ) && isset( $_POST['_billing_ie'] ) ) {
-					$order->update_meta_data( '_billing_ie', sanitize_text_field( wp_unslash( $_POST['_billing_ie'] ) ) );
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', (array) $settings ) && isset( $_POST['_billing_ie'] ) ) {
+					$order->update_meta_data( '_billing_ie', Extra_Checkout_Fields_For_Brazil_Validation::normalize_ie( sanitize_text_field( wp_unslash( $_POST['_billing_ie'] ) ) ) );
 				}
 			}
 		}
 
-		if ( isset( $settings['birthdate'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', (array) $settings ) ) {
 			if ( isset( $_POST['_billing_birthdate'] ) ) {
 				$order->update_meta_data( '_billing_birthdate', sanitize_text_field( wp_unslash( $_POST['_billing_birthdate'] ) ) );
 			}
 		}
 
-		if ( isset( $settings['gender'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', (array) $settings ) ) {
 			if ( isset( $_POST['_billing_gender'] ) ) {
 				$order->update_meta_data( '_billing_gender', sanitize_text_field( wp_unslash( $_POST['_billing_gender'] ) ) );
 			}

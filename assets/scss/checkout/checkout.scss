@@ -1,3 +1,5 @@
+@use "../ie-exempt";
+
 /* Block checkout tweaks. */
 
 .wcbcf-mailsuggest {
@@ -7,19 +9,4 @@
 	&:empty {
 		display: none;
 	}
-}
-
-.wcbcf-ie-exempt {
-	align-items: center;
-	display: flex;
-	gap: 0.5em;
-	margin-top: 0.5em;
-
-	input {
-		margin: 0;
-	}
-}
-
-.wcbcf-ie-exempt-on {
-	opacity: 0.7;
 }

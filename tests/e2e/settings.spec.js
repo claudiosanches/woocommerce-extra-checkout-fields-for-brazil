@@ -20,6 +20,7 @@ test.describe( 'Settings screen', () => {
 	} ) => {
 		await page.selectOption( '#person_type', '0' );
 		await expect( row( page, 'only-brazil' ) ).toBeHidden();
+		await expect( row( page, 'company' ) ).toBeHidden();
 		await expect( row( page, 'rg' ) ).toBeHidden();
 		await expect( row( page, 'ie' ) ).toBeHidden();
 		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
@@ -33,12 +34,14 @@ test.describe( 'Settings screen', () => {
 
 		// Individuals have no CNPJ to check, and legal persons no CPF.
 		await page.selectOption( '#person_type', '2' );
+		await expect( row( page, 'company' ) ).toBeHidden();
 		await expect( row( page, 'rg' ) ).toBeVisible();
 		await expect( row( page, 'ie' ) ).toBeHidden();
 		await expect( row( page, 'validate-cpf' ) ).toBeVisible();
 		await expect( row( page, 'validate-cnpj' ) ).toBeHidden();
 
 		await page.selectOption( '#person_type', '3' );
+		await expect( row( page, 'company' ) ).toBeVisible();
 		await expect( row( page, 'rg' ) ).toBeHidden();
 		await expect( row( page, 'ie' ) ).toBeVisible();
 		await expect( row( page, 'validate-cpf' ) ).toBeHidden();
@@ -71,16 +74,36 @@ test.describe( 'Settings screen', () => {
 
 		// A row that applies is shown with its heading, not stripped of it.
 		await expect( row( page, 'rg' ).locator( 'h3' ) ).toBeVisible();
-		await expect( row( page, 'rg' ).locator( 'h3' ) ).toHaveText(
-			'Display RG'
-		);
+		await expect( row( page, 'rg' ).locator( 'h3' ) ).toHaveText( 'RG' );
 	} );
 
 	test( 'labels every select', async ( { page } ) => {
-		for ( const id of [ 'person_type', 'cell_phone', 'fields_style' ] ) {
+		for ( const id of [
+			'person_type',
+			'company',
+			'rg',
+			'ie',
+			'birthdate',
+			'gender',
+			'cell_phone',
+			'fields_style',
+		] ) {
 			await expect( page.locator( `label[for="${ id }"]` ) ).toHaveCount(
 				1
 			);
 		}
+	} );
+
+	test( 'saves a field as optional', async ( { page } ) => {
+		// The fields were checkboxes, and a ticked one meant required.
+		await expect( page.locator( '#rg' ) ).toHaveValue( 'required' );
+
+		await page.selectOption( '#rg', 'optional' );
+		await page.selectOption( '#gender', '' );
+		await page.click( '#submit' );
+
+		await expect( page.locator( '#rg' ) ).toHaveValue( 'optional' );
+		await expect( page.locator( '#gender' ) ).toHaveValue( '' );
+		await expect( page.locator( '#company' ) ).toHaveValue( 'dynamic' );
 	} );
 } );

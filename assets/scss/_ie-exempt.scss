@@ -1,0 +1,88 @@
+// The State Registration exemption toggle, drawn inside the field to the
+// right. The :not(#csbmw) raises it over theme and WooCommerce field rules.
+
+.woocommerce-input-wrapper:has(> .wcbcf-ie-exempt) {
+	display: block;
+	position: relative;
+}
+
+.wc-block-components-text-input:has(> .wcbcf-ie-exempt) {
+	position: relative;
+}
+
+.wcbcf-ie-exempt:not(#csbmw) {
+	align-items: center;
+	display: flex;
+	margin: 0;
+	position: absolute;
+	right: 12px;
+	z-index: 1;
+}
+
+// On the block checkout the checkbox is WooCommerce's own. Its label would
+// otherwise pick up the floating label rules of the field it sits in.
+.wcbcf-ie-exempt .wcbcf-ie-exempt-label:not(#csbmw) {
+	all: unset;
+	align-items: flex-start;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: var(--wp--preset--font-size--small, 14px);
+	gap: 8px;
+	line-height: 20px;
+	position: relative;
+
+	.wcbcf-ie-exempt-text:not(#csbmw) {
+		margin: 0;
+	}
+}
+
+// On the classic checkout it is a button, drawn after the block checkbox.
+.wcbcf-ie-exempt-box {
+	background: #fff;
+	border: 1px solid color-mix(in srgb, currentcolor 48%, transparent);
+	border-radius: 4px;
+	box-sizing: border-box;
+	display: inline-block;
+	height: 20px;
+	position: relative;
+	width: 20px;
+}
+
+.wcbcf-ie-exempt-mark {
+	display: none;
+	fill: #000;
+	height: 15px;
+	left: 2px;
+	position: absolute;
+	top: 1px;
+	width: 15px;
+
+	[aria-checked="true"] & {
+		display: block;
+	}
+}
+
+button.wcbcf-ie-exempt:not(#csbmw) {
+	all: unset;
+	align-items: center;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	font-size: 14px;
+	gap: 8px;
+	line-height: 20px;
+	position: absolute;
+	right: 12px;
+	z-index: 1;
+
+	&:focus-visible .wcbcf-ie-exempt-box {
+		outline: 1.5px solid color-mix(in srgb, currentcolor 80%, transparent);
+		outline-offset: 1.5px;
+	}
+}
+
+// ISENTO is fixed while the toggle is on.
+:has(> .wcbcf-ie-exempt :checked) > input,
+:has(> .wcbcf-ie-exempt[aria-checked="true"]) > input {
+	opacity: 0.7;
+}

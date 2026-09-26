@@ -191,6 +191,43 @@ class LegacySyncTest extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * The company field stands in for WooCommerce's, so it is stored there.
+	 */
+	public function test_the_company_is_stored_as_the_billing_company() {
+		$order    = new WC_Order();
+		$customer = new WC_Customer();
+
+		$this->sync->write_legacy_meta( 'csbmw/company', 'Acme Ltda', 'other', $order );
+		$this->sync->write_legacy_meta( 'csbmw/company', 'Acme Ltda', 'other', $customer );
+
+		$this->assertSame( 'Acme Ltda', $order->get_billing_company() );
+		$this->assertSame( 'Acme Ltda', $customer->get_billing_company() );
+	}
+
+	public function test_the_billing_company_seeds_the_company_field() {
+		$customer = new WC_Customer();
+		$customer->set_billing_company( 'Acme Ltda' );
+
+		$this->assertSame(
+			'Acme Ltda',
+			apply_filters( 'woocommerce_get_default_value_for_csbmw/company', null, 'other', $customer )
+		);
+	}
+
+	public function test_an_admin_save_copies_the_billing_company_into_the_block_meta() {
+		$order = new WC_Order();
+		$order->update_meta_data( '_wc_other/csbmw/company', 'Acme Ltda' );
+		$order->save();
+
+		$order->set_billing_company( 'Acme Comercio Ltda' );
+		$order->save();
+
+		$this->sync->write_block_meta( $order->get_id() );
+
+		$this->assertSame( 'Acme Comercio Ltda', wc_get_order( $order->get_id() )->get_meta( '_wc_other/csbmw/company' ) );
+	}
+
 	public function test_legacy_meta_seeds_a_block_field_with_no_value() {
 		$customer = new WC_Customer();
 		$customer->update_meta_data( 'billing_cpf', '123.456.789-09' );

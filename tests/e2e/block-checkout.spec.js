@@ -6,6 +6,7 @@ const {
 	orderIdFromUrl,
 	orderMetaAll,
 	setSettings,
+	wpCli,
 } = require( './utils' );
 
 const field = ( key ) => `#contact-csbmw-${ key }`;
@@ -236,12 +237,18 @@ test.describe( 'Block checkout', () => {
 		await page.fill( field( 'cnpj' ), VALID.cnpj );
 		await page.fill( field( 'ie' ), '110042490114' );
 
-		await placeOrder( page );
-
-		await expect( page.locator( ERROR_BANNER ) ).toContainText( 'Company' );
+		// A field of its own, so the block stops the order at the field.
+		await page.waitForTimeout( 2000 );
+		await page.click(
+			'button.wc-block-components-checkout-place-order-button'
+		);
+		await expect( page.locator( field( 'company' ) ) ).toHaveAttribute(
+			'aria-invalid',
+			'true'
+		);
 		expect( orderIdFromUrl( page.url() ) ).toBeNull();
 
-		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
 		await placeOrder( page );
 
 		const orderId = orderIdFromUrl( page.url() );
@@ -253,6 +260,82 @@ test.describe( 'Block checkout', () => {
 			_billing_cnpj: VALID.cnpj,
 			_billing_ie: '110042490114',
 		} );
+
+		// Asked beside the CNPJ, and stored as WooCommerce's own company.
+		expect(
+			wpCli( [
+				'eval',
+				`echo wc_get_order( ${ orderId } )->get_billing_company();`,
+			] )
+		).toBe( 'Acme Comercio Ltda' );
+	} );
+
+	test( 'asks for the company beside the CNPJ', async ( { page } ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+
+		const ids = await page
+			.locator(
+				'.wc-block-checkout__contact-fields input, .wc-block-checkout__contact-fields select'
+			)
+			.evaluateAll( ( inputs ) => inputs.map( ( input ) => input.id ) );
+
+		expect( ids.indexOf( 'contact-csbmw-company' ) ).toBe(
+			ids.indexOf( 'contact-csbmw-cnpj' ) + 1
+		);
+
+		// WooCommerce's own is hidden in the address forms.
+		await expect( page.locator( '#billing-company' ) ).toHaveCount( 0 );
+		await expect( page.locator( '#shipping-company' ) ).toHaveCount( 0 );
+
+		await page.selectOption( field( 'persontype' ), '1' );
+		await expect( page.locator( field( 'company' ) ) ).toBeHidden();
+	} );
+
+	test( 'accepts a legal person without an optional State Registration', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, ie: 'optional' } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
+
+		await placeOrder( page );
+
+		expect( orderIdFromUrl( page.url() ) ).not.toBeNull();
+	} );
+
+	test( 'refuses a State Registration of the wrong shape', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+		await page.fill( field( 'ie' ), '123' );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
+
+		await placeOrder( page );
+
+		await expect( page.locator( ERROR_BANNER ) ).toContainText(
+			'State Registration'
+		);
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
+	} );
+
+	test( 'lets a legal person abroad fill in the company', async ( {
+		page,
+	} ) => {
+		// Documents are asked everywhere, so the company has to be reachable
+		// wherever it is required.
+		setSettings( { ...ALL_FIELDS, only_brazil: undefined } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await page.selectOption( '#billing-country', 'PT' );
+
+		await expect( page.locator( field( 'company' ) ) ).toBeVisible();
 	} );
 
 	test( 'accepts an alphanumeric CNPJ typed in lower case', async ( {
@@ -261,7 +344,7 @@ test.describe( 'Block checkout', () => {
 		await goToBlockCheckout( page );
 		await page.selectOption( field( 'persontype' ), '2' );
 		await fillCommonFields( page );
-		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
 		await page.fill( field( 'ie' ), '110042490114' );
 
 		// The 2026 format allows letters in the first twelve characters. The
@@ -292,7 +375,7 @@ test.describe( 'Block checkout', () => {
 		await goToBlockCheckout( page );
 		await page.selectOption( field( 'persontype' ), '2' );
 		await fillCommonFields( page );
-		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
 		await page.fill( field( 'ie' ), '110042490114' );
 		await page.fill( field( 'cnpj' ), '12.ABC.345/01DE-34' );
 
@@ -309,10 +392,12 @@ test.describe( 'Block checkout', () => {
 		await page.selectOption( field( 'persontype' ), '2' );
 		await page.waitForTimeout( 1500 );
 		await fillCommonFields( page );
-		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
 		await page.fill( field( 'cnpj' ), VALID.cnpj );
 
-		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+		const exempt = page.getByRole( 'checkbox', {
+			name: 'Exempt from State Registration',
+		} );
 		await expect( exempt ).toBeVisible();
 
 		await exempt.check();
@@ -356,7 +441,9 @@ test.describe( 'Block checkout', () => {
 		await page.selectOption( field( 'persontype' ), '2' );
 		await page.waitForTimeout( 1500 );
 
-		const exempt = page.locator( '.wcbcf-ie-exempt-input' );
+		const exempt = page.getByRole( 'checkbox', {
+			name: 'Exempt from State Registration',
+		} );
 
 		await exempt.check();
 		await expect( page.locator( field( 'ie' ) ) ).toHaveValue( 'ISENTO' );
@@ -375,7 +462,7 @@ test.describe( 'Block checkout', () => {
 		await page.selectOption( field( 'persontype' ), '2' );
 		await page.fill( field( 'cnpj' ), VALID.cnpj );
 		await page.fill( field( 'ie' ), '110042490114' );
-		await page.fill( '#billing-company', 'Abandonada Ltda' );
+		await page.fill( field( 'company' ), 'Abandonada Ltda' );
 
 		await page.selectOption( field( 'persontype' ), '1' );
 		await fillCommonFields( page );

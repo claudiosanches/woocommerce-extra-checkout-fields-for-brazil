@@ -3,7 +3,7 @@
 import { __ } from '@wordpress/i18n';
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
-import { bindIeExempt, placeIeExempt } from '../shared/ie-exempt';
+import { bindIeExempt } from '../shared/ie-exempt';
 import { createAutofill } from '../shared/postcode';
 import '../../scss/classic/classic.scss';
 
@@ -85,20 +85,6 @@ jQuery( function ( $ ) {
 
 			bindIeExempt( document.getElementById( 'billing_ie' ) );
 
-			// Changing the country re-appends every row WooCommerce knows, in
-			// locale order, which leaves the checkbox behind at the top of the
-			// form. The sorting runs on the same event, so this waits for it.
-			$( document.body ).on(
-				'country_to_state_changed updated_checkout',
-				function () {
-					window.setTimeout( function () {
-						placeIeExempt(
-							document.getElementById( 'billing_ie' )
-						);
-					}, 0 );
-				}
-			);
-
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck( document.getElementById( 'billing_email' ) );
 			}
@@ -170,12 +156,12 @@ jQuery( function ( $ ) {
 
 		personTypeFields() {
 			/**
-			 * Mark the person type as required, as WooCommerce marks its own
-			 * fields.
+			 * Mark the rows the person type requires, as WooCommerce marks its
+			 * own required fields.
 			 */
 			const markPersonTypeRequired = function () {
 				$( '.person-type-field label .required' ).remove();
-				$( '.person-type-field label' ).append(
+				$( '.person-type-required label' ).append(
 					' ',
 					$( '<abbr class="required">*</abbr>' ).attr(
 						'title',
@@ -185,6 +171,13 @@ jQuery( function ( $ ) {
 						)
 					)
 				);
+			};
+
+			// Company only takes part while the store asks legal persons for
+			// it, which is when it carries the person type class.
+			const ROWS = {
+				1: '#billing_cpf_field, #billing_rg_field',
+				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field',
 			};
 
 			/**
@@ -207,40 +200,15 @@ jQuery( function ( $ ) {
 					);
 				$( '#billing_persontype_field' ).show().addClass( 'is-active' );
 
-				if ( '1' === personType ) {
-					if ( 'BR' === country ) {
-						$( '#billing_cpf_field, #billing_rg_field' )
-							.addClass(
-								'validate-required is-active woocommerce-validated'
-							)
-							.show();
-					} else {
-						$( '#billing_cpf_field, #billing_rg_field' )
-							.show()
-							.addClass( 'is-active' );
-					}
-				}
-
-				if ( '2' === personType ) {
-					if ( 'BR' === country ) {
-						$( '#billing_company_field label .optional' ).remove();
-						$(
-							'#billing_company_field, #billing_cnpj_field, #billing_ie_field'
-						)
-							.addClass(
-								'validate-required is-active woocommerce-validated'
-							)
-							.show();
-					} else {
-						$(
-							'#billing_company_field, #billing_cnpj_field, #billing_ie_field'
-						)
-							.addClass( 'is-active' )
-							.show();
-					}
-				}
+				const rows = $( ROWS[ personType ] || [] )
+					.filter( '.person-type-field' )
+					.show()
+					.addClass( 'is-active' );
 
 				if ( 'BR' === country ) {
+					rows.filter( '.person-type-required' ).addClass(
+						'validate-required woocommerce-validated'
+					);
 					markPersonTypeRequired();
 				}
 			};

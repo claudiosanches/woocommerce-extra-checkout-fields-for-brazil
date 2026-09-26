@@ -233,42 +233,6 @@ msgstr "Tipo de Pessoa é obrigatório apenas no Brasil?"
 msgid "If checked the Individuals and Legal Person options will be mandatory only in Brazil."
 msgstr "Faça com que os campos de Pessoa Física e Pessoa Jurídica sejam obrigatórios apenas no Brasil."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:102
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:110
-msgid "Display RG"
-msgstr "Exibir RG"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:111
-msgid "If checked show the RG field in billing options."
-msgstr "Exibir o campo de RG nas informações de cobrança."
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:118
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:126
-msgid "Display State Registration"
-msgstr "Exibir Inscrição Estadual"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:127
-msgid "If checked show the State Registration field in billing options."
-msgstr "Exibir o campo de Inscrição Estadual nas informações de cobrança."
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:134
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:141
-msgid "Display Birthdate"
-msgstr "Exibir Data de Nascimento"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:142
-msgid "If checked show the birthdate field in billing options."
-msgstr "Exibir o campo de data de nascimento nas informações de cobrança."
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:149
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:156
-msgid "Display Gender"
-msgstr "Exibir Gênero"
-
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:157
-msgid "If checked, show the gender field in billing options."
-msgstr "Exibir o campo de gênero nas informações de cobrança."
-
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:164
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:171
 msgid "Display Cell Phone"
@@ -826,3 +790,65 @@ msgstr "No próprio bloco"
 #, js-format
 msgid "Did you mean: %s?"
 msgstr "Você quis dizer: %s?"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:102
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:110
+msgid "Company name"
+msgstr "Nome da empresa"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:114
+msgid "Ask legal persons only, as required"
+msgstr "Pedir só a pessoas jurídicas, como obrigatório"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:115
+msgid "Follow the WooCommerce setting"
+msgstr "Seguir a configuração do WooCommerce"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:132
+msgid "Asked of individuals."
+msgstr "Pedido a pessoas físicas."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:148
+msgid "Asked of legal persons, who can also declare themselves exempt."
+msgstr "Pedida a pessoas jurídicas, que também podem se declarar isentas."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:495
+msgid "Disabled"
+msgstr "Desativado"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:496
+msgid "Optional"
+msgstr "Opcional"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:497
+msgid "Required"
+msgstr "Obrigatório"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
+msgid "hidden"
+msgstr "oculto"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:511
+msgid "optional"
+msgstr "opcional"
+
+#. translators: %s: hidden, optional or required.
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:518
+#, php-format
+msgid ""
+"Asking legal persons only overrides WooCommerce for the customers the "
+"documents apply to. The company field is currently %s in WooCommerce, which "
+"sets it in the checkout page editor or in the Customizer."
+msgstr ""
+"Pedir só a pessoas jurídicas substitui o WooCommerce para os clientes a quem "
+"os documentos se aplicam. No WooCommerce, o campo empresa está %s, o que se "
+"define no editor da página de finalização de compra ou no Personalizador."
+
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:681
+msgid "State Registration is not valid."
+msgstr "Inscrição Estadual não é válida."
+
+#: build/checkout.js:1
+#: build/classic.js:1
+msgid "Exempt"
+msgstr "Isento"

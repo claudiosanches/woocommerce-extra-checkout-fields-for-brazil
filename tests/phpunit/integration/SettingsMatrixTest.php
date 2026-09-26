@@ -76,10 +76,10 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 		$axes = array(
 			'person_type'           => array( 0, 1, 2, 3 ),
 			'only_brazil'           => array( false, true ),
-			'rg'                    => array( false, true ),
-			'ie'                    => array( false, true ),
-			'birthdate'             => array( false, true ),
-			'gender'                => array( false, true ),
+			'rg'                    => array( '', 'optional', 'required' ),
+			'ie'                    => array( '', 'optional', 'required' ),
+			'birthdate'             => array( '', 'optional', 'required' ),
+			'gender'                => array( '', 'optional', 'required' ),
 			'cell_phone'            => array( '-1', '0', '1', '2' ),
 			'neighborhood_required' => array( '0', '1' ),
 		);
@@ -133,7 +133,9 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 				continue;
 			}
 
-			$parts[] = $key . '=' . $value;
+			if ( '' !== $value ) {
+				$parts[] = $key . '=' . $value;
+			}
 		}
 
 		return implode( ' ', $parts );
@@ -142,24 +144,17 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 	/**
 	 * Turn a combination into the option the plugin reads.
 	 *
-	 * The plugin treats these settings as checkboxes, so the ones that are off
-	 * are absent rather than falsy.
+	 * Only Brazil is a checkbox, so it is absent rather than falsy when off.
 	 *
 	 * @param array $combination Settings combination.
 	 *
 	 * @return array
 	 */
 	protected static function settings_for( array $combination ) {
-		$settings = array(
-			'person_type'           => $combination['person_type'],
-			'cell_phone'            => $combination['cell_phone'],
-			'neighborhood_required' => $combination['neighborhood_required'],
-		);
+		$settings = array_diff_key( $combination, array( 'only_brazil' => true ) );
 
-		foreach ( array( 'only_brazil', 'rg', 'ie', 'birthdate', 'gender' ) as $key ) {
-			if ( $combination[ $key ] ) {
-				$settings[ $key ] = 1;
-			}
+		if ( $combination['only_brazil'] ) {
+			$settings['only_brazil'] = 1;
 		}
 
 		return $settings;
@@ -218,11 +213,12 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 		$expected = array(
 			'persontype'   => 1 === $person_type,
 			'cpf'          => $individual,
-			'rg'           => $individual && $rg,
+			'rg'           => $individual && '' !== $rg,
 			'cnpj'         => $company,
-			'ie'           => $company && $ie,
-			'birthdate'    => $birthdate,
-			'gender'       => $gender,
+			'company'      => $company,
+			'ie'           => $company && '' !== $ie,
+			'birthdate'    => '' !== $birthdate,
+			'gender'       => '' !== $gender,
 			'cellphone'    => in_array( $cell_phone, array( '1', '2' ), true ),
 			'number'       => true,
 			'neighborhood' => true,
@@ -248,21 +244,33 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 				continue;
 			}
 
-			$field = $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ];
+			$field    = $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ];
+			$optional = isset( $combination[ $key ] ) && 'optional' === $combination[ $key ];
+
+			if ( $optional ) {
+				$this->assertFalse( $field['required'], "$key should be optional" );
+			}
 
 			if ( 1 === $person_type ) {
 				$this->assertIsArray( $field['hidden'], "$key should be conditional" );
-				$this->assertIsArray( $field['required'], "$key should be conditional" );
+
+				if ( ! $optional ) {
+					$this->assertIsArray( $field['required'], "$key should be conditional" );
+				}
+
 				continue;
 			}
 
 			$this->assertFalse( $field['hidden'], "$key should never be hidden" );
-			$this->assertSame( $combination['only_brazil'], is_array( $field['required'] ), "$key requiredness should follow only_brazil" );
+
+			if ( ! $optional ) {
+				$this->assertSame( $combination['only_brazil'], is_array( $field['required'] ), "$key requiredness should follow only_brazil" );
+			}
 		}
 
 		foreach ( array( 'birthdate', 'gender' ) as $key ) {
 			if ( $has( $key ) ) {
-				$this->assertTrue( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], "$key should be required" );
+				$this->assertSame( 'required' === $combination[ $key ], $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], "$key requiredness is wrong" );
 			}
 		}
 

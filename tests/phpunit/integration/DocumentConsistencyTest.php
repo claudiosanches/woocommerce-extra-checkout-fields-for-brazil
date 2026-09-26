@@ -247,7 +247,38 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 
 		$locales = $front->address_fields_priority( array() );
 		$this->assertFalse( $locales['BR']['company']['required'] );
-		$this->assertFalse( $locales['BR']['company']['hidden'] );
+	}
+
+	/**
+	 * WooCommerce's own Company setting must not require it of everyone,
+	 * wherever the store sells. The locale leaves it visible for the classic
+	 * checkout, which hides it by person type itself.
+	 */
+	public function test_a_dynamic_company_is_never_required_by_the_locale() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+		update_option( 'woocommerce_allowed_countries', 'specific' );
+		update_option( 'woocommerce_specific_allowed_countries', array( 'BR', 'PT' ) );
+
+		$locales = ( new Extra_Checkout_Fields_For_Brazil_Front_End() )->address_fields_priority( array() );
+
+		$this->assertFalse( $locales['PT']['company']['required'] );
+		$this->assertArrayNotHasKey( 'hidden', $locales['PT']['company'] );
+	}
+
+	public function test_a_company_following_woocommerce_is_left_alone() {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'person_type' => 1,
+				'company'     => 'woocommerce',
+			)
+		);
+		update_option( 'woocommerce_checkout_company_field', 'hidden' );
+
+		$front = new Extra_Checkout_Fields_For_Brazil_Front_End();
+
+		$this->assertArrayNotHasKey( 'company', $front->restore_company_field( array() ) );
+		$this->assertArrayNotHasKey( 'company', $front->address_fields_priority( array() )['BR'] );
 	}
 
 	/**

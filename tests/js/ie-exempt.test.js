@@ -6,7 +6,6 @@ import {
 	EXEMPT_VALUE,
 	bindIeExempt,
 	isExempt,
-	placeIeExempt,
 } from '../../assets/js/shared/ie-exempt';
 
 const setup = ( value = '' ) => {
@@ -16,14 +15,23 @@ const setup = ( value = '' ) => {
 	input.value = value;
 
 	const unbind = bindIeExempt( input );
-	const checkbox = document.querySelector( '.wcbcf-ie-exempt-input' );
 
-	return { checkbox, input, unbind };
+	return { checkbox: control(), input, unbind };
 };
 
+// A real checkbox on the block checkout, a button on the classic one.
+const control = () =>
+	document.querySelector( '.wcbcf-ie-exempt input, button.wcbcf-ie-exempt' );
+
+const isChecked = ( checkbox ) =>
+	'INPUT' === checkbox.tagName
+		? checkbox.checked
+		: 'true' === checkbox.getAttribute( 'aria-checked' );
+
 const toggle = ( checkbox, checked ) => {
-	checkbox.checked = checked;
-	checkbox.dispatchEvent( new window.Event( 'change' ) );
+	if ( isChecked( checkbox ) !== checked ) {
+		checkbox.click();
+	}
 };
 
 describe( 'isExempt', () => {
@@ -65,14 +73,14 @@ describe( 'bindIeExempt', () => {
 	it( 'starts checked for a value carried over from a previous order', () => {
 		const { checkbox, input } = setup( 'ISENTO' );
 
-		expect( checkbox.checked ).toBe( true );
+		expect( isChecked( checkbox ) ).toBe( true );
 		expect( input.readOnly ).toBe( true );
 	} );
 
 	it( 'leaves a real registration alone', () => {
 		const { checkbox, input } = setup( '110042490114' );
 
-		expect( checkbox.checked ).toBe( false );
+		expect( isChecked( checkbox ) ).toBe( false );
 		expect( input.readOnly ).toBe( false );
 	} );
 
@@ -82,7 +90,7 @@ describe( 'bindIeExempt', () => {
 		input.value = 'isento';
 		input.dispatchEvent( new window.Event( 'input' ) );
 
-		expect( checkbox.checked ).toBe( true );
+		expect( isChecked( checkbox ) ).toBe( true );
 	} );
 
 	it( 'unticks the box when the value is edited away', () => {
@@ -93,7 +101,7 @@ describe( 'bindIeExempt', () => {
 		input.value = '110042490114';
 		input.dispatchEvent( new window.Event( 'input' ) );
 
-		expect( checkbox.checked ).toBe( false );
+		expect( isChecked( checkbox ) ).toBe( false );
 	} );
 
 	it( 'writes through the callback when one is given', () => {
@@ -103,7 +111,7 @@ describe( 'bindIeExempt', () => {
 		const write = jest.fn();
 
 		bindIeExempt( input, { write } );
-		toggle( document.querySelector( '.wcbcf-ie-exempt-input' ), true );
+		toggle( control(), true );
 
 		expect( write ).toHaveBeenCalledWith( input, EXEMPT_VALUE );
 	} );
@@ -118,95 +126,63 @@ describe( 'bindIeExempt', () => {
 		);
 	} );
 
-	it( 'goes after the row on the classic checkout', () => {
+	it( 'sits inside the field on the classic checkout', () => {
 		document.body.innerHTML =
-			'<div class="woocommerce-billing-fields__field-wrapper">' +
-			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
-			'<p class="form-row" id="billing_city_field"></p>' +
-			'</div>';
+			'<p class="form-row validate-required" id="billing_ie_field">' +
+			'<span class="woocommerce-input-wrapper"><input id="ie" type="text" /></span></p>';
 
 		bindIeExempt( document.getElementById( 'ie' ) );
 
-		// Inside the row, WooCommerce reads the unticked box as an empty
-		// required field and marks the whole row invalid.
-		expect(
-			document.querySelector( '#billing_ie_field .wcbcf-ie-exempt' )
-		).toBeNull();
-		expect(
-			document.getElementById( 'billing_ie_field' ).nextElementSibling
-				.className
-		).toBe( 'wcbcf-ie-exempt' );
-	} );
+		const button = document.querySelector( '.wcbcf-ie-exempt' );
 
-	it( 'follows the row WooCommerce re-sorted', () => {
-		document.body.innerHTML =
-			'<div class="woocommerce-billing-fields__field-wrapper">' +
-			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
-			'<p class="form-row" id="billing_city_field"></p>' +
-			'</div>';
-
-		const input = document.getElementById( 'ie' );
-
-		bindIeExempt( input );
-
-		// WooCommerce re-appends every row it knows in locale order, which
-		// leaves the checkbox where the row used to be.
-		const fields = document.querySelector(
-			'.woocommerce-billing-fields__field-wrapper'
+		expect( button.parentElement.className ).toBe(
+			'woocommerce-input-wrapper'
 		);
 
-		fields.append( document.getElementById( 'billing_city_field' ) );
-		fields.append( document.getElementById( 'billing_ie_field' ) );
-
-		placeIeExempt( input );
-
-		expect(
-			document.getElementById( 'billing_ie_field' ).nextElementSibling
-				.className
-		).toBe( 'wcbcf-ie-exempt' );
-		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
-			1
-		);
+		// A checkbox input in the row would be validated as a field of its
+		// own, and a button in the form must never submit it.
+		expect( button.tagName ).toBe( 'BUTTON' );
+		expect( button.type ).toBe( 'button' );
+		expect( button.getAttribute( 'role' ) ).toBe( 'checkbox' );
 	} );
 
-	it( 'goes after the field on the block checkout', () => {
+	it( 'sits inside the field on the block checkout', () => {
 		document.body.innerHTML =
-			'<div class="wc-block-components-text-input"><input id="ie" type="text" /></div>';
+			'<div class="wc-block-components-text-input"><input id="ie" type="text" /><label for="ie">IE</label></div>';
 
 		bindIeExempt( document.getElementById( 'ie' ) );
 
-		const field = document.querySelector(
-			'.wc-block-components-text-input'
-		);
+		const wrapper = document.getElementById( 'ie' ).nextElementSibling;
 
-		expect( field.nextElementSibling.className ).toBe( 'wcbcf-ie-exempt' );
+		// WooCommerce's own checkbox, so its styles draw it.
+		expect( wrapper.className ).toBe(
+			'wc-block-components-checkbox wcbcf-ie-exempt'
+		);
+		expect(
+			wrapper
+				.querySelector( 'input' )
+				.classList.contains( 'wc-block-components-checkbox__input' )
+		).toBe( true );
 	} );
 
-	it( 'replaces the checkbox a previous render left behind', () => {
-		document.body.innerHTML =
-			'<p class="form-row" id="billing_ie_field"><input id="ie" type="text" /></p>' +
-			'<label class="wcbcf-ie-exempt"></label>';
+	it( 'is named for screen readers', () => {
+		const { checkbox } = setup();
 
-		bindIeExempt( document.getElementById( 'ie' ) );
-
-		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
-			1
+		expect( checkbox.getAttribute( 'aria-label' ) ).toBe(
+			'Exempt from State Registration'
 		);
 	} );
 
-	it( 'removes a checkbox a re-render left elsewhere on the page', () => {
+	it( 'removes a toggle a re-render left behind', () => {
 		document.body.innerHTML =
-			'<label class="wcbcf-ie-exempt" data-bmw-for="ie"></label>' +
 			'<div class="wc-block-components-text-input">' +
-			'<input id="ie" type="text" /></div>';
+			'<input id="ie" type="text" />' +
+			'<button class="wcbcf-ie-exempt" data-bmw-for="ie"></button></div>';
 
 		bindIeExempt( document.getElementById( 'ie' ) );
 
-		const wrappers = document.querySelectorAll( '.wcbcf-ie-exempt' );
-
-		expect( wrappers ).toHaveLength( 1 );
-		expect( wrappers[ 0 ].previousElementSibling.className ).toBe(
-			'wc-block-components-text-input'
+		expect( document.querySelectorAll( '.wcbcf-ie-exempt' ) ).toHaveLength(
+			1
 		);
 	} );
 

@@ -83,6 +83,41 @@ class Extra_Checkout_Fields_For_Brazil_Validation {
 	}
 
 	/**
+	 * Put a State Registration in one form, whichever entry point it came from.
+	 *
+	 * Punctuation is kept, since each state writes its own.
+	 *
+	 * @param  string $ie State Registration as typed.
+	 *
+	 * @return string
+	 */
+	public static function normalize_ie( $ie ) {
+		$ie = strtoupper( preg_replace( '/\s+/', '', (string) $ie ) );
+
+		return in_array( $ie, array( 'ISENTO', 'ISENTA' ), true ) ? 'ISENTO' : $ie;
+	}
+
+	/**
+	 * Checks if a State Registration is ISENTO or has the shape of one.
+	 *
+	 * Every state uses 8 to 14 digits, and rural producers in São Paulo a
+	 * leading P. The check digits differ by state and are not checked here.
+	 *
+	 * @param  string $ie State Registration to validate.
+	 *
+	 * @return bool
+	 */
+	public static function is_ie( $ie ) {
+		$ie = self::normalize_ie( $ie );
+
+		if ( 'ISENTO' === $ie ) {
+			return true;
+		}
+
+		return (bool) preg_match( '/^P?\d{8,14}$/', preg_replace( '/[.\/-]/', '', $ie ) );
+	}
+
+	/**
 	 * Checks if a date is a real calendar date in the dd/mm/yyyy format.
 	 *
 	 * @param  string $date Date to validate.

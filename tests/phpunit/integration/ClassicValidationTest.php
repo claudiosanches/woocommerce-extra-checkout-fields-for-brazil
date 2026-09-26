@@ -526,6 +526,8 @@ class ClassicValidationTest extends WP_UnitTestCase {
 	}
 
 	public function test_the_company_error_is_dropped_for_an_individual() {
+		update_option( 'wcbcf_settings', $this->all_settings() );
+
 		$errors = new WP_Error( 'billing_company_required', 'Company is a required field.' );
 
 		$this->front_end->maybe_ignore_company_required( array( 'billing_persontype' => '1' ), $errors );
@@ -539,6 +541,56 @@ class ClassicValidationTest extends WP_UnitTestCase {
 		$this->front_end->maybe_ignore_company_required( array( 'billing_persontype' => '2' ), $errors );
 
 		$this->assertSame( array( 'billing_company_required' ), $errors->get_error_codes() );
+	}
+
+	/**
+	 * Following WooCommerce, the company is its field alone: whatever it
+	 * requires stays required, and nothing is added for a legal person.
+	 */
+	public function test_the_company_follows_woocommerce_when_asked() {
+		update_option( 'wcbcf_settings', $this->all_settings( array( 'company' => 'woocommerce' ) ) );
+
+		$errors = new WP_Error( 'billing_company_required', 'Company is a required field.' );
+		$this->front_end->maybe_ignore_company_required( array( 'billing_persontype' => '1' ), $errors );
+		$this->assertSame( array( 'billing_company_required' ), $errors->get_error_codes() );
+
+		$this->assertSame( array(), $this->codes( $this->all_settings( array( 'company' => 'woocommerce' ) ), $this->company( array( 'billing_company' => '' ) ) ) );
+	}
+
+	public function test_optional_fields_can_be_left_empty() {
+		$settings = $this->all_settings(
+			array(
+				'rg'        => 'optional',
+				'ie'        => 'optional',
+				'birthdate' => 'optional',
+			)
+		);
+
+		$this->assertSame( array(), $this->codes( $settings, $this->individual( array( 'billing_rg' => '' ) ) ) );
+		$this->assertSame( array(), $this->codes( $settings, $this->company( array( 'billing_ie' => '' ) ) ) );
+	}
+
+	public function test_legacy_checkbox_values_still_require_the_field() {
+		$this->assertSame( array( 'billing_rg_required' ), $this->codes( $this->all_settings( array( 'rg' => 1 ) ), $this->individual( array( 'billing_rg' => '' ) ) ) );
+		$this->assertSame( array( 'billing_ie_required' ), $this->codes( $this->all_settings( array( 'ie' => 'required' ) ), $this->company( array( 'billing_ie' => '' ) ) ) );
+	}
+
+	/**
+	 * @testWith ["123"]
+	 *           ["12A45678"]
+	 *           ["isento!"]
+	 */
+	public function test_rejects_a_state_registration_of_the_wrong_shape( $ie ) {
+		$this->assertSame( array( 'billing_ie_invalid' ), $this->codes( $this->all_settings(), $this->company( array( 'billing_ie' => $ie ) ) ) );
+	}
+
+	/**
+	 * @testWith ["isento"]
+	 *           ["110.042.490.114"]
+	 *           ["P-01100424.3/002"]
+	 */
+	public function test_accepts_a_state_registration_of_any_state( $ie ) {
+		$this->assertSame( array(), $this->codes( $this->all_settings(), $this->company( array( 'billing_ie' => $ie ) ) ) );
 	}
 
 	/**

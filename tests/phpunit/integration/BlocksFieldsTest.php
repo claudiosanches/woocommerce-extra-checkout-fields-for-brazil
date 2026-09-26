@@ -230,4 +230,81 @@ class BlocksFieldsTest extends WP_UnitTestCase {
 			)
 		);
 	}
+
+	public function test_optional_fields_are_registered_as_optional() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'rg'          => 'optional',
+				'ie'          => 'optional',
+				'birthdate'   => 'optional',
+				'gender'      => 'optional',
+			)
+		);
+
+		foreach ( array( 'rg', 'ie', 'birthdate', 'gender' ) as $key ) {
+			$this->assertFalse( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], $key );
+		}
+
+		// Still shown only for the person type they belong to.
+		$this->assertIsArray( $fields['csbmw/rg']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/ie']['hidden'] );
+	}
+
+	public function test_the_state_registration_is_normalized_and_checked() {
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+		$field  = array(
+			'id'       => 'csbmw/ie',
+			'label'    => 'State Registration',
+			'required' => true,
+		);
+
+		$this->assertSame( 'ISENTO', $blocks->sanitize_field( ' isento ', $field ) );
+		$this->assertTrue( $blocks->validate_field( '110.042.490.114', $field ) );
+
+		$result = $blocks->validate_field( '12A45678', $field );
+		$this->assertWPError( $result );
+		$this->assertSame( 'woocommerce_invalid_ie', $result->get_error_code() );
+	}
+
+	/**
+	 * Asked of legal persons beside the CNPJ, in place of WooCommerce's own.
+	 */
+	public function test_the_company_is_asked_beside_the_cnpj() {
+		$fields = $this->register_with( array( 'person_type' => 1 ) );
+
+		$this->assertArrayHasKey( 'csbmw/company', $fields );
+		$this->assertIsArray( $fields['csbmw/company']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/company']['required'] );
+
+		$order = array_keys( $fields );
+		$this->assertSame( array_search( 'csbmw/cnpj', $order, true ) + 1, array_search( 'csbmw/company', $order, true ) );
+
+		$this->assertSame( 'hidden', ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
+
+	public function test_the_company_follows_woocommerce_when_asked() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'company'     => 'woocommerce',
+			)
+		);
+
+		$this->assertArrayNotHasKey( 'csbmw/company', $fields );
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+	}
+
+	/**
+	 * The checkout page editor reads and saves the option, so it must see the
+	 * stored value.
+	 */
+	public function test_the_core_company_is_only_hidden_on_the_front_end() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+		set_current_screen( 'edit-page' );
+
+		$this->assertFalse( ( new Extra_Checkout_Fields_For_Brazil_Blocks() )->hide_core_company( false ) );
+
+		set_current_screen( 'front' );
+	}
 }

@@ -3,9 +3,16 @@ import '../../scss/admin/settings.scss';
 // Rows each person type setting applies to. The names match the classes
 // Extra_Checkout_Fields_For_Brazil_Settings puts on the rows.
 const APPLIES_TO = {
-	1: [ 'only-brazil', 'rg', 'ie', 'validate-cpf', 'validate-cnpj' ],
+	1: [
+		'only-brazil',
+		'company',
+		'rg',
+		'ie',
+		'validate-cpf',
+		'validate-cnpj',
+	],
 	2: [ 'only-brazil', 'rg', 'validate-cpf' ],
-	3: [ 'only-brazil', 'ie', 'validate-cnpj' ],
+	3: [ 'only-brazil', 'company', 'ie', 'validate-cnpj' ],
 };
 
 // Every row the selection governs, so none is left behind by a setting that
