@@ -170,12 +170,12 @@ jQuery( function ( $ ) {
 
 		personTypeFields() {
 			/**
-			 * Mark the person type as required, as WooCommerce marks its own
-			 * fields.
+			 * Mark the rows the person type requires, as WooCommerce marks its
+			 * own required fields.
 			 */
 			const markPersonTypeRequired = function () {
 				$( '.person-type-field label .required' ).remove();
-				$( '.person-type-field label' ).append(
+				$( '.person-type-required label' ).append(
 					' ',
 					$( '<abbr class="required">*</abbr>' ).attr(
 						'title',
@@ -185,6 +185,13 @@ jQuery( function ( $ ) {
 						)
 					)
 				);
+			};
+
+			// Company only takes part while the store asks legal persons for
+			// it, which is when it carries the person type class.
+			const ROWS = {
+				1: '#billing_cpf_field, #billing_rg_field',
+				2: '#billing_company_field, #billing_cnpj_field, #billing_ie_field',
 			};
 
 			/**
@@ -207,40 +214,15 @@ jQuery( function ( $ ) {
 					);
 				$( '#billing_persontype_field' ).show().addClass( 'is-active' );
 
-				if ( '1' === personType ) {
-					if ( 'BR' === country ) {
-						$( '#billing_cpf_field, #billing_rg_field' )
-							.addClass(
-								'validate-required is-active woocommerce-validated'
-							)
-							.show();
-					} else {
-						$( '#billing_cpf_field, #billing_rg_field' )
-							.show()
-							.addClass( 'is-active' );
-					}
-				}
-
-				if ( '2' === personType ) {
-					if ( 'BR' === country ) {
-						$( '#billing_company_field label .optional' ).remove();
-						$(
-							'#billing_company_field, #billing_cnpj_field, #billing_ie_field'
-						)
-							.addClass(
-								'validate-required is-active woocommerce-validated'
-							)
-							.show();
-					} else {
-						$(
-							'#billing_company_field, #billing_cnpj_field, #billing_ie_field'
-						)
-							.addClass( 'is-active' )
-							.show();
-					}
-				}
+				const rows = $( ROWS[ personType ] || [] )
+					.filter( '.person-type-field' )
+					.show()
+					.addClass( 'is-active' );
 
 				if ( 'BR' === country ) {
+					rows.filter( '.person-type-required' ).addClass(
+						'validate-required woocommerce-validated'
+					);
 					markPersonTypeRequired();
 				}
 			};

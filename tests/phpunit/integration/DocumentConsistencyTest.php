@@ -251,6 +251,37 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The checkout block reads nothing from the default locale, so a country
+	 * left out would hide a company the order then requires.
+	 */
+	public function test_a_dynamic_company_is_shown_wherever_the_store_sells() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+		update_option( 'woocommerce_allowed_countries', 'specific' );
+		update_option( 'woocommerce_specific_allowed_countries', array( 'BR', 'PT' ) );
+
+		$locales = ( new Extra_Checkout_Fields_For_Brazil_Front_End() )->address_fields_priority( array() );
+
+		$this->assertFalse( $locales['PT']['company']['hidden'] );
+		$this->assertFalse( $locales['PT']['company']['required'] );
+	}
+
+	public function test_a_company_following_woocommerce_is_left_alone() {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'person_type' => 1,
+				'company'     => 'woocommerce',
+			)
+		);
+		update_option( 'woocommerce_checkout_company_field', 'hidden' );
+
+		$front = new Extra_Checkout_Fields_For_Brazil_Front_End();
+
+		$this->assertArrayNotHasKey( 'company', $front->restore_company_field( array() ) );
+		$this->assertArrayNotHasKey( 'company', $front->address_fields_priority( array() )['BR'] );
+	}
+
+	/**
 	 * Read what the classic checkout would prefill for a stored birthdate.
 	 *
 	 * `WC_Checkout` caches the logged in customer for the whole request, so the

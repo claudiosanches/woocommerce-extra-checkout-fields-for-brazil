@@ -55,6 +55,44 @@ test.describe( 'Classic checkout', () => {
 		await expect( page.locator( '#billing_company_field' ) ).toBeVisible();
 	} );
 
+	test( 'leaves an optional RG unmarked and unrequired', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, rg: 'optional' } );
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '1' );
+
+		await expect(
+			page.locator( '#billing_cpf_field label .required' )
+		).toBeVisible();
+		await expect(
+			page.locator( '#billing_rg_field label .required' )
+		).toHaveCount( 0 );
+		await expect(
+			page.locator( '#billing_rg_field label .optional' )
+		).toBeVisible();
+
+		await page.fill( '#billing_cpf', VALID.cpf );
+		await fillCommonFields( page );
+		await waitForClassicCheckoutIdle( page );
+		await page.click( '#place_order' );
+
+		await page.waitForURL( /order-received/, { timeout: 45_000 } );
+	} );
+
+	test( 'leaves a company following WooCommerce to it', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, company: 'woocommerce' } );
+		await goToClassicCheckout( page );
+
+		// No longer one of the rows the person type hides.
+		await page.selectOption( '#billing_persontype', '1' );
+		await expect(
+			page.locator( '#billing_company_field.person-type-field' )
+		).toHaveCount( 0 );
+	} );
+
 	test( 'masks the Brazilian fields as they are typed', async ( {
 		page,
 	} ) => {

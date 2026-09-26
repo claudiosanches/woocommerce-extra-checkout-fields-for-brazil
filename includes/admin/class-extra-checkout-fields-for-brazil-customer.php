@@ -48,7 +48,7 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 					'description' => '',
 				);
 
-				if ( isset( $settings['rg'] ) ) {
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', (array) $settings ) ) {
 					$new_fields['billing']['fields']['billing_rg'] = array(
 						'label'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'description' => '',
@@ -63,7 +63,7 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 					'description' => '',
 				);
 
-				if ( isset( $settings['ie'] ) ) {
+				if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', (array) $settings ) ) {
 					$new_fields['billing']['fields']['billing_ie'] = array(
 						'label'       => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
 						'description' => '',
@@ -74,14 +74,14 @@ class Extra_Checkout_Fields_For_Brazil_Customer {
 			$new_fields['billing']['fields']['billing_company'] = $fields['billing']['fields']['billing_company'];
 		}
 
-		if ( isset( $settings['birthdate'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', (array) $settings ) ) {
 			$new_fields['billing']['fields']['billing_birthdate'] = array(
 				'label'       => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => '',
 			);
 		}
 
-		if ( isset( $settings['gender'] ) ) {
+		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', (array) $settings ) ) {
 			$new_fields['billing']['fields']['billing_gender'] = array(
 				'label'       => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'description' => '',

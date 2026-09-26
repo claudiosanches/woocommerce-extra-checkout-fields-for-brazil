@@ -230,4 +230,63 @@ class BlocksFieldsTest extends WP_UnitTestCase {
 			)
 		);
 	}
+
+	public function test_optional_fields_are_registered_as_optional() {
+		$fields = $this->register_with(
+			array(
+				'person_type' => 1,
+				'rg'          => 'optional',
+				'ie'          => 'optional',
+				'birthdate'   => 'optional',
+				'gender'      => 'optional',
+			)
+		);
+
+		foreach ( array( 'rg', 'ie', 'birthdate', 'gender' ) as $key ) {
+			$this->assertFalse( $fields[ Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key ) ]['required'], $key );
+		}
+
+		// Still shown only for the person type they belong to.
+		$this->assertIsArray( $fields['csbmw/rg']['hidden'] );
+		$this->assertIsArray( $fields['csbmw/ie']['hidden'] );
+	}
+
+	public function test_the_state_registration_is_normalized_and_checked() {
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+		$field  = array(
+			'id'       => 'csbmw/ie',
+			'label'    => 'State Registration',
+			'required' => true,
+		);
+
+		$this->assertSame( 'ISENTO', $blocks->sanitize_field( ' isento ', $field ) );
+		$this->assertTrue( $blocks->validate_field( '110.042.490.114', $field ) );
+
+		$result = $blocks->validate_field( '12A45678', $field );
+		$this->assertWPError( $result );
+		$this->assertSame( 'woocommerce_invalid_ie', $result->get_error_code() );
+	}
+
+	/**
+	 * Following WooCommerce, the company is left to its own required check.
+	 */
+	public function test_the_company_follows_woocommerce_when_asked() {
+		$order = wc_create_order();
+		$order->set_billing_country( 'BR' );
+
+		foreach ( array( 'dynamic' => 1, 'woocommerce' => 0 ) as $mode => $expected ) {
+			update_option(
+				'wcbcf_settings',
+				array(
+					'person_type' => 3,
+					'company'     => $mode,
+				)
+			);
+
+			$errors = new WP_Error();
+			( new Extra_Checkout_Fields_For_Brazil_Blocks() )->validate_company( $order, $errors );
+
+			$this->assertCount( $expected, $errors->get_error_codes(), $mode );
+		}
+	}
 }

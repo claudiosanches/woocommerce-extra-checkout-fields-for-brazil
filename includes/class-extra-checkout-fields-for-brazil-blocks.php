@@ -384,7 +384,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				$this->conditions( $individual, $brazil_only )
 			);
 
-			if ( null !== $this->setting( 'rg' ) ) {
+			$rg = Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', $this->settings );
+
+			if ( 'disabled' !== $rg ) {
 				$this->register_field(
 					'rg',
 					array(
@@ -393,7 +395,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 						'index'      => 7,
 						'attributes' => $this->text_attributes( 'rg' ),
 					),
-					$this->conditions( $individual, $brazil_only )
+					$this->conditions( $individual, $brazil_only, 'required' === $rg )
 				);
 			}
 		}
@@ -413,7 +415,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				$this->conditions( $company, $brazil_only )
 			);
 
-			if ( null !== $this->setting( 'ie' ) ) {
+			$ie = Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $this->settings );
+
+			if ( 'disabled' !== $ie ) {
 				$this->register_field(
 					'ie',
 					array(
@@ -422,7 +426,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 						'index'      => 9,
 						'attributes' => $this->text_attributes( 'ie' ),
 					),
-					$this->conditions( $company, $brazil_only )
+					$this->conditions( $company, $brazil_only, 'required' === $ie )
 				);
 			}
 		}
@@ -452,7 +456,10 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	 * @return void
 	 */
 	protected function register_personal_fields() {
-		if ( null !== $this->setting( 'birthdate' ) ) {
+		$birthdate = Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $this->settings );
+		$gender    = Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', $this->settings );
+
+		if ( 'disabled' !== $birthdate ) {
 			$this->register_field(
 				'birthdate',
 				array(
@@ -465,13 +472,13 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					),
 				),
 				array(
-					'required' => true,
+					'required' => 'required' === $birthdate,
 					'hidden'   => false,
 				)
 			);
 		}
 
-		if ( null !== $this->setting( 'gender' ) ) {
+		if ( 'disabled' !== $gender ) {
 			$this->register_field(
 				'gender',
 				array(
@@ -491,7 +498,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 					),
 				),
 				array(
-					'required' => true,
+					'required' => 'required' === $gender,
 					'hidden'   => false,
 				)
 			);
@@ -616,6 +623,10 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		$value = trim( $value );
 		$key   = self::field_key( isset( $field['id'] ) ? $field['id'] : '' );
 
+		if ( 'ie' === $key ) {
+			$value = Extra_Checkout_Fields_For_Brazil_Validation::normalize_ie( $value );
+		}
+
 		if ( ! isset( self::MAX_LENGTHS[ $key ] ) ) {
 			return $value;
 		}
@@ -666,6 +677,10 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			$errors->add( 'woocommerce_invalid_cnpj', __( 'CNPJ is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
+		if ( 'ie' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $value ) ) {
+			$errors->add( 'woocommerce_invalid_ie', __( 'State Registration is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+		}
+
 		if ( 'birthdate' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $value ) ) {
 			$errors->add( 'woocommerce_invalid_birthdate', __( 'Birthdate is not valid. Use the dd/mm/yyyy format.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
@@ -693,7 +708,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		$settings    = (array) get_option( 'wcbcf_settings', array() );
 		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
 
-		if ( 0 === $person_type ) {
+		if ( ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
 			return;
 		}
 

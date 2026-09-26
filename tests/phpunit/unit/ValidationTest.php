@@ -135,4 +135,48 @@ class ValidationTest extends TestCase {
 	public function test_validates_dates( $date, $expected ) {
 		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Validation::is_date( $date ) );
 	}
+
+	/**
+	 * State Registrations and whether they have the shape of one.
+	 *
+	 * @return array
+	 */
+	public function ie_provider() {
+		return array(
+			'exempt'             => array( 'ISENTO', true ),
+			'exempt lower case'  => array( 'isento', true ),
+			'exempt feminine'    => array( 'Isenta', true ),
+			'rio de janeiro'     => array( '12.345.678', true ),
+			'sao paulo'          => array( '110.042.490.114', true ),
+			'sao paulo rural'    => array( 'P-01100424.3/002', true ),
+			'minas gerais'       => array( '0623079040081', true ),
+			'with spaces'        => array( '110 042 490 114', true ),
+			'too short'          => array( '1234567', false ),
+			'too long'           => array( '123456789012345', false ),
+			'letters'            => array( '12A45678', false ),
+			'other punctuation'  => array( '12_345678', false ),
+			'misspelled exempt'  => array( 'ISENT', false ),
+			'empty'              => array( '', false ),
+		);
+	}
+
+	/**
+	 * @dataProvider ie_provider
+	 *
+	 * @param string $ie       State Registration to check.
+	 * @param bool   $expected Expected result.
+	 */
+	public function test_validates_state_registrations( $ie, $expected ) {
+		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $ie ) );
+	}
+
+	/**
+	 * @testWith ["isento", "ISENTO"]
+	 *           [" Isenta ", "ISENTO"]
+	 *           ["p-01100424.3/002", "P-01100424.3/002"]
+	 *           ["110 042 490 114", "110042490114"]
+	 */
+	public function test_normalizes_state_registrations( $ie, $expected ) {
+		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Validation::normalize_ie( $ie ) );
+	}
 }

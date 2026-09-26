@@ -21,12 +21,12 @@ Brazilian Market on WooCommerce adds those fields to the checkout, the My Accoun
 
 * **Person type** - lets the customer choose between individual and legal entity, showing only the documents that apply to the choice.
 * **CPF** and **RG** for individuals.
-* **CNPJ** and **State Registration** for companies, with Company name made required. Companies with no state registration can tick a box to fill it with ISENTO.
+* **CNPJ** and **State Registration** for companies, with Company name asked of companies only and made required for them, or left to the WooCommerce setting. Companies with no state registration can tick a box to fill it with ISENTO.
 * **Birthdate** and **Gender**.
 * **Cell phone**, either as an extra field or replacing the regular phone field.
 * **Number** and **Neighborhood** on both billing and shipping addresses.
 
-Every field is optional to enable. Turn on only what your store actually needs, and set which ones are required.
+Every field is optional to enable. Turn on only what your store actually needs, and set RG, State Registration, Birthdate and Gender as optional or required.
 
 = Validation and formatting =
 
@@ -185,6 +185,11 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed a document corrected in My Account being ignored by the block checkout, which kept prefilling the old value and wrote it back with the next order.
 - Fixed "Load billing address" on the admin order screen clearing the Brazilian fields instead of filling them, and the matching Copy billing address handler never running at all. WooCommerce loads and copies these fields itself, so the plugin no longer duplicates the work.
 - Added validation to the Birthdate field, which used to accept dates that do not exist.
+- RG, State Registration, Birthdate and Gender can now be optional as well as required. Stores that had them turned on keep them required.
+- Added a Company name setting: ask it of legal persons only, as before, or follow WooCommerce's own Company setting.
+- The State Registration is stored in capitals, with ISENTO however it was typed, and rejected unless it is ISENTO or has 8 to 14 digits.
+- Fixed the block checkout hiding the company from a legal person outside Brazil while still requiring it, when documents are asked in every country.
+- Fixed the classic checkout dropping the company field for stores that accept individuals only.
 - Declared WooCommerce as a required plugin, so WordPress installs and activates it with the plugin, and removed the notice that used to say it was missing.
 - Fixed the email suggestion reading Brazilian domains such as `.com.br` as typos and offering to cut the country code off.
 - Declared compatibility with the WooCommerce cart and checkout blocks feature.

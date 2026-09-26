@@ -255,6 +255,52 @@ test.describe( 'Block checkout', () => {
 		} );
 	} );
 
+	test( 'accepts a legal person without an optional State Registration', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, ie: 'optional' } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+
+		await placeOrder( page );
+
+		expect( orderIdFromUrl( page.url() ) ).not.toBeNull();
+	} );
+
+	test( 'refuses a State Registration of the wrong shape', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+		await page.fill( field( 'ie' ), '123' );
+		await page.fill( '#billing-company', 'Acme Comercio Ltda' );
+
+		await placeOrder( page );
+
+		await expect( page.locator( ERROR_BANNER ) ).toContainText(
+			'State Registration'
+		);
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
+	} );
+
+	test( 'lets a legal person abroad fill in the company', async ( {
+		page,
+	} ) => {
+		// Documents are asked everywhere, so the company has to be reachable
+		// wherever it is required.
+		setSettings( { ...ALL_FIELDS, only_brazil: undefined } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await page.selectOption( '#billing-country', 'PT' );
+
+		await expect( page.locator( '#billing-company' ) ).toBeVisible();
+	} );
+
 	test( 'accepts an alphanumeric CNPJ typed in lower case', async ( {
 		page,
 	} ) => {

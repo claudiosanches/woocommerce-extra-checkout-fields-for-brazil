@@ -62,6 +62,47 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
+	 * Whether a field is off, optional or required.
+	 *
+	 * Used for RG, State Registration, Birthdate and Gender. These were
+	 * checkboxes that made the field required, so a stored 1 means required.
+	 *
+	 * @param string     $key      Setting key.
+	 * @param array|null $settings Plugin settings, read when not given.
+	 *
+	 * @return string disabled, optional or required.
+	 */
+	public static function field_mode( $key, $settings = null ) {
+		$settings = null === $settings ? (array) get_option( 'wcbcf_settings', array() ) : $settings;
+		$value    = isset( $settings[ $key ] ) ? (string) $settings[ $key ] : '';
+
+		if ( 'optional' === $value ) {
+			return 'optional';
+		}
+
+		return in_array( $value, array( '', '0' ), true ) ? 'disabled' : 'required';
+	}
+
+	/**
+	 * Whether the company is asked of legal persons only, against WooCommerce's
+	 * own Company setting.
+	 *
+	 * @param array|null $settings Plugin settings, read when not given.
+	 *
+	 * @return bool
+	 */
+	public static function has_dynamic_company( $settings = null ) {
+		$settings    = null === $settings ? (array) get_option( 'wcbcf_settings', array() ) : $settings;
+		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+
+		if ( 1 !== $person_type && 3 !== $person_type ) {
+			return false;
+		}
+
+		return 'woocommerce' !== ( isset( $settings['company'] ) ? $settings['company'] : 'dynamic' );
+	}
+
+	/**
 	 * Load the plugin text domain for translation.
 	 */
 	public function load_plugin_textdomain() {

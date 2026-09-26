@@ -96,65 +96,84 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// RG option.
+		// Company option.
 		add_settings_field(
-			'rg',
-			__( 'Display RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			'company',
+			__( 'Company name', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'select_element_callback' ),
 			$option,
 			'options_section',
 			array(
-				'menu'  => $option,
-				'class' => 'bmw-row-rg',
-				'id'    => 'rg',
-				'title' => __( 'Display RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'If checked show the RG field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'menu'        => $option,
+				'class'       => 'bmw-row-company',
+				'id'          => 'company',
+				'title'       => __( 'Company name', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => 'dynamic',
+				'description' => $this->company_description(),
+				'options'     => array(
+					'dynamic'     => __( 'Ask legal persons only, as required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'woocommerce' => __( 'Follow the WooCommerce setting', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+			)
+		);
+
+		// RG option.
+		add_settings_field(
+			'rg',
+			__( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'field_mode_callback' ),
+			$option,
+			'options_section',
+			array(
+				'menu'        => $option,
+				'class'       => 'bmw-row-rg',
+				'id'          => 'rg',
+				'title'       => __( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Asked of individuals.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
 		// State Registration option.
 		add_settings_field(
 			'ie',
-			__( 'Display State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			__( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'field_mode_callback' ),
 			$option,
 			'options_section',
 			array(
-				'menu'  => $option,
-				'class' => 'bmw-row-ie',
-				'id'    => 'ie',
-				'title' => __( 'Display State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'If checked show the State Registration field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'menu'        => $option,
+				'class'       => 'bmw-row-ie',
+				'id'          => 'ie',
+				'title'       => __( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Asked of legal persons, who can also declare themselves exempt.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
 		// Birth Date option.
 		add_settings_field(
 			'birthdate',
-			__( 'Display Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			__( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'field_mode_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'birthdate',
-				'title' => __( 'Display Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'If checked show the birthdate field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'title' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
 		// Gender option.
 		add_settings_field(
 			'gender',
-			__( 'Display Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			__( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'field_mode_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'  => $option,
 				'id'    => 'gender',
-				'title' => __( 'Display Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'If checked, show the gender field in billing options.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'title' => __( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
@@ -459,6 +478,46 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		$current = intval( $current );
 
 		include __DIR__ . '/views/html-radio-field.php';
+	}
+
+	/**
+	 * Select between off, optional and required for a field.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function field_mode_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$current = Extra_Checkout_Fields_For_Brazil::field_mode( $id, (array) get_option( $menu, array() ) );
+		$current = 'disabled' === $current ? '' : $current;
+
+		$args['options'] = array(
+			''         => __( 'Disabled', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'optional' => __( 'Optional', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'required' => __( 'Required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		);
+
+		include __DIR__ . '/views/html-select-field.php';
+	}
+
+	/**
+	 * Describe the company setting along with what WooCommerce has it set to.
+	 *
+	 * @return string
+	 */
+	protected function company_description() {
+		$labels  = array(
+			'hidden'   => __( 'hidden', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'optional' => __( 'optional', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'required' => __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		);
+		$current = class_exists( \Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::class ) ? \Automattic\WooCommerce\Blocks\Utils\CartCheckoutUtils::get_company_field_visibility() : 'optional';
+
+		return sprintf(
+			/* translators: %s: hidden, optional or required. */
+			__( 'Asking legal persons only overrides WooCommerce for the customers the documents apply to. The company field is currently %s in WooCommerce, which sets it in the checkout page editor or in the Customizer.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			isset( $labels[ $current ] ) ? $labels[ $current ] : $current
+		);
 	}
 
 	/**

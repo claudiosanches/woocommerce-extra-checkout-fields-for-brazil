@@ -1,12 +1,7 @@
-/* stylelint-disable -- This is for WooCommerce HTML and we don't control the naming choice. */
-#billing_persontype_field,
-#billing_cnpj_field,
-#billing_ie_field,
-#billing_cpf_field,
-#billing_rg_field {
-	.optional {
-		display: none;
-	}
+// The person type decides whether these are required, so WooCommerce's
+// optional mark is swapped for the plugin's own.
+.person-type-required .optional {
+	display: none;
 }
 
 .wcbcf-mailsuggest {
