@@ -8,7 +8,7 @@ module.exports = {
 		blocks: path.resolve( __dirname, 'assets/js/blocks/index.ts' ),
 		'order-customer-data-editor': path.resolve(
 			__dirname,
-			'assets/js/order-customer-data/editor.ts'
+			'assets/js/order-customer-data/editor.tsx'
 		),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(

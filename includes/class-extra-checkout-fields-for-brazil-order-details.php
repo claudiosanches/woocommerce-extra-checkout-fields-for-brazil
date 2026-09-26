@@ -143,7 +143,7 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	 * @return void
 	 */
 	public function register_block() {
-		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-order-customer-data-editor', 'order-customer-data-editor', array( 'wp-blocks', 'wp-block-editor', 'wp-element', 'wp-server-side-render' ) );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-order-customer-data-editor', 'order-customer-data-editor' );
 
 		register_block_type(
 			dirname( CSBMW_PLUGIN_FILE ) . '/includes/blocks/order-customer-data',

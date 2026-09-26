@@ -8,6 +8,8 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		// Babel strips the types, so nothing is emitted from here.
