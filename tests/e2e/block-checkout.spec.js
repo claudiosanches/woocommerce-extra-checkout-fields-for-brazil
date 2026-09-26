@@ -213,7 +213,10 @@ test.describe( 'Block checkout', () => {
 
 		// The confirmation lists them in a section of their own, away from
 		// WooCommerce's additional information.
-		const customerData = page.locator( '.csbmw-order-customer-data' );
+		// The block the order confirmation template gets from block hooks.
+		const customerData = page.locator(
+			'.wp-block-csbmw-order-customer-data'
+		);
 
 		await expect( customerData ).toContainText( 'Customer data' );
 		await expect( customerData ).toContainText( 'Female' );

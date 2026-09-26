@@ -20,14 +20,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Extra_Checkout_Fields_For_Brazil_Order_Details {
 
 	/**
+	 * Block that shows the customer data on the order confirmation.
+	 *
+	 * @var string
+	 */
+	const BLOCK = 'csbmw/order-customer-data';
+
+	/**
 	 * Initialize hooks.
 	 */
 	public function __construct() {
+		add_action( 'init', array( $this, 'register_block' ) );
 		add_filter( 'woocommerce_filter_fields_for_order_confirmation', array( $this, 'hide_contact_fields' ), 10, 2 );
 		add_filter( 'render_block_woocommerce/order-confirmation-additional-fields-wrapper', array( $this, 'drop_empty_additional_fields' ) );
 
-		// Classic thank you page, My Account and the order confirmation block,
-		// whose totals fire the same hook after the order table.
+		// Classic thank you page and My Account.
 		add_action( 'woocommerce_order_details_after_order_table', array( $this, 'order_details' ) );
 
 		// Between the customer details and the addresses.
@@ -128,18 +135,126 @@ class Extra_Checkout_Fields_For_Brazil_Order_Details {
 	}
 
 	/**
+	 * Register the order confirmation block and its editor preview.
+	 *
+	 * Block hooks place it after the order totals, so it shows in the order
+	 * confirmation template and can be moved or removed there.
+	 *
+	 * @return void
+	 */
+	public function register_block() {
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( 'woocommerce-extra-checkout-fields-for-brazil-order-customer-data-editor', 'order-customer-data-editor', array( 'wp-blocks', 'wp-block-editor', 'wp-element', 'wp-server-side-render' ) );
+
+		register_block_type(
+			dirname( CSBMW_PLUGIN_FILE ) . '/includes/blocks/order-customer-data',
+			array(
+				'render_callback' => array( $this, 'render_block' ),
+			)
+		);
+	}
+
+	/**
+	 * Render the order confirmation block.
+	 *
+	 * @return string
+	 */
+	public function render_block() {
+		// The editor previews the block with sample values, as the template
+		// being edited has no order.
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST && current_user_can( 'edit_theme_options' ) ) {
+			return self::render_fields( self::sample_fields(), 'class="csbmw-order-customer-data"' );
+		}
+
+		$order = wc_get_order( absint( get_query_var( 'order-received' ) ) );
+
+		if ( ! $order instanceof WC_Order || ! self::can_view_order() ) {
+			return '';
+		}
+
+		return self::render_fields( self::get_fields( $order ), get_block_wrapper_attributes( array( 'class' => 'csbmw-order-customer-data' ) ) );
+	}
+
+	/**
+	 * Whether the visitor may see the order the confirmation page is for.
+	 *
+	 * WooCommerce decides it for its own order confirmation blocks: a valid
+	 * order key, then the order's customer, or a guest within the grace period
+	 * or after verifying the email. Its wrapper blocks print their content
+	 * only when allowed, so one is asked instead of repeating those rules.
+	 *
+	 * @return bool
+	 */
+	protected static function can_view_order() {
+		return '' !== render_block(
+			array(
+				'blockName'    => 'woocommerce/order-confirmation-totals-wrapper',
+				'attrs'        => array(),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '1',
+				'innerContent' => array( '1' ),
+			)
+		);
+	}
+
+	/**
+	 * Values the editor preview shows.
+	 *
+	 * @return array
+	 */
+	protected static function sample_fields() {
+		return array(
+			array(
+				'label' => __( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'value' => '123.456.789-09',
+			),
+			array(
+				'label' => __( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'value' => '01/02/1990',
+			),
+			array(
+				'label' => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'value' => '(11) 91234-5678',
+			),
+		);
+	}
+
+	/**
+	 * Markup of the customer data section.
+	 *
+	 * @param array  $fields             Label and value pairs.
+	 * @param string $wrapper_attributes Attributes of the section.
+	 *
+	 * @return string
+	 */
+	protected static function render_fields( $fields, $wrapper_attributes ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- The view prints it.
+		if ( ! $fields ) {
+			return '';
+		}
+
+		ob_start();
+		require __DIR__ . '/views/html-order-customer-data.php';
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Print the customer data on an order page.
+	 *
+	 * The order confirmation template shows it through the block instead,
+	 * where the store can move or remove it.
 	 *
 	 * @param WC_Order $order Order.
 	 *
 	 * @return void
 	 */
 	public function order_details( $order ) {
-		$fields = $order instanceof WC_Order ? self::get_fields( $order ) : array();
+		global $_wp_current_template_content;
 
-		if ( $fields ) {
-			require __DIR__ . '/views/html-order-customer-data.php';
+		if ( ! $order instanceof WC_Order || ( is_order_received_page() && ! empty( $_wp_current_template_content ) ) ) {
+			return;
 		}
+
+		echo self::render_fields( self::get_fields( $order ), 'class="wc-block-order-confirmation-additional-fields-wrapper csbmw-order-customer-data"' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the view.
 	}
 
 	/**

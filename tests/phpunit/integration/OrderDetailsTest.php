@@ -91,7 +91,7 @@ class OrderDetailsTest extends WP_UnitTestCase {
 		$this->details->order_details( $this->order );
 		$page = ob_get_clean();
 
-		$this->assertStringContainsString( '<h2>Customer data</h2>', $page );
+		$this->assertStringContainsString( '>Customer data</h2>', $page );
 		$this->assertStringContainsString( '<dt>CPF</dt>', $page );
 
 		ob_start();

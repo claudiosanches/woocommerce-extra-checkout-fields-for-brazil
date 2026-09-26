@@ -6,6 +6,10 @@ module.exports = {
 	entry: {
 		frontend: path.resolve( __dirname, 'assets/js/frontend/frontend.js' ),
 		blocks: path.resolve( __dirname, 'assets/js/blocks/index.ts' ),
+		'order-customer-data-editor': path.resolve(
+			__dirname,
+			'assets/js/order-customer-data/editor.ts'
+		),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(
 			__dirname,
