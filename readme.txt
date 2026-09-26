@@ -110,6 +110,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 = 5.0.0 - 2026/08/23 =
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
+- Added a Customer data section to the order confirmation, the order view in My Account and the order emails, listing the documents, birthdate, gender and cell phone apart from WooCommerce's additional information.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
 - Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieuhal](https://github.com/Matthieuhal)).
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
