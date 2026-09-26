@@ -64,7 +64,7 @@ $small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
 .csbmw-shipping-calculator .csbmw-shipping-calculator-input {
 	background-color: var(--wc-form-color-background, #fff);
 	border: var(--wc-form-border-width, 1px) solid var(--wc-form-border-color, rgba(32, 7, 7, 0.8));
-	border-radius: var(--wc-form-border-radius, 4px);
+	border-radius: var(--wc-form-border-radius, 0);
 	box-sizing: border-box;
 	color: var(--wc-form-color-text, #000);
 
