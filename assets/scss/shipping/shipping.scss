@@ -196,6 +196,47 @@ ul.csbmw-shipping-calculator-rates {
 		background: rgba(0, 0, 0, 0.45);
 	}
 
+	// Fades and rises in, and back out. Keeping display and the top layer
+	// through the transition lets the close animate too.
+	@media (prefers-reduced-motion: no-preference) {
+		opacity: 0;
+		transform: translateY(12px) scale(0.98);
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease,
+			overlay 0.2s allow-discrete,
+			display 0.2s allow-discrete;
+
+		&[open] {
+			opacity: 1;
+			transform: none;
+		}
+
+		&::backdrop {
+			opacity: 0;
+			transition:
+				opacity 0.2s ease,
+				overlay 0.2s allow-discrete,
+				display 0.2s allow-discrete;
+		}
+
+		&[open]::backdrop {
+			opacity: 1;
+		}
+
+		@starting-style {
+
+			&[open],
+			&[open]::backdrop {
+				opacity: 0;
+			}
+
+			&[open] {
+				transform: translateY(12px) scale(0.98);
+			}
+		}
+	}
+
 	// A click on its padding focuses the dialog itself. The fields and
 	// buttons inside keep their own focus rings.
 	&:focus,
@@ -226,6 +267,17 @@ ul.csbmw-shipping-calculator-rates {
 	line-height: 0;
 	margin: -4px -4px 0 0;
 	padding: 4px;
+}
+
+.csbmw-shipping-calculator-close > svg {
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: transform 0.2s ease;
+	}
+}
+
+.csbmw-shipping-calculator-close:is(:hover, :focus-visible) > svg {
+	transform: rotate(90deg);
 }
 
 // Themes restyle every button on hover, often with selectors that outrank a
