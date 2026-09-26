@@ -329,3 +329,23 @@ ul.csbmw-shipping-calculator-rates {
 		margin-top: 4px;
 	}
 }
+
+// A font size chosen for the block sizes the whole calculator, which the rules
+// above otherwise fit to the product summary. WordPress marks the wrapper with
+// a preset's class or a custom size's inline style.
+.wp-block-csbmw-shipping-calculator:is([class*="-font-size"], [style*="font-size"]) {
+
+	.csbmw-shipping-calculator-card {
+		font-size: 1em;
+	}
+
+	.csbmw-shipping-calculator-label,
+	.csbmw-shipping-calculator-find {
+		font-size: 0.875em;
+	}
+
+	.csbmw-shipping-calculator-input,
+	.csbmw-shipping-calculator-button {
+		font-size: inherit;
+	}
+}
