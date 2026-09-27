@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T14:59:41+00:00\n"
+"POT-Creation-Date: 2026-09-27T01:46:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -298,6 +298,7 @@ msgid "If checked, the neighborhood field will be a required field."
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:219
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:392
 msgid "Shipping"
 msgstr ""
 
@@ -354,7 +355,7 @@ msgid "Side-by-side fields"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:302
-msgid "jQuery Options"
+msgid "Input helpers"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:311
@@ -397,41 +398,49 @@ msgstr ""
 msgid "Checks if the CNPJ is valid."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:421
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:390
+msgid "Fields"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:391
+msgid "Features"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:435
 msgid "You do not have permission to change the store settings."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:428
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:442
 msgid "The store now sells and ships only to Brazil."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:495
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:509
 msgid "Disabled"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:496
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
 msgid "Optional"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:497
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:511
 msgid "Required"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:524
 msgid "hidden"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:511
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:525
 msgid "optional"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:512
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:526
 #: build/classic.js:2
 msgid "required"
 msgstr ""
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:518
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:532
 #, php-format
 msgid "Asking legal persons only overrides WooCommerce for the customers the documents apply to. The company field is currently %s in WooCommerce, which sets it in the checkout page editor or in the Customizer."
 msgstr ""
@@ -453,7 +462,7 @@ msgid "Shipping by CEP"
 msgstr ""
 
 #: includes/admin/views/html-admin-announcements.php:21
-msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section."
+msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping tab."
 msgstr ""
 
 #: includes/admin/views/html-admin-announcements.php:24

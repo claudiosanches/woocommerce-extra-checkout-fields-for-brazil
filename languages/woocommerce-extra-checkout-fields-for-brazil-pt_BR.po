@@ -289,8 +289,8 @@ msgid "Side-by-side fields"
 msgstr "Campos lado a lado"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:283
-msgid "jQuery Options"
-msgstr "Opções de jQuery"
+msgid "Input helpers"
+msgstr "Auxiliares de preenchimento"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:292
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:299
@@ -744,8 +744,8 @@ msgid "Shipping by CEP"
 msgstr "Frete pelo CEP"
 
 #: includes/admin/views/html-admin-announcements.php:21
-msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section."
-msgstr "Os clientes podem consultar o frete nas páginas de produto e no carrinho só com o CEP. Ative na seção Entrega."
+msgid "Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping tab."
+msgstr "Os clientes podem consultar o frete nas páginas de produto e no carrinho só com o CEP. Ative na aba Entrega."
 
 #: build/blocks/order-customer-data/block.json
 msgctxt "block title"
@@ -852,3 +852,11 @@ msgstr "Inscrição Estadual não é válida."
 #: build/classic.js:1
 msgid "Exempt"
 msgstr "Isento"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:390
+msgid "Fields"
+msgstr "Campos"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:391
+msgid "Features"
+msgstr "Recursos"

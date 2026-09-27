@@ -205,7 +205,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed the company name missing from every Brazilian address the store renders, since the format the plugin registers replaces the one WooCommerce ships with.
 - Added the date mask to the Birthdate field on the order screen, where a date typed without it was stored as it stood.
 - The Gender field on the order screen is now picked from the same list as both checkouts, instead of accepting any text.
-- Redesigned the settings screen, with each group of options in its own card.
+- Redesigned the settings screen, with the options split into Fields, Features and Shipping tabs and each group in its own card.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
 - Removed support for the discontinued Flux Checkout plugin.

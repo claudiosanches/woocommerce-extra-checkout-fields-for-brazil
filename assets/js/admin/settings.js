@@ -1,4 +1,5 @@
 import '../../scss/admin/settings.scss';
+import './settings-tabs';
 
 // Rows each person type setting applies to. The names match the classes
 // Extra_Checkout_Fields_For_Brazil_Settings puts on the rows.
@@ -30,7 +31,8 @@ jQuery( function ( $ ) {
 	} );
 
 	// The card holds nothing but the two document checks, so it goes when
-	// neither of them applies.
+	// neither of them applies. The hidden attribute leaves the display of
+	// the card to the tabs.
 	const validation = $( '.bmw-section-validation' );
 
 	$( '#person_type' )
@@ -41,9 +43,10 @@ jQuery( function ( $ ) {
 				rows[ name ].toggle( shown.includes( name ) )
 			);
 
-			validation.toggle(
-				shown.includes( 'validate-cpf' ) ||
-					shown.includes( 'validate-cnpj' )
+			validation.prop(
+				'hidden',
+				! shown.includes( 'validate-cpf' ) &&
+					! shown.includes( 'validate-cnpj' )
 			);
 		} )
 		.trigger( 'change' );

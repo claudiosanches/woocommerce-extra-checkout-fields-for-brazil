@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<div class="bmw-settings-layout">
 		<main class="bmw-settings-main">
+			<div id="bmw-settings-tabs" data-tabs="<?php echo esc_attr( wp_json_encode( $this->get_tabs() ) ); ?>"></div>
+
 			<form id="bmw-settings" method="post" action="options.php">
 				<?php
 				settings_fields( 'wcbcf_settings' );

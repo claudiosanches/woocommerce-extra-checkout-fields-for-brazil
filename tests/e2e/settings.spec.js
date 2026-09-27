@@ -8,6 +8,8 @@ const SETTINGS =
 
 const row = ( page, name ) => page.locator( `.bmw-row-${ name }` );
 
+const tab = ( page, name ) => page.getByRole( 'tab', { name } );
+
 test.describe( 'Settings screen', () => {
 	test.beforeEach( async ( { page } ) => {
 		setSettings( ALL_FIELDS );
@@ -53,20 +55,71 @@ test.describe( 'Settings screen', () => {
 		// at. Every one of these belongs to a setting the person type has no
 		// say over.
 		for ( const personType of [ '0', '1', '2', '3' ] ) {
+			await tab( page, 'Fields' ).click();
 			await page.selectOption( '#person_type', personType );
 
-			await expect( page.locator( '.bmw-section-jquery' ) ).toBeVisible();
+			await expect(
+				page.locator( 'label[for="birthdate"]' )
+			).toBeVisible();
+			await expect( page.locator( '#fields_style' ) ).toBeVisible();
+
+			await tab( page, 'Features' ).click();
+			await expect(
+				page.locator( '.bmw-section-helpers' )
+			).toBeVisible();
 			await expect(
 				page.locator( 'label[for="mailcheck"]' )
 			).toBeVisible();
 			await expect(
 				page.locator( 'label[for="maskedinput"]' )
 			).toBeVisible();
-			await expect(
-				page.locator( 'label[for="birthdate"]' )
-			).toBeVisible();
-			await expect( page.locator( '#fields_style' ) ).toBeVisible();
 		}
+	} );
+
+	test( 'shows one tab at a time', async ( { page } ) => {
+		await expect( tab( page, 'Fields' ) ).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+		await expect( page.locator( '.bmw-section-fields' ) ).toBeVisible();
+		await expect( page.locator( '.bmw-section-shipping' ) ).toBeHidden();
+
+		await tab( page, 'Shipping' ).click();
+
+		await expect( page.locator( '.bmw-section-shipping' ) ).toBeVisible();
+		await expect( page.locator( '.bmw-section-fields' ) ).toBeHidden();
+		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
+		await expect( page ).toHaveURL( /[?&]tab=shipping/ );
+
+		// A reload comes back to the same tab.
+		await page.reload();
+		await expect( page.locator( '.bmw-section-shipping' ) ).toBeVisible();
+		await expect( page.locator( '.bmw-section-fields' ) ).toBeHidden();
+	} );
+
+	test( 'keeps the tab hidden when the person type shows its card', async ( {
+		page,
+	} ) => {
+		await tab( page, 'Features' ).click();
+		await page.evaluate( () =>
+			window.jQuery( '#person_type' ).val( '1' ).trigger( 'change' )
+		);
+
+		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
+	} );
+
+	test( 'saves every tab and comes back to the open one', async ( {
+		page,
+	} ) => {
+		await page.selectOption( '#rg', 'optional' );
+		await tab( page, 'Features' ).click();
+		await page.locator( 'label[for="mailcheck"]' ).click();
+		await page.click( '#submit' );
+
+		await expect( page ).toHaveURL( /[?&]tab=features/ );
+		await expect( page.locator( '.notice-success' ) ).toBeVisible();
+		await expect( page.locator( '#mailcheck' ) ).not.toBeChecked();
+		await expect( page.locator( '#rg' ) ).toHaveValue( 'optional' );
 	} );
 
 	test( 'keeps a shown row whole', async ( { page } ) => {

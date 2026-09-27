@@ -56,7 +56,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Custom Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$this->section_args( 'bmw-section-fields' )
+			$this->section_args( 'bmw-section-fields', 'fields' )
 		);
 
 		// Person Type option.
@@ -219,7 +219,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'shipping_section_callback' ),
 			$option,
-			$this->section_args( 'bmw-section-shipping' )
+			$this->section_args( 'bmw-section-shipping', 'shipping' )
 		);
 
 		// Address autofill option.
@@ -274,7 +274,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Design', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$this->section_args( 'bmw-section-design' )
+			$this->section_args( 'bmw-section-design', 'fields' )
 		);
 
 		// Fields Style option.
@@ -296,13 +296,13 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
-		// Set jQuery section.
+		// Set input helpers section.
 		add_settings_section(
 			'jquery_section',
-			__( 'jQuery Options', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			__( 'Input helpers', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$this->section_args( 'bmw-section-jquery' )
+			$this->section_args( 'bmw-section-helpers', 'features' )
 		);
 
 		// Mail Check option.
@@ -341,7 +341,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			__( 'Validation', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			array( $this, 'section_options_callback' ),
 			$option,
-			$this->section_args( 'bmw-section-validation' )
+			$this->section_args( 'bmw-section-validation', 'fields' )
 		);
 
 		// Validate CPF option.
@@ -381,18 +381,32 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	}
 
 	/**
+	 * Settings page tabs, keyed by the name the sections are marked with.
+	 *
+	 * @return array
+	 */
+	public function get_tabs() {
+		return array(
+			'fields'   => __( 'Fields', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'features' => __( 'Features', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'shipping' => __( 'Shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		);
+	}
+
+	/**
 	 * Wrapper markup for a settings section.
 	 *
 	 * The %s in before_section is replaced with section_class, which is what
 	 * gives each card a hook of its own.
 	 *
 	 * @param string $section_class Class identifying the section.
+	 * @param string $tab           Tab the section is shown in.
 	 *
 	 * @return array
 	 */
-	protected function section_args( $section_class ) {
+	protected function section_args( $section_class, $tab ) {
 		return array(
-			'before_section' => '<div class="bmw-settings-card %s">',
+			'before_section' => '<div class="bmw-settings-card %s" data-bmw-tab="' . esc_attr( $tab ) . '">',
 			'after_section'  => '</div>',
 			'section_class'  => 'bmw-settings-section ' . $section_class,
 		);
@@ -428,7 +442,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		add_settings_error( 'wcbcf_settings', 'csbmw_ship_only_to_brazil', __( 'The store now sells and ships only to Brazil.', 'woocommerce-extra-checkout-fields-for-brazil' ), 'success' );
 		set_transient( 'settings_errors', get_settings_errors(), 30 );
 
-		wp_safe_redirect( admin_url( 'admin.php?page=woocommerce-extra-checkout-fields-for-brazil&settings-updated=true' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=woocommerce-extra-checkout-fields-for-brazil&tab=shipping&settings-updated=true' ) );
 		exit;
 	}
 
