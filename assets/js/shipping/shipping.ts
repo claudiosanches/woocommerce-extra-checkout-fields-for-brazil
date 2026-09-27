@@ -64,20 +64,45 @@ const element = < K extends keyof HTMLElementTagNameMap >(
 };
 
 /**
- * The add to cart form next to a calculator.
+ * Whether a calculator quotes one variation, whatever the form holds.
+ *
+ * @param root Calculator.
+ * @return Whether it does.
+ */
+function isFixedVariation( root: HTMLElement ): boolean {
+	return !! root.dataset.variationId && '0' !== root.dataset.variationId;
+}
+
+/**
+ * The add to cart form of a calculator's product.
  *
  * @param root Calculator.
  * @return Form, when the page has one.
  */
 function cartForm( root: HTMLElement ): HTMLFormElement | null {
+	if ( isFixedVariation( root ) ) {
+		return null;
+	}
+
+	const id = root.dataset.productId || '';
+	const forms = Array.from(
+		document.querySelectorAll< HTMLFormElement >( 'form.cart' )
+	);
+
 	return (
+		forms.find(
+			( form ) =>
+				id === form.dataset.product_id ||
+				!! form.querySelector( `[name="add-to-cart"][value="${ id }"]` )
+		) ||
 		root.closest( '.product' )?.querySelector( 'form.cart' ) ||
-		document.querySelector( 'form.cart' )
+		null
 	);
 }
 
 /**
- * Variation and quantity chosen in the add to cart form.
+ * Variation and quantity to quote: the calculator's own variation, or what
+ * the add to cart form holds.
  *
  * @param root Calculator.
  * @return Variation id, empty when none is chosen, and quantity.
@@ -86,6 +111,10 @@ function chosenItem( root: HTMLElement ): {
 	variationId: string;
 	quantity: string;
 } {
+	if ( isFixedVariation( root ) ) {
+		return { variationId: root.dataset.variationId || '', quantity: '1' };
+	}
+
 	const form = cartForm( root );
 	const variation = form?.querySelector< HTMLInputElement >(
 		'input[name="variation_id"]'
@@ -238,6 +267,7 @@ function bindProductCalculator( root: HTMLElement ): void {
 		'.csbmw-shipping-calculator-dialog'
 	);
 	const inline = 'block' === root.dataset.changePostcodeIn;
+	const productUrl = root.dataset.productUrl || '';
 	const rateTemplate = root.querySelector< HTMLTemplateElement >(
 		'.csbmw-shipping-calculator-rate-template'
 	);
@@ -275,13 +305,35 @@ function bindProductCalculator( root: HTMLElement ): void {
 		place.textContent = placeOf( estimate.address );
 		results.setAttribute( 'aria-busy', 'false' );
 
-		if ( null === estimate.rates ) {
+		if ( null === estimate.rates && ( cartForm( root ) || ! productUrl ) ) {
 			message(
 				__(
 					'Choose the product options first.',
 					'woocommerce-extra-checkout-fields-for-brazil'
 				)
 			);
+
+			return;
+		}
+
+		// Away from its page, the options are chosen there.
+		if ( null === estimate.rates ) {
+			const paragraph = element(
+				'p',
+				'csbmw-shipping-calculator-message'
+			);
+			const link = element(
+				'a',
+				'',
+				__(
+					'Choose the product options on its page.',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				)
+			);
+
+			link.href = productUrl;
+			paragraph.append( link );
+			results.replaceChildren( paragraph );
 
 			return;
 		}
@@ -623,6 +675,24 @@ function enhanceCartCalculator(): void {
 }
 
 function init(): void {
+	const calculators = Array.from(
+		document.querySelectorAll< HTMLElement >( '.csbmw-shipping-calculator' )
+	);
+
+	// One placed for the product takes the place of the setting's, where the
+	// server could not tell it was coming, such as from a page builder.
+	calculators
+		.filter(
+			( automatic ) =>
+				automatic.dataset.automatic &&
+				calculators.some(
+					( placed ) =>
+						! placed.dataset.automatic &&
+						placed.dataset.productId === automatic.dataset.productId
+				)
+		)
+		.forEach( ( automatic ) => automatic.remove() );
+
 	document
 		.querySelectorAll< HTMLElement >( '.csbmw-shipping-calculator' )
 		.forEach( bindProductCalculator );

@@ -173,6 +173,55 @@ não foi consultado, ou quando o CNPJ do pedido foi alterado depois.
 Os resultados ficam em cache por CNPJ: um dia quando encontrado, uma hora quando não
 encontrado. Uma consulta sem resposta não vai para o cache.
 
+## Calculadora de frete na página do produto
+
+A calculadora cota um produto para um CEP. Há três formas de inseri-la, e cada produto recebe uma
+por página.
+
+A configuração em Frete a imprime em um hook da página do produto:
+
+| Configuração                             | Hook                                       | Prioridade |
+| ---------------------------------------- | ------------------------------------------ | ---------- |
+| Abaixo do botão de adicionar ao carrinho | `woocommerce_after_add_to_cart_form`       | 10         |
+| Acima do botão de adicionar ao carrinho  | `woocommerce_before_add_to_cart_form`      | 10         |
+| Abaixo do preço                          | `woocommerce_single_product_summary`       | 15         |
+| Depois do resumo do produto              | `woocommerce_after_single_product_summary` | 5          |
+
+Temas de blocos disparam só os hooks do botão, pelo bloco Adicionar ao carrinho com opções.
+
+O bloco Calculadora de Frete cota o produto exibido, ou o produto e a variação escolhidos nas
+configurações do bloco.
+
+O shortcode cota o produto exibido, ou o informado:
+
+```
+[csbmw_shipping_calculator id="123" change_postcode_in="block"]
+```
+
+| Atributo             | Valor                                                                    |
+| -------------------- | ------------------------------------------------------------------------ |
+| `id`                 | ID de um produto ou de uma variação                                      |
+| `change_postcode_in` | `dialog`, o padrão, ou `block` para alterar o CEP na própria calculadora |
+
+Um bloco ou shortcode do produto toma o lugar da calculadora da configuração. O plugin procura um
+no template de blocos e nas descrições do produto. Quando ele vem de outro lugar, como um construtor
+de páginas, a da configuração é removida no navegador.
+
+Um produto variável é cotado pelas opções escolhidas no formulário de adicionar ao carrinho dele,
+que pode estar em qualquer parte da página. Sem ele, a calculadora leva à página do produto. O ID de
+uma variação cota só essa variação.
+
+Para um lugar que a configuração não oferece, desative-a e imprima o shortcode em um hook:
+
+```php
+add_action(
+	'woocommerce_share',
+	function () {
+		echo do_shortcode( '[csbmw_shipping_calculator]' );
+	}
+);
+```
+
 ## Hooks
 
 ### Campos
@@ -263,7 +312,7 @@ add_filter(
 
 ### Estimativas de frete na página do produto
 
-Valem para o bloco Calculadora de Frete e para a calculadora abaixo do botão de comprar.
+Valem para toda calculadora da página do produto, onde quer que esteja.
 
 | Filtro                              | Argumentos                          | Uso                                                                                     |
 | ----------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------- |

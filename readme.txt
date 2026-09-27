@@ -54,7 +54,7 @@ Brazilian addresses are rendered in the local format, with the street number aft
 Customers type their CEP and the plugin works out the rest.
 
 * **Cart** - the shipping calculator asks only for the CEP and fills the state and city from it. The cart block, which has no calculator since WooCommerce 10, gets one of its own in the order summary.
-* **Product page** - a Shipping Calculator block lists the shipping options and prices for the product before it goes into the cart. Classic themes can show it below the add to cart button with a setting.
+* **Product page** - the shipping options and prices for a product before it goes into the cart. A setting places the calculator on product pages, and a Shipping Calculator block or shortcode places it anywhere else, landing pages included.
 * **Checkout and My Account** - the street, neighborhood, city and state are filled once the customer enters a CEP, on the block and classic checkouts alike.
 
 Every calculator links to the Correios CEP search for customers who do not know theirs.
@@ -137,9 +137,15 @@ Yes. Person type and the document fields can be made required only for Brazilian
 
 The shipping calculators that ask only for the CEP are the exception: they need the store to sell and ship only to Brazil.
 
-= How do I add the shipping calculator to product pages? =
+= How do I add the shipping calculator to a page? =
 
-On a block theme, open Appearance > Editor, edit the Single Product template and add the Shipping Calculator block. On a classic theme, turn on "Shipping calculator on product pages" in the plugin settings.
+Choose where product pages show it in "Shipping calculator on product pages" in the plugin settings. On a block theme, the Shipping Calculator block can also go in the Single Product template, under Appearance > Editor.
+
+On any other page, add the Shipping Calculator block and choose the product in its settings, or use the shortcode with a product or variation ID:
+
+    [csbmw_shipping_calculator id="123"]
+
+A calculator placed for a product replaces the one from the setting.
 
 = How do I change the look of the shipping calculator? =
 
@@ -188,7 +194,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 = 5.0.0 - 2026/08/23 =
 
 - Added support for the WooCommerce block checkout, with every field, mask and validation from the classic checkout.
-- Added shipping calculators that ask only for the CEP, on the cart, the cart block and product pages, with a Shipping Calculator block for block themes.
+- Added shipping calculators that ask only for the CEP, on the cart, the cart block and product pages, with a Shipping Calculator block and shortcode to place it on any page.
 - Added address autofill from the CEP on the block and classic checkouts and in My Account.
 - Addresses are looked up through WooCommerce Correios when it is set up for it, then ViaCEP and BrasilAPI, and cached in the table WooCommerce Correios uses.
 - Added a Customer data section to the order confirmation, the order view in My Account and the order emails, listing the documents, birthdate, gender and cell phone apart from WooCommerce's additional information. Block themes get it as a Customer Data block in the order confirmation template, which can be moved or removed in the Site Editor.

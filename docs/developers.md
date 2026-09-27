@@ -172,6 +172,55 @@ order was not looked up, or when its CNPJ was changed afterwards.
 Results are cached per CNPJ: a day when found, an hour when not found. An unanswered lookup is
 not cached.
 
+## Product page shipping calculator
+
+The calculator quotes a product for a CEP. There are three ways to place it, and a product gets
+one per page.
+
+The setting under Shipping prints it on a product page hook:
+
+| Setting                      | Hook                                       | Priority |
+| ---------------------------- | ------------------------------------------ | -------- |
+| Below the add to cart button | `woocommerce_after_add_to_cart_form`       | 10       |
+| Above the add to cart button | `woocommerce_before_add_to_cart_form`      | 10       |
+| Below the price              | `woocommerce_single_product_summary`       | 15       |
+| After the product summary    | `woocommerce_after_single_product_summary` | 5        |
+
+Block themes fire only the add to cart hooks, from the Add to Cart with Options block.
+
+The Shipping Calculator block quotes the product being shown, or the product and variation chosen
+in its settings.
+
+The shortcode quotes the product being shown, or the one given:
+
+```
+[csbmw_shipping_calculator id="123" change_postcode_in="block"]
+```
+
+| Attribute            | Value                                                                        |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `id`                 | A product or variation ID                                                    |
+| `change_postcode_in` | `dialog`, the default, or `block` to change the CEP in the calculator itself |
+
+A block or shortcode for the product takes the setting's place. The plugin looks for one in the
+block template and the product's descriptions. When one comes from anywhere else, such as a page
+builder, the setting's is removed in the browser.
+
+A variable product is quoted for the options chosen in its add to cart form, which can be anywhere
+on the page. Without one, the calculator links to the product page. A variation ID quotes that
+variation alone.
+
+For a place the setting does not offer, turn it off and print the shortcode from a hook:
+
+```php
+add_action(
+	'woocommerce_share',
+	function () {
+		echo do_shortcode( '[csbmw_shipping_calculator]' );
+	}
+);
+```
+
 ## Hooks
 
 ### Fields
@@ -261,7 +310,7 @@ add_filter(
 
 ### Product page shipping estimates
 
-These apply to the Shipping Calculator block and the calculator below the add to cart button.
+These apply to every product page calculator, wherever it is placed.
 
 | Filter                              | Arguments                           | Use                                                                        |
 | ----------------------------------- | ----------------------------------- | -------------------------------------------------------------------------- |

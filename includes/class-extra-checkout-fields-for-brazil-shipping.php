@@ -43,11 +43,38 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	const APPLIED_POSTCODE = 'csbmw_applied_postcode';
 
 	/**
-	 * Products whose calculator was already printed on this page.
+	 * Shortcode printing the product calculator.
+	 *
+	 * @var string
+	 */
+	const SHORTCODE = 'csbmw_shipping_calculator';
+
+	/**
+	 * Hook and priority of each classic product page placement.
+	 *
+	 * @var array
+	 */
+	const PLACEMENTS = array(
+		'after_add_to_cart'  => array( 'woocommerce_after_add_to_cart_form', 10 ),
+		'before_add_to_cart' => array( 'woocommerce_before_add_to_cart_form', 10 ),
+		'after_price'        => array( 'woocommerce_single_product_summary', 15 ),
+		'after_summary'      => array( 'woocommerce_after_single_product_summary', 5 ),
+	);
+
+	/**
+	 * Calculators placed by a block or shortcode on this page, as variation
+	 * IDs by product ID.
+	 *
+	 * @var array
+	 */
+	protected $placed = array();
+
+	/**
+	 * Products the setting printed a calculator for on this page.
 	 *
 	 * @var int[]
 	 */
-	protected $rendered = array();
+	protected $automatic = array();
 
 	/**
 	 * Address the classic calculator found, and the CEP it replaces.
@@ -86,7 +113,12 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		add_action( 'wp_enqueue_scripts', array( $this, 'localize_script' ) );
 		add_action( 'wc_ajax_' . self::ESTIMATE_ENDPOINT, array( $this, 'ajax_estimate' ) );
 		add_filter( 'woocommerce_shipping_free_shipping_is_available', array( $this, 'free_shipping_for_estimate' ), 10, 3 );
-		add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'classic_product_calculator' ) );
+		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
+
+		foreach ( self::PLACEMENTS as $placement ) {
+			add_action( $placement[0], array( $this, 'classic_product_calculator' ), $placement[1] );
+		}
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_product_style' ) );
 
 		// Classic cart.
@@ -114,6 +146,18 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		$settings = (array) get_option( 'wcbcf_settings', array() );
 
 		return ! empty( $settings[ $key ] );
+	}
+
+	/**
+	 * Where classic product pages print the calculator, empty when they do not.
+	 *
+	 * @return string Key of PLACEMENTS.
+	 */
+	public static function placement() {
+		$settings  = (array) get_option( 'wcbcf_settings', array() );
+		$placement = isset( $settings['product_shipping_calculator'] ) ? (string) $settings['product_shipping_calculator'] : '';
+
+		return isset( self::PLACEMENTS[ $placement ] ) ? $placement : '';
 	}
 
 	/**
@@ -315,10 +359,13 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	public function render_block( $attributes, $content, $block ) {
 		// The editor previews the empty calculator, as a template has no
 		// product to quote.
-		if ( wp_is_serving_rest_request() && current_user_can( 'edit_theme_options' ) ) {
+		if ( wp_is_serving_rest_request() && current_user_can( 'edit_posts' ) ) {
 			$wrapper_attributes = 'class="csbmw-shipping-calculator"';
 			$product_id         = 0;
+			$variation_id       = 0;
 			$variable           = false;
+			$product_url        = '';
+			$automatic          = false;
 			$postcode           = '';
 			$prefix             = 'csbmw-shipping-preview';
 			$inline             = false;
@@ -329,10 +376,17 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			return (string) ob_get_clean();
 		}
 
-		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : get_the_ID();
-		$product = wc_get_product( $post_id );
+		if ( ! empty( $attributes['productId'] ) ) {
+			$product_id   = absint( $attributes['productId'] );
+			$variation_id = isset( $attributes['variationId'] ) ? absint( $attributes['variationId'] ) : 0;
+		} else {
+			$product_id   = isset( $block->context['postId'] ) ? $block->context['postId'] : get_the_ID();
+			$variation_id = 0;
+		}
 
-		if ( ! $product ) {
+		$product = wc_get_product( $variation_id ? $variation_id : $product_id );
+
+		if ( ! $product || ( $variation_id && $product->get_parent_id() !== $product_id ) ) {
 			return '';
 		}
 
@@ -342,62 +396,142 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	}
 
 	/**
-	 * Load the calculator styles in the head of a classic theme's product page.
+	 * Render the calculator shortcode.
 	 *
-	 * The classic hook prints the calculator mid-page, which would leave its
-	 * styles in the footer, after the theme's Additional CSS, overriding it.
+	 * @param array|string $atts Shortcode attributes: id, a product or
+	 *                           variation ID, the current product when left
+	 *                           out, and change_postcode_in, dialog or block.
+	 *
+	 * @return string
+	 */
+	public function shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'id'                 => 0,
+				'change_postcode_in' => 'dialog',
+			),
+			$atts,
+			self::SHORTCODE
+		);
+
+		$product = wc_get_product( absint( $atts['id'] ) ? absint( $atts['id'] ) : get_the_ID() );
+
+		if ( ! $product ) {
+			return '';
+		}
+
+		return $this->get_product_calculator( $product, 'class="csbmw-shipping-calculator"', 'block' === $atts['change_postcode_in'] );
+	}
+
+	/**
+	 * Load the calculator styles in the head of the pages a classic hook or
+	 * the shortcode prints it on.
+	 *
+	 * Printed mid-page, the calculator would leave its styles in the footer,
+	 * after the theme's Additional CSS, overriding it.
 	 *
 	 * @return void
 	 */
 	public function enqueue_product_style() {
-		if ( is_product() && self::setting( 'product_shipping_calculator' ) && self::is_brazil_only() ) {
+		if ( ! self::is_brazil_only() ) {
+			return;
+		}
+
+		$post   = get_post();
+		$placed = is_singular() && $post && ( has_shortcode( $post->post_content, self::SHORTCODE ) || has_shortcode( $post->post_excerpt, self::SHORTCODE ) );
+
+		if ( $placed || ( is_product() && self::placement() ) ) {
 			wp_enqueue_style( self::HANDLE );
 		}
 	}
 
 	/**
-	 * Print the calculator after the add to cart form of a classic theme.
+	 * Print the calculator where the setting places it on a product page.
 	 *
 	 * @return void
 	 */
 	public function classic_product_calculator() {
 		global $product;
 
-		if ( ! self::setting( 'product_shipping_calculator' ) || ! $product instanceof WC_Product || self::template_has_block() ) {
+		$placement = self::placement();
+
+		if ( '' === $placement || current_action() !== self::PLACEMENTS[ $placement ][0] || ! $product instanceof WC_Product || self::is_placed( $product ) ) {
 			return;
 		}
 
-		echo $this->get_product_calculator( $product ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->get_product_calculator( $product, 'class="csbmw-shipping-calculator"', false, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
-	 * Whether the block template being rendered places the calculator block.
+	 * Whether a block or shortcode places the product's calculator further
+	 * down its page, in the block template or the product's descriptions.
 	 *
-	 * The add to cart form renders first when the block sits further down, so
-	 * without this the classic hook would take the block's place.
+	 * @param WC_Product $product Product.
 	 *
 	 * @return bool
 	 */
-	protected static function template_has_block() {
+	protected static function is_placed( $product ) {
 		global $_wp_current_template_content;
 
-		if ( ! wp_is_block_theme() || empty( $_wp_current_template_content ) ) {
-			return false;
+		if ( wp_is_block_theme() && ! empty( $_wp_current_template_content ) && self::blocks_place( parse_blocks( $_wp_current_template_content ), $product->get_id() ) ) {
+			return true;
 		}
 
-		return self::blocks_contain( parse_blocks( $_wp_current_template_content ) );
+		foreach ( array( $product->get_description(), $product->get_short_description() ) as $content ) {
+			if ( has_block( 'csbmw/shipping-calculator', $content ) && self::blocks_place( parse_blocks( $content ), $product->get_id() ) ) {
+				return true;
+			}
+
+			if ( ! has_shortcode( $content, self::SHORTCODE ) ) {
+				continue;
+			}
+
+			preg_match_all( '/' . get_shortcode_regex( array( self::SHORTCODE ) ) . '/', $content, $matches, PREG_SET_ORDER );
+
+			foreach ( $matches as $match ) {
+				$atts = shortcode_parse_atts( $match[3] );
+
+				if ( self::is_for( is_array( $atts ) && isset( $atts['id'] ) ? $atts['id'] : 0, $product->get_id() ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
-	 * Look for the calculator block, following template parts.
+	 * Whether a calculator's product ID points to a product.
 	 *
-	 * @param array $blocks Parsed blocks.
+	 * @param int|string $id         Product or variation ID, empty for the
+	 *                               current product.
+	 * @param int        $product_id Product ID.
 	 *
 	 * @return bool
 	 */
-	protected static function blocks_contain( $blocks ) {
+	protected static function is_for( $id, $product_id ) {
+		$id = absint( $id );
+
+		return ! $id || $id === $product_id || wp_get_post_parent_id( $id ) === $product_id;
+	}
+
+	/**
+	 * Look for the product's calculator block, following template parts.
+	 *
+	 * Query loops are skipped, as a block there quotes each product listed.
+	 *
+	 * @param array $blocks     Parsed blocks.
+	 * @param int   $product_id Product ID.
+	 *
+	 * @return bool
+	 */
+	protected static function blocks_place( $blocks, $product_id ) {
 		foreach ( $blocks as $block ) {
-			if ( 'csbmw/shipping-calculator' === $block['blockName'] ) {
+			if ( in_array( $block['blockName'], array( 'core/query', 'woocommerce/product-collection' ), true ) ) {
+				continue;
+			}
+
+			if ( 'csbmw/shipping-calculator' === $block['blockName'] && self::is_for( isset( $block['attrs']['productId'] ) ? $block['attrs']['productId'] : 0, $product_id ) ) {
 				return true;
 			}
 
@@ -405,12 +539,12 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 				$theme = isset( $block['attrs']['theme'] ) ? $block['attrs']['theme'] : get_stylesheet();
 				$part  = get_block_template( $theme . '//' . $block['attrs']['slug'], 'wp_template_part' );
 
-				if ( $part && self::blocks_contain( parse_blocks( $part->content ) ) ) {
+				if ( $part && self::blocks_place( parse_blocks( $part->content ), $product_id ) ) {
 					return true;
 				}
 			}
 
-			if ( ! empty( $block['innerBlocks'] ) && self::blocks_contain( $block['innerBlocks'] ) ) {
+			if ( ! empty( $block['innerBlocks'] ) && self::blocks_place( $block['innerBlocks'], $product_id ) ) {
 				return true;
 			}
 		}
@@ -446,29 +580,44 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	/**
 	 * Product shipping calculator markup.
 	 *
-	 * @param WC_Product $product            Product.
+	 * @param WC_Product $product            Product, or a variation to quote
+	 *                                       that one alone.
 	 * @param string     $wrapper_attributes Attributes of the wrapper element.
 	 * @param bool       $inline             Whether the CEP is changed in the
 	 *                                       card instead of a dialog.
+	 * @param bool       $automatic          Whether the setting places it,
+	 *                                       rather than a block or shortcode.
 	 *
 	 * @return string
 	 */
-	public function get_product_calculator( $product, $wrapper_attributes = 'class="csbmw-shipping-calculator"', $inline = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- The view prints them.
-		$product_id = $product->get_id();
+	public function get_product_calculator( $product, $wrapper_attributes = 'class="csbmw-shipping-calculator"', $inline = false, $automatic = false ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- The view prints them.
+		$variation_id = $product->is_type( 'variation' ) ? $product->get_id() : 0;
+		$product_id   = $variation_id ? $product->get_parent_id() : $product->get_id();
 
-		// A block theme can hold the block and also fire the classic hook.
-		if ( ! self::is_brazil_only() || ! self::ships( $product ) || ! $product->is_in_stock() || in_array( $product_id, $this->rendered, true ) ) {
+		if ( ! self::is_brazil_only() || 'publish' !== get_post_status( $product_id ) || ! self::ships( $product ) || ! $product->is_in_stock() ) {
 			return '';
 		}
 
-		$this->rendered[] = $product_id;
+		// One calculator per product and variation. The setting's gives way to
+		// any placed for the product, and the script removes it when one comes
+		// later on the page.
+		if ( $automatic ? isset( $this->placed[ $product_id ] ) || in_array( $product_id, $this->automatic, true ) : isset( $this->placed[ $product_id ][ $variation_id ] ) ) {
+			return '';
+		}
+
+		if ( $automatic ) {
+			$this->automatic[] = $product_id;
+		} else {
+			$this->placed[ $product_id ][ $variation_id ] = true;
+		}
 
 		wp_enqueue_script( self::HANDLE );
 		wp_enqueue_style( self::HANDLE );
 
-		$prefix   = 'csbmw-shipping-' . $product_id;
-		$postcode = self::customer_postcode();
-		$variable = $product->is_type( 'variable' );
+		$prefix      = wp_unique_id( 'csbmw-shipping-' );
+		$postcode    = self::customer_postcode();
+		$variable    = $product->is_type( 'variable' );
+		$product_url = get_permalink( $product_id );
 
 		ob_start();
 		include __DIR__ . '/views/html-product-shipping-calculator.php';
