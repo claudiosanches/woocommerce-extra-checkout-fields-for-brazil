@@ -156,7 +156,7 @@ describe( 'bindIeExempt', () => {
 
 		// WooCommerce's own checkbox, so its styles draw it.
 		expect( wrapper.className ).toBe(
-			'wc-block-components-checkbox wcbcf-ie-exempt'
+			'wc-block-components-checkbox wcbcf-value-toggle wcbcf-ie-exempt'
 		);
 		expect(
 			wrapper
