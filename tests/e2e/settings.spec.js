@@ -25,7 +25,8 @@ test.describe( 'Settings screen', () => {
 		await expect( row( page, 'company' ) ).toBeHidden();
 		await expect( row( page, 'rg' ) ).toBeHidden();
 		await expect( row( page, 'ie' ) ).toBeHidden();
-		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
+		await expect( row( page, 'validate-cpf' ) ).toBeHidden();
+		await expect( row( page, 'validate-cnpj' ) ).toBeHidden();
 
 		await page.selectOption( '#person_type', '1' );
 		await expect( row( page, 'only-brazil' ) ).toBeVisible();
@@ -81,31 +82,57 @@ test.describe( 'Settings screen', () => {
 			'aria-selected',
 			'true'
 		);
-		await expect( page.locator( '.bmw-section-fields' ) ).toBeVisible();
+		await expect( page.locator( '.bmw-section-documents' ) ).toBeVisible();
 		await expect( page.locator( '.bmw-section-shipping' ) ).toBeHidden();
 
 		await tab( page, 'Shipping' ).click();
 
 		await expect( page.locator( '.bmw-section-shipping' ) ).toBeVisible();
-		await expect( page.locator( '.bmw-section-fields' ) ).toBeHidden();
-		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
+		await expect( page.locator( '.bmw-section-documents' ) ).toBeHidden();
+		await expect( page.locator( '.bmw-section-details' ) ).toBeHidden();
 		await expect( page ).toHaveURL( /[?&]tab=shipping/ );
 
 		// A reload comes back to the same tab.
 		await page.reload();
 		await expect( page.locator( '.bmw-section-shipping' ) ).toBeVisible();
-		await expect( page.locator( '.bmw-section-fields' ) ).toBeHidden();
+		await expect( page.locator( '.bmw-section-documents' ) ).toBeHidden();
 	} );
 
-	test( 'keeps the tab hidden when the person type shows its card', async ( {
-		page,
-	} ) => {
+	test( 'marks the tabs holding unsaved changes', async ( { page } ) => {
 		await tab( page, 'Features' ).click();
-		await page.evaluate( () =>
-			window.jQuery( '#person_type' ).val( '1' ).trigger( 'change' )
+		await page.locator( 'label[for="mailcheck"]' ).click();
+
+		await expect( tab( page, 'Features' ) ).toHaveClass(
+			/bmw-has-changes/
+		);
+		await expect( tab( page, 'Fields' ) ).not.toHaveClass(
+			/bmw-has-changes/
 		);
 
-		await expect( page.locator( '.bmw-section-validation' ) ).toBeHidden();
+		// Changing it back leaves nothing to save.
+		await page.locator( 'label[for="mailcheck"]' ).click();
+		await expect( tab( page, 'Features' ) ).not.toHaveClass(
+			/bmw-has-changes/
+		);
+	} );
+
+	test( 'asks before leaving with unsaved changes', async ( { page } ) => {
+		await page.selectOption( '#gender', 'optional' );
+
+		const dialog = page.waitForEvent( 'dialog' );
+		await page.close( { runBeforeUnload: true } );
+
+		expect( ( await dialog ).type() ).toBe( 'beforeunload' );
+	} );
+
+	test( 'shows the layout the store really uses', async ( { page } ) => {
+		// Older installs stored 0, which the checkout reads as side by side.
+		setSettings( { ...ALL_FIELDS, fields_style: 0 } );
+		await page.reload();
+
+		await expect( page.locator( '#fields_style' ) ).toHaveValue(
+			'side_by_side'
+		);
 	} );
 
 	test( 'saves every tab and comes back to the open one', async ( {

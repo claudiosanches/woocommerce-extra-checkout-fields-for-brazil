@@ -24,6 +24,15 @@
     border-bottom: 1px solid #dcdcde;
 }
 
+// A dot after the title. Both pseudo elements already draw the tab's own
+// underline and focus ring.
+.bmw-settings-tabs .bmw-has-changes {
+    padding-right: 28px;
+    background:
+        radial-gradient(circle, var(--wp-admin-theme-color, #3858e9) 3px, transparent 3.5px)
+        no-repeat right 11px center / 8px 8px;
+}
+
 .bmw-settings-card.bmw-is-other-tab {
     display: none;
 }
@@ -154,9 +163,15 @@
     line-height: 1.4;
 }
 
+// Kept in view at the bottom of the screen on long tabs.
 #bmw-settings .submit {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
     margin: 0;
-    padding: 0;
+    padding: 12px 0;
+    border-top: 1px solid #dcdcde;
+    background: #f0f0f1;
 }
 
 .bmw-settings-sidebar {

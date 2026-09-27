@@ -3,11 +3,13 @@
  *
  * Every section stays in the one form, so a save still posts all settings.
  * The tabs only choose which sections are shown, and the active one goes in
- * the URL so a reload, a link or a save comes back to it.
+ * the URL so a reload, a link or a save comes back to it. A tab holding an
+ * unsaved change is marked, since switching tabs hides it.
  */
 
 import { TabPanel } from '@wordpress/components';
-import { createRoot, useEffect } from '@wordpress/element';
+import { createRoot, useEffect, useState } from '@wordpress/element';
+import { changedTabs } from './unsaved-changes';
 
 type Tabs = Record< string, string >;
 
@@ -60,23 +62,68 @@ function ActiveTab( { name, form }: { name: string; form: HTMLFormElement } ) {
 	return null;
 }
 
-const mount = document.getElementById( 'bmw-settings-tabs' );
-const form = document.getElementById( 'bmw-settings' );
+/**
+ * Mark the tabs holding unsaved changes, and ask before leaving with any.
+ *
+ * @param form Settings form.
+ * @return Tab names.
+ */
+function useChangedTabs( form: HTMLFormElement ): Set< string > {
+	const [ changed, setChanged ] = useState( () => new Set< string >() );
 
-if ( mount && form instanceof HTMLFormElement ) {
-	const tabs: Tabs = JSON.parse( mount.dataset.tabs ?? '{}' );
-	const names = Object.keys( tabs );
+	useEffect( () => {
+		let saving = false;
 
-	createRoot( mount ).render(
+		const update = () => setChanged( changedTabs( form ) );
+		const onSubmit = () => {
+			saving = true;
+		};
+		const onBeforeUnload = ( event: BeforeUnloadEvent ) => {
+			if ( ! saving && changedTabs( form ).size ) {
+				event.preventDefault();
+			}
+		};
+
+		update();
+		form.addEventListener( 'input', update );
+		form.addEventListener( 'change', update );
+		form.addEventListener( 'submit', onSubmit );
+		window.addEventListener( 'beforeunload', onBeforeUnload );
+
+		return () => {
+			form.removeEventListener( 'input', update );
+			form.removeEventListener( 'change', update );
+			form.removeEventListener( 'submit', onSubmit );
+			window.removeEventListener( 'beforeunload', onBeforeUnload );
+		};
+	}, [ form ] );
+
+	return changed;
+}
+
+function SettingsTabs( { tabs, form }: { tabs: Tabs; form: HTMLFormElement } ) {
+	const changed = useChangedTabs( form );
+
+	return (
 		<TabPanel
 			className="bmw-settings-tabs"
-			initialTabName={ requestedTab( names ) }
+			initialTabName={ requestedTab( Object.keys( tabs ) ) }
 			tabs={ Object.entries( tabs ).map( ( [ name, title ] ) => ( {
 				name,
 				title,
+				className: changed.has( name ) ? 'bmw-has-changes' : '',
 			} ) ) }
 		>
 			{ ( tab ) => <ActiveTab name={ tab.name } form={ form } /> }
 		</TabPanel>
 	);
+}
+
+const mount = document.getElementById( 'bmw-settings-tabs' );
+const form = document.getElementById( 'bmw-settings' );
+
+if ( mount && form instanceof HTMLFormElement ) {
+	const tabs: Tabs = JSON.parse( mount.dataset.tabs ?? '{}' );
+
+	createRoot( mount ).render( <SettingsTabs tabs={ tabs } form={ form } /> );
 }

@@ -30,23 +30,12 @@ jQuery( function ( $ ) {
 		rows[ name ] = $( `.bmw-row-${ name }` );
 	} );
 
-	// The card holds nothing but the two document checks, so it goes when
-	// neither of them applies. The hidden attribute leaves the display of
-	// the card to the tabs.
-	const validation = $( '.bmw-section-validation' );
-
 	$( '#person_type' )
 		.on( 'change', function () {
 			const shown = APPLIES_TO[ $( this ).val() ] || [];
 
 			ROWS.forEach( ( name ) =>
 				rows[ name ].toggle( shown.includes( name ) )
-			);
-
-			validation.prop(
-				'hidden',
-				! shown.includes( 'validate-cpf' ) &&
-					! shown.includes( 'validate-cnpj' )
 			);
 		} )
 		.trigger( 'change' );
