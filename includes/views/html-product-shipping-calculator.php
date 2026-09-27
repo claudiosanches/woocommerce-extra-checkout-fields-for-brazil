@@ -6,7 +6,10 @@
  *
  * @var string $wrapper_attributes Attributes of the wrapper element.
  * @var int    $product_id         Product ID.
+ * @var int    $variation_id       Variation quoted alone, if any.
  * @var bool   $variable           Whether options must be chosen first.
+ * @var string $product_url        Product page, where the options are chosen.
+ * @var bool   $automatic          Whether the setting placed it.
  * @var string $postcode           CEP to quote on load, if known.
  * @var string $prefix             Prefix for element ids.
  * @var bool   $inline             Whether the CEP is changed in the card
@@ -17,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> data-product-id="<?php echo esc_attr( $product_id ); ?>" data-variable="<?php echo $variable ? '1' : '0'; ?>" data-postcode="<?php echo esc_attr( $postcode ); ?>"<?php echo $inline ? ' data-change-postcode-in="block"' : ''; ?>>
+<div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> data-product-id="<?php echo esc_attr( $product_id ); ?>" data-variation-id="<?php echo esc_attr( $variation_id ); ?>" data-variable="<?php echo $variable ? '1' : '0'; ?>" data-product-url="<?php echo esc_url( $product_url ); ?>" data-postcode="<?php echo esc_attr( $postcode ); ?>"<?php echo $inline ? ' data-change-postcode-in="block"' : ''; ?><?php echo $automatic ? ' data-automatic="1"' : ''; ?>>
 	<div class="csbmw-shipping-calculator-card">
 		<div class="csbmw-shipping-calculator-empty">
 			<?php

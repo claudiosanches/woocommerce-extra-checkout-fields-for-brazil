@@ -56,6 +56,95 @@ class ShippingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A published simple product.
+	 *
+	 * @param array $props Product props.
+	 *
+	 * @return WC_Product_Simple
+	 */
+	protected function simple_product( $props = array() ) {
+		$product = new WC_Product_Simple();
+		$product->set_props( array_merge( array( 'regular_price' => '10' ), $props ) );
+		$product->save();
+
+		return $product;
+	}
+
+	/**
+	 * A variable product with a Fisico and a Digital variation.
+	 *
+	 * @param bool $virtual Whether both variations are virtual.
+	 *
+	 * @return array The product and its variations by option.
+	 */
+	protected function variable_product( $virtual = false ) {
+		$product = new WC_Product_Variable();
+
+		$attribute = new WC_Product_Attribute();
+		$attribute->set_name( 'Tipo' );
+		$attribute->set_options( array( 'Fisico', 'Digital' ) );
+		$attribute->set_visible( true );
+		$attribute->set_variation( true );
+		$product->set_attributes( array( $attribute ) );
+		$product->save();
+
+		$variations = array();
+
+		foreach ( array( 'Fisico', 'Digital' ) as $option ) {
+			$variation = new WC_Product_Variation();
+			$variation->set_parent_id( $product->get_id() );
+			$variation->set_attributes( array( 'tipo' => $option ) );
+			$variation->set_regular_price( '10' );
+			$variation->set_virtual( $virtual );
+			$variation->save();
+
+			$variations[ $option ] = $variation;
+		}
+
+		WC_Product_Variable::sync( $product->get_id() );
+
+		return array( wc_get_product( $product->get_id() ), $variations );
+	}
+
+	/**
+	 * What the setting prints on a product page hook.
+	 *
+	 * @param string     $hook    Hook.
+	 * @param WC_Product $product Product the page shows.
+	 *
+	 * @return string
+	 */
+	protected function print_on( $hook, $product ) {
+		global $wp_current_filter;
+
+		$GLOBALS['product']  = $product;
+		$wp_current_filter[] = $hook;
+
+		ob_start();
+		$this->shipping->classic_product_calculator();
+		$output = (string) ob_get_clean();
+
+		array_pop( $wp_current_filter );
+
+		return $output;
+	}
+
+	/**
+	 * Set where the setting places the calculator.
+	 *
+	 * @param string $placement Key of PLACEMENTS, empty for none.
+	 */
+	protected function place_on_product_pages( $placement ) {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'postcode_only_calculator'    => '1',
+				'product_shipping_calculator' => $placement,
+			)
+		);
+	}
+
+	/**
 	 * The calculators stay off unless Brazil is the only destination.
 	 */
 	public function test_postcode_only_needs_brazil_as_the_only_destination() {
@@ -257,32 +346,7 @@ class ShippingTest extends WP_UnitTestCase {
 	 * A variable product gets the calculator only when a variation ships.
 	 */
 	public function test_variable_product_needs_a_variation_that_ships() {
-		$product = new WC_Product_Variable();
-		$product->set_regular_price( '10' );
-
-		$attribute = new WC_Product_Attribute();
-		$attribute->set_name( 'Tipo' );
-		$attribute->set_options( array( 'Fisico', 'Digital' ) );
-		$attribute->set_visible( true );
-		$attribute->set_variation( true );
-		$product->set_attributes( array( $attribute ) );
-		$product->save();
-
-		$variations = array();
-
-		foreach ( array( 'Fisico', 'Digital' ) as $option ) {
-			$variation = new WC_Product_Variation();
-			$variation->set_parent_id( $product->get_id() );
-			$variation->set_attributes( array( 'tipo' => $option ) );
-			$variation->set_regular_price( '10' );
-			$variation->set_virtual( true );
-			$variation->save();
-
-			$variations[ $option ] = $variation;
-		}
-
-		WC_Product_Variable::sync( $product->get_id() );
-		$product = wc_get_product( $product->get_id() );
+		list( $product, $variations ) = $this->variable_product( true );
 
 		$this->assertSame( '', $this->shipping->get_product_calculator( $product ) );
 
@@ -388,30 +452,182 @@ class ShippingTest extends WP_UnitTestCase {
 
 		switch_theme( 'twentytwentyfive' );
 
-		update_option(
-			'wcbcf_settings',
+		$this->place_on_product_pages( 'after_add_to_cart' );
+
+		$product = $this->simple_product();
+		$other   = $this->simple_product();
+		$hook    = 'woocommerce_after_add_to_cart_form';
+
+		$_wp_current_template_content = '<!-- wp:woocommerce/add-to-cart-form /--><!-- wp:group --><div class="wp-block-group"><!-- wp:csbmw/shipping-calculator /--></div><!-- /wp:group -->';
+		$this->assertSame( '', $this->print_on( $hook, $product ) );
+
+		$_wp_current_template_content = '<!-- wp:csbmw/shipping-calculator {"productId":' . $product->get_id() . '} /-->';
+		$this->assertSame( '', $this->print_on( $hook, $product ) );
+
+		// One for another product, or quoting each product of a list, leaves
+		// the product page's own.
+		$_wp_current_template_content = '<!-- wp:csbmw/shipping-calculator {"productId":' . $other->get_id() . '} /--><!-- wp:woocommerce/product-collection --><!-- wp:csbmw/shipping-calculator /--><!-- /wp:woocommerce/product-collection -->';
+		$this->assertStringContainsString( 'data-automatic="1"', $this->print_on( $hook, $product ) );
+
+		$_wp_current_template_content = null;
+	}
+
+	/**
+	 * The setting prints the calculator on the hook it names, and only there.
+	 */
+	public function test_setting_places_the_calculator_on_its_hook() {
+		foreach ( Extra_Checkout_Fields_For_Brazil_Shipping::PLACEMENTS as $placement ) {
+			$this->assertSame( $placement[1], has_action( $placement[0], array( $this->shipping, 'classic_product_calculator' ) ) );
+		}
+
+		$product = $this->simple_product();
+
+		$this->place_on_product_pages( '' );
+		$this->assertSame( '', $this->print_on( 'woocommerce_after_add_to_cart_form', $product ) );
+
+		$this->place_on_product_pages( 'after_price' );
+		$this->assertSame( '', $this->print_on( 'woocommerce_after_add_to_cart_form', $product ) );
+		$this->assertStringContainsString( 'data-automatic="1"', $this->print_on( 'woocommerce_single_product_summary', $product ) );
+
+		// Once per page.
+		$this->assertSame( '', $this->print_on( 'woocommerce_single_product_summary', $product ) );
+	}
+
+	/**
+	 * A shortcode or block in the product's descriptions takes the setting's
+	 * place.
+	 */
+	public function test_description_placing_the_calculator_replaces_the_setting() {
+		$this->place_on_product_pages( 'after_add_to_cart' );
+
+		$other = $this->simple_product();
+		$hook  = 'woocommerce_after_add_to_cart_form';
+		$cases = array(
+			'shortcode'                 => array( 'description' => '[csbmw_shipping_calculator]' ),
+			'block in short'            => array( 'short_description' => '<!-- wp:csbmw/shipping-calculator /-->' ),
+			'shortcode for the product' => array( 'description' => '[csbmw_shipping_calculator id="%d"]' ),
+		);
+
+		foreach ( $cases as $name => $props ) {
+			$product = $this->simple_product();
+			$key     = key( $props );
+
+			$product->set_props( array( $key => sprintf( $props[ $key ], $product->get_id() ) ) );
+			$product->save();
+
+			$this->assertSame( '', $this->print_on( $hook, $product ), $name );
+		}
+
+		$product = $this->simple_product( array( 'description' => '[csbmw_shipping_calculator id="' . $other->get_id() . '"]' ) );
+
+		$this->assertStringContainsString( 'data-automatic="1"', $this->print_on( $hook, $product ) );
+	}
+
+	/**
+	 * A calculator placed earlier on the page takes the setting's place, and
+	 * one placed later is still printed, for the script to keep.
+	 */
+	public function test_placed_calculator_wins_over_the_setting() {
+		$this->place_on_product_pages( 'after_add_to_cart' );
+
+		$product = $this->simple_product();
+
+		$this->assertStringNotContainsString( 'data-automatic', $this->shipping->shortcode( array( 'id' => $product->get_id() ) ) );
+		$this->assertSame( '', $this->print_on( 'woocommerce_after_add_to_cart_form', $product ) );
+
+		$later = $this->simple_product();
+
+		$this->assertStringContainsString( 'data-automatic="1"', $this->print_on( 'woocommerce_after_add_to_cart_form', $later ) );
+		$this->assertStringContainsString( 'data-product-id="' . $later->get_id() . '"', $this->shipping->shortcode( array( 'id' => $later->get_id() ) ) );
+	}
+
+	/**
+	 * The shortcode quotes a product, or one of its variations alone.
+	 */
+	public function test_shortcode_quotes_a_product_or_a_variation() {
+		list( $product, $variations ) = $this->variable_product();
+
+		$this->assertSame( '', $this->shipping->shortcode( array( 'id' => 999999 ) ) );
+
+		$output = $this->shipping->shortcode( array( 'id' => $product->get_id() ) );
+
+		$this->assertStringContainsString( 'data-product-id="' . $product->get_id() . '" data-variation-id="0" data-variable="1"', $output );
+		$this->assertStringContainsString( 'data-product-url="' . get_permalink( $product->get_id() ) . '"', $output );
+		$this->assertStringContainsString( '<dialog', $output );
+
+		$fisico = $this->shipping->shortcode(
 			array(
-				'postcode_only_calculator'    => '1',
-				'product_shipping_calculator' => '1',
+				'id'                 => $variations['Fisico']->get_id(),
+				'change_postcode_in' => 'block',
 			)
 		);
 
-		$product = new WC_Product_Simple();
-		$product->set_regular_price( '10' );
-		$product->save();
+		$this->assertStringContainsString( 'data-product-id="' . $product->get_id() . '" data-variation-id="' . $variations['Fisico']->get_id() . '" data-variable="0"', $fisico );
+		$this->assertStringContainsString( 'data-change-postcode-in="block"', $fisico );
+		$this->assertStringNotContainsString( '<dialog', $fisico );
 
-		$_wp_current_template_content = '<!-- wp:woocommerce/add-to-cart-form /--><!-- wp:group --><div class="wp-block-group"><!-- wp:csbmw/shipping-calculator /--></div><!-- /wp:group -->';
+		// One each.
+		$this->assertSame( '', $this->shipping->shortcode( array( 'id' => $product->get_id() ) ) );
+		$this->assertSame( '', $this->shipping->shortcode( array( 'id' => $variations['Fisico']->get_id() ) ) );
+		$this->assertStringContainsString( 'csbmw-shipping-calculator', $this->shipping->shortcode( array( 'id' => $variations['Digital']->get_id() ) ) );
+	}
 
-		ob_start();
-		$this->shipping->classic_product_calculator();
-		$this->assertSame( '', ob_get_clean() );
+	/**
+	 * A virtual variation or an unpublished product has nothing to quote.
+	 */
+	public function test_nothing_to_quote_prints_nothing() {
+		list( $product, $variations ) = $this->variable_product();
 
-		$_wp_current_template_content = '<!-- wp:woocommerce/add-to-cart-form /-->';
+		$variations['Digital']->set_virtual( true );
+		$variations['Digital']->save();
 
-		ob_start();
-		$this->shipping->classic_product_calculator();
-		$this->assertStringContainsString( 'csbmw-shipping-calculator', ob_get_clean() );
+		$this->assertSame( '', $this->shipping->shortcode( array( 'id' => $variations['Digital']->get_id() ) ) );
+		$this->assertSame( '', $this->shipping->shortcode( array( 'id' => $this->simple_product( array( 'status' => 'draft' ) )->get_id() ) ) );
+	}
 
-		$_wp_current_template_content = null;
+	/**
+	 * The block quotes the product chosen in it, or the one being shown.
+	 */
+	public function test_block_quotes_the_chosen_product() {
+		list( $product, $variations ) = $this->variable_product();
+
+		$other  = $this->simple_product();
+		$render = static fn( $attrs ) => render_block(
+			array(
+				'blockName'    => 'csbmw/shipping-calculator',
+				'attrs'        => $attrs,
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertStringContainsString(
+			'data-variation-id="' . $variations['Fisico']->get_id() . '"',
+			$render(
+				array(
+					'productId'   => $product->get_id(),
+					'variationId' => $variations['Fisico']->get_id(),
+				)
+			)
+		);
+
+		// A variation of another product.
+		$this->assertSame(
+			'',
+			$render(
+				array(
+					'productId'   => $other->get_id(),
+					'variationId' => $variations['Digital']->get_id(),
+				)
+			)
+		);
+
+		$GLOBALS['post'] = get_post( $other->get_id() );
+		setup_postdata( $GLOBALS['post'] );
+
+		$this->assertStringContainsString( 'data-product-id="' . $other->get_id() . '"', $render( array() ) );
+
+		wp_reset_postdata();
 	}
 }

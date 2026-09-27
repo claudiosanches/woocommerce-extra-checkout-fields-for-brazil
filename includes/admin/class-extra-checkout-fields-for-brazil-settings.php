@@ -426,15 +426,22 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		add_settings_field(
 			'product_shipping_calculator',
 			__( 'Shipping calculator on product pages', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			array( $this, 'checkbox_element_callback' ),
+			array( $this, 'select_element_callback' ),
 			$option,
 			'shipping_section',
 			array(
 				'menu'        => $option,
 				'id'          => 'product_shipping_calculator',
 				'title'       => __( 'Shipping calculator on product pages', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label'       => __( 'Shows the shipping calculator below the add to cart button.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'description' => __( 'Block themes can place the Shipping Calculator block in the product template instead, which then takes its place.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => '',
+				'description' => __( 'Below the price and after the summary apply to classic themes only. A Shipping Calculator block or [csbmw_shipping_calculator] shortcode placed for the product takes the place of this one.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'options'     => array(
+					''                   => __( 'Off, or only where placed', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'after_add_to_cart'  => __( 'Below the add to cart button', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'before_add_to_cart' => __( 'Above the add to cart button', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'after_price'        => __( 'Below the price', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'after_summary'      => __( 'After the product summary', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
 			)
 		);
 

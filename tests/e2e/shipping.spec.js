@@ -15,7 +15,7 @@ const SETTINGS = {
 	...ALL_FIELDS,
 	postcode_autofill: 1,
 	postcode_only_calculator: 1,
-	product_shipping_calculator: 1,
+	product_shipping_calculator: 'after_add_to_cart',
 };
 
 const ADMIN = { user: 'admin', pass: 'password' };
@@ -32,6 +32,57 @@ async function addShippedProduct( page ) {
 	await page.goto( `/?add-to-cart=${ productId }`, {
 		waitUntil: 'domcontentloaded',
 	} );
+}
+
+/**
+ * Create a variable product with a physical and a virtual variation.
+ *
+ * @return {{id: string, fisico: number, digital: number}} IDs.
+ */
+function createMixedProduct() {
+	return JSON.parse(
+		wpCli( [
+			'eval',
+			`$p = new WC_Product_Variable();
+			$p->set_name( 'CSBMW E2E Mixed Product' );
+			$a = new WC_Product_Attribute();
+			$a->set_name( 'Tipo' );
+			$a->set_options( array( 'Fisico', 'Digital' ) );
+			$a->set_visible( true );
+			$a->set_variation( true );
+			$p->set_attributes( array( $a ) );
+			$p->set_status( 'publish' );
+			$ids = array( 'id' => (string) $p->save() );
+			foreach ( array( 'Fisico' => false, 'Digital' => true ) as $o => $v ) {
+				$x = new WC_Product_Variation();
+				$x->set_parent_id( $ids['id'] );
+				$x->set_attributes( array( 'tipo' => $o ) );
+				$x->set_regular_price( '50' );
+				$x->set_virtual( $v );
+				$ids[ strtolower( $o ) ] = $x->save();
+			}
+			WC_Product_Variable::sync( $ids['id'] );
+			echo wp_json_encode( $ids );`,
+		] )
+	);
+}
+
+/**
+ * Publish a page.
+ *
+ * @param {string} content Page content.
+ * @return {string} Page ID.
+ */
+function createPage( content ) {
+	return wpCli( [
+		'post',
+		'create',
+		'--post_type=page',
+		'--post_status=publish',
+		'--post_title=CSBMW E2E Landing',
+		`--post_content=${ content }`,
+		'--porcelain',
+	] );
 }
 
 /**
@@ -448,29 +499,7 @@ test.describe( 'Shipping calculators', () => {
 	test( 'steps aside while a virtual variation is chosen', async ( {
 		page,
 	} ) => {
-		const productId = wpCli( [
-			'eval',
-			`$p = new WC_Product_Variable();
-			$p->set_name( 'CSBMW E2E Mixed Product' );
-			$a = new WC_Product_Attribute();
-			$a->set_name( 'Tipo' );
-			$a->set_options( array( 'Fisico', 'Digital' ) );
-			$a->set_visible( true );
-			$a->set_variation( true );
-			$p->set_attributes( array( $a ) );
-			$p->set_status( 'publish' );
-			$id = $p->save();
-			foreach ( array( 'Fisico' => false, 'Digital' => true ) as $o => $v ) {
-				$x = new WC_Product_Variation();
-				$x->set_parent_id( $id );
-				$x->set_attributes( array( 'tipo' => $o ) );
-				$x->set_regular_price( '50' );
-				$x->set_virtual( $v );
-				$x->save();
-			}
-			WC_Product_Variable::sync( $id );
-			echo $id;`,
-		] );
+		const productId = createMixedProduct().id;
 
 		try {
 			await page.goto( `/?p=${ productId }`, {
@@ -489,6 +518,95 @@ test.describe( 'Shipping calculators', () => {
 			await expect( calculator ).toBeVisible();
 		} finally {
 			wpCli( [ 'post', 'delete', productId, '--force' ] );
+		}
+	} );
+
+	test( 'quotes a chosen product away from its page', async ( { page } ) => {
+		const mixed = createMixedProduct();
+		const pageId = createPage(
+			`[csbmw_shipping_calculator id="${ mixed.fisico }"][csbmw_shipping_calculator id="${ mixed.id }"]`
+		);
+
+		try {
+			await page.goto( `/?page_id=${ pageId }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			const calculators = page.locator( '.csbmw-shipping-calculator' );
+			const quote = async ( calculator ) => {
+				await calculator
+					.locator( '.csbmw-shipping-calculator-empty input' )
+					.pressSequentially( POSTCODES.saoPaulo.postcode );
+				await calculator
+					.getByRole( 'button', { name: 'Get quote' } )
+					.click();
+			};
+
+			await expect( calculators ).toHaveCount( 2 );
+
+			// The variation is quoted as it is.
+			await quote( calculators.nth( 0 ) );
+			await expect(
+				calculators
+					.nth( 0 )
+					.locator( '.csbmw-shipping-calculator-results' )
+			).toContainText( 'SEDEX E2E' );
+
+			// Without the options to choose, it points to the product page.
+			await quote( calculators.nth( 1 ) );
+			await expect(
+				calculators.nth( 1 ).getByRole( 'link', {
+					name: 'Choose the product options on its page.',
+				} )
+			).toHaveAttribute( 'href', /.+/ );
+		} finally {
+			wpCli( [ 'post', 'delete', pageId, '--force' ] );
+			wpCli( [ 'post', 'delete', mixed.id, '--force' ] );
+		}
+	} );
+
+	test( 'keeps one calculator where one is placed for an embedded product', async ( {
+		page,
+	} ) => {
+		const mixed = createMixedProduct();
+		const pageId = createPage(
+			`[product_page id="${ mixed.id }"][csbmw_shipping_calculator id="${ mixed.id }"]`
+		);
+
+		try {
+			await page.goto( `/?page_id=${ pageId }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			const calculator = page.locator( '.csbmw-shipping-calculator' );
+
+			// The setting printed one below the embedded form first.
+			await expect( calculator ).toHaveCount( 1 );
+			await expect( calculator ).not.toHaveAttribute(
+				'data-automatic',
+				'1'
+			);
+
+			await calculator
+				.locator( '.csbmw-shipping-calculator-empty input' )
+				.pressSequentially( POSTCODES.saoPaulo.postcode );
+			await calculator
+				.getByRole( 'button', { name: 'Get quote' } )
+				.click();
+			await expect( calculator ).toContainText(
+				'Choose the product options first.'
+			);
+
+			// The embedded form's choice is the one quoted.
+			await page
+				.locator( 'select[name="attribute_tipo"]' )
+				.selectOption( 'Fisico' );
+			await expect(
+				calculator.locator( '.csbmw-shipping-calculator-results' )
+			).toContainText( 'SEDEX E2E' );
+		} finally {
+			wpCli( [ 'post', 'delete', pageId, '--force' ] );
+			wpCli( [ 'post', 'delete', mixed.id, '--force' ] );
 		}
 	} );
 

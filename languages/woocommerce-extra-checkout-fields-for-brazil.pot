@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T09:06:15+00:00\n"
+"POT-Creation-Date: 2026-09-27T09:49:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -340,7 +340,7 @@ msgid "Rename the Phone field to Cell phone"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:610
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:617
 msgid "Disabled"
 msgstr ""
 
@@ -419,7 +419,7 @@ msgid "Full width, one field per row"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:389
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:493
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:500
 msgid "Shipping"
 msgstr ""
 
@@ -446,84 +446,100 @@ msgstr ""
 msgid "Shipping calculator on product pages"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:436
-msgid "Shows the shipping calculator below the add to cart button."
-msgstr ""
-
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:437
-msgid "Block themes can place the Shipping Calculator block in the product template instead, which then takes its place."
+msgid "Below the price and after the summary apply to classic themes only. A Shipping Calculator block or [csbmw_shipping_calculator] shortcode placed for the product takes the place of this one."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:444
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:439
+msgid "Off, or only where placed"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:440
+msgid "Below the add to cart button"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:441
+msgid "Above the add to cart button"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:442
+msgid "Below the price"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:443
+msgid "After the product summary"
+msgstr ""
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:451
 msgid "Input helpers"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:453
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:460
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:467
 msgid "Suggest email corrections"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:461
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:468
 msgid "Offers a fix when the email domain looks mistyped, such as gmail.con."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:468
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:475
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:482
 msgid "Format fields while typing"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:476
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:483
 msgid "Adds masks to the CPF, CNPJ, CEP, birthdate, phone and cell phone fields."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:491
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:498
 msgid "Fields"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:492
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:499
 msgid "Features"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:536
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:543
 msgid "You do not have permission to change the store settings."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:543
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:550
 msgid "The store now sells and ships only to Brazil."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:611
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:618
 msgid "Optional"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:612
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:619
 msgid "Required"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:625
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:632
 msgid "hidden"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:626
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:633
 msgid "optional"
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:627
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:634
 #: build/classic.js:2
 msgid "required"
 msgstr ""
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:633
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:640
 #, php-format
 msgid "Asking legal persons only makes the field required for them and hides it from individuals. Otherwise WooCommerce's setting applies, currently %s, which is changed in the checkout page editor or in the Customizer."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:644
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:651
 msgid "How the classic checkout and the My Account address forms arrange the fields. Pick full width if they look broken in your theme."
 msgstr ""
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:647
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:654
 msgid "Your checkout page uses the Checkout block, which arranges its own fields, so this changes only the My Account address forms."
 msgstr ""
 
@@ -823,7 +839,7 @@ msgid "CEP lookup is disabled."
 msgstr ""
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:737
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:886
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
@@ -842,35 +858,35 @@ msgid "Remembers the CEP used to calculate shipping."
 msgstr ""
 
 #: includes/class-extra-checkout-fields-for-brazil-privacy.php:54
-#: includes/views/html-product-shipping-calculator.php:47
+#: includes/views/html-product-shipping-calculator.php:50
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "CEP"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:508
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:657
 msgid "Enter your CEP."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:514
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:743
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:663
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:892
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:729
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:733
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:878
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:882
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:910
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1059
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr ""
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:912
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1061
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -912,19 +928,19 @@ msgstr ""
 msgid "I don't know my CEP"
 msgstr ""
 
-#: includes/views/html-product-shipping-calculator.php:25
+#: includes/views/html-product-shipping-calculator.php:28
 msgid "Calculate shipping and delivery time"
 msgstr ""
 
-#: includes/views/html-product-shipping-calculator.php:33
+#: includes/views/html-product-shipping-calculator.php:36
 msgid "Change CEP"
 msgstr ""
 
-#: includes/views/html-product-shipping-calculator.php:42
+#: includes/views/html-product-shipping-calculator.php:45
 msgid "Enter a CEP to see the shipping options"
 msgstr ""
 
-#: includes/views/html-product-shipping-calculator.php:43
+#: includes/views/html-product-shipping-calculator.php:46
 msgid "Close"
 msgstr ""
 
@@ -932,6 +948,26 @@ msgstr ""
 #: build/checkout.js:1
 #: build/classic.js:1
 msgid "No number"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Product"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Leave empty to quote the product being shown."
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Variation"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Away from the product page, choose one to quote."
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Chosen by the customer"
 msgstr ""
 
 #: build/blocks/shipping-calculator/index.js:1
@@ -944,6 +980,10 @@ msgstr ""
 
 #: build/blocks/shipping-calculator/index.js:1
 msgid "The block itself"
+msgstr ""
+
+#: build/blocks/shipping-calculator/index.js:1
+msgid "Choose the product to quote in the block settings."
 msgstr ""
 
 #: build/checkout.js:1
@@ -989,6 +1029,10 @@ msgstr ""
 msgid "Choose the product options first."
 msgstr ""
 
+#: build/shipping.js:1
+msgid "Choose the product options on its page."
+msgstr ""
+
 #: build/blocks/order-customer-data/block.json
 msgctxt "block title"
 msgid "Customer Data"
@@ -1021,7 +1065,7 @@ msgstr ""
 
 #: build/blocks/shipping-calculator/block.json
 msgctxt "block description"
-msgid "Lets customers check the shipping options for this product by entering their CEP."
+msgid "Lets customers check the shipping options for a product by entering their CEP."
 msgstr ""
 
 #: build/blocks/shipping-calculator/block.json
