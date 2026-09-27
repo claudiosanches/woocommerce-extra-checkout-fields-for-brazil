@@ -15,7 +15,7 @@
 // Room for the picker is kept from the first paint, before the script adds
 // it, so the text and the floating label never shift. The body class says
 // the store offers it.
-$picker-width: 46px;
+$picker-width: 43px;
 $text-start: 12px + $picker-width + 12px;
 
 // WooCommerce names the classic fields with underscores.
