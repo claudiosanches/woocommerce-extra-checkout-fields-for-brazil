@@ -1,5 +1,6 @@
 import '../../scss/admin/settings.scss';
 import './settings-tabs';
+import { watchStuck } from './sticky-save';
 
 // Rows each person type setting applies to. The names match the classes
 // Extra_Checkout_Fields_For_Brazil_Settings puts on the rows.
@@ -19,6 +20,8 @@ const APPLIES_TO = {
 // Every row the selection governs, so none is left behind by a setting that
 // stops listing it.
 const ROWS = [ ...new Set( Object.values( APPLIES_TO ).flat() ) ];
+
+watchStuck( document.querySelector( '#bmw-settings .submit' ) );
 
 /**
  * Show only the settings that apply to the selected person type.

@@ -125,6 +125,21 @@ test.describe( 'Settings screen', () => {
 		expect( ( await dialog ).type() ).toBe( 'beforeunload' );
 	} );
 
+	test( 'turns the save button into a bar only while it floats', async ( {
+		page,
+	} ) => {
+		await page.setViewportSize( { width: 1280, height: 720 } );
+
+		const bar = page.locator( '#bmw-settings .submit' );
+
+		await expect( bar ).toHaveClass( /bmw-is-stuck/ );
+
+		// At the end of the tab it rests below the last card.
+		await bar.scrollIntoViewIfNeeded();
+		await page.mouse.wheel( 0, 5000 );
+		await expect( bar ).not.toHaveClass( /bmw-is-stuck/ );
+	} );
+
 	test( 'shows the layout the store really uses', async ( { page } ) => {
 		// Older installs stored 0, which the checkout reads as side by side.
 		setSettings( { ...ALL_FIELDS, fields_style: 0 } );
