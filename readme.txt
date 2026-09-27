@@ -96,6 +96,8 @@ Compatible with High-Performance Order Storage (HPOS) and with the cart and chec
 Known to work with:
 
 * **[WooCommerce](https://wordpress.org/plugins/woocommerce)** (requires WooCommerce 9.9 or newer)
+* **[Fluid Checkout](https://wordpress.org/plugins/fluid-checkout/)**
+* **[FunnelKit Funnel Builder](https://wordpress.org/plugins/funnel-builder/)** (see the FAQ for its checkout form)
 * **[PagSeguro for WooCommerce](https://wordpress.org/plugins/woocommerce-pagseguro)** (uses **neighborhood**, **CPF**, and **street number** fields)
 * **[WooCommerce Correios](https://wordpress.org/plugins/woocommerce-correios/)** (shares its CEP database and address lookup)
 * **[WP Consent API](https://wordpress.org/plugins/wp-consent-api/)** (remembers the CEP for longer with consent to preferences)
@@ -136,6 +138,12 @@ Yes. The plugin keeps reading and writing the same meta keys it always has, so e
 Yes. Person type and the document fields can be made required only for Brazilian addresses, leaving international checkouts untouched.
 
 The shipping calculators that ask only for the CEP are the exception: they need the store to sell and ship only to Brazil.
+
+= How do I set up a FunnelKit checkout? =
+
+FunnelKit adds the documents, birthdate, gender and cell phone to its Billing Address field, and hides whichever address comes second in the checkout form behind a checkbox. Place Billing Address above Shipping Address, so customers always see them.
+
+When the store accepts legal persons, also turn on Company in the Billing Address field, which starts off.
 
 = How do I add the shipping calculator to a page? =
 
@@ -245,6 +253,8 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed the Field layout setting showing full width on installs where the checkout used side by side.
 - Minimum requirements raised to WordPress 6.7, PHP 7.4 and WooCommerce 9.9.
 - Removed the jQuery Mask Plugin in favor of a dependency-free implementation.
+- The classic checkout keeps its masks, CEP autofill, phone formatting and person type switching on checkouts that redraw their fields, such as Fluid Checkout.
+- Under Fluid Checkout, the plugin keeps its own address layout and CPF and CNPJ checks, so the alphanumeric CNPJ is accepted there too.
 - Removed support for the discontinued Flux Checkout plugin.
 - Relicensed from GPLv2 or later to GPLv3 or later.
 
