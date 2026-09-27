@@ -19,6 +19,7 @@ import { createAutofill } from '../shared/postcode';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { bindNoNumber } from '../shared/no-number';
+import { keepDigits } from '../shared/house-number';
 import { stripCountryFormats } from '../shared/address-format';
 import type { CountryFormats } from '../shared/address-format';
 import '../../scss/checkout/checkout.scss';
@@ -325,8 +326,28 @@ function setupNoNumber(): void {
 			return;
 		}
 
+		input.inputMode = 'numeric';
 		bindNoNumber( input, params.noNumber, { write: writeControlled } );
 	} );
+}
+
+/**
+ * Take digits only in the Number fields, before React reads the event.
+ *
+ * @param event Input event.
+ */
+function handleNumberInput( event: Event ): void {
+	const input = event.target;
+
+	if (
+		input instanceof window.HTMLInputElement &&
+		( field( 'billing', 'number' ) === input.id ||
+			field( 'shipping', 'number' ) === input.id )
+	) {
+		keepDigits( input, params.noNumber, ( target, value ) =>
+			NATIVE_VALUE_SETTER.call( target, value )
+		);
+	}
 }
 
 function setupMailcheck(): void {
@@ -350,6 +371,8 @@ function init(): void {
 	if ( 'yes' === params.postcodeAutofill ) {
 		document.addEventListener( 'input', handleAutofill );
 	}
+
+	document.addEventListener( 'input', handleNumberInput, true );
 
 	setupIeExempt();
 	setupNoNumber();

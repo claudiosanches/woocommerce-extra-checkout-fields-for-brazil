@@ -214,6 +214,8 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed My Account listing Number and Neighborhood a second time under each address, which already shows both.
 - Number and Neighborhood are now asked of Brazilian addresses only, each address following its own country. Every address used to require a number, which other countries' address formats never print.
 - Added a No number option, off by default, that puts a No number checkbox inside the Number field and fills it with S/N or a value the store sets, on both checkouts, My Account and the order screen.
+- A Brazilian address now starts with the CEP beside the street on both checkouts and My Account, since the CEP fills most of the address in, followed by the second address line, Number beside Neighborhood, and city beside state.
+- Number now takes digits only, since carriers reject numbers such as 1-12, and every entry point refuses anything else apart from the No number value.
 - Fixed the classic checkout and the My Account address forms dropping the side by side layout of the address as soon as the page loaded, and My Account listing Number and Neighborhood after the whole form.
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.

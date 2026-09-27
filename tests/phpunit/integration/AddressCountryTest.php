@@ -67,8 +67,14 @@ class AddressCountryTest extends WP_UnitTestCase {
 
 		// Sorted with the rest of the address, where My Account would
 		// otherwise leave them after the whole form.
-		$this->assertSame( 55, $locale['BR']['number']['priority'] );
-		$this->assertSame( 58, $locale['default']['neighborhood']['priority'] );
+		$this->assertSame( 48, $locale['BR']['number']['priority'] );
+		$this->assertSame( 49, $locale['default']['neighborhood']['priority'] );
+
+		// The CEP first, since it fills in most of the rest, and after the
+		// country, which the classic forms put at 40.
+		$this->assertSame( 42, $locale['BR']['postcode']['priority'] );
+		$this->assertSame( 44, $locale['BR']['address_1']['priority'] );
+		$this->assertSame( 46, $locale['BR']['address_2']['priority'] );
 	}
 
 	public function test_the_locale_reaches_both_forms() {
@@ -123,5 +129,63 @@ class AddressCountryTest extends WP_UnitTestCase {
 	 */
 	public function test_the_no_number_value( $settings, $expected ) {
 		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ) );
+	}
+
+	/**
+	 * Address numbers and whether a carrier takes them.
+	 *
+	 * @return array
+	 */
+	public function house_number_provider() {
+		return array(
+			'digits'                       => array( '1578', '', true ),
+			'padded'                       => array( ' 42 ', '', true ),
+			'range'                        => array( '1-12', '', false ),
+			'letter'                       => array( '12A', '', false ),
+			'no number, offered'           => array( 'S/N', 'S/N', true ),
+			'no number, in lower case'     => array( 's/n', 'S/N', true ),
+			'no number, not offered'       => array( 'S/N', '', false ),
+			'another value than the store' => array( 'N/A', 'S/N', false ),
+		);
+	}
+
+	/**
+	 * @dataProvider house_number_provider
+	 *
+	 * @param string $number    Address number.
+	 * @param string $no_number The No number value.
+	 * @param bool   $expected  Whether it is accepted.
+	 */
+	public function test_an_address_number_is_digits_only( $number, $no_number, $expected ) {
+		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil_Validation::is_house_number( $number, $no_number ) );
+	}
+
+	public function test_the_block_checkout_refuses_a_number_with_letters() {
+		$blocks = new Extra_Checkout_Fields_For_Brazil_Blocks();
+		$field  = array(
+			'id'    => 'csbmw/number',
+			'label' => 'Number',
+		);
+
+		$this->assertTrue( $blocks->validate_field( '1578', $field ) );
+		$this->assertInstanceOf( WP_Error::class, $blocks->validate_field( '1-12', $field ) );
+	}
+
+	public function test_the_classic_checkout_checks_each_brazilian_address() {
+		$front  = new Extra_Checkout_Fields_For_Brazil_Front_End();
+		$errors = new WP_Error();
+
+		$front->valid_checkout_fields(
+			array(
+				'billing_country'           => 'BR',
+				'billing_number'            => '12A',
+				'ship_to_different_address' => 1,
+				'shipping_country'          => 'US',
+				'shipping_number'           => '12A',
+			),
+			$errors
+		);
+
+		$this->assertSame( array( 'billing_number_invalid' ), $errors->get_error_codes() );
 	}
 }

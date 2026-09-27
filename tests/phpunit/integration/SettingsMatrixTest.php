@@ -285,11 +285,23 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 
 		$this->assertSame( '1' === $neighborhood_required, is_array( $fields['csbmw/neighborhood']['required'] ), 'neighborhood requiredness is wrong' );
 
-		// Number sits right after address line 1 and neighborhood after address
-		// line 2, matching the order the classic checkout has always used.
-		$core = $this->controller->get_core_fields();
+		// A Brazilian address runs CEP, street, second line, Number and
+		// Neighborhood, then the city. The locale moves the core fields.
+		$core   = $this->controller->get_core_fields();
+		$brazil = WC()->countries->get_country_locale()['BR'];
+		$order  = array(
+			$core['company']['index'],
+			$brazil['postcode']['priority'],
+			$brazil['address_1']['priority'],
+			$brazil['address_2']['priority'],
+			$fields['csbmw/number']['index'],
+			$fields['csbmw/neighborhood']['index'],
+			$core['city']['index'],
+		);
+		$sorted = $order;
+		sort( $sorted );
 
-		$this->assertGreaterThan( $core['address_1']['index'], $fields['csbmw/number']['index'], 'number should come after address line 1' );
-		$this->assertGreaterThan( $core['address_2']['index'], $fields['csbmw/neighborhood']['index'], 'neighborhood should come after address line 2' );
+		$this->assertSame( $sorted, $order, 'the Brazilian address is out of order' );
+		$this->assertSame( count( $order ), count( array_unique( $order ) ), 'two address rows share a place' );
 	}
 }

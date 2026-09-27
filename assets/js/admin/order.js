@@ -2,6 +2,7 @@
 
 import { bindMask } from '../shared/mask';
 import { bindNoNumber } from '../shared/no-number';
+import { bindHouseNumber } from '../shared/house-number';
 import {
 	isCellphone,
 	isCnpj,
@@ -55,12 +56,12 @@ jQuery( function ( $ ) {
 		setupField( id, config )
 	);
 
-	[ '_billing_number', '_shipping_number' ].forEach( ( id ) =>
-		bindNoNumber(
-			document.getElementById( id ),
-			bmwShopOrderParams.no_number
-		)
-	);
+	[ '_billing_number', '_shipping_number' ].forEach( ( id ) => {
+		const input = document.getElementById( id );
+
+		bindHouseNumber( input, bmwShopOrderParams.no_number );
+		bindNoNumber( input, bmwShopOrderParams.no_number );
+	} );
 
 	if ( '1' === bmwShopOrderParams.person_type ) {
 		$( '#_billing_persontype' )

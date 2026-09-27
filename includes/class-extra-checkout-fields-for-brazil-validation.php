@@ -118,6 +118,41 @@ class Extra_Checkout_Fields_For_Brazil_Validation {
 	}
 
 	/**
+	 * Checks if an address number is digits only, or the No number value.
+	 *
+	 * Carriers reject numbers such as 1-12 or 12A.
+	 *
+	 * @param  string $number    Address number.
+	 * @param  string $no_number The No number value, empty when not offered.
+	 *
+	 * @return bool
+	 */
+	public static function is_house_number( $number, $no_number = '' ) {
+		$number = trim( (string) $number );
+
+		if ( '' !== $no_number && 0 === strcasecmp( $number, $no_number ) ) {
+			return true;
+		}
+
+		return (bool) preg_match( '/^\d+$/', $number );
+	}
+
+	/**
+	 * What to tell a customer whose address number is not digits only.
+	 *
+	 * @param  string $no_number The No number value, empty when not offered.
+	 *
+	 * @return string
+	 */
+	public static function house_number_message( $no_number = '' ) {
+		if ( '' === $no_number ) {
+			return __( 'Number accepts digits only.', 'woocommerce-extra-checkout-fields-for-brazil' );
+		}
+
+		return __( 'Number accepts digits only. Tick No number for an address without one.', 'woocommerce-extra-checkout-fields-for-brazil' );
+	}
+
+	/**
 	 * Checks if a date is a real calendar date in the dd/mm/yyyy format.
 	 *
 	 * @param  string $date Date to validate.

@@ -46,6 +46,14 @@ test.describe( 'Number and Neighborhood by country', () => {
 			page.locator( '#shipping-csbmw-neighborhood' )
 		).toBeVisible();
 
+		// The CEP sits beside the street it fills in.
+		await page.setViewportSize( { width: 1280, height: 900 } );
+		const top = async ( id ) =>
+			( await page.locator( id ).boundingBox() ).y;
+		expect( await top( '#shipping-address_1' ) ).toBe(
+			await top( '#shipping-postcode' )
+		);
+
 		await page
 			.getByLabel( 'Use same address for billing' )
 			.setChecked( false );
@@ -167,6 +175,14 @@ test.describe( 'Number and Neighborhood by country', () => {
 				await top( first )
 			);
 		}
+
+		// The second address line has a row of its own under the street.
+		expect( await top( 'address_2' ) ).toBeGreaterThan(
+			await top( 'address_1' )
+		);
+		expect( await top( 'number' ) ).toBeGreaterThan(
+			await top( 'address_2' )
+		);
 	} );
 
 	test( 'are dropped from a foreign address in My Account', async ( {
@@ -199,5 +215,23 @@ test.describe( 'Number and Neighborhood by country', () => {
 				`$u = get_user_by( 'login', 'csbmw_legacy' ); echo ( new WC_Customer( $u->ID ) )->get_billing_country();`,
 			] )
 		).toBe( 'US' );
+	} );
+
+	test( 'takes digits only in Number', async ( { page } ) => {
+		await goToClassicCheckout( page );
+		await page.locator( '#billing_number' ).pressSequentially( '1-12A' );
+		await expect( page.locator( '#billing_number' ) ).toHaveValue( '112' );
+
+		await goToBlockCheckout( page );
+		await page
+			.locator( '#billing-csbmw-number' )
+			.pressSequentially( '1-12A' );
+		await expect( page.locator( '#billing-csbmw-number' ) ).toHaveValue(
+			'112'
+		);
+		await expect( page.locator( '#billing-csbmw-number' ) ).toHaveAttribute(
+			'inputmode',
+			'numeric'
+		);
 	} );
 } );

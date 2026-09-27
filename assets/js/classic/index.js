@@ -5,6 +5,7 @@ import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { bindNoNumber } from '../shared/no-number';
+import { bindHouseNumber } from '../shared/house-number';
 import { createAutofill } from '../shared/postcode';
 import '../../scss/classic/classic.scss';
 
@@ -85,8 +86,8 @@ jQuery( function ( $ ) {
 			}
 
 			bindIeExempt( document.getElementById( 'billing_ie' ) );
-			this.noNumber( 'billing' );
-			this.noNumber( 'shipping' );
+			this.houseNumber( 'billing' );
+			this.houseNumber( 'shipping' );
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck( document.getElementById( 'billing_email' ) );
@@ -103,17 +104,19 @@ jQuery( function ( $ ) {
 		},
 
 		/**
-		 * Offer No number inside an address's Number field.
+		 * Take digits only in an address's Number field, and offer No number.
 		 *
 		 * @param {string} group Address group, billing or shipping.
 		 */
-		noNumber( group ) {
+		houseNumber( group ) {
 			// My Account renders Number as the block checkout's field.
 			const input =
 				document.getElementById( `${ group }_number` ) ||
 				document.querySelector(
 					`[name="_wc_${ group }/csbmw/number"]`
 				);
+
+			bindHouseNumber( input, bmwPublicParams.no_number );
 
 			let unbind = bindNoNumber( input, bmwPublicParams.no_number );
 

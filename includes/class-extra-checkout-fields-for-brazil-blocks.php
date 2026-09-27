@@ -583,7 +583,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			array(
 				'label'      => $labels['number'],
 				'location'   => 'address',
-				'index'      => 41,
+				'index'      => Extra_Checkout_Fields_For_Brazil_Front_End::ADDRESS_PRIORITIES['number'],
 				'attributes' => $this->text_attributes( 'number' ),
 			),
 			$this->conditions( $brazil )
@@ -594,7 +594,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			array(
 				'label'      => $labels['neighborhood'],
 				'location'   => 'address',
-				'index'      => 51,
+				'index'      => Extra_Checkout_Fields_For_Brazil_Front_End::ADDRESS_PRIORITIES['neighborhood'],
 				'attributes' => $this->text_attributes( 'neighborhood' ),
 			),
 			$this->conditions( $brazil, array(), '1' === (string) $this->setting( 'neighborhood_required', '0' ) )
@@ -720,6 +720,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 
 		if ( 'ie' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $value ) ) {
 			$errors->add( 'woocommerce_invalid_ie', __( 'State Registration is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+		}
+
+		$no_number = Extra_Checkout_Fields_For_Brazil::no_number_value( $settings );
+
+		if ( 'number' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_house_number( $value, $no_number ) ) {
+			$errors->add( 'woocommerce_invalid_number', Extra_Checkout_Fields_For_Brazil_Validation::house_number_message( $no_number ) );
 		}
 
 		if ( 'birthdate' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $value ) ) {
