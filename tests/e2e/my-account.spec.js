@@ -1,6 +1,7 @@
 const { test, expect } = require( '@playwright/test' );
 const {
 	ALL_FIELDS,
+	VALID,
 	goToBlockCheckout,
 	logIn,
 	seedLegacyCustomer,
@@ -9,6 +10,9 @@ const {
 } = require( './utils' );
 
 const CUSTOMER = { user: 'csbmw_legacy', pass: 'csbmw-e2e-password' };
+
+const CARD_TITLE = '.wcbcf-customer-details-card-primary';
+const CARD_DETAILS = '.wcbcf-customer-details-card-secondary';
 
 /**
  * Write one meta value onto the fixture customer.
@@ -210,8 +214,10 @@ test.describe( 'My account', () => {
 
 		const card = page.locator( '.wcbcf-customer-details-card' );
 
-		await expect( card ).toContainText( 'Individual' );
-		await expect( card ).toContainText(
+		await expect( card.locator( CARD_TITLE ) ).toHaveText(
+			'Antiga Cliente'
+		);
+		await expect( card.locator( CARD_DETAILS ) ).toHaveText(
 			'CPF ***.456.789-**, RG **887*, 01/01/1980, Female'
 		);
 		await expect( page.locator( '#contact-csbmw-cpf' ) ).toBeHidden();
@@ -228,6 +234,51 @@ test.describe( 'My account', () => {
 		await expect(
 			page.locator( '#contact-csbmw-persontype' )
 		).toBeFocused();
+	} );
+
+	test( 'heads the details of a legal person with the company', async ( {
+		page,
+	} ) => {
+		setCustomerMeta( 'billing_persontype', '2' );
+		setCustomerMeta( 'billing_cnpj', VALID.cnpj );
+		setCustomerMeta( 'billing_ie', 'ISENTO' );
+		wpCli( [
+			'eval',
+			`$u = get_user_by( 'login', 'csbmw_legacy' ); $c = new WC_Customer( $u->ID ); $c->set_billing_company( 'Antiga Ltda' ); $c->save();`,
+		] );
+
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await goToBlockCheckout( page );
+
+		const card = page.locator( '.wcbcf-customer-details-card' );
+
+		await expect( card.locator( CARD_TITLE ) ).toHaveText( 'Antiga Ltda' );
+		await expect( card.locator( CARD_DETAILS ) ).toHaveText(
+			`CNPJ ${ VALID.cnpj }, State Registration ISENTO, 01/01/1980, Female`
+		);
+		await expect( page.locator( '#contact-csbmw-cnpj' ) ).toBeHidden();
+		await expect( page.locator( '#contact-csbmw-company' ) ).toBeHidden();
+	} );
+
+	test( 'heads the details with the name when the store asks for no person type', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, person_type: 2 } );
+
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await goToBlockCheckout( page );
+
+		const card = page.locator( '.wcbcf-customer-details-card' );
+
+		await expect( card.locator( CARD_TITLE ) ).toHaveText(
+			'Antiga Cliente'
+		);
+		await expect( card.locator( CARD_DETAILS ) ).toHaveText(
+			'CPF ***.456.789-**, RG **887*, 01/01/1980, Female'
+		);
+		await expect( page.locator( '#contact-csbmw-persontype' ) ).toHaveCount(
+			0
+		);
 	} );
 
 	test( 'opens the summed up details when the order is refused', async ( {

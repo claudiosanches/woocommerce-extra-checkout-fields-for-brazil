@@ -577,17 +577,17 @@ function customerDetailsSummary( form: Element ): {
 	const labelled = ( label: string, value?: string ) =>
 		value ? `${ label } ${ value }` : '';
 
-	// The select offers them in the plural.
-	const personTypes: Record< string, string > = {
-		1: __( 'Individual', 'woocommerce-extra-checkout-fields-for-brazil' ),
-		2: __( 'Legal person', 'woocommerce-extra-checkout-fields-for-brazil' ),
-	};
-	const personType = form.querySelector< HTMLSelectElement >(
-		`#${ field( 'contact', 'persontype' ) }`
-	)?.value;
+	// Headed by whom the details belong to, as an address card is by the
+	// name: the company once there is a CNPJ.
+	const data: CustomerData = select( CART_STORE_KEY ).getCustomerData();
+	const billing = data?.billingAddress || {};
+	const name = [ billing.first_name, billing.last_name ]
+		.filter( Boolean )
+		.join( ' ' );
+	const company = values.company || billing.company || '';
 
 	return {
-		primary: values.company || personTypes[ personType || '' ] || '',
+		primary: ( values.cnpj && company ) || name,
 		secondary: [
 			labelled(
 				__( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -830,6 +830,9 @@ function init(): void {
 	subscribe( followAddressCountries, CART_STORE_KEY );
 	subscribe( followCustomerDetailErrors, VALIDATION_STORE_KEY );
 	subscribe( followCustomerDetailErrors, CHECKOUT_STORE_KEY );
+
+	// The card is headed by the billing name, typed in another step.
+	subscribe( setupCustomerDetails, CART_STORE_KEY );
 
 	if ( 'yes' === params.postcodeAutofill ) {
 		document.addEventListener( 'input', handleAutofill );

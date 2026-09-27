@@ -1093,11 +1093,3 @@ msgstr "Editar dados do cliente"
 #: build/checkout.js:1
 msgid "Edit"
 msgstr "Editar"
-
-#: build/checkout.js:1
-msgid "Individual"
-msgstr "Pessoa Física"
-
-#: build/checkout.js:1
-msgid "Legal person"
-msgstr "Pessoa Jurídica"
