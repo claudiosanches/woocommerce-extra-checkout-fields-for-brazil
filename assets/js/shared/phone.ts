@@ -447,11 +447,6 @@ export function bindPhonePicker(
 		element.style.fontSize =
 			input.ownerDocument.defaultView?.getComputedStyle( input )
 				.fontSize ?? '';
-		input.style.paddingLeft = `${ element.offsetWidth + 24 }px`;
-		element.parentElement?.style.setProperty(
-			'--wcbcf-phone-code-width',
-			`${ element.offsetWidth }px`
-		);
 
 		// The list opens from the select's box, so it spans the whole field
 		// like any other dropdown, and the flag opens it.

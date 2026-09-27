@@ -10,22 +10,45 @@
 
 .wc-block-components-text-input:has(> .wcbcf-phone-code) {
 	position: relative;
+}
 
-	label:not(#csbmw) {
-		left: calc(var(--wcbcf-phone-code-width, 0px) + 24px);
+// Room for the picker is kept from the first paint, before the script adds
+// it, so the text and the floating label never shift. The body class says
+// the store offers it.
+$picker-width: 46px;
+$text-start: 12px + $picker-width + 12px;
+
+// WooCommerce names the classic fields with underscores.
+/* stylelint-disable selector-id-pattern */
+.wcbcf-phone-code-picker {
+
+	:is(
+		#billing-phone,
+		#shipping-phone,
+		#contact-csbmw-cellphone,
+		#billing_phone,
+		#billing_cellphone,
+		#shipping_phone
+	):not(#csbmw) {
+		padding-left: $text-start;
+	}
+
+	.wc-block-components-text-input:has(> :is(#billing-phone, #shipping-phone, #contact-csbmw-cellphone)) label:not(#csbmw) {
+		left: $text-start;
 	}
 }
+/* stylelint-enable selector-id-pattern */
 
 .wcbcf-phone-code:not(#csbmw) {
 	align-items: center;
+	box-sizing: border-box;
 	cursor: pointer;
 	display: flex;
 	left: 12px;
-	box-sizing: border-box;
-	box-sizing: border-box;
 	margin: 0;
 	padding-right: 10px;
 	position: absolute;
+	width: $picker-width;
 	z-index: 1;
 
 	// A divider between the country and the number.

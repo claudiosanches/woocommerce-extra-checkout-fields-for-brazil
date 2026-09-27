@@ -155,6 +155,16 @@ class PhoneTest extends WP_UnitTestCase {
 		$this->assertSame( '+442079460958', $response->data['shipping']['phone_e164'] );
 	}
 
+	public function test_the_body_says_when_the_picker_is_offered() {
+		$phone = new Extra_Checkout_Fields_For_Brazil_Phone();
+
+		$this->assertNotContains( 'wcbcf-phone-code-picker', $phone->picker_body_class( array() ) );
+
+		update_option( 'wcbcf_settings', array( 'phone_country_picker' => '1' ) );
+
+		$this->assertContains( 'wcbcf-phone-code-picker', $phone->picker_body_class( array() ) );
+	}
+
 	public function test_the_scripts_get_the_codes_and_the_picker_when_offered() {
 		$params = Extra_Checkout_Fields_For_Brazil_Phone::script_params( array() );
 

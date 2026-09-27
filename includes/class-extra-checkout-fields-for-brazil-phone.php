@@ -60,6 +60,25 @@ class Extra_Checkout_Fields_For_Brazil_Phone {
 		add_filter( 'woocommerce_validate_phone', array( $this, 'validate' ), 10, 3 );
 		add_action( 'woocommerce_before_order_object_save', array( $this, 'normalize_order' ) );
 		add_action( 'woocommerce_before_customer_object_save', array( $this, 'normalize_customer' ) );
+		add_filter( 'body_class', array( $this, 'picker_body_class' ) );
+	}
+
+	/**
+	 * Tell the styles the country code picker is offered, so the phone
+	 * fields keep room for it before the script adds it.
+	 *
+	 * @param array $classes Body classes.
+	 *
+	 * @return array
+	 */
+	public function picker_body_class( $classes ) {
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+
+		if ( ! empty( $settings['phone_country_picker'] ) ) {
+			$classes[] = 'wcbcf-phone-code-picker';
+		}
+
+		return $classes;
 	}
 
 	/**
