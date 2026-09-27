@@ -15,6 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 	/**
+	 * Where each row of a Brazilian address goes.
+	 *
+	 * The CEP comes first, since filling it in fills in most of the rest.
+	 * These double as the checkout block's indexes, which run from the
+	 * company at 30 to the city at 70, and stay after the country, which the
+	 * classic forms put at 40.
+	 *
+	 * @var array
+	 */
+	const ADDRESS_PRIORITIES = array(
+		'postcode'     => 42,
+		'address_1'    => 44,
+		'address_2'    => 46,
+		'number'       => 48,
+		'neighborhood' => 49,
+	);
+
+	/**
 	 * Initialize the front-end actions.
 	 */
 	public function __construct() {
@@ -25,9 +43,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'load_scripts' ) );
 
 		// New checkout fields.
-		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ), 10 );
-		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ), 10 );
+		add_filter( 'woocommerce_billing_fields', array( $this, 'checkout_billing_fields' ), 10, 2 );
+		add_filter( 'woocommerce_shipping_fields', array( $this, 'checkout_shipping_fields' ), 10, 2 );
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_fields_priority' ), 10 );
+		add_filter( 'woocommerce_get_country_locale', array( $this, 'address_locale' ), 15 );
+		add_filter( 'woocommerce_get_country_locale_default', array( $this, 'address_locale_default' ) );
+		add_filter( 'woocommerce_country_locale_field_selectors', array( $this, 'address_locale_selectors' ) );
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'cell_phone_label' ), 20 );
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'restore_company_field' ), 10 );
 
@@ -97,6 +118,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
+				'no_number'         => Extra_Checkout_Fields_For_Brazil::no_number_value( (array) $settings ),
 			)
 		);
 	}
@@ -129,11 +151,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * New checkout billing fields.
 	 *
-	 * @param  array $fields Default fields.
+	 * @param  array  $fields  Default fields.
+	 * @param  string $country Country the fields are for.
 	 *
 	 * @return array
 	 */
-	public function checkout_billing_fields( $fields ) {
+	public function checkout_billing_fields( $fields, $country = '' ) {
 		$new_fields = array();
 
 		// Get plugin settings.
@@ -265,44 +288,48 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $fields['billing_postcode'] ) ) {
 			$new_fields['billing_postcode']             = $fields['billing_postcode'];
 			$new_fields['billing_postcode']['class']    = array( $first_class, 'address-field' );
-			$new_fields['billing_postcode']['priority'] = 45;
+			$new_fields['billing_postcode']['priority'] = self::ADDRESS_PRIORITIES['postcode'];
 		}
 
 		if ( isset( $fields['billing_address_1'] ) ) {
-			$new_fields['billing_address_1']          = $fields['billing_address_1'];
-			$new_fields['billing_address_1']['class'] = array( $last_class, 'address-field' );
+			$new_fields['billing_address_1']             = $fields['billing_address_1'];
+			$new_fields['billing_address_1']['class']    = array( $last_class, 'address-field' );
+			$new_fields['billing_address_1']['priority'] = self::ADDRESS_PRIORITIES['address_1'];
 		}
 
 		$new_fields['billing_number'] = array(
 			'label'    => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'    => array( $first_class, 'address-field' ),
-			'clear'    => true,
+			'clear'    => false,
 			'required' => true,
-			'priority' => 55,
+			'hidden'   => ! self::is_brazil( $country ),
+			'priority' => self::ADDRESS_PRIORITIES['number'],
 		);
 
 		if ( isset( $fields['billing_address_2'] ) ) {
-			$new_fields['billing_address_2']          = $fields['billing_address_2'];
-			$new_fields['billing_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
-			$new_fields['billing_address_2']['class'] = array( $last_class, 'address-field' );
+			$new_fields['billing_address_2']             = $fields['billing_address_2'];
+			$new_fields['billing_address_2']['label']    = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
+			$new_fields['billing_address_2']['class']    = array( 'form-row-wide', 'address-field' );
+			$new_fields['billing_address_2']['priority'] = self::ADDRESS_PRIORITIES['address_2'];
 		}
 
 		$new_fields['billing_neighborhood'] = array(
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( $first_class, 'address-field' ),
+			'class'    => array( $last_class, 'address-field' ),
 			'clear'    => true,
 			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
-			'priority' => 65,
+			'hidden'   => ! self::is_brazil( $country ),
+			'priority' => self::ADDRESS_PRIORITIES['neighborhood'],
 		);
 
 		if ( isset( $fields['billing_city'] ) ) {
 			$new_fields['billing_city']          = $fields['billing_city'];
-			$new_fields['billing_city']['class'] = array( $last_class, 'address-field' );
+			$new_fields['billing_city']['class'] = array( $first_class, 'address-field' );
 		}
 
 		if ( isset( $fields['billing_state'] ) ) {
 			$new_fields['billing_state']          = $fields['billing_state'];
-			$new_fields['billing_state']['class'] = array( 'form-row-wide', 'address-field' );
+			$new_fields['billing_state']['class'] = array( $last_class, 'address-field' );
 			$new_fields['billing_state']['clear'] = true;
 		}
 
@@ -372,11 +399,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	/**
 	 * New checkout shipping fields
 	 *
-	 * @param  array $fields Default fields.
+	 * @param  array  $fields  Default fields.
+	 * @param  string $country Country the fields are for.
 	 *
 	 * @return array
 	 */
-	public function checkout_shipping_fields( $fields ) {
+	public function checkout_shipping_fields( $fields, $country = '' ) {
 		$new_fields = array();
 
 		// Get plugin settings.
@@ -407,44 +435,48 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( isset( $fields['shipping_postcode'] ) ) {
 			$new_fields['shipping_postcode']             = $fields['shipping_postcode'];
 			$new_fields['shipping_postcode']['class']    = array( $first_class, 'address-field' );
-			$new_fields['shipping_postcode']['priority'] = 45;
+			$new_fields['shipping_postcode']['priority'] = self::ADDRESS_PRIORITIES['postcode'];
 		}
 
 		if ( isset( $fields['shipping_address_1'] ) ) {
-			$new_fields['shipping_address_1']          = $fields['shipping_address_1'];
-			$new_fields['shipping_address_1']['class'] = array( $last_class, 'address-field' );
+			$new_fields['shipping_address_1']             = $fields['shipping_address_1'];
+			$new_fields['shipping_address_1']['class']    = array( $last_class, 'address-field' );
+			$new_fields['shipping_address_1']['priority'] = self::ADDRESS_PRIORITIES['address_1'];
 		}
 
 		$new_fields['shipping_number'] = array(
 			'label'    => __( 'Number', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'class'    => array( $first_class, 'address-field' ),
-			'clear'    => true,
+			'clear'    => false,
 			'required' => true,
-			'priority' => 55,
+			'hidden'   => ! self::is_brazil( $country ),
+			'priority' => self::ADDRESS_PRIORITIES['number'],
 		);
 
 		if ( isset( $fields['shipping_address_2'] ) ) {
-			$new_fields['shipping_address_2']          = $fields['shipping_address_2'];
-			$new_fields['shipping_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
-			$new_fields['shipping_address_2']['class'] = array( $last_class, 'address-field' );
+			$new_fields['shipping_address_2']             = $fields['shipping_address_2'];
+			$new_fields['shipping_address_2']['label']    = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
+			$new_fields['shipping_address_2']['class']    = array( 'form-row-wide', 'address-field' );
+			$new_fields['shipping_address_2']['priority'] = self::ADDRESS_PRIORITIES['address_2'];
 		}
 
 		$new_fields['shipping_neighborhood'] = array(
 			'label'    => __( 'Neighborhood', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'class'    => array( $first_class, 'address-field' ),
+			'class'    => array( $last_class, 'address-field' ),
 			'clear'    => true,
 			'required' => isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'],
-			'priority' => 65,
+			'hidden'   => ! self::is_brazil( $country ),
+			'priority' => self::ADDRESS_PRIORITIES['neighborhood'],
 		);
 
 		if ( isset( $fields['shipping_city'] ) ) {
 			$new_fields['shipping_city']          = $fields['shipping_city'];
-			$new_fields['shipping_city']['class'] = array( $last_class, 'address-field' );
+			$new_fields['shipping_city']['class'] = array( $first_class, 'address-field' );
 		}
 
 		if ( isset( $fields['shipping_state'] ) ) {
 			$new_fields['shipping_state']          = $fields['shipping_state'];
-			$new_fields['shipping_state']['class'] = array( 'form-row-wide', 'address-field' );
+			$new_fields['shipping_state']['class'] = array( $last_class, 'address-field' );
 			$new_fields['shipping_state']['clear'] = true;
 		}
 
@@ -497,6 +529,126 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
+	 * Whether an address is Brazilian, taking an unknown country as one.
+	 *
+	 * @param string $country Country code.
+	 *
+	 * @return bool
+	 */
+	public static function is_brazil( $country ) {
+		return '' === (string) $country || 'BR' === $country;
+	}
+
+	/**
+	 * Layout classes for the address rows of a Brazilian address.
+	 *
+	 * WooCommerce reapplies each locale row's classes whenever the country is
+	 * set, which includes the page load, so the classes the fields are
+	 * rendered with do not last. Brazil pairs CEP and street, Number and
+	 * Neighborhood, and city and state, and gives the unlabelled second
+	 * address line a row of its own under the street.
+	 *
+	 * @return array Classes by locale field key.
+	 */
+	protected function brazil_address_classes() {
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+		$wide     = 'wide' === wc_get_var( $settings['fields_style'], 'side_by_side' );
+		$first    = $wide ? 'form-row-wide' : 'form-row-first';
+		$last     = $wide ? 'form-row-wide' : 'form-row-last';
+
+		return array(
+			'postcode'     => array( $first, 'address-field' ),
+			'address_1'    => array( $last, 'address-field' ),
+			'address_2'    => array( 'form-row-wide', 'address-field' ),
+			'number'       => array( $first, 'address-field' ),
+			'neighborhood' => array( $last, 'address-field' ),
+			'city'         => array( $first, 'address-field' ),
+			'state'        => array( $last, 'address-field' ),
+		);
+	}
+
+	/**
+	 * Show Number and Neighborhood on Brazilian addresses, laid out in pairs.
+	 *
+	 * @param array $locales Country locales.
+	 *
+	 * @return array
+	 */
+	public function address_locale( $locales ) {
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+
+		foreach ( $this->brazil_address_classes() as $key => $class ) {
+			$locales['BR'][ $key ]['class'] = $class;
+		}
+
+		foreach ( self::ADDRESS_PRIORITIES as $key => $priority ) {
+			$locales['BR'][ $key ]['priority'] = $priority;
+		}
+
+		$locales['BR']['number']['hidden']         = false;
+		$locales['BR']['number']['required']       = true;
+		$locales['BR']['neighborhood']['hidden']   = false;
+		$locales['BR']['neighborhood']['required'] = isset( $settings['neighborhood_required'] ) && '1' === $settings['neighborhood_required'];
+
+		// Beside the cell phone, which WooCommerce's locale knows nothing of.
+		if ( in_array( wc_get_var( $settings['cell_phone'], '0' ), array( '1', '2' ), true ) ) {
+			$locales['BR']['phone']['class'] = array( 'wide' === wc_get_var( $settings['fields_style'], 'side_by_side' ) ? 'form-row-wide' : 'form-row-first' );
+		}
+
+		return $locales;
+	}
+
+	/**
+	 * Hide Number and Neighborhood on every other address.
+	 *
+	 * Other countries keep WooCommerce's layout, and their address formats
+	 * print neither field.
+	 *
+	 * @param array $fields Default locale.
+	 *
+	 * @return array
+	 */
+	public function address_locale_default( $fields ) {
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+
+		foreach ( array( 'number', 'neighborhood' ) as $key ) {
+			$fields[ $key ]['hidden']   = true;
+			$fields[ $key ]['required'] = false;
+
+			// My Account renders them after the whole form otherwise.
+			$fields[ $key ]['priority'] = self::ADDRESS_PRIORITIES[ $key ];
+		}
+
+		if ( isset( $fields['phone'] ) && in_array( wc_get_var( $settings['cell_phone'], '0' ), array( '1', '2' ), true ) ) {
+			$fields['phone']['class'] = array( 'wide' === wc_get_var( $settings['fields_style'], 'side_by_side' ) ? 'form-row-wide' : 'form-row-first' );
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Let WooCommerce show and hide Number and Neighborhood with the country.
+	 *
+	 * My Account renders them as the checkout block's fields, under their own
+	 * ids.
+	 *
+	 * @param array $selectors Row selectors by locale field key.
+	 *
+	 * @return array
+	 */
+	public function address_locale_selectors( $selectors ) {
+		foreach ( array( 'number', 'neighborhood' ) as $key ) {
+			$selectors[ $key ] = sprintf(
+				'#billing_%1$s_field, #shipping_%1$s_field, [id="%2$s_field"]',
+				$key,
+				Extra_Checkout_Fields_For_Brazil_Blocks::field_id( $key )
+			);
+		}
+
+		return $selectors;
+	}
+
+	/**
 	 * Put the company field back when the store hides it.
 	 *
 	 * @param  array $fields Default address fields.
@@ -534,8 +686,6 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		if ( ! isset( $locales['BR'] ) ) {
 			$locales['BR'] = array();
 		}
-
-		$locales['BR']['postcode']['priority'] = 45;
 
 		if ( ! Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
 			return $locales;
@@ -628,6 +778,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		$billing_cnpj       = sanitize_text_field( wp_unslash( $data['billing_cnpj'] ?? $_POST['billing_cnpj'] ?? '' ) );
 		$billing_ie         = sanitize_text_field( wp_unslash( $data['billing_ie'] ?? $_POST['billing_ie'] ?? '' ) );
 
+		$this->validate_house_numbers( $data, $errors, $settings );
+
 		// The birthdate does not depend on the person type, so it is checked
 		// before the person type rules below can return early.
 		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $settings ) && ! empty( $billing_birthdate ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $billing_birthdate ) ) {
@@ -687,6 +839,33 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
+	 * Check the address numbers of a classic checkout.
+	 *
+	 * @param array    $data     Checkout posted data.
+	 * @param WP_Error $errors   Checkout errors.
+	 * @param array    $settings Plugin settings.
+	 *
+	 * @return void
+	 */
+	protected function validate_house_numbers( $data, $errors, $settings ) {
+		$no_number = Extra_Checkout_Fields_For_Brazil::no_number_value( $settings );
+		$groups    = array( 'billing' );
+
+		if ( ! empty( $data['ship_to_different_address'] ) ) {
+			$groups[] = 'shipping';
+		}
+
+		foreach ( $groups as $group ) {
+			$number = isset( $data[ $group . '_number' ] ) ? (string) $data[ $group . '_number' ] : '';
+			$brazil = self::is_brazil( isset( $data[ $group . '_country' ] ) ? $data[ $group . '_country' ] : '' );
+
+			if ( $brazil && '' !== $number && ! Extra_Checkout_Fields_For_Brazil_Validation::is_house_number( $number, $no_number ) ) {
+				$errors->add( $group . '_number_invalid', Extra_Checkout_Fields_For_Brazil_Validation::house_number_message( $no_number ), array( 'id' => $group . '_number' ) );
+			}
+		}
+	}
+
+	/**
 	 * Message reported for a field whose value is not a valid one.
 	 *
 	 * @param  string $label Field label.
@@ -698,7 +877,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	}
 
 	/**
-	 * Validate the documents saved from the My Account address form.
+	 * Validate the documents and address numbers saved from the My Account
+	 * address forms.
 	 *
 	 * WooCommerce takes requiredness from the field list, but checks no value
 	 * beyond the ones it knows, so this form accepted a document the checkout
@@ -716,15 +896,28 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 	 * @return void
 	 */
 	public function valid_save_address_fields( $user_id, $address_type, $address, $customer = null ) {
-		if ( 'billing' !== $address_type || ! $customer instanceof WC_Customer ) {
+		if ( ! $customer instanceof WC_Customer || apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
 			return;
 		}
 
-		if ( apply_filters( 'wcbcf_disable_checkout_validation', false ) ) {
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+
+		// Only while the form carries the historic field. Otherwise Number is
+		// the checkout block's, which validates it itself.
+		if ( isset( $address[ $address_type . '_number' ] ) ) {
+			$number    = (string) $customer->get_meta( $address_type . '_number' );
+			$no_number = Extra_Checkout_Fields_For_Brazil::no_number_value( $settings );
+			$country   = 'shipping' === $address_type ? $customer->get_shipping_country() : $customer->get_billing_country();
+
+			if ( self::is_brazil( $country ) && '' !== $number && ! Extra_Checkout_Fields_For_Brazil_Validation::is_house_number( $number, $no_number ) ) {
+				wc_add_notice( Extra_Checkout_Fields_For_Brazil_Validation::house_number_message( $no_number ), 'error', array( 'id' => $address_type . '_number' ) );
+			}
+		}
+
+		if ( 'billing' !== $address_type ) {
 			return;
 		}
 
-		$settings  = (array) get_option( 'wcbcf_settings', array() );
 		$birthdate = (string) $customer->get_meta( 'billing_birthdate' );
 
 		if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', $settings ) && '' !== $birthdate && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $birthdate ) ) {

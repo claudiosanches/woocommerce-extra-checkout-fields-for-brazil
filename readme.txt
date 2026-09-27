@@ -24,7 +24,7 @@ Brazilian Market on WooCommerce adds those fields to the checkout, the My Accoun
 * **CNPJ** and **State Registration** for companies, with Company name asked of companies only and made required for them, or left to the WooCommerce setting. Companies with no state registration can tick a box to fill it with ISENTO.
 * **Birthdate** and **Gender**.
 * **Cell phone**, either as an extra field or replacing the regular phone field.
-* **Number** and **Neighborhood** on both billing and shipping addresses.
+* **Number** and **Neighborhood** on Brazilian billing and shipping addresses, with an optional No number checkbox that fills in S/N or a value of the store's choice.
 
 Every field is optional to enable. Turn on only what your store actually needs, and set RG, State Registration, Birthdate and Gender as optional or required.
 
@@ -198,6 +198,12 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed the block checkout address summary printing `{number}` and `{neighborhood}` where the values belong. WooCommerce formats that summary in the browser and replaces only the fields it ships with.
 - Fixed the My Account address form saving a CPF, a CNPJ or a birthdate the checkout would have refused, which the block checkout then prefilled and carried into the next order.
 - Fixed My Account listing Number and Neighborhood a second time under each address, which already shows both.
+- Number and Neighborhood are now asked of Brazilian addresses only, each address following its own country. Every address used to require a number, which other countries' address formats never print.
+- Added a No number option, off by default, that puts a No number checkbox inside the Number field and fills it with S/N or a value the store sets, on both checkouts, My Account and the order screen.
+- A Brazilian address now starts with the CEP beside the street on both checkouts and My Account, since the CEP fills most of the address in, followed by the second address line, Number beside Neighborhood, and city beside state.
+- The block checkout heads the documents, birthdate and gender as Customer details inside the contact step, leaving email and cell phone as the contact information.
+- Number now takes digits only, since carriers reject numbers such as 1-12, and every entry point refuses anything else apart from the No number value.
+- Fixed the classic checkout and the My Account address forms dropping the side by side layout of the address as soon as the page loaded, and My Account listing Number and Neighborhood after the whole form.
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
 - Fixed an individual's order keeping a company name typed before switching person type on the classic checkout, and the customer record and session keeping the documents and company of the person type left behind, which the next checkout filled in again. A company that follows WooCommerce's own setting is kept.

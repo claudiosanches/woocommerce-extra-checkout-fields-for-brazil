@@ -323,4 +323,34 @@ test.describe( 'Classic checkout', () => {
 		await page.selectOption( '#billing_persontype', '2' );
 		await expect( page.locator( '#billing_company' ) ).toHaveValue( '' );
 	} );
+
+	test( 'offers No number only when the store turns it on', async ( {
+		page,
+	} ) => {
+		await goToClassicCheckout( page );
+		await expect( page.locator( '.wcbcf-no-number' ) ).toHaveCount( 0 );
+	} );
+
+	test( 'stores the No number value the store chose', async ( { page } ) => {
+		setSettings( { ...ALL_FIELDS, no_number: 1, no_number_value: 'N/A' } );
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '1' );
+		await page.fill( '#billing_cpf', VALID.cpf );
+		await page.fill( '#billing_rg', '123456789' );
+		await fillCommonFields( page );
+
+		const toggle = page.locator( 'button.wcbcf-no-number' );
+		await toggle.click();
+
+		await expect( page.locator( '#billing_number' ) ).toHaveValue( 'N/A' );
+		await expect( toggle ).toHaveAttribute( 'aria-checked', 'true' );
+
+		await waitForClassicCheckoutIdle( page );
+		await page.click( '#place_order' );
+		await page.waitForURL( /order-received/, { timeout: 45_000 } );
+
+		expect(
+			orderMetaAll( orderIdFromUrl( page.url() ), [ '_billing_number' ] )
+		).toEqual( { _billing_number: 'N/A' } );
+	} );
 } );

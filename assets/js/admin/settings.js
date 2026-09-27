@@ -24,7 +24,7 @@ const ROWS = [ ...new Set( Object.values( APPLIES_TO ).flat() ) ];
 watchStuck( document.querySelector( '#bmw-settings .submit' ) );
 
 /**
- * Show only the settings that apply to the selected person type.
+ * Show only the settings that apply to the choices made.
  */
 jQuery( function ( $ ) {
 	const rows = {};
@@ -40,6 +40,12 @@ jQuery( function ( $ ) {
 			ROWS.forEach( ( name ) =>
 				rows[ name ].toggle( shown.includes( name ) )
 			);
+		} )
+		.trigger( 'change' );
+
+	$( '#no_number' )
+		.on( 'change', function () {
+			$( '.bmw-row-no-number-value' ).toggle( this.checked );
 		} )
 		.trigger( 'change' );
 } );

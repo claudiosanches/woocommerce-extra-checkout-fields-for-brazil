@@ -246,6 +246,33 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	}
 
 	/**
+	 * Rule matching a Brazilian address, whichever address the field is on.
+	 *
+	 * @return array
+	 */
+	protected function rule_address_is_brazil() {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'customer' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'address' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'country' => array( 'const' => 'BR' ),
+							),
+							'required'   => array( 'country' ),
+						),
+					),
+					'required'   => array( 'address' ),
+				),
+			),
+			'required'   => array( 'customer' ),
+		);
+	}
+
+	/**
 	 * Combine rules so all of them must match.
 	 *
 	 * @param array $rules Rules to combine.
@@ -529,7 +556,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				array(
 					'label'      => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
-					'index'      => 13,
+					// Contact details, beside the email rather than among the
+					// documents under Customer details.
+					'index'      => 1,
 					'attributes' => $this->text_attributes( 'cellphone' ),
 				),
 				array(
@@ -548,18 +577,18 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	protected function register_address_fields() {
 		$labels = self::address_field_labels();
 
+		// Other countries' address formats print neither field.
+		$brazil = array( $this->rule_address_is_brazil() );
+
 		$this->register_field(
 			'number',
 			array(
 				'label'      => $labels['number'],
 				'location'   => 'address',
-				'index'      => 41,
+				'index'      => Extra_Checkout_Fields_For_Brazil_Front_End::ADDRESS_PRIORITIES['number'],
 				'attributes' => $this->text_attributes( 'number' ),
 			),
-			array(
-				'required' => true,
-				'hidden'   => false,
-			)
+			$this->conditions( $brazil )
 		);
 
 		$this->register_field(
@@ -567,13 +596,10 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			array(
 				'label'      => $labels['neighborhood'],
 				'location'   => 'address',
-				'index'      => 51,
+				'index'      => Extra_Checkout_Fields_For_Brazil_Front_End::ADDRESS_PRIORITIES['neighborhood'],
 				'attributes' => $this->text_attributes( 'neighborhood' ),
 			),
-			array(
-				'required' => '1' === (string) $this->setting( 'neighborhood_required', '0' ),
-				'hidden'   => false,
-			)
+			$this->conditions( $brazil, array(), '1' === (string) $this->setting( 'neighborhood_required', '0' ) )
 		);
 	}
 
@@ -698,6 +724,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 			$errors->add( 'woocommerce_invalid_ie', __( 'State Registration is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
+		$no_number = Extra_Checkout_Fields_For_Brazil::no_number_value( $settings );
+
+		if ( 'number' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_house_number( $value, $no_number ) ) {
+			$errors->add( 'woocommerce_invalid_number', Extra_Checkout_Fields_For_Brazil_Validation::house_number_message( $no_number ) );
+		}
+
 		if ( 'birthdate' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_date( $value ) ) {
 			$errors->add( 'woocommerce_invalid_birthdate', __( 'Birthdate is not valid. Use the dd/mm/yyyy format.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
@@ -778,6 +810,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'maskedinput'      => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 				'postcodeAutofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
+				'noNumber'         => Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ),
 			)
 		);
 	}

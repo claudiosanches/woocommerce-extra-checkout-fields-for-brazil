@@ -34,12 +34,14 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 			$settings = get_option( 'wcbcf_settings' );
 
 			Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-shop-order', 'admin-order', array( 'jquery' ) );
+			Extra_Checkout_Fields_For_Brazil_Assets::set_translations( 'woocommerce-extra-checkout-fields-for-brazil-shop-order' );
 
 			wp_localize_script(
 				'woocommerce-extra-checkout-fields-for-brazil-shop-order',
 				'bmwShopOrderParams',
 				array(
 					'person_type' => (string) absint( $settings['person_type'] ),
+					'no_number'   => Extra_Checkout_Fields_For_Brazil::no_number_value( (array) $settings ),
 				)
 			);
 		}

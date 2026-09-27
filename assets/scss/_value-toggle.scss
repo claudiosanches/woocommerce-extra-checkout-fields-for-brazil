@@ -1,16 +1,17 @@
-// The State Registration exemption toggle, drawn inside the field to the
-// right. The :not(#csbmw) raises it over theme and WooCommerce field rules.
+// A value toggle, such as the State Registration exemption, drawn inside the
+// field to the right. The :not(#csbmw) raises it over theme and WooCommerce
+// field rules.
 
-.woocommerce-input-wrapper:has(> .wcbcf-ie-exempt) {
+.woocommerce-input-wrapper:has(> .wcbcf-value-toggle) {
 	display: block;
 	position: relative;
 }
 
-.wc-block-components-text-input:has(> .wcbcf-ie-exempt) {
+.wc-block-components-text-input:has(> .wcbcf-value-toggle) {
 	position: relative;
 }
 
-.wcbcf-ie-exempt:not(#csbmw) {
+.wcbcf-value-toggle:not(#csbmw) {
 	align-items: center;
 	display: flex;
 	margin: 0;
@@ -21,7 +22,7 @@
 
 // On the block checkout the checkbox is WooCommerce's own. Its label would
 // otherwise pick up the floating label rules of the field it sits in.
-.wcbcf-ie-exempt .wcbcf-ie-exempt-label:not(#csbmw) {
+.wcbcf-value-toggle .wcbcf-value-toggle-label:not(#csbmw) {
 	all: unset;
 	align-items: flex-start;
 	cursor: pointer;
@@ -31,13 +32,13 @@
 	line-height: 20px;
 	position: relative;
 
-	.wcbcf-ie-exempt-text:not(#csbmw) {
+	.wcbcf-value-toggle-text:not(#csbmw) {
 		margin: 0;
 	}
 }
 
 // On the classic checkout it is a button, drawn after the block checkbox.
-.wcbcf-ie-exempt-box {
+.wcbcf-value-toggle-box {
 	background: #fff;
 	border: 1px solid color-mix(in srgb, currentcolor 48%, transparent);
 	border-radius: 4px;
@@ -48,7 +49,7 @@
 	width: 20px;
 }
 
-.wcbcf-ie-exempt-mark {
+.wcbcf-value-toggle-mark {
 	display: none;
 	fill: #000;
 	height: 15px;
@@ -62,7 +63,7 @@
 	}
 }
 
-button.wcbcf-ie-exempt:not(#csbmw) {
+button.wcbcf-value-toggle:not(#csbmw) {
 	all: unset;
 	align-items: center;
 	color: inherit;
@@ -75,14 +76,14 @@ button.wcbcf-ie-exempt:not(#csbmw) {
 	right: 12px;
 	z-index: 1;
 
-	&:focus-visible .wcbcf-ie-exempt-box {
+	&:focus-visible .wcbcf-value-toggle-box {
 		outline: 1.5px solid color-mix(in srgb, currentcolor 80%, transparent);
 		outline-offset: 1.5px;
 	}
 }
 
-// ISENTO is fixed while the toggle is on.
-:has(> .wcbcf-ie-exempt :checked) > input,
-:has(> .wcbcf-ie-exempt[aria-checked="true"]) > input {
+// The value is fixed while the toggle is on.
+:has(> .wcbcf-value-toggle :checked) > input,
+:has(> .wcbcf-value-toggle[aria-checked="true"]) > input {
 	opacity: 0.7;
 }

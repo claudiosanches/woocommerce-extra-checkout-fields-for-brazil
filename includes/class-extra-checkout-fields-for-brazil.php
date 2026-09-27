@@ -62,6 +62,33 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
+	 * What the Number field holds for an address without a number, unless the
+	 * store sets its own.
+	 *
+	 * @var string
+	 */
+	const NO_NUMBER_VALUE = 'S/N';
+
+	/**
+	 * What the No number option writes, or nothing when it is not offered.
+	 *
+	 * @param array|null $settings Plugin settings, read when not given.
+	 *
+	 * @return string
+	 */
+	public static function no_number_value( $settings = null ) {
+		$settings = null === $settings ? (array) get_option( 'wcbcf_settings', array() ) : $settings;
+
+		if ( empty( $settings['no_number'] ) ) {
+			return '';
+		}
+
+		$value = isset( $settings['no_number_value'] ) ? trim( (string) $settings['no_number_value'] ) : '';
+
+		return '' === $value ? self::NO_NUMBER_VALUE : $value;
+	}
+
+	/**
 	 * Whether a field is off, optional or required.
 	 *
 	 * Used for RG, State Registration, Birthdate and Gender. These were

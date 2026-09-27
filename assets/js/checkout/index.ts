@@ -10,6 +10,7 @@
  * before that render committed would be reverted with it.
  */
 
+import { __ } from '@wordpress/i18n';
 import { dispatch, select } from '@wordpress/data';
 import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
@@ -18,6 +19,8 @@ import { caretIndex, caretOffset, formatCep, formatters } from '../shared/mask';
 import { createAutofill } from '../shared/postcode';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
+import { bindNoNumber } from '../shared/no-number';
+import { keepDigits } from '../shared/house-number';
 import { stripCountryFormats } from '../shared/address-format';
 import type { CountryFormats } from '../shared/address-format';
 import '../../scss/checkout/checkout.scss';
@@ -28,6 +31,7 @@ interface BlocksParams {
 	mailcheck?: string;
 	postcodeAutofill?: string;
 	postcodeUrl?: string;
+	noNumber?: string;
 }
 
 interface CartAddressStore {
@@ -309,6 +313,92 @@ function setupIeExempt(): void {
 	bindIeExempt( input, { write: writeControlled } );
 }
 
+function setupNoNumber(): void {
+	( [ 'billing', 'shipping' ] as Group[] ).forEach( ( group ) => {
+		const id = field( group, 'number' );
+		const input = inputById( id );
+
+		if ( ! input ) {
+			// Another country unmounts the field, leaving the toggle behind.
+			document
+				.querySelectorAll( `.wcbcf-no-number[data-bmw-for="${ id }"]` )
+				.forEach( ( element ) => element.remove() );
+
+			return;
+		}
+
+		input.inputMode = 'numeric';
+		bindNoNumber( input, params.noNumber, { write: writeControlled } );
+	} );
+}
+
+/**
+ * Take digits only in the Number fields, before React reads the event.
+ *
+ * @param event Input event.
+ */
+function handleNumberInput( event: Event ): void {
+	const input = event.target;
+
+	if (
+		input instanceof window.HTMLInputElement &&
+		( field( 'billing', 'number' ) === input.id ||
+			field( 'shipping', 'number' ) === input.id )
+	) {
+		keepDigits( input, params.noNumber, ( target, value ) =>
+			NATIVE_VALUE_SETTER.call( target, value )
+		);
+	}
+}
+
+const CUSTOMER_DETAILS_CLASS = 'wcbcf-customer-details-title';
+
+/**
+ * Head the documents and personal details in the contact step, which
+ * WooCommerce offers extensions as the only place for them.
+ *
+ * WooCommerce has no heading of its own to give here, so one is placed
+ * before the first of them, and moved or dropped as they come and go.
+ */
+function setupCustomerDetails(): void {
+	const form = document
+		.getElementById( 'email' )
+		?.closest( '.wc-block-components-address-form' );
+
+	if ( ! form ) {
+		return;
+	}
+
+	const first = Array.from( form.children ).find(
+		( child ) =>
+			! child.classList.contains( CUSTOMER_DETAILS_CLASS ) &&
+			/csbmw-(?!cellphone)/.test( child.className )
+	);
+	let heading = form.querySelector( `:scope > .${ CUSTOMER_DETAILS_CLASS }` );
+
+	if ( ! first ) {
+		heading?.remove();
+
+		return;
+	}
+
+	if ( heading?.nextElementSibling === first ) {
+		return;
+	}
+
+	if ( ! heading ) {
+		// Drawn as WooCommerce's own step titles.
+		heading = document.createElement( 'h2' );
+		heading.className = `wc-block-components-title wc-block-components-checkout-step__title ${ CUSTOMER_DETAILS_CLASS }`;
+		heading.textContent = __(
+			'Customer details',
+			'woocommerce-extra-checkout-fields-for-brazil'
+		);
+	}
+
+	form.insertBefore( heading, first );
+}
+
 function setupMailcheck(): void {
 	if ( 'yes' !== params.mailcheck ) {
 		return;
@@ -331,13 +421,19 @@ function init(): void {
 		document.addEventListener( 'input', handleAutofill );
 	}
 
+	document.addEventListener( 'input', handleNumberInput, true );
+
 	setupIeExempt();
+	setupNoNumber();
+	setupCustomerDetails();
 	setupMailcheck();
 
 	// The contact block mounts after the first paint and can remount, so keep
 	// watching rather than binding once.
 	new window.MutationObserver( () => {
 		setupIeExempt();
+		setupNoNumber();
+		setupCustomerDetails();
 		setupMailcheck();
 	} ).observe( document.body, {
 		childList: true,

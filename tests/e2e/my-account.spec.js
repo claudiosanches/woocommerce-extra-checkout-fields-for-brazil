@@ -269,4 +269,25 @@ test.describe( 'My account', () => {
 			'111.444.777-35'
 		);
 	} );
+
+	test( 'saves No number from the address form', async ( { page } ) => {
+		setSettings( { ...ALL_FIELDS, no_number: 1 } );
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await page.goto( '/my-account/edit-address/billing/', {
+			waitUntil: 'domcontentloaded',
+		} );
+
+		await page.locator( 'button.wcbcf-no-number' ).click();
+		await expect( page.locator( '[id="csbmw/number"]' ) ).toHaveValue(
+			'S/N'
+		);
+
+		await page.selectOption( '#billing_gender', { index: 1 } );
+		await page.click( 'button[name="save_address"]' );
+		await page.waitForURL( /my-account\/edit-address/, {
+			timeout: 30_000,
+		} );
+
+		expect( customerMeta( 'billing_number' ) ).toBe( 'S/N' );
+	} );
 } );

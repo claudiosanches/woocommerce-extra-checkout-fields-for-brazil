@@ -1,4 +1,6 @@
 /* stylelint-disable -- This is for WooCommerce HTML and we don't control the naming choice. */
+@use "../value-toggle";
+
 #order_data {
 	.order_data_column {
 		._billing_persontype_field,
@@ -15,6 +17,10 @@
 		._shipping_number_field {
 			float: right !important;
 			clear: right !important;
+		}
+
+		.form-field:has(> .wcbcf-value-toggle) {
+			position: relative;
 		}
 
 		// Set on the inputs themselves, which sit in several different rows.

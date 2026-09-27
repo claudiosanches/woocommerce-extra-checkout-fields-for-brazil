@@ -500,4 +500,54 @@ test.describe( 'Block checkout', () => {
 		await expect( page.locator( field( 'cnpj' ) ) ).toHaveValue( '' );
 		await expect( page.locator( field( 'company' ) ) ).toHaveValue( '' );
 	} );
+
+	test( 'stores S/N for an address without a number', async ( { page } ) => {
+		setSettings( { ...ALL_FIELDS, no_number: 1 } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '1' );
+		await fillCommonFields( page );
+		await page.fill( field( 'cpf' ), VALID.cpf );
+		await page.fill( field( 'rg' ), '123456789' );
+
+		await page.locator( '.wcbcf-no-number input' ).check();
+		await expect( page.locator( '#billing-csbmw-number' ) ).toHaveValue(
+			'S/N'
+		);
+
+		await placeOrder( page );
+
+		const orderId = orderIdFromUrl( page.url() );
+		expect( orderId ).not.toBeNull();
+		expect(
+			orderMetaAll( orderId, [
+				'_billing_number',
+				'_wc_billing/csbmw/number',
+			] )
+		).toEqual( {
+			_billing_number: 'S/N',
+			'_wc_billing/csbmw/number': 'S/N',
+		} );
+	} );
+
+	test( 'heads the customer details apart from the contact ones', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+
+		const heading = page.locator( '.wcbcf-customer-details-title' );
+		await expect( heading ).toHaveText( 'Customer details' );
+
+		// Email and cell phone above it, the person type right under it.
+		const top = async ( selector ) =>
+			( await page.locator( selector ).boundingBox() ).y;
+
+		expect( await top( field( 'cellphone' ) ) ).toBeLessThan(
+			await top( '.wcbcf-customer-details-title' )
+		);
+		expect(
+			await heading.evaluate(
+				( element ) => element.nextElementSibling.className
+			)
+		).toContain( 'csbmw-persontype' );
+	} );
 } );
