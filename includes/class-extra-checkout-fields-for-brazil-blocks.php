@@ -556,7 +556,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				array(
 					'label'      => __( 'Cell Phone', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'location'   => 'contact',
-					'index'      => 13,
+					// Contact details, beside the email rather than among the
+					// documents under Customer details.
+					'index'      => 1,
 					'attributes' => $this->text_attributes( 'cellphone' ),
 				),
 				array(

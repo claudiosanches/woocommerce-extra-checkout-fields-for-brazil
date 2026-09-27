@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T05:38:31+00:00\n"
+"POT-Creation-Date: 2026-09-27T05:53:41+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -279,6 +279,7 @@ msgid "Rejects a CNPJ whose check digits do not match, which catches typos and m
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:187
+#: build/checkout.js:1
 msgid "Customer details"
 msgstr ""
 
@@ -641,35 +642,35 @@ msgid "Enter a valid birthdate as dd/mm/yyyy"
 msgstr ""
 
 #. translators: %s: field label.
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:625
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:627
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:747
 #, php-format
 msgid "%s (optional)"
 msgstr ""
 
 #. translators: %s: field label.
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:699
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:701
 #, php-format
 msgid "%s is a required field."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:714
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:716
 msgid "CPF is not valid."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:718
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:720
 msgid "CNPJ is not valid."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:722
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:724
 msgid "State Registration is not valid."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:732
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:734
 msgid "Birthdate is not valid. Use the dd/mm/yyyy format."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:738
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:740
 msgid "Cell Phone is not valid."
 msgstr ""
 

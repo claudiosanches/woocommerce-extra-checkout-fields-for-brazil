@@ -334,31 +334,31 @@ msgid "Enter a valid birthdate as dd/mm/yyyy"
 msgstr "Digite uma data de nascimento válida no formato dd/mm/aaaa"
 
 #. translators: %s: field label.
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:625
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:627
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:747
 #, php-format
 msgid "%s (optional)"
 msgstr "%s (opcional)"
 
 #. translators: %s: field label.
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:699
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:701
 #, php-format
 msgid "%s is a required field."
 msgstr "%s é um campo obrigatório."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:714
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:716
 msgid "CPF is not valid."
 msgstr "CPF não é válido."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:718
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:720
 msgid "CNPJ is not valid."
 msgstr "CNPJ não é válido."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:732
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:734
 msgid "Birthdate is not valid. Use the dd/mm/yyyy format."
 msgstr "Data de nascimento não é válida. Use o formato dd/mm/aaaa."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:738
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:740
 msgid "Cell Phone is not valid."
 msgstr "Celular não é válido."
 
@@ -691,7 +691,7 @@ msgstr "oculto"
 msgid "optional"
 msgstr "opcional"
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:722
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:724
 msgid "State Registration is not valid."
 msgstr "Inscrição Estadual não é válida."
 
@@ -768,6 +768,7 @@ msgid "Rejects a CNPJ whose check digits do not match, which catches typos and m
 msgstr "Recusa um CNPJ cujos dígitos verificadores não conferem, o que barra erros de digitação e números inventados."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:187
+#: build/checkout.js:1
 msgid "Customer details"
 msgstr "Dados do cliente"
 

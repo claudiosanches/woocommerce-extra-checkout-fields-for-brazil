@@ -17,3 +17,10 @@
 .wc-block-components-address-form:has(> .wc-block-components-address-form__csbmw-number) > .wc-block-components-address-form__address_1:not(#csbmw) {
 	flex: 1 0 calc(50% - 12px);
 }
+
+// Heads the documents and personal details in the contact step, as a step
+// title of WooCommerce's own. Only its place in the form is set here.
+.wcbcf-customer-details-title:not(#csbmw) {
+	flex: 0 0 100%;
+	margin-top: 32px;
+}

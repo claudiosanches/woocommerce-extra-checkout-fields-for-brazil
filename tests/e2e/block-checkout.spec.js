@@ -528,4 +528,26 @@ test.describe( 'Block checkout', () => {
 			'_wc_billing/csbmw/number': 'S/N',
 		} );
 	} );
+
+	test( 'heads the customer details apart from the contact ones', async ( {
+		page,
+	} ) => {
+		await goToBlockCheckout( page );
+
+		const heading = page.locator( '.wcbcf-customer-details-title' );
+		await expect( heading ).toHaveText( 'Customer details' );
+
+		// Email and cell phone above it, the person type right under it.
+		const top = async ( selector ) =>
+			( await page.locator( selector ).boundingBox() ).y;
+
+		expect( await top( field( 'cellphone' ) ) ).toBeLessThan(
+			await top( '.wcbcf-customer-details-title' )
+		);
+		expect(
+			await heading.evaluate(
+				( element ) => element.nextElementSibling.className
+			)
+		).toContain( 'csbmw-persontype' );
+	} );
 } );

@@ -10,6 +10,7 @@
  * before that render committed would be reverted with it.
  */
 
+import { __ } from '@wordpress/i18n';
 import { dispatch, select } from '@wordpress/data';
 import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
@@ -350,6 +351,54 @@ function handleNumberInput( event: Event ): void {
 	}
 }
 
+const CUSTOMER_DETAILS_CLASS = 'wcbcf-customer-details-title';
+
+/**
+ * Head the documents and personal details in the contact step, which
+ * WooCommerce offers extensions as the only place for them.
+ *
+ * WooCommerce has no heading of its own to give here, so one is placed
+ * before the first of them, and moved or dropped as they come and go.
+ */
+function setupCustomerDetails(): void {
+	const form = document
+		.getElementById( 'email' )
+		?.closest( '.wc-block-components-address-form' );
+
+	if ( ! form ) {
+		return;
+	}
+
+	const first = Array.from( form.children ).find(
+		( child ) =>
+			! child.classList.contains( CUSTOMER_DETAILS_CLASS ) &&
+			/csbmw-(?!cellphone)/.test( child.className )
+	);
+	let heading = form.querySelector( `:scope > .${ CUSTOMER_DETAILS_CLASS }` );
+
+	if ( ! first ) {
+		heading?.remove();
+
+		return;
+	}
+
+	if ( heading?.nextElementSibling === first ) {
+		return;
+	}
+
+	if ( ! heading ) {
+		// Drawn as WooCommerce's own step titles.
+		heading = document.createElement( 'h2' );
+		heading.className = `wc-block-components-title wc-block-components-checkout-step__title ${ CUSTOMER_DETAILS_CLASS }`;
+		heading.textContent = __(
+			'Customer details',
+			'woocommerce-extra-checkout-fields-for-brazil'
+		);
+	}
+
+	form.insertBefore( heading, first );
+}
+
 function setupMailcheck(): void {
 	if ( 'yes' !== params.mailcheck ) {
 		return;
@@ -376,6 +425,7 @@ function init(): void {
 
 	setupIeExempt();
 	setupNoNumber();
+	setupCustomerDetails();
 	setupMailcheck();
 
 	// The contact block mounts after the first paint and can remount, so keep
@@ -383,6 +433,7 @@ function init(): void {
 	new window.MutationObserver( () => {
 		setupIeExempt();
 		setupNoNumber();
+		setupCustomerDetails();
 		setupMailcheck();
 	} ).observe( document.body, {
 		childList: true,
