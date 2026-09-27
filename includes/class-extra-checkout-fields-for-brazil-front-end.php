@@ -51,6 +51,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		add_filter( 'woocommerce_country_locale_field_selectors', array( $this, 'address_locale_selectors' ) );
 		add_filter( 'woocommerce_get_country_locale', array( $this, 'cell_phone_label' ), 20 );
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'restore_company_field' ), 10 );
+		add_filter( 'woocommerce_form_field_country', array( $this, 'hide_country_field' ), 10, 3 );
 
 		// Historic birthdates were never format-checked, and the date mask turns
 		// one like 1/1/1980 into 11/19/80 the moment a form renders it.
@@ -527,6 +528,26 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		// Never blank out something the customer typed; only reshape what is
 		// unambiguous, and leave anything else for them to correct.
 		return '' === $normalized ? $value : $normalized;
+	}
+
+	/**
+	 * Swap the country row for the hidden input WooCommerce's scripts read,
+	 * on an address the store limits to Brazil.
+	 *
+	 * @param string $field Field markup.
+	 * @param string $key   Field key.
+	 * @param array  $args  Field arguments.
+	 *
+	 * @return string
+	 */
+	public function hide_country_field( $field, $key, $args ) {
+		$type = substr( $key, 0, -strlen( '_country' ) );
+
+		if ( ! in_array( $key, array( 'billing_country', 'shipping_country' ), true ) || 'hidden' !== Extra_Checkout_Fields_For_Brazil::country_field_mode( $type ) ) {
+			return $field;
+		}
+
+		return '<input type="hidden" class="country_to_state" name="' . esc_attr( $key ) . '" id="' . esc_attr( $args['id'] ) . '" value="BR" />';
 	}
 
 	/**

@@ -94,6 +94,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		add_action( 'init', array( $this, 'register_fields' ), 20 );
 		add_filter( 'pre_option_woocommerce_checkout_company_field', array( $this, 'hide_core_company' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_filter( 'body_class', array( $this, 'country_field_classes' ) );
 
 		// Ahead of WC_Form_Handler::save_account_details(), which runs on this
 		// hook at the default priority.
@@ -822,8 +823,33 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 				'noNumber'         => Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ),
 				'phone'            => Extra_Checkout_Fields_For_Brazil_Phone::script_params( (array) $settings ),
+				'brazilOnly'       => array_values( array_filter( array( 'billing', 'shipping' ), array( 'Extra_Checkout_Fields_For_Brazil', 'is_brazil_only' ) ) ),
 			)
 		);
+	}
+
+	/**
+	 * Mark how the checkout shows the country of each address, since the
+	 * block's country locale applies to every address with that country.
+	 *
+	 * @param array $classes Body classes.
+	 *
+	 * @return array
+	 */
+	public function country_field_classes( $classes ) {
+		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+			return $classes;
+		}
+
+		foreach ( array( 'billing', 'shipping' ) as $type ) {
+			$mode = Extra_Checkout_Fields_For_Brazil::country_field_mode( $type );
+
+			if ( 'select' !== $mode ) {
+				$classes[] = 'csbmw-' . $type . '-country-' . $mode;
+			}
+		}
+
+		return $classes;
 	}
 }
 

@@ -254,6 +254,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 -   Number and Neighborhood are now asked of Brazilian addresses only, each address following its own country. Every address used to require a number, which other countries' address formats never print.
 -   Added a No number option, off by default, that puts a No number checkbox inside the Number field and fills it with S/N or a value the store sets, on both checkouts, My Account and the order screen.
 -   A Brazilian address now starts with the CEP beside the street on both checkouts and My Account, since the CEP fills most of the address in, followed by the second address line, Number beside Neighborhood, and city beside state.
+-   A store that sells or ships only to Brazil can show the country as plain text or hide it, on both checkouts and My Account. The block checkout now also puts Brazil on such an address for a customer with no default location, which WooCommerce left empty.
 -   The block checkout heads the documents, birthdate and gender as Customer details inside the contact step, leaving email and cell phone as the contact information.
 -   A returning customer whose details are complete sees them summed up on the block checkout, as WooCommerce sums up a saved address, with the CPF and RG partly hidden, until they choose to edit them. The fields open again if the order is refused.
 -   Number now takes digits only, since carriers reject numbers such as 1-12, and every entry point refuses anything else apart from the No number value.

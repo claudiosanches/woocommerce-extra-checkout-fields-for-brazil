@@ -188,4 +188,66 @@ class AddressCountryTest extends WP_UnitTestCase {
 
 		$this->assertSame( array( 'billing_number_invalid' ), $errors->get_error_codes() );
 	}
+
+	/**
+	 * Limit what the store sells and ships to.
+	 *
+	 * @param array $sells Countries the store sells to, or none for all.
+	 * @param array $ships Countries it ships to, or none for those it sells to.
+	 *
+	 * @return void
+	 */
+	protected function limit_countries( $sells, $ships ) {
+		update_option( 'woocommerce_allowed_countries', $sells ? 'specific' : 'all' );
+		update_option( 'woocommerce_specific_allowed_countries', $sells );
+		update_option( 'woocommerce_ship_to_countries', $ships ? 'specific' : '' );
+		update_option( 'woocommerce_specific_ship_to_countries', $ships );
+	}
+
+	/**
+	 * The classic markup of an address's country field.
+	 *
+	 * @param string $type billing or shipping.
+	 *
+	 * @return string
+	 */
+	protected function country_field( $type ) {
+		return woocommerce_form_field(
+			$type . '_country',
+			array(
+				'type'   => 'country',
+				'return' => true,
+			)
+		);
+	}
+
+	public function test_hidden_country_keeps_brazil_for_the_scripts() {
+		update_option( 'wcbcf_settings', array( 'country_field' => 'hidden' ) );
+		$this->limit_countries( array( 'BR' ), array() );
+
+		foreach ( array( 'billing', 'shipping' ) as $type ) {
+			$field = $this->country_field( $type );
+
+			$this->assertSame( 'hidden', Extra_Checkout_Fields_For_Brazil::country_field_mode( $type ), $type );
+			$this->assertStringNotContainsString( '<select', $field, $type );
+			$this->assertStringContainsString( 'type="hidden" class="country_to_state" name="' . $type . '_country"', $field, $type );
+			$this->assertStringContainsString( 'value="BR"', $field, $type );
+		}
+	}
+
+	public function test_country_field_is_left_alone_once_another_country_is_allowed() {
+		update_option( 'wcbcf_settings', array( 'country_field' => 'hidden' ) );
+		$this->limit_countries( array( 'BR', 'PT' ), array() );
+
+		$this->assertSame( 'select', Extra_Checkout_Fields_For_Brazil::country_field_mode( 'billing' ) );
+		$this->assertStringContainsString( '<select', $this->country_field( 'billing' ) );
+	}
+
+	public function test_each_address_follows_its_own_countries() {
+		update_option( 'wcbcf_settings', array( 'country_field' => 'text' ) );
+		$this->limit_countries( array(), array( 'BR' ) );
+
+		$this->assertSame( 'select', Extra_Checkout_Fields_For_Brazil::country_field_mode( 'billing' ) );
+		$this->assertSame( 'text', Extra_Checkout_Fields_For_Brazil::country_field_mode( 'shipping' ) );
+	}
 }

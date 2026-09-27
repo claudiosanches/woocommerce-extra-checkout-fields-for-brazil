@@ -1,5 +1,11 @@
 const { test, expect } = require( '@playwright/test' );
-const { ALL_FIELDS, logIn, setSettings } = require( './utils' );
+const {
+	ALL_FIELDS,
+	logIn,
+	setSettings,
+	shipEverywhere,
+	shipOnlyToBrazil,
+} = require( './utils' );
 
 const ADMIN = { user: 'admin', pass: 'password' };
 
@@ -227,6 +233,21 @@ test.describe( 'Settings screen', () => {
 		await page.locator( 'label[for="no_number"]' ).click();
 		await expect( value ).toBeVisible();
 		await expect( page.locator( '#no_number_value' ) ).toHaveValue( 'S/N' );
+	} );
+
+	test( 'offers the country field setting only on a Brazil-only store', async ( {
+		page,
+	} ) => {
+		await expect( row( page, 'country-field' ) ).toBeHidden();
+
+		shipOnlyToBrazil();
+
+		try {
+			await page.reload();
+			await expect( row( page, 'country-field' ) ).toBeVisible();
+		} finally {
+			shipEverywhere();
+		}
 	} );
 
 	test( 'offers No number on the order screen', async ( { page } ) => {

@@ -166,9 +166,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	 * @return bool
 	 */
 	public static function is_brazil_only() {
-		$countries = WC()->countries->get_shipping_countries();
-
-		return 1 === count( $countries ) && isset( $countries['BR'] );
+		return Extra_Checkout_Fields_For_Brazil::is_brazil_only( 'shipping' );
 	}
 
 	/**

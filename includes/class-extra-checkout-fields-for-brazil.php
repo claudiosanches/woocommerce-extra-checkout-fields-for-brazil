@@ -111,6 +111,40 @@ class Extra_Checkout_Fields_For_Brazil {
 	}
 
 	/**
+	 * Whether Brazil is the only country an address can take. Billing follows
+	 * the countries the store sells to, and shipping those it ships to.
+	 *
+	 * @param string $type billing or shipping.
+	 *
+	 * @return bool
+	 */
+	public static function is_brazil_only( $type ) {
+		$countries = 'shipping' === $type ? WC()->countries->get_shipping_countries() : WC()->countries->get_allowed_countries();
+
+		return array( 'BR' ) === array_keys( $countries );
+	}
+
+	/**
+	 * How an address shows its country. The setting only applies while the
+	 * address can take no country but Brazil.
+	 *
+	 * @param string     $type     billing or shipping.
+	 * @param array|null $settings Plugin settings, read when not given.
+	 *
+	 * @return string select, text or hidden.
+	 */
+	public static function country_field_mode( $type, $settings = null ) {
+		$settings = null === $settings ? (array) get_option( 'wcbcf_settings', array() ) : $settings;
+		$value    = isset( $settings['country_field'] ) ? $settings['country_field'] : '';
+
+		if ( ! in_array( $value, array( 'text', 'hidden' ), true ) || ! self::is_brazil_only( $type ) ) {
+			return 'select';
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Whether the company is asked of legal persons only, against WooCommerce's
 	 * own Company setting.
 	 *
