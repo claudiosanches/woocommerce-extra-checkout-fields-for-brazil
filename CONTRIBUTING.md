@@ -5,12 +5,12 @@ Development notes for the plugin. The user facing description lives in
 
 ## Requirements
 
-| Tool | Version |
-| --- | --- |
-| PHP | 7.4 or newer |
-| Node | 20 or newer |
-| Composer | 2 |
-| Docker | required by `wp-env` for the integration and end to end suites |
+| Tool     | Version                                                        |
+| -------- | -------------------------------------------------------------- |
+| PHP      | 7.4 or newer                                                   |
+| Node     | 20 or newer                                                    |
+| Composer | 2                                                              |
+| Docker   | required by `wp-env` for the integration and end to end suites |
 
 `composer.json` pins `config.platform.php` to `7.4.33`, so Composer resolves
 dependencies against the oldest PHP the plugin supports no matter which version
@@ -66,12 +66,12 @@ npm run test:e2e             # Playwright, needs wp-env running
 npm run test:e2e:ui          # the same with the Playwright inspector
 ```
 
-| Suite | Location | What it covers |
-| --- | --- | --- |
-| Jest | `tests/js/` | Masking, validation, the mail suggestion and the State Registration exemption, as pure functions and against jsdom |
-| PHPUnit unit | `tests/phpunit/unit/` | CPF, CNPJ and date validation. Runs without WordPress |
+| Suite               | Location                     | What it covers                                                                                                                                   |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Jest                | `tests/js/`                  | Masking, validation, the mail suggestion and the State Registration exemption, as pure functions and against jsdom                               |
+| PHPUnit unit        | `tests/phpunit/unit/`        | CPF, CNPJ and date validation. Runs without WordPress                                                                                            |
 | PHPUnit integration | `tests/phpunit/integration/` | Field registration across every settings combination, the conditional rules, the classic checkout validation and the meta written on both stores |
-| Playwright | `tests/e2e/` | Both checkouts, My Account and the Store API, in Google Chrome |
+| Playwright          | `tests/e2e/`                 | Both checkouts, My Account and the Store API, in Google Chrome                                                                                   |
 
 The end to end suite drives real Google Chrome rather than bundled Chromium.
 Set `CHROME_PATH` to use a local binary; CI installs one with
@@ -106,13 +106,13 @@ includes/             plugin classes
 
 Notable classes:
 
-- `Extra_Checkout_Fields_For_Brazil_Blocks` registers the fields on the block
-  checkout and builds the rules that show, hide and require them.
-- `Extra_Checkout_Fields_For_Brazil_Legacy_Sync` mirrors those values into the
-  historic meta keys and seeds the block fields from them.
-- `Extra_Checkout_Fields_For_Brazil_Front_End` handles the classic checkout.
-- `Extra_Checkout_Fields_For_Brazil_Validation` holds the CPF, CNPJ and date
-  validation, and is the only class the unit suite loads.
+-   `Extra_Checkout_Fields_For_Brazil_Blocks` registers the fields on the block
+    checkout and builds the rules that show, hide and require them.
+-   `Extra_Checkout_Fields_For_Brazil_Legacy_Sync` mirrors those values into the
+    historic meta keys and seeds the block fields from them.
+-   `Extra_Checkout_Fields_For_Brazil_Front_End` handles the classic checkout.
+-   `Extra_Checkout_Fields_For_Brazil_Validation` holds the CPF, CNPJ and date
+    validation, and is the only class the unit suite loads.
 
 ## Field storage
 
@@ -140,12 +140,12 @@ the REST and Store API fields, and the hooks. Update it with any change to them,
 
 ## Conventions
 
-- PHP follows WordPress coding standards, checked by `.phpcs.xml`.
-- JavaScript and styles follow the `@wordpress/scripts` configuration.
-- Anything user facing has to be translatable, using the
-  `woocommerce-extra-checkout-fields-for-brazil` text domain.
-- Fields are registered on `init` at priority 20, after the text domain is
-  loaded, so labels and option values are translated.
+-   PHP follows WordPress coding standards, checked by `.phpcs.xml`.
+-   JavaScript and styles follow the `@wordpress/scripts` configuration.
+-   Anything user facing has to be translatable, using the
+    `woocommerce-extra-checkout-fields-for-brazil` text domain.
+-   Fields are registered on `init` at priority 20, after the text domain is
+    loaded, so labels and option values are translated.
 
 ## Pull requests
 

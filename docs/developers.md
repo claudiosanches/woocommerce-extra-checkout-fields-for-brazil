@@ -15,19 +15,19 @@ in step.
 Orders prefix the historic keys with an underscore; customers do not. Contact fields are
 stored against billing.
 
-| Order meta | Customer meta | Block field | Value |
-| --- | --- | --- | --- |
-| `_billing_persontype` | `billing_persontype` | `csbmw/persontype` | `1` individual, `2` company |
-| `_billing_cpf` | `billing_cpf` | `csbmw/cpf` | As typed, such as `529.982.247-25` |
-| `_billing_rg` | `billing_rg` | `csbmw/rg` | As typed |
-| `_billing_cnpj` | `billing_cnpj` | `csbmw/cnpj` | As typed, such as `11.222.333/0001-81`. Alphanumeric CNPJs have letters |
-| `_billing_ie` | `billing_ie` | `csbmw/ie` | Uppercase without spaces, or `ISENTO` |
-| `_billing_birthdate` | `billing_birthdate` | `csbmw/birthdate` | `dd/mm/yyyy` |
-| `_billing_gender` | `billing_gender` | `csbmw/gender` | The label in the store's language, such as `Feminino` |
-| `_billing_cellphone` | `billing_cellphone` | `csbmw/cellphone` | See [Phones](#phones) |
-| `_billing_number`, `_shipping_number` | `billing_number`, `shipping_number` | `csbmw/number` | See [Addresses](#addresses) |
-| `_billing_neighborhood`, `_shipping_neighborhood` | `billing_neighborhood`, `shipping_neighborhood` | `csbmw/neighborhood` | See [Addresses](#addresses) |
-| `_billing_cnpj_lookup` | | | See [CNPJ registration lookup](#cnpj-registration-lookup) |
+| Order meta                                        | Customer meta                                   | Block field          | Value                                                                   |
+| ------------------------------------------------- | ----------------------------------------------- | -------------------- | ----------------------------------------------------------------------- |
+| `_billing_persontype`                             | `billing_persontype`                            | `csbmw/persontype`   | `1` individual, `2` company                                             |
+| `_billing_cpf`                                    | `billing_cpf`                                   | `csbmw/cpf`          | As typed, such as `529.982.247-25`                                      |
+| `_billing_rg`                                     | `billing_rg`                                    | `csbmw/rg`           | As typed                                                                |
+| `_billing_cnpj`                                   | `billing_cnpj`                                  | `csbmw/cnpj`         | As typed, such as `11.222.333/0001-81`. Alphanumeric CNPJs have letters |
+| `_billing_ie`                                     | `billing_ie`                                    | `csbmw/ie`           | Uppercase without spaces, or `ISENTO`                                   |
+| `_billing_birthdate`                              | `billing_birthdate`                             | `csbmw/birthdate`    | `dd/mm/yyyy`                                                            |
+| `_billing_gender`                                 | `billing_gender`                                | `csbmw/gender`       | The label in the store's language, such as `Feminino`                   |
+| `_billing_cellphone`                              | `billing_cellphone`                             | `csbmw/cellphone`    | See [Phones](#phones)                                                   |
+| `_billing_number`, `_shipping_number`             | `billing_number`, `shipping_number`             | `csbmw/number`       | See [Addresses](#addresses)                                             |
+| `_billing_neighborhood`, `_shipping_neighborhood` | `billing_neighborhood`, `shipping_neighborhood` | `csbmw/neighborhood` | See [Addresses](#addresses)                                             |
+| `_billing_cnpj_lookup`                            |                                                 |                      | See [CNPJ registration lookup](#cnpj-registration-lookup)               |
 
 The company is WooCommerce's own billing company. When the store asks it of companies only,
 the block checkout collects it as `csbmw/company` and saves it as the billing company.
@@ -65,17 +65,17 @@ would otherwise see the old value.
 
 Orders (`/wc/v3/orders`) and customers (`/wc/v3/customers`) return these fields.
 
-| Field | Value |
-| --- | --- |
-| `billing.persontype` | `F` for an individual, `J` for a company. When the store asks only one type, that type. Empty when the store does not ask |
-| `billing.cpf`, `billing.cnpj`, `billing.rg`, `billing.ie` | Without dots, slashes and dashes. An alphanumeric CNPJ keeps its letters |
-| `billing.birthdate` | Such as `1990-01-15T00:00:00`. Empty when the stored date is not recognised |
-| `billing.gender` | First letter of the stored label: `F`, `M`, `O`, and `P` or `N` for "Prefer not to say" in English or Portuguese |
-| `billing.cellphone` | As stored |
-| `billing.number`, `shipping.number` | As stored |
-| `billing.neighborhood`, `shipping.neighborhood` | As stored |
-| `billing.phone_e164`, `billing.cellphone_e164`, `shipping.phone_e164` | See [Phones](#phones) |
-| `billing.cnpj_lookup` | Orders only. See [CNPJ registration lookup](#cnpj-registration-lookup) |
+| Field                                                                 | Value                                                                                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `billing.persontype`                                                  | `F` for an individual, `J` for a company. When the store asks only one type, that type. Empty when the store does not ask |
+| `billing.cpf`, `billing.cnpj`, `billing.rg`, `billing.ie`             | Without dots, slashes and dashes. An alphanumeric CNPJ keeps its letters                                                  |
+| `billing.birthdate`                                                   | Such as `1990-01-15T00:00:00`. Empty when the stored date is not recognised                                               |
+| `billing.gender`                                                      | First letter of the stored label: `F`, `M`, `O`, and `P` or `N` for "Prefer not to say" in English or Portuguese          |
+| `billing.cellphone`                                                   | As stored                                                                                                                 |
+| `billing.number`, `shipping.number`                                   | As stored                                                                                                                 |
+| `billing.neighborhood`, `shipping.neighborhood`                       | As stored                                                                                                                 |
+| `billing.phone_e164`, `billing.cellphone_e164`, `shipping.phone_e164` | See [Phones](#phones)                                                                                                     |
+| `billing.cnpj_lookup`                                                 | Orders only. See [CNPJ registration lookup](#cnpj-registration-lookup)                                                    |
 
 Before 5.0.0, `billing.birthdate` gave the month first, such as `01-15-1990T00:00:00`.
 
@@ -158,13 +158,13 @@ When the store turns it on, the CNPJ of a company is looked up at Receita Federa
 BrasilAPI, and OpenCNPJ when BrasilAPI does not answer. The result is saved on the order as
 `_billing_cnpj_lookup`:
 
-| Key | Value |
-| --- | --- |
-| `cnpj` | The CNPJ looked up, letters and digits only |
-| `status` | `active`, `inactive`, `not_found`, or `unavailable` when no service answered |
-| `situation` | As Receita Federal writes it: `ATIVA`, `SUSPENSA`, `INAPTA`, `BAIXADA` or `NULA`. Empty unless found |
-| `provider` | The service that answered, such as `brasilapi` or `opencnpj`. Empty when none did |
-| `checked_at` | When it was looked up, in UTC, such as `2026-09-27T14:05:00Z` |
+| Key          | Value                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `cnpj`       | The CNPJ looked up, letters and digits only                                                          |
+| `status`     | `active`, `inactive`, `not_found`, or `unavailable` when no service answered                         |
+| `situation`  | As Receita Federal writes it: `ATIVA`, `SUSPENSA`, `INAPTA`, `BAIXADA` or `NULA`. Empty unless found |
+| `provider`   | The service that answered, such as `brasilapi` or `opencnpj`. Empty when none did                    |
+| `checked_at` | When it was looked up, in UTC, such as `2026-09-27T14:05:00Z`                                        |
 
 `billing.cnpj_lookup` in the REST API gives the same keys except `cnpj`. It is null when the
 order was not looked up, or when its CNPJ was changed afterwards.
@@ -176,15 +176,15 @@ not cached.
 
 ### Fields
 
-| Filter | Arguments | Where |
-| --- | --- | --- |
-| `wcbcf_billing_fields` | `$fields` | Classic checkout and My Account billing address form |
-| `wcbcf_shipping_fields` | `$fields` | Classic checkout and My Account shipping address form |
-| `wcbcf_admin_billing_fields` | `$fields` | Order screen billing address |
-| `wcbcf_admin_shipping_fields` | `$fields` | Order screen shipping address |
-| `wcbcf_customer_meta_fields` | `$fields` | User profile screen |
-| `wcbcf_disable_checkout_validation` | `$disabled` | See below |
-| `csbmw_order_customer_data` | `$fields`, `$order` | Order confirmation, My Account order view and emails, on both checkouts |
+| Filter                              | Arguments           | Where                                                                   |
+| ----------------------------------- | ------------------- | ----------------------------------------------------------------------- |
+| `wcbcf_billing_fields`              | `$fields`           | Classic checkout and My Account billing address form                    |
+| `wcbcf_shipping_fields`             | `$fields`           | Classic checkout and My Account shipping address form                   |
+| `wcbcf_admin_billing_fields`        | `$fields`           | Order screen billing address                                            |
+| `wcbcf_admin_shipping_fields`       | `$fields`           | Order screen shipping address                                           |
+| `wcbcf_customer_meta_fields`        | `$fields`           | User profile screen                                                     |
+| `wcbcf_disable_checkout_validation` | `$disabled`         | See below                                                               |
+| `csbmw_order_customer_data`         | `$fields`, `$order` | Order confirmation, My Account order view and emails, on both checkouts |
 
 The block checkout registers its fields through WooCommerce's additional checkout fields.
 Change them with WooCommerce's own hooks, such as `woocommerce_validate_additional_field`,
@@ -216,11 +216,11 @@ add_filter(
 
 These apply to every calculator and to the address autofill on both checkouts and My Account.
 
-| Filter | Arguments | Use |
-| --- | --- | --- |
-| `csbmw_postcode_services` | `$services` | Services asked for a CEP not yet stored, in order |
-| `csbmw_postcode_address` | `$address`, `$postcode` | Address found for a CEP, or null |
-| `csbmw_find_postcode_url` | `$url` | Link offered to customers who do not know their CEP |
+| Filter                    | Arguments               | Use                                                 |
+| ------------------------- | ----------------------- | --------------------------------------------------- |
+| `csbmw_postcode_services` | `$services`             | Services asked for a CEP not yet stored, in order   |
+| `csbmw_postcode_address`  | `$address`, `$postcode` | Address found for a CEP, or null                    |
+| `csbmw_find_postcode_url` | `$url`                  | Link offered to customers who do not know their CEP |
 
 A service is a callback that takes the CEP's eight digits and returns an array with
 `postcode`, `address`, `neighborhood`, `city` and `state`, false when it knows the CEP does
@@ -263,10 +263,10 @@ add_filter(
 
 These apply to the Shipping Calculator block and the calculator below the add to cart button.
 
-| Filter | Arguments | Use |
-| --- | --- | --- |
-| `csbmw_shipping_estimate_package` | `$package`, `$product`, `$quantity` | Package the estimate is calculated for |
-| `csbmw_shipping_estimate_cache_ttl` | `$ttl`, `$product` | Seconds an estimate is reused, an hour by default. 0 calculates every time |
+| Filter                              | Arguments                           | Use                                                                        |
+| ----------------------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
+| `csbmw_shipping_estimate_package`   | `$package`, `$product`, `$quantity` | Package the estimate is calculated for                                     |
+| `csbmw_shipping_estimate_cache_ttl` | `$ttl`, `$product`                  | Seconds an estimate is reused, an hour by default. 0 calculates every time |
 
 ```php
 // Skip the cache for products a supplier ships.
@@ -284,10 +284,10 @@ add_filter(
 
 These apply to both checkouts and the My Account billing address form.
 
-| Filter | Arguments | Use |
-| --- | --- | --- |
-| `csbmw_cnpj_services` | `$services` | Services asked for a CNPJ not yet cached, in order |
-| `csbmw_cnpj_lookup` | `$result`, `$cnpj` | Result, with the keys of `_billing_cnpj_lookup` |
+| Filter                | Arguments          | Use                                                |
+| --------------------- | ------------------ | -------------------------------------------------- |
+| `csbmw_cnpj_services` | `$services`        | Services asked for a CNPJ not yet cached, in order |
+| `csbmw_cnpj_lookup`   | `$result`, `$cnpj` | Result, with the keys of `_billing_cnpj_lookup`    |
 
 A service is a callback that takes the CNPJ, letters and digits only, and returns the
 registration situation as Receita Federal writes it, false when it knows the CNPJ is not
@@ -310,6 +310,6 @@ add_filter(
 
 ### Admin
 
-| Filter | Arguments | Use |
-| --- | --- | --- |
-| `wcbcf_support_us` | `$show` | False hides the support box on the settings screen |
+| Filter             | Arguments | Use                                                |
+| ------------------ | --------- | -------------------------------------------------- |
+| `wcbcf_support_us` | `$show`   | False hides the support box on the settings screen |
