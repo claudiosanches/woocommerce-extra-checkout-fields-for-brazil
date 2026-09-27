@@ -529,8 +529,12 @@ test.describe( 'Block checkout', () => {
 			] )
 		).toBe( '' );
 
-		// The session is what fills in the next checkout.
+		// The session is what fills in the next checkout, which sums the
+		// details up until they are opened.
 		await goToBlockCheckout( page );
+		await page
+			.getByRole( 'button', { name: 'Edit customer details' } )
+			.click();
 		await page.selectOption( field( 'persontype' ), '2' );
 		await expect( page.locator( field( 'cnpj' ) ) ).toHaveValue( '' );
 		await expect( page.locator( field( 'company' ) ) ).toHaveValue( '' );

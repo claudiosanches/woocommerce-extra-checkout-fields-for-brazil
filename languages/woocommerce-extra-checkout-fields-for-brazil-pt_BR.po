@@ -54,6 +54,7 @@ msgstr "Endereço de Cobrança do Cliente"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:948
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:123
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:239
+#: build/checkout.js:1
 msgid "CPF"
 msgstr "CPF"
 
@@ -66,6 +67,7 @@ msgstr "CPF"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:206
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:813
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:124
+#: build/checkout.js:1
 msgid "RG"
 msgstr "RG"
 
@@ -80,6 +82,7 @@ msgstr "RG"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:952
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:957
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:125
+#: build/checkout.js:1
 msgid "CNPJ"
 msgstr "CNPJ"
 
@@ -94,6 +97,7 @@ msgstr "CNPJ"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:842
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:962
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:126
+#: build/checkout.js:1
 msgid "State Registration"
 msgstr "Inscrição Estadual"
 
@@ -323,7 +327,7 @@ msgid "Cell Phone is not valid."
 msgstr "Celular não é válido."
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Exempt from State Registration"
 msgstr "Isento de Inscrição Estadual"
 
@@ -647,7 +651,7 @@ msgid "State Registration is not valid."
 msgstr "Inscrição Estadual não é válida."
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Exempt"
 msgstr "Isento"
 
@@ -842,7 +846,7 @@ msgstr "O que o campo Número recebe quando Sem número é marcado, como S/N ou 
 
 #: build/admin-order.js:1
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "No number"
 msgstr "Sem número"
 
@@ -890,7 +894,7 @@ msgid "Cell phone in E.164, such as +5511987654321. Empty when it is not a compl
 msgstr "Celular em E.164, como +5511987654321. Vazio quando não é um número completo."
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Country code"
 msgstr "Código do país"
 
@@ -1081,3 +1085,11 @@ msgstr "Escolha as opções na página do produto."
 msgctxt "block description"
 msgid "Lets customers check the shipping options for a product by entering their CEP."
 msgstr "Permite que o cliente consulte as opções de entrega de um produto informando o CEP."
+
+#: build/checkout.js:1
+msgid "Edit customer details"
+msgstr "Editar dados do cliente"
+
+#: build/checkout.js:1
+msgid "Edit"
+msgstr "Editar"
