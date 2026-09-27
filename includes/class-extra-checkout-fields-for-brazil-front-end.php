@@ -292,7 +292,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		if ( isset( $fields['billing_address_1'] ) ) {
-			$new_fields['billing_address_1']          = $fields['billing_address_1'];
+			$new_fields['billing_address_1']             = $fields['billing_address_1'];
 			$new_fields['billing_address_1']['class']    = array( $last_class, 'address-field' );
 			$new_fields['billing_address_1']['priority'] = self::ADDRESS_PRIORITIES['address_1'];
 		}
@@ -307,8 +307,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		);
 
 		if ( isset( $fields['billing_address_2'] ) ) {
-			$new_fields['billing_address_2']          = $fields['billing_address_2'];
-			$new_fields['billing_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
+			$new_fields['billing_address_2']             = $fields['billing_address_2'];
+			$new_fields['billing_address_2']['label']    = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
 			$new_fields['billing_address_2']['class']    = array( 'form-row-wide', 'address-field' );
 			$new_fields['billing_address_2']['priority'] = self::ADDRESS_PRIORITIES['address_2'];
 		}
@@ -439,7 +439,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		}
 
 		if ( isset( $fields['shipping_address_1'] ) ) {
-			$new_fields['shipping_address_1']          = $fields['shipping_address_1'];
+			$new_fields['shipping_address_1']             = $fields['shipping_address_1'];
 			$new_fields['shipping_address_1']['class']    = array( $last_class, 'address-field' );
 			$new_fields['shipping_address_1']['priority'] = self::ADDRESS_PRIORITIES['address_1'];
 		}
@@ -454,8 +454,8 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 		);
 
 		if ( isset( $fields['shipping_address_2'] ) ) {
-			$new_fields['shipping_address_2']          = $fields['shipping_address_2'];
-			$new_fields['shipping_address_2']['label'] = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
+			$new_fields['shipping_address_2']             = $fields['shipping_address_2'];
+			$new_fields['shipping_address_2']['label']    = __( 'Address line 2', 'woocommerce-extra-checkout-fields-for-brazil' );
 			$new_fields['shipping_address_2']['class']    = array( 'form-row-wide', 'address-field' );
 			$new_fields['shipping_address_2']['priority'] = self::ADDRESS_PRIORITIES['address_2'];
 		}
