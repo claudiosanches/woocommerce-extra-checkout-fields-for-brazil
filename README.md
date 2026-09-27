@@ -102,6 +102,7 @@ This plugin uses:
 
 * [Mailcheck](https://github.com/mailcheck/mailcheck), to suggest corrections for misspelled email domains.
 * [Heroicons](https://heroicons.com/) by Tailwind Labs, MIT license, for the shipping calculator icons.
+* [OpenMoji](https://openmoji.org/) by HfG Schwäbisch Gmünd, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), for the flags in the phone country code picker. The font is cut down to the country flags and keeps that license.
 
 ### Contributing ###
 

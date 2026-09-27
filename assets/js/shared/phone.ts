@@ -405,10 +405,13 @@ export function bindPhonePicker(
 	const codes = params.codes ?? {};
 	const element = doc.createElement( 'span' );
 	const label = doc.createElement( 'span' );
+	const flagElement = doc.createElement( 'span' );
 	const select = doc.createElement( 'select' );
 
 	element.className = 'wcbcf-phone-code';
 	label.className = 'wcbcf-phone-code-label';
+	flagElement.className = 'wcbcf-phone-code-flag';
+	label.append( flagElement );
 	label.setAttribute( 'aria-hidden', 'true' );
 	select.className = 'wcbcf-phone-code-select';
 	select.setAttribute(
@@ -438,7 +441,7 @@ export function bindPhonePicker(
 		select.value = picked;
 
 		// The field shows the code itself whenever it holds one.
-		label.textContent = flag( picked );
+		flagElement.textContent = flag( picked );
 
 		// Lined up with the input, since the block checkout puts the field's
 		// error below it in the same container.
