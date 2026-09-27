@@ -261,48 +261,6 @@ msgstr "Informações do cliente"
 msgid "Email"
 msgstr "E-mail"
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:354
-#: includes/class-extra-checkout-fields-for-brazil-api.php:422
-msgid "Number."
-msgstr "Número."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:359
-#: includes/class-extra-checkout-fields-for-brazil-api.php:427
-msgid "Neighborhood."
-msgstr "Bairro."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:364
-msgid "Person type."
-msgstr "Tipo de pessoa."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:369
-msgid "CPF."
-msgstr "CPF."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:374
-msgid "RG."
-msgstr "RG."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:379
-msgid "CNPJ."
-msgstr "CNPJ."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:384
-msgid "IE."
-msgstr "IE."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:389
-msgid "Birthdate."
-msgstr "Data de aniversário."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:394
-msgid "Gender."
-msgstr "Gênero."
-
-#: includes/class-extra-checkout-fields-for-brazil-api.php:399
-msgid "Cell Phone."
-msgstr "Celular."
-
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:409
 msgid "Enter a valid CPF"
 msgstr "Digite um CPF válido"
@@ -935,12 +893,12 @@ msgstr "Oferecer um seletor de código do país"
 msgid "Adds a country list inside Phone and Cell phone, set to the address country. Without it, customers type + and the code for a number from another country."
 msgstr "Adiciona uma lista de países dentro de Telefone e Celular, definida pelo país do endereço. Sem ela, o cliente digita + e o código para um número de outro país."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:404
-#: includes/class-extra-checkout-fields-for-brazil-api.php:416
+#: includes/class-extra-checkout-fields-for-brazil-api.php:413
+#: includes/class-extra-checkout-fields-for-brazil-api.php:425
 msgid "Phone in E.164, such as +5511987654321. Empty when it is not a complete number."
 msgstr "Telefone em E.164, como +5511987654321. Vazio quando não é um número completo."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:410
+#: includes/class-extra-checkout-fields-for-brazil-api.php:419
 msgid "Cell phone in E.164, such as +5511987654321. Empty when it is not a complete number."
 msgstr "Celular em E.164, como +5511987654321. Vazio quando não é um número completo."
 
@@ -968,23 +926,23 @@ msgstr "Este texto se aplica quando a consulta da situação do CNPJ está ativa
 msgid "When you place an order or save your address as a company, we send the CNPJ, and nothing else about you, to BrasilAPI (brasilapi.com.br) and, when it does not answer, OpenCNPJ (opencnpj.org), to check its registration at Receita Federal. The result is kept with the order."
 msgstr "Quando você faz um pedido ou salva seu endereço como empresa, enviamos o CNPJ, e nada mais sobre você, para a BrasilAPI (brasilapi.com.br) e, quando ela não responde, para a OpenCNPJ (opencnpj.org), para consultar a situação cadastral na Receita Federal. O resultado fica guardado com o pedido."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:444
+#: includes/class-extra-checkout-fields-for-brazil-api.php:455
 msgid "CNPJ registration found when the order was placed, or null when it was not looked up or the CNPJ changed since."
 msgstr "Situação do CNPJ encontrada quando o pedido foi feito, ou null quando não foi consultada ou o CNPJ mudou desde então."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:450
+#: includes/class-extra-checkout-fields-for-brazil-api.php:461
 msgid "active, inactive, not_found, or unavailable when no service answered."
 msgstr "active, inactive, not_found, ou unavailable quando nenhum serviço respondeu."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:455
+#: includes/class-extra-checkout-fields-for-brazil-api.php:466
 msgid "Registration situation at Receita Federal, such as ATIVA or BAIXADA. Empty unless found."
 msgstr "Situação cadastral na Receita Federal, como ATIVA ou BAIXADA. Vazia quando não encontrado."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:459
+#: includes/class-extra-checkout-fields-for-brazil-api.php:470
 msgid "Service that answered, such as brasilapi or opencnpj."
 msgstr "Serviço que respondeu, como brasilapi ou opencnpj."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:463
+#: includes/class-extra-checkout-fields-for-brazil-api.php:474
 msgid "When it was looked up, in UTC."
 msgstr "Quando foi consultado, em UTC."
 
@@ -1037,3 +995,45 @@ msgstr "Recusar CNPJs inativos"
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:205
 msgid "Accept only active CNPJs"
 msgstr "Aceitar apenas CNPJs ativos"
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:353
+#: includes/class-extra-checkout-fields-for-brazil-api.php:431
+msgid "Number, digits only, or the store's No number value such as S/N. Empty on foreign addresses."
+msgstr "Número, apenas dígitos, ou o valor de Sem número da loja, como S/N. Vazio em endereços estrangeiros."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:359
+#: includes/class-extra-checkout-fields-for-brazil-api.php:437
+msgid "Neighborhood. Empty on foreign addresses."
+msgstr "Bairro. Vazio em endereços estrangeiros."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:365
+msgid "F for an individual, J for a company, empty when the store does not ask."
+msgstr "F para pessoa física, J para pessoa jurídica, vazio quando a loja não pergunta."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:371
+msgid "CPF, digits only."
+msgstr "CPF, apenas dígitos."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:377
+msgid "RG without dots and dashes."
+msgstr "RG sem pontos e traços."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:383
+msgid "CNPJ without dots, slash and dash. An alphanumeric CNPJ keeps its letters."
+msgstr "CNPJ sem pontos, barra e traço. Um CNPJ alfanumérico mantém suas letras."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:389
+msgid "State Registration without dots, slashes and dashes, or ISENTO."
+msgstr "Inscrição Estadual sem pontos, barras e traços, ou ISENTO."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:395
+msgid "Birthdate, such as 1990-01-15T00:00:00."
+msgstr "Data de nascimento, como 1990-01-15T00:00:00."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:401
+msgid "First letter of the gender as stored, such as F or M."
+msgstr "Primeira letra do gênero como foi salvo, como F ou M."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:407
+msgid "Cell phone as stored."
+msgstr "Celular como foi salvo."

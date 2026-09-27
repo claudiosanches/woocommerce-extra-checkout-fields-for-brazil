@@ -132,6 +132,12 @@ before the order is saved. WooCommerce only drops hidden fields when the
 `experimental-blocks` feature is on, which is off by default, so without that
 step an abandoned CNPJ would be stored unvalidated.
 
+## Documentation
+
+`docs/developers.md` is what other plugins build on: the meta keys and their values,
+the REST and Store API fields, and the hooks. Update it with any change to them, and
+`docs/developers.pt-BR.md` with it.
+
 ## Conventions
 
 - PHP follows WordPress coding standards, checked by `.phpcs.xml`.

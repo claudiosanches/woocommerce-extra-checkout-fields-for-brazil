@@ -63,18 +63,14 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	/**
 	 * Get formatted birthdate.
 	 *
-	 * @param  string $date Date for format.
+	 * @param  string $date Stored birthdate.
 	 *
-	 * @return string
+	 * @return string Such as 1990-01-15T00:00:00, or empty when unrecognisable.
 	 */
 	protected function get_formatted_birthdate( $date ) {
-		$birthdate = explode( '/', $date );
+		$birthdate = DateTime::createFromFormat( '!d/m/Y', Extra_Checkout_Fields_For_Brazil_Legacy_Sync::normalize_birthdate( $date ) );
 
-		if ( isset( $birthdate[1] ) && ! empty( $birthdate[1] ) ) {
-			return sprintf( '%s-%s-%sT00:00:00', $birthdate[1], $birthdate[0], $birthdate[2] );
-		}
-
-		return '';
+		return $birthdate ? $birthdate->format( 'Y-m-d\TH:i:s' ) : '';
 	}
 
 	/**
@@ -85,9 +81,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return string
 	 */
 	protected function get_person_type( $type ) {
-		$settings = get_option( 'wcbcf_settings' );
+		$settings = (array) get_option( 'wcbcf_settings', array() );
 
-		switch ( intval( $settings['person_type'] ) ) {
+		switch ( intval( $settings['person_type'] ?? 0 ) ) {
 			case 1:
 				$persontype = intval( $type ) === 2 ? 'J' : 'F';
 				break;
@@ -343,7 +339,10 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	}
 
 	/**
-	 * Addresses schena.
+	 * Add the address fields orders and customers share to the schema.
+	 *
+	 * WooCommerce saves only the address keys it has setters for, so these are
+	 * read only. Their meta keys can be written through meta_data.
 	 *
 	 * @param  array $properties Default schema properties.
 	 *
@@ -351,54 +350,64 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 */
 	public function addresses_schema( $properties ) {
 		$properties['billing']['properties']['number']         = array(
-			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Number, digits only, or the store\'s No number value such as S/N. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['neighborhood']   = array(
-			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Neighborhood. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['persontype']     = array(
-			'description' => __( 'Person type.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'F for an individual, J for a company, empty when the store does not ask.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['cpf']            = array(
-			'description' => __( 'CPF.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'CPF, digits only.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['rg']             = array(
-			'description' => __( 'RG.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'RG without dots and dashes.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['cnpj']           = array(
-			'description' => __( 'CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'CNPJ without dots, slash and dash. An alphanumeric CNPJ keeps its letters.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['ie']             = array(
-			'description' => __( 'IE.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'State Registration without dots, slashes and dashes, or ISENTO.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['birthdate']      = array(
-			'description' => __( 'Birthdate.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Birthdate, such as 1990-01-15T00:00:00.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['gender']         = array(
-			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'First letter of the gender as stored, such as F or M.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['cellphone']      = array(
-			'description' => __( 'Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Cell phone as stored.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['billing']['properties']['phone_e164']     = array(
 			'description' => __( 'Phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -419,14 +428,16 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			'readonly'    => true,
 		);
 		$properties['shipping']['properties']['number']        = array(
-			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Number, digits only, or the store\'s No number value such as S/N. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 		$properties['shipping']['properties']['neighborhood']  = array(
-			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'description' => __( 'Neighborhood. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
 
 		return $properties;
