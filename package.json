@@ -18,7 +18,7 @@
     "test:unit": "wp-scripts test-unit-js",
     "build:pot": "npm run build && composer run-script makepot",
     "build:json": "composer run-script makejson",
-    "build:md": "wp-readme-to-md --screenshot-url=https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/{screenshot}.png",
+    "build:md": "wp-readme-to-md --screenshot-url=https://ps.w.org/woocommerce-extra-checkout-fields-for-brazil/assets/{screenshot}.png && wp-scripts format README.md",
     "plugin-zip": "wp-scripts plugin-zip",
     "env": "wp-env",
     "packages-update": "wp-scripts packages-update",

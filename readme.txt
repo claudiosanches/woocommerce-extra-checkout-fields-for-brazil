@@ -161,6 +161,10 @@ The main classes are:
 * `.csbmw-shipping-calculator-dialog`: the dialog for changing the CEP.
 * `.csbmw-cart-shipping-calculator`: the cart block calculator.
 
+= Where is the developer documentation? =
+
+The meta keys, REST API fields and hooks are documented in [docs/developers.md](https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil/blob/trunk/docs/developers.md). A Portuguese version is in [docs/developers.pt-BR.md](https://github.com/claudiosanches/woocommerce-extra-checkout-fields-for-brazil/blob/trunk/docs/developers.pt-BR.md).
+
 = Where are the settings? =
 
 Under WooCommerce > Brazilian Market.
@@ -223,6 +227,10 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Phone and Cell phone now take numbers from any country. A number pasted with +55 is read as Brazilian, one starting with + keeps its country code, and a foreign address suggests its own code. Brazilian numbers are saved as (11) 98765-4321 on Brazilian addresses, or with +55 when the store picks that format, and numbers are checked for their country's length on WooCommerce 11.0 and later.
 - Added an optional country code picker inside Phone and Cell phone on both checkouts and My Account.
 - The REST API returns every phone in E.164 as `phone_e164` and `cellphone_e164`, whatever format it was saved in.
+- Fixed the REST API giving the birthdate month first, such as `01-15-1990T00:00:00`. It now gives `1990-01-15T00:00:00`.
+- The REST API schema now marks the plugin's fields as read only, since WooCommerce never saved them. Their meta keys can be written through `meta_data`.
+- Fixed a PHP warning in REST API responses on stores that never saved the plugin settings.
+- Added developer documentation on the stored data, the REST and Store APIs and the hooks.
 - Fixed the account details form in My Account refusing to save for a Brazilian customer, because it asked for a CPF it never showed.
 - Fixed the company name missing from every Brazilian address the store renders, since the format the plugin registers replaces the one WooCommerce ships with.
 - Added the date mask to the Birthdate field on the order screen, where a date typed without it was stored as it stood.
