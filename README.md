@@ -214,6 +214,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed My Account listing Number and Neighborhood a second time under each address, which already shows both.
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
+- Fixed an individual's order keeping a company name typed before switching person type on the classic checkout, and the customer record and session keeping the documents and company of the person type left behind, which the next checkout filled in again. A company that follows WooCommerce's own setting is kept.
 - Fixed the "Exempt from State Registration" checkbox piling up on the block checkout, one copy for every person type change.
 - Fixed the account details form in My Account refusing to save for a Brazilian customer, because it asked for a CPF it never showed.
 - Fixed the company name missing from every Brazilian address the store renders, since the format the plugin registers replaces the one WooCommerce ships with.

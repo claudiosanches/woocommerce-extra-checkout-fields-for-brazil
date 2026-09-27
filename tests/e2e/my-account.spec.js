@@ -202,6 +202,44 @@ test.describe( 'My account', () => {
 		);
 	} );
 
+	test( 'drops the legal person details of a customer who became an individual', async ( {
+		page,
+	} ) => {
+		setCustomerMeta( 'billing_persontype', '2' );
+		setCustomerMeta( 'billing_cnpj', '11.222.333/0001-81' );
+		setCustomerMeta( '_wc_other/csbmw/cnpj', '11.222.333/0001-81' );
+		wpCli( [
+			'eval',
+			`$u = get_user_by( 'login', 'csbmw_legacy' ); $c = new WC_Customer( $u->ID ); $c->set_billing_company( 'Antiga Ltda' ); $c->save();`,
+		] );
+
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await page.goto( '/my-account/edit-address/billing/', {
+			waitUntil: 'domcontentloaded',
+		} );
+		await expect(
+			page.locator( 'button[name="save_address"]' )
+		).toBeVisible();
+
+		await page.selectOption( '#billing_persontype', '1' );
+		await page.selectOption( '#billing_gender', { index: 1 } );
+		await page.click( 'button[name="save_address"]' );
+		await page.waitForURL( /my-account\/edit-address/, {
+			timeout: 30_000,
+		} );
+
+		expect( customerMeta( 'billing_persontype' ) ).toBe( '1' );
+		expect( customerMeta( 'billing_cpf' ) ).toBe( '123.456.789-09' );
+		expect( customerMeta( 'billing_cnpj' ) ).toBe( '' );
+		expect( customerMeta( '_wc_other/csbmw/cnpj' ) ).toBe( '' );
+		expect(
+			wpCli( [
+				'eval',
+				`$u = get_user_by( 'login', 'csbmw_legacy' ); echo ( new WC_Customer( $u->ID ) )->get_billing_company();`,
+			] )
+		).toBe( '' );
+	} );
+
 	test( 'a corrected document reaches the block checkout', async ( {
 		page,
 	} ) => {

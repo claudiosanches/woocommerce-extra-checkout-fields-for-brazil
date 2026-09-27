@@ -6,7 +6,7 @@
  */
 
 /**
- * Covers clear_unused_documents, length capping and birthdate normalisation.
+ * Covers clear_unused_details, length capping and birthdate normalisation.
  */
 class DocumentConsistencyTest extends WP_UnitTestCase {
 
@@ -67,7 +67,7 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		update_option( 'wcbcf_settings', array( 'person_type' => $setting ) );
 
 		$order = $this->order_with_all_documents( $submitted );
-		$this->sync->clear_unused_documents( $order );
+		$this->sync->clear_unused_details( $order );
 
 		foreach ( $kept as $key ) {
 			$this->assertSame( 'value-' . $key, $order->get_meta( '_billing_' . $key ), $key );
@@ -92,7 +92,7 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		$order->update_meta_data( '_billing_persontype', '1' );
 		$order->update_meta_data( '_billing_cnpj', 'value-cnpj' );
 
-		$this->sync->clear_unused_documents( $order );
+		$this->sync->clear_unused_details( $order );
 
 		$this->assertSame( '', $order->get_meta( '_billing_cnpj' ) );
 		$this->assertFalse( $order->meta_exists( '_wc_other/csbmw/cnpj' ) );
@@ -102,7 +102,7 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		update_option( 'wcbcf_settings', array( 'person_type' => 0 ) );
 
 		$order = $this->order_with_all_documents( '1' );
-		$this->sync->clear_unused_documents( $order );
+		$this->sync->clear_unused_details( $order );
 
 		$this->assertSame( 'value-cnpj', $order->get_meta( '_billing_cnpj' ) );
 	}
@@ -111,10 +111,145 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
 
 		$order = $this->order_with_all_documents( '' );
-		$this->sync->clear_unused_documents( $order );
+		$this->sync->clear_unused_details( $order );
 
 		$this->assertSame( 'value-cpf', $order->get_meta( '_billing_cpf' ) );
 		$this->assertSame( 'value-cnpj', $order->get_meta( '_billing_cnpj' ) );
+	}
+
+	/**
+	 * Build an order from a legal person's details, submitted as the given
+	 * person type.
+	 *
+	 * @param string $person_type Submitted person type.
+	 * @param string $country     Billing country.
+	 *
+	 * @return WC_Order
+	 */
+	protected function order_with_company( $person_type, $country = 'BR' ) {
+		$order = $this->order_with_all_documents( $person_type );
+		$order->set_billing_country( $country );
+		$order->set_billing_company( 'Abandonada Ltda' );
+		$order->update_meta_data( '_wc_other/csbmw/company', 'Abandonada Ltda' );
+
+		return $order;
+	}
+
+	/**
+	 * Whether an individual's order keeps the company, per settings.
+	 *
+	 * @return array
+	 */
+	public function company_provider() {
+		$asks = array(
+			'person_type' => 1,
+			'only_brazil' => 1,
+		);
+
+		return array(
+			'asked of legal persons' => array( $asks, 'BR', '' ),
+			'following WooCommerce'  => array( array_merge( $asks, array( 'company' => 'woocommerce' ) ), 'BR', 'Abandonada Ltda' ),
+			'individuals only'       => array( array( 'person_type' => 2 ), 'BR', 'Abandonada Ltda' ),
+			'outside Brazil'         => array( $asks, 'PT', '' ),
+		);
+	}
+
+	/**
+	 * @dataProvider company_provider
+	 *
+	 * @param array  $settings Plugin settings.
+	 * @param string $country  Billing country.
+	 * @param string $expected Company left on the order.
+	 */
+	public function test_an_individual_keeps_a_company_only_when_woocommerce_asks_for_it( $settings, $country, $expected ) {
+		update_option( 'wcbcf_settings', $settings );
+
+		$order = $this->order_with_company( '1', $country );
+		$this->sync->clear_unused_details( $order );
+
+		$this->assertSame( $expected, $order->get_billing_company() );
+		$this->assertSame( $expected, $order->get_meta( '_wc_other/csbmw/company' ) );
+	}
+
+	public function test_a_legal_person_keeps_the_company() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$order = $this->order_with_company( '2' );
+		$this->sync->clear_unused_details( $order );
+
+		$this->assertSame( 'Abandonada Ltda', $order->get_billing_company() );
+		$this->assertSame( 'Abandonada Ltda', $order->get_meta( '_wc_other/csbmw/company' ) );
+	}
+
+	/**
+	 * A customer who ordered as an individual.
+	 *
+	 * @return WC_Customer
+	 */
+	protected function individual_with_company_details() {
+		$customer = new WC_Customer( $this->factory->user->create( array( 'role' => 'customer' ) ) );
+		$customer->set_billing_country( 'BR' );
+		$customer->set_billing_company( 'Abandonada Ltda' );
+		$customer->update_meta_data( 'billing_persontype', '1' );
+		$customer->update_meta_data( 'billing_cpf', 'value-cpf' );
+		$customer->update_meta_data( 'billing_cnpj', 'value-cnpj' );
+		$customer->update_meta_data( '_wc_other/csbmw/cnpj', 'value-cnpj' );
+		$customer->save();
+
+		return $customer;
+	}
+
+	public function test_a_customer_is_cleared_like_an_order() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$customer = $this->individual_with_company_details();
+		$this->sync->clear_unused_details( $customer );
+
+		$this->assertSame( 'value-cpf', $customer->get_meta( 'billing_cpf' ) );
+		$this->assertSame( '', $customer->get_meta( 'billing_cnpj' ) );
+		$this->assertSame( '', $customer->get_meta( '_wc_other/csbmw/cnpj' ) );
+		$this->assertSame( '', $customer->get_billing_company() );
+	}
+
+	public function test_an_account_address_save_clears_the_customer() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$customer = $this->individual_with_company_details();
+
+		$this->sync->clear_customer_details( $customer->get_id(), 'shipping' );
+		$this->assertSame( 'value-cnpj', ( new WC_Customer( $customer->get_id() ) )->get_meta( 'billing_cnpj' ) );
+
+		$this->sync->clear_customer_details( $customer->get_id(), 'billing' );
+		$saved = new WC_Customer( $customer->get_id() );
+
+		$this->assertSame( '', $saved->get_meta( 'billing_cnpj' ) );
+		$this->assertSame( '', $saved->get_billing_company() );
+	}
+
+	/**
+	 * The classic checkout copies the company into the session with no person
+	 * type beside it, so the order is what tells.
+	 *
+	 * @return void
+	 */
+	public function test_the_session_follows_the_order() {
+		update_option( 'wcbcf_settings', array( 'person_type' => 1 ) );
+
+		$original = WC()->customer;
+
+		WC()->initialize_session();
+		WC()->customer = new WC_Customer( 0, true );
+		WC()->customer->set_billing_country( 'BR' );
+		WC()->customer->set_billing_company( 'Abandonada Ltda' );
+
+		$this->sync->clear_session_details( $this->order_with_company( '2' ) );
+		$this->assertSame( 'Abandonada Ltda', WC()->customer->get_billing_company() );
+
+		$this->sync->clear_session_details( $this->order_with_company( '1' ) );
+		$this->assertSame( '', WC()->customer->get_billing_company() );
+		$this->assertSame( '', WC()->session->get( 'customer' )['company'] );
+
+		WC()->customer = $original;
 	}
 
 	public function test_values_are_capped_to_the_length_of_their_field() {

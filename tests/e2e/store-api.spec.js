@@ -290,9 +290,16 @@ test.describe( 'Store API validation cannot be skipped', () => {
 			'csbmw/persontype': '1',
 			'csbmw/cnpj': '<script>alert(1)</script>',
 			'csbmw/ie': 'JUNK-IE',
+			'csbmw/company': 'JUNK-COMPANY',
 		} );
 
 		expect( individual.accepted ).toBe( true );
+		expect(
+			wpCli( [
+				'eval',
+				`echo wc_get_order( ${ individual.orderId } )->get_billing_company();`,
+			] )
+		).toBe( '' );
 		expect(
 			orderMetaAll( individual.orderId, [
 				'_billing_cnpj',

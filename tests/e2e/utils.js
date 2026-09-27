@@ -278,10 +278,12 @@ function seedLegacyCustomer() {
 		$customer->set_billing_state( 'SP' );
 		$customer->set_billing_postcode( '01000-000' );
 		$customer->set_billing_phone( '(11) 3333-4444' );
+		$customer->set_billing_company( '' );
 		foreach ( array(
 			'billing_persontype'            => '1',
 			'billing_cpf'                   => '123.456.789-09',
 			'billing_rg'                    => '998877',
+			'billing_cnpj'                  => '',
 			'billing_birthdate'             => '1/1/1980',
 			'billing_gender'                => 'Female',
 			'billing_cellphone'             => '(11) 91111-2222',

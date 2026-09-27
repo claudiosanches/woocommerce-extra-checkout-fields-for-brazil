@@ -55,6 +55,31 @@ test.describe( 'Classic checkout', () => {
 		await expect( page.locator( '#billing_company_field' ) ).toBeVisible();
 	} );
 
+	test( 'keeps the company to legal persons across a country change', async ( {
+		page,
+	} ) => {
+		// Documents asked in every country, so no country change handler of
+		// the plugin's own runs.
+		const { only_brazil: omitted, ...everywhere } = ALL_FIELDS;
+		setSettings( everywhere );
+		await goToClassicCheckout( page );
+
+		const company = page.locator( '#billing_company_field' );
+
+		await page.selectOption( '#billing_persontype', '1' );
+		await page.selectOption( '#billing_country', 'PT' );
+		await expect( company ).toBeHidden();
+		await page.selectOption( '#billing_country', 'BR' );
+		await expect( company ).toBeHidden();
+
+		await page.selectOption( '#billing_persontype', '2' );
+		await page.selectOption( '#billing_country', 'PT' );
+		await page.selectOption( '#billing_country', 'BR' );
+		await expect( company ).toBeVisible();
+		await expect( company.locator( 'label .required' ) ).toBeVisible();
+		await expect( company.locator( 'label .optional' ) ).toBeHidden();
+	} );
+
 	test( 'leaves an optional RG unmarked and unrequired', async ( {
 		page,
 	} ) => {
@@ -280,6 +305,7 @@ test.describe( 'Classic checkout', () => {
 			'_billing_cpf',
 			'_billing_cnpj',
 			'_billing_ie',
+			'_billing_company',
 			'_billing_number',
 			'_billing_neighborhood',
 		] );
@@ -290,5 +316,11 @@ test.describe( 'Classic checkout', () => {
 		expect( meta._billing_neighborhood ).toBe( 'Bela Vista' );
 		expect( meta._billing_cnpj ).toBe( '' );
 		expect( meta._billing_ie ).toBe( '' );
+		expect( meta._billing_company ).toBe( '' );
+
+		// The session is what fills in the next checkout.
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await expect( page.locator( '#billing_company' ) ).toHaveValue( '' );
 	} );
 } );
