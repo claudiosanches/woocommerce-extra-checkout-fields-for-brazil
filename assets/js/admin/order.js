@@ -3,27 +3,41 @@
 import { bindMask } from '../shared/mask';
 import { bindNoNumber } from '../shared/no-number';
 import { bindHouseNumber } from '../shared/house-number';
-import {
-	isCellphone,
-	isCnpj,
-	isCpf,
-	isDate,
-	isPhone,
-	isPostcode,
-} from '../shared/validation';
+import { bindPhone, isPhoneNumber, rebasePhone } from '../shared/phone';
+import { isCnpj, isCpf, isDate, isPostcode } from '../shared/validation';
 import '../../scss/admin/admin.scss';
+
+const phoneParams = bmwShopOrderParams.phone || {};
+
+const addressCountry = ( group ) =>
+	jQuery( `#_${ group }_country` ).val() || '';
+
+/**
+ * A phone field, formatted and checked for the country of its address.
+ *
+ * @param {string} group Address group, billing or shipping.
+ * @return {Object} Field config.
+ */
+const phoneField = ( group ) => ( {
+	mask: ( input ) =>
+		bindPhone( input, () => addressCountry( group ), phoneParams ),
+	valid: ( value ) =>
+		isPhoneNumber( value, addressCountry( group ), phoneParams ),
+	group,
+} );
 
 const MASKED_FIELDS = {
 	_billing_cpf: { mask: 'cpf', valid: isCpf },
 	_billing_cnpj: { mask: 'cnpj', valid: isCnpj },
-	_billing_phone: { mask: 'phone', valid: isPhone },
-	_billing_cellphone: { mask: 'phone', valid: isCellphone },
+	_billing_phone: phoneField( 'billing' ),
+	_billing_cellphone: phoneField( 'billing' ),
+	_shipping_phone: phoneField( 'shipping' ),
 	_billing_birthdate: { mask: 'date', valid: isDate },
 	_billing_postcode: { mask: 'cep', valid: isPostcode },
 	_shipping_postcode: { mask: 'cep', valid: isPostcode },
 };
 
-function setupField( id, { mask, valid } ) {
+function setupField( id, { mask, valid, group } ) {
 	const input = document.getElementById( id );
 
 	if ( ! input ) {
@@ -40,8 +54,39 @@ function setupField( id, { mask, valid } ) {
 		input.classList.toggle( 'is-invalid', filled && ! ok );
 	};
 
-	bindMask( input, mask );
+	if ( 'function' === typeof mask ) {
+		mask( input );
+	} else {
+		bindMask( input, mask );
+	}
+
 	input.addEventListener( 'input', flag );
+
+	// A phone typed without a code keeps the country it was typed for.
+	// Loading a customer's details writes both at once, and that phone was
+	// already saved for the new country.
+	if ( group ) {
+		let previous = addressCountry( group );
+		let typed = input.value;
+
+		input.addEventListener( 'input', () => {
+			typed = input.value;
+		} );
+
+		jQuery( `#_${ group }_country` ).on( 'change', () => {
+			const next = addressCountry( group );
+
+			input.value = rebasePhone(
+				input.value,
+				typed === input.value ? previous : next,
+				next,
+				phoneParams
+			);
+			previous = next;
+			typed = input.value;
+			flag();
+		} );
+	}
 
 	// WooCommerce fills these fields from its own scripts and announces it with
 	// jQuery, which dispatches no native event, so the change is only heard by

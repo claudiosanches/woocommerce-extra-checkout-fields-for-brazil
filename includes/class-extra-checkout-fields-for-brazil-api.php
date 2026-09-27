@@ -128,6 +128,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$order_data['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 		$order_data['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
+		$order_data['billing_address']  = array_merge( $order_data['billing_address'] ?? array(), $this->order_phones( $order, 'billing' ) );
+		$order_data['shipping_address'] = array_merge( $order_data['shipping_address'] ?? array(), $this->order_phones( $order, 'shipping' ) );
+
 		// Shipping fields.
 		$order_data['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
 		$order_data['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
@@ -145,6 +148,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			$order_data['customer']['billing_address']['number']       = $order->get_meta( '_billing_number' );
 			$order_data['customer']['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 			$order_data['customer']['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
+
+			$order_data['customer']['billing_address']  = array_merge( $order_data['customer']['billing_address'] ?? array(), $this->order_phones( $order, 'billing' ) );
+			$order_data['customer']['shipping_address'] = array_merge( $order_data['customer']['shipping_address'] ?? array(), $this->order_phones( $order, 'shipping' ) );
 
 			// Customer shipping fields.
 			$order_data['customer']['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
@@ -181,6 +187,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$customer_data['billing_address']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
 		$customer_data['billing_address']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
 
+		$customer_data['billing_address']  = array_merge( $customer_data['billing_address'] ?? array(), $this->customer_phones( $customer, 'billing' ) );
+		$customer_data['shipping_address'] = array_merge( $customer_data['shipping_address'] ?? array(), $this->customer_phones( $customer, 'shipping' ) );
+
 		// Shipping fields.
 		$customer_data['shipping_address']['number']       = $customer->get_meta( 'shipping_number' );
 		$customer_data['shipping_address']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
@@ -214,6 +223,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->get_meta( 'billing_birthdate' ) );
 		$response->data['billing']['gender']       = substr( $customer->get_meta( 'billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
+
+		$response->data['billing']  = array_merge( $response->data['billing'], $this->customer_phones( $customer, 'billing' ) );
+		$response->data['shipping'] = array_merge( $response->data['shipping'], $this->customer_phones( $customer, 'shipping' ) );
 
 		// Shipping fields.
 		$response->data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
@@ -257,11 +269,52 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
+		$response->data['billing']  = array_merge( $response->data['billing'], $this->order_phones( $order, 'billing' ) );
+		$response->data['shipping'] = array_merge( $response->data['shipping'], $this->order_phones( $order, 'shipping' ) );
+
 		// Shipping fields.
 		$response->data['shipping']['number']       = $order->get_meta( '_shipping_number' );
 		$response->data['shipping']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
 
 		return $response;
+	}
+
+	/**
+	 * Phones of an order address in E.164, whatever format they were saved in.
+	 *
+	 * @param WC_Order $order Order.
+	 * @param string   $type  billing or shipping.
+	 *
+	 * @return array
+	 */
+	protected function order_phones( $order, $type ) {
+		$country = 'shipping' === $type ? $order->get_shipping_country() : $order->get_billing_country();
+		$phones  = array( 'phone_e164' => Extra_Checkout_Fields_For_Brazil_Phone::e164( 'shipping' === $type ? $order->get_shipping_phone() : $order->get_billing_phone(), $country ) );
+
+		if ( 'billing' === $type ) {
+			$phones['cellphone_e164'] = Extra_Checkout_Fields_For_Brazil_Phone::e164( $order->get_meta( '_billing_cellphone' ), $country );
+		}
+
+		return $phones;
+	}
+
+	/**
+	 * Phones of a customer address in E.164, whatever format they were saved in.
+	 *
+	 * @param WC_Customer $customer Customer.
+	 * @param string      $type     billing or shipping.
+	 *
+	 * @return array
+	 */
+	protected function customer_phones( $customer, $type ) {
+		$country = 'shipping' === $type ? $customer->get_shipping_country() : $customer->get_billing_country();
+		$phones  = array( 'phone_e164' => Extra_Checkout_Fields_For_Brazil_Phone::e164( 'shipping' === $type ? $customer->get_shipping_phone() : $customer->get_billing_phone(), $country ) );
+
+		if ( 'billing' === $type ) {
+			$phones['cellphone_e164'] = Extra_Checkout_Fields_For_Brazil_Phone::e164( $customer->get_meta( 'billing_cellphone' ), $country );
+		}
+
+		return $phones;
 	}
 
 	/**
@@ -272,62 +325,80 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return array
 	 */
 	public function addresses_schema( $properties ) {
-		$properties['billing']['properties']['number']        = array(
+		$properties['billing']['properties']['number']         = array(
 			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['neighborhood']  = array(
+		$properties['billing']['properties']['neighborhood']   = array(
 			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['persontype']    = array(
+		$properties['billing']['properties']['persontype']     = array(
 			'description' => __( 'Person type.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cpf']           = array(
+		$properties['billing']['properties']['cpf']            = array(
 			'description' => __( 'CPF.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['rg']            = array(
+		$properties['billing']['properties']['rg']             = array(
 			'description' => __( 'RG.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cnpj']          = array(
+		$properties['billing']['properties']['cnpj']           = array(
 			'description' => __( 'CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['ie']            = array(
+		$properties['billing']['properties']['ie']             = array(
 			'description' => __( 'IE.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['birthdate']     = array(
+		$properties['billing']['properties']['birthdate']      = array(
 			'description' => __( 'Birthdate.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['gender']        = array(
+		$properties['billing']['properties']['gender']         = array(
 			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['billing']['properties']['cellphone']     = array(
+		$properties['billing']['properties']['cellphone']      = array(
 			'description' => __( 'Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['shipping']['properties']['number']       = array(
+		$properties['billing']['properties']['phone_e164']     = array(
+			'description' => __( 'Phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['billing']['properties']['cellphone_e164'] = array(
+			'description' => __( 'Cell phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['shipping']['properties']['phone_e164']    = array(
+			'description' => __( 'Phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['shipping']['properties']['number']        = array(
 			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
 		);
-		$properties['shipping']['properties']['neighborhood'] = array(
+		$properties['shipping']['properties']['neighborhood']  = array(
 			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),

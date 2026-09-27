@@ -7,6 +7,7 @@ import { bindIeExempt } from '../shared/ie-exempt';
 import { bindNoNumber } from '../shared/no-number';
 import { bindHouseNumber } from '../shared/house-number';
 import { createAutofill } from '../shared/postcode';
+import { bindPhone, bindPhonePicker, rebasePhone } from '../shared/phone';
 import '../../scss/classic/classic.scss';
 
 /**
@@ -40,8 +41,7 @@ jQuery( function ( $ ) {
 		} );
 	};
 
-	const BILLING_MASKED =
-		'#billing_phone, #billing_cellphone, #billing_birthdate, #billing_postcode';
+	const BILLING_MASKED = '#billing_birthdate, #billing_postcode';
 
 	const bmwFrontEnd = {
 		init() {
@@ -85,6 +85,8 @@ jQuery( function ( $ ) {
 				this.maskGeneral();
 			}
 
+			this.phones( 'billing', [ 'billing_phone', 'billing_cellphone' ] );
+			this.phones( 'shipping', [ 'shipping_phone' ] );
 			bindIeExempt( document.getElementById( 'billing_ie' ) );
 			this.houseNumber( 'billing' );
 			this.houseNumber( 'shipping' );
@@ -101,6 +103,48 @@ jQuery( function ( $ ) {
 				this.autofill( 'billing' );
 				this.autofill( 'shipping' );
 			}
+		},
+
+		/**
+		 * Format an address's phones for its country, and offer the country
+		 * code picker.
+		 *
+		 * @param {string}   group Address group, billing or shipping.
+		 * @param {string[]} ids   Phone input ids.
+		 */
+		phones( group, ids ) {
+			const params = bmwPublicParams.phone || {};
+			const masked = 'yes' === bmwPublicParams.maskedinput;
+			const country = () => $( `#${ group }_country` ).val() || '';
+			const inputs = ids
+				.map( ( id ) => document.getElementById( id ) )
+				.filter( Boolean );
+			const syncs = inputs.map( ( input ) => {
+				if ( masked ) {
+					bindPhone( input, country, params );
+				}
+
+				return bindPhonePicker( input, { country, params } );
+			} );
+			let previous = country();
+
+			$( document.body ).on( 'change', `#${ group }_country`, () => {
+				const next = country();
+
+				if ( masked && next !== previous ) {
+					inputs.forEach( ( input ) => {
+						input.value = rebasePhone(
+							input.value,
+							previous,
+							next,
+							params
+						);
+					} );
+				}
+
+				previous = next;
+				syncs.forEach( ( sync ) => sync() );
+			} );
 		},
 
 		/**
@@ -299,7 +343,6 @@ jQuery( function ( $ ) {
 		},
 
 		maskBilling() {
-			mask( '#billing_phone, #billing_cellphone', 'phone' );
 			mask( '#billing_birthdate', 'date' );
 			mask( '#billing_postcode', 'cep' );
 		},

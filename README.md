@@ -33,6 +33,7 @@ Every field is optional to enable. Turn on only what your store actually needs, 
 * CPF and CNPJ are checked against their real check digits, so typos and made-up numbers are rejected before the order is placed. Both checks are optional.
 * The new alphanumeric CNPJ format is supported.
 * Input masks format CPF, CNPJ, postcode, birthdate, phone and cell phone while the customer types.
+* Phones from any country, with an optional country code picker. Brazilian numbers keep the format carriers expect, and the REST API also gives each number in E.164.
 * Mail check suggests a correction when an email address has a typo in the domain, such as `gmail.con`.
 
 ### Works with the block checkout ###
@@ -222,6 +223,9 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.
 - Fixed an individual's order keeping a company name typed before switching person type on the classic checkout, and the customer record and session keeping the documents and company of the person type left behind, which the next checkout filled in again. A company that follows WooCommerce's own setting is kept.
 - Fixed the "Exempt from State Registration" checkbox piling up on the block checkout, one copy for every person type change.
+- Phone and Cell phone now take numbers from any country. A number pasted with +55 is read as Brazilian, one starting with + keeps its country code, and a foreign address suggests its own code. Brazilian numbers are saved as (11) 98765-4321 on Brazilian addresses, or with +55 when the store picks that format, and numbers are checked for their country's length on WooCommerce 11.0 and later.
+- Added an optional country code picker inside Phone and Cell phone on both checkouts and My Account.
+- The REST API returns every phone in E.164 as `phone_e164` and `cellphone_e164`, whatever format it was saved in.
 - Fixed the account details form in My Account refusing to save for a Brazilian customer, because it asked for a CPF it never showed.
 - Fixed the company name missing from every Brazilian address the store renders, since the format the plugin registers replaces the one WooCommerce ships with.
 - Added the date mask to the Birthdate field on the order screen, where a date typed without it was stored as it stood.

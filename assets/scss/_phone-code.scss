@@ -1,0 +1,78 @@
+// The calling code picker, drawn inside the phone field to the left. A
+// transparent select lies over the flag and code, which keeps the native list
+// with its keyboard and screen reader support. The :not(#csbmw) raises it
+// over theme and WooCommerce field rules.
+
+.woocommerce-input-wrapper:has(> .wcbcf-phone-code) {
+	display: block;
+	position: relative;
+}
+
+.wc-block-components-text-input:has(> .wcbcf-phone-code) {
+	position: relative;
+
+	label:not(#csbmw) {
+		left: calc(var(--wcbcf-phone-code-width, 0px) + 24px);
+	}
+}
+
+.wcbcf-phone-code:not(#csbmw) {
+	align-items: center;
+	cursor: pointer;
+	display: flex;
+	left: 12px;
+	box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0;
+	padding-right: 10px;
+	position: absolute;
+	z-index: 1;
+
+	// A divider between the country and the number.
+	&::after {
+		background: currentcolor;
+		bottom: 25%;
+		content: "";
+		opacity: 0.2;
+		position: absolute;
+		right: 0;
+		top: 25%;
+		width: 1px;
+	}
+}
+
+.wcbcf-phone-code-label {
+	pointer-events: none;
+	white-space: nowrap;
+
+	&::after {
+		content: "\25BE";
+		font-size: 0.75em;
+		margin-left: 4px;
+		opacity: 0.6;
+	}
+}
+
+.wcbcf-phone-code-select:not(#csbmw) {
+	appearance: none;
+	cursor: pointer;
+	font-size: 16px;
+	height: 100%;
+	left: 0;
+	margin: 0;
+	opacity: 0;
+	padding: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.wcbcf-phone-code.is-anchored .wcbcf-phone-code-select:not(#csbmw) {
+	pointer-events: none;
+}
+
+// The select is invisible, so its keyboard focus shows on the flag.
+.wcbcf-phone-code:has(.wcbcf-phone-code-select:focus-visible) .wcbcf-phone-code-label {
+	outline: 2px solid currentcolor;
+	outline-offset: 2px;
+}
