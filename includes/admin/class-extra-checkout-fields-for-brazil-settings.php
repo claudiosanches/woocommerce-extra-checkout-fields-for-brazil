@@ -309,6 +309,31 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			$this->section_args( 'bmw-section-address', 'fields' )
 		);
 
+		// Country field option. Hidden rather than left out while no address
+		// is limited to Brazil, so saving keeps it.
+		$brazil_only = Extra_Checkout_Fields_For_Brazil::is_brazil_only( 'billing' ) || Extra_Checkout_Fields_For_Brazil::is_brazil_only( 'shipping' );
+
+		add_settings_field(
+			'country_field',
+			__( 'Country field', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'select_element_callback' ),
+			$option,
+			'address_section',
+			array(
+				'menu'        => $option,
+				'class'       => 'bmw-row-country-field' . ( $brazil_only ? '' : ' hidden' ),
+				'id'          => 'country_field',
+				'title'       => __( 'Country field', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => '',
+				'description' => __( 'For an address the store limits to Brazil, which WooCommerce shows as text on the classic checkout and as a list on the Checkout block. Brazil is still saved with the address, and WooCommerce\'s field returns once the store allows another country.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'options'     => array(
+					''       => __( 'Leave it to WooCommerce (default)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'text'   => __( 'Show Brazil as text', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'hidden' => __( 'Hide the field', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+			)
+		);
+
 		// Neighborhood is required option.
 		add_settings_field(
 			'neighborhood_required',

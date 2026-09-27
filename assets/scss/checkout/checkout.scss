@@ -19,6 +19,13 @@
 	flex: 1 0 calc(50% - 12px);
 }
 
+// WooCommerce takes the top margin off the country, expecting it first, but
+// it follows the name here.
+/* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
+.wc-block-checkout__form .wc-block-components-address-form__country:not(:first-child) .wc-blocks-components-select {
+	margin-top: 12px;
+}
+
 // Heads the documents and personal details in the contact step, as a step
 // title of WooCommerce's own. Only its place in the form is set here.
 .wcbcf-customer-details-title:not(#csbmw) {
@@ -58,3 +65,31 @@
 .wcbcf-customer-details-card ~ [class*="select-input-csbmw-"] {
 	display: none;
 }
+
+// The country of an address the store limits to Brazil, as the store chose to
+// show it. The select stays mounted, so the address keeps its country.
+/* stylelint-disable selector-class-pattern -- WooCommerce's class names. */
+.csbmw-billing-country-hidden #billing-fields .wc-block-components-address-form__country,
+.csbmw-shipping-country-hidden #shipping-fields .wc-block-components-address-form__country {
+	display: none;
+}
+
+.csbmw-billing-country-text #billing-fields .wc-block-components-address-form__country,
+.csbmw-shipping-country-text #shipping-fields .wc-block-components-address-form__country {
+	pointer-events: none;
+
+	.wc-blocks-components-select__label {
+		left: 0;
+	}
+
+	.wc-blocks-components-select__select {
+		border-color: transparent;
+		font-weight: 700;
+		padding-left: 0;
+	}
+
+	.wc-blocks-components-select__expand {
+		display: none;
+	}
+}
+/* stylelint-enable selector-class-pattern */

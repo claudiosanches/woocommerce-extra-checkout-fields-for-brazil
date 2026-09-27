@@ -46,6 +46,7 @@ interface BlocksParams {
 	postcodeUrl?: string;
 	noNumber?: string;
 	phone?: PhoneParams;
+	brazilOnly?: Group[];
 }
 
 interface CartAddressStore {
@@ -274,6 +275,46 @@ function setupPhonePickers(): void {
 }
 
 const countries: Partial< Record< Group, string > > = {};
+
+/**
+ * Put Brazil on an address that can take no other country. WooCommerce leaves
+ * it empty for a customer with no default location, and shipping takes the
+ * billing country, whichever it is. The field may be hidden, leaving the
+ * customer no way to pick it.
+ */
+function fillBrazilOnlyCountries(): void {
+	const cart = select( CART_STORE_KEY );
+
+	// Until then the cart holds placeholders, which say it needs shipping.
+	if ( ! cart.hasFinishedResolution( 'getCartData' ) ) {
+		return;
+	}
+
+	const store = dispatch( CART_STORE_KEY ) as CartAddressStore;
+	const needsShipping = cart.getNeedsShipping();
+	const sameAddress = select( CHECKOUT_STORE_KEY ).getUseShippingAsBilling();
+
+	( params.brazilOnly || [] ).forEach( ( group ) => {
+		if ( 'BR' === addressCountry( group ) ) {
+			return;
+		}
+
+		// A cart that ships nothing leaves its shipping address unchecked,
+		// and WooCommerce would ask for the state of a Brazilian one.
+		if ( 'shipping' === group && needsShipping ) {
+			store.setShippingAddress( { country: 'BR' } );
+
+			if ( sameAddress ) {
+				store.setBillingAddress( { country: 'BR' } );
+			}
+		}
+
+		// Billing copied from shipping follows it.
+		if ( 'billing' === group && ! ( needsShipping && sameAddress ) ) {
+			store.setBillingAddress( { country: 'BR' } );
+		}
+	} );
+}
 
 /**
  * Carry the phones over when an address changes country, so a number typed
@@ -826,6 +867,8 @@ function init(): void {
 		document.addEventListener( 'input', handlePhoneInput, true );
 	}
 
+	fillBrazilOnlyCountries();
+	subscribe( fillBrazilOnlyCountries, CART_STORE_KEY );
 	followAddressCountries();
 	subscribe( followAddressCountries, CART_STORE_KEY );
 	subscribe( followCustomerDetailErrors, VALIDATION_STORE_KEY );
