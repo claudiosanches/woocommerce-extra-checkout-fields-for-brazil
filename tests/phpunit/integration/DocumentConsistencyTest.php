@@ -147,11 +147,10 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 		);
 
 		return array(
-			'asked of legal persons'         => array( $asks, 'BR', '' ),
-			'following WooCommerce'          => array( array_merge( $asks, array( 'company' => 'woocommerce' ) ), 'BR', 'Abandonada Ltda' ),
-			'individuals only'               => array( array( 'person_type' => 2 ), 'BR', 'Abandonada Ltda' ),
-			'outside Brazil, asked there'    => array( $asks, 'PT', 'Abandonada Ltda' ),
-			'outside Brazil, asked anywhere' => array( array( 'person_type' => 1 ), 'PT', '' ),
+			'asked of legal persons' => array( $asks, 'BR', '' ),
+			'following WooCommerce'  => array( array_merge( $asks, array( 'company' => 'woocommerce' ) ), 'BR', 'Abandonada Ltda' ),
+			'individuals only'       => array( array( 'person_type' => 2 ), 'BR', 'Abandonada Ltda' ),
+			'outside Brazil'         => array( $asks, 'PT', '' ),
 		);
 	}
 
@@ -162,7 +161,7 @@ class DocumentConsistencyTest extends WP_UnitTestCase {
 	 * @param string $country  Billing country.
 	 * @param string $expected Company left on the order.
 	 */
-	public function test_an_individual_keeps_a_company_only_when_the_store_asks_everyone( $settings, $country, $expected ) {
+	public function test_an_individual_keeps_a_company_only_when_woocommerce_asks_for_it( $settings, $country, $expected ) {
 		update_option( 'wcbcf_settings', $settings );
 
 		$order = $this->order_with_company( '1', $country );

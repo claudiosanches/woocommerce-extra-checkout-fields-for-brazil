@@ -424,11 +424,7 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 
 		$unused = self::UNUSED_DOCUMENTS[ $selected ];
 
-		// Outside Brazil a Brazil-only store asks for no person type, and the
-		// company is WooCommerce's own field.
-		$asked = ! isset( $settings['only_brazil'] ) || 'BR' === $wc_object->get_billing_country();
-
-		if ( '1' === $selected && $asked && Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
+		if ( '1' === $selected && Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
 			$unused[] = 'company';
 		}
 
