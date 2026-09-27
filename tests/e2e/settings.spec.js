@@ -132,12 +132,24 @@ test.describe( 'Settings screen', () => {
 
 		const bar = page.locator( '#bmw-settings .submit' );
 
+		// The bar is drawn past both sides of the column, which must not
+		// make the page scroll sideways.
+		const scrollsSideways = () =>
+			page.evaluate(
+				() => document.documentElement.scrollWidth > window.innerWidth
+			);
+
 		await expect( bar ).toHaveClass( /bmw-is-stuck/ );
+		expect( await scrollsSideways() ).toBe( false );
 
 		// At the end of the tab it rests below the last card.
-		await bar.scrollIntoViewIfNeeded();
 		await page.mouse.wheel( 0, 5000 );
 		await expect( bar ).not.toHaveClass( /bmw-is-stuck/ );
+
+		await page.setViewportSize( { width: 390, height: 720 } );
+		await page.mouse.wheel( 0, -10000 );
+		await expect( bar ).toHaveClass( /bmw-is-stuck/ );
+		expect( await scrollsSideways() ).toBe( false );
 	} );
 
 	test( 'shows the layout the store really uses', async ( { page } ) => {

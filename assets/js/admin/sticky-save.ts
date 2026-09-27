@@ -2,7 +2,7 @@
  * Mark the save button's row while it sticks to the bottom of the screen.
  *
  * It sticks 1px past the edge, so it is stuck exactly when it is cut off at
- * the bottom.
+ * the bottom. The 0 threshold also catches it scrolling out of view above.
  *
  * @param bar Row holding the save button.
  * @return Stops watching.
@@ -26,7 +26,7 @@ export function watchStuck( bar: HTMLElement | null ): () => void {
 					entry.boundingClientRect.bottom > bottom
 			);
 		},
-		{ threshold: [ 1 ] }
+		{ threshold: [ 0, 1 ] }
 	);
 
 	observer.observe( bar );
