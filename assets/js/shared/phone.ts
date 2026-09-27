@@ -348,6 +348,30 @@ const flag = ( country: string ): string =>
 	);
 
 /**
+ * The chevron WooCommerce draws on its selects, WordPress's chevronDown,
+ * cropped to the arrow.
+ *
+ * @param doc Document.
+ * @return The icon.
+ */
+function chevron( doc: Document ): SVGSVGElement {
+	const icon = doc.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+	const path = doc.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
+
+	icon.setAttribute( 'class', 'wcbcf-phone-code-chevron' );
+	icon.setAttribute( 'viewBox', '6 10 12 7' );
+	icon.setAttribute( 'aria-hidden', 'true' );
+	icon.setAttribute( 'focusable', 'false' );
+	path.setAttribute(
+		'd',
+		'M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z'
+	);
+	icon.append( path );
+
+	return icon;
+}
+
+/**
  * The country picker already added for an input.
  *
  * @param input Phone input.
@@ -411,7 +435,7 @@ export function bindPhonePicker(
 	element.className = 'wcbcf-phone-code';
 	label.className = 'wcbcf-phone-code-label';
 	flagElement.className = 'wcbcf-phone-code-flag';
-	label.append( flagElement );
+	label.append( flagElement, chevron( doc ) );
 	label.setAttribute( 'aria-hidden', 'true' );
 	select.className = 'wcbcf-phone-code-select';
 	select.setAttribute(

@@ -27,8 +27,8 @@
 // Room for the picker is kept from the first paint, before the script adds
 // it, so the text and the floating label never shift. The body class says
 // the store offers it.
-$picker-width: 39px;
-$text-start: 60px;
+$picker-width: 47px;
+$text-start: 68px;
 
 // WooCommerce names the classic fields with underscores.
 /* stylelint-disable selector-id-pattern */
@@ -77,15 +77,11 @@ $text-start: 60px;
 }
 
 .wcbcf-phone-code-label {
+	align-items: center;
+	display: inline-flex;
+	line-height: 1;
 	pointer-events: none;
 	white-space: nowrap;
-
-	&::after {
-		content: "\25BE";
-		font-size: 0.75em;
-		margin-left: 4px;
-		opacity: 0.6;
-	}
 }
 
 .wcbcf-phone-code-select:not(#csbmw) {
@@ -108,6 +104,14 @@ $text-start: 60px;
 
 .wcbcf-phone-code-flag {
 	font-family: "OpenMoji Flags", sans-serif;
+}
+
+// The same size as on WooCommerce's selects, where the icon is 24px.
+.wcbcf-phone-code-chevron {
+	fill: currentcolor;
+	height: 7px;
+	margin-left: 4px;
+	width: 12px;
 }
 
 // The select is invisible, so its keyboard focus shows on the flag.
