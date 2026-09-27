@@ -718,6 +718,13 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 
 		if ( 'cnpj' === $key && isset( $settings['validate_cnpj'] ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $value ) ) {
 			$errors->add( 'woocommerce_invalid_cnpj', __( 'CNPJ is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+		} elseif ( 'cnpj' === $key ) {
+			$refusal = Extra_Checkout_Fields_For_Brazil_Cnpj::refusal( $value, $settings );
+
+			if ( '' !== $refusal ) {
+				/* translators: %s: why the CNPJ is refused, such as "is not active at Receita Federal". */
+				$errors->add( 'woocommerce_refused_cnpj', sprintf( __( 'CNPJ %s.', 'woocommerce-extra-checkout-fields-for-brazil' ), $refusal ) );
+			}
 		}
 
 		if ( 'ie' === $key && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $value ) ) {

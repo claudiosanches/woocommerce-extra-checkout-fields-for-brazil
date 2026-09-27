@@ -51,7 +51,7 @@ msgstr "Endereço de Cobrança do Cliente"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:197
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:805
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:809
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:942
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:948
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:123
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:239
 msgid "CPF"
@@ -76,7 +76,9 @@ msgstr "RG"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:228
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:824
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:828
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:946
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:833
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:952
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:957
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:125
 msgid "CNPJ"
 msgstr "CNPJ"
@@ -85,25 +87,25 @@ msgstr "CNPJ"
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:81
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:139
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:147
-#: includes/admin/views/html-order-billing-data.php:31
+#: includes/admin/views/html-order-billing-data.php:35
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:468
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:243
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:832
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:836
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:950
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:838
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:842
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:962
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:126
 msgid "State Registration"
 msgstr "Inscrição Estadual"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:79
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:95
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:196
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:203
-#: includes/admin/views/html-order-billing-data.php:39
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:222
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:229
+#: includes/admin/views/html-order-billing-data.php:43
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:510
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:255
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:787
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:925
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:931
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:127
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:243
 msgid "Birthdate"
@@ -111,9 +113,9 @@ msgstr "Data de Nascimento"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:86
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:105
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:211
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:218
-#: includes/admin/views/html-order-billing-data.php:43
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:237
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:244
+#: includes/admin/views/html-order-billing-data.php:47
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:529
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:268
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:128
@@ -143,7 +145,7 @@ msgstr "Bairro"
 #: includes/admin/class-extra-checkout-fields-for-brazil-customer.php:109
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:130
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:209
-#: includes/admin/views/html-order-billing-data.php:49
+#: includes/admin/views/html-order-billing-data.php:53
 #: includes/class-extra-checkout-fields-for-brazil-blocks.php:557
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:345
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:367
@@ -190,7 +192,7 @@ msgid "Company Name"
 msgstr "Razão Social"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-order.php:88
-#: includes/admin/views/html-order-billing-data.php:35
+#: includes/admin/views/html-order-billing-data.php:39
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:820
 msgid "Company"
 msgstr "Empresa"
@@ -204,7 +206,7 @@ msgstr "Telefone"
 msgid "Brazilian Market"
 msgstr "Brazilian Market"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:418
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:444
 msgid "Input helpers"
 msgstr "Auxiliares de preenchimento"
 
@@ -255,49 +257,49 @@ msgstr "Ajude este plugin avaliando com &#9733;&#9733;&#9733;&#9733;&#9733; no W
 msgid "Customer data"
 msgstr "Informações do cliente"
 
-#: includes/admin/views/html-order-billing-data.php:52
+#: includes/admin/views/html-order-billing-data.php:56
 msgid "Email"
 msgstr "E-mail"
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:329
-#: includes/class-extra-checkout-fields-for-brazil-api.php:397
+#: includes/class-extra-checkout-fields-for-brazil-api.php:354
+#: includes/class-extra-checkout-fields-for-brazil-api.php:422
 msgid "Number."
 msgstr "Número."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:334
-#: includes/class-extra-checkout-fields-for-brazil-api.php:402
+#: includes/class-extra-checkout-fields-for-brazil-api.php:359
+#: includes/class-extra-checkout-fields-for-brazil-api.php:427
 msgid "Neighborhood."
 msgstr "Bairro."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:339
+#: includes/class-extra-checkout-fields-for-brazil-api.php:364
 msgid "Person type."
 msgstr "Tipo de pessoa."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:344
+#: includes/class-extra-checkout-fields-for-brazil-api.php:369
 msgid "CPF."
 msgstr "CPF."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:349
+#: includes/class-extra-checkout-fields-for-brazil-api.php:374
 msgid "RG."
 msgstr "RG."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:354
+#: includes/class-extra-checkout-fields-for-brazil-api.php:379
 msgid "CNPJ."
 msgstr "CNPJ."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:359
+#: includes/class-extra-checkout-fields-for-brazil-api.php:384
 msgid "IE."
 msgstr "IE."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:364
+#: includes/class-extra-checkout-fields-for-brazil-api.php:389
 msgid "Birthdate."
 msgstr "Data de aniversário."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:369
+#: includes/class-extra-checkout-fields-for-brazil-api.php:394
 msgid "Gender."
 msgstr "Gênero."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:374
+#: includes/class-extra-checkout-fields-for-brazil-api.php:399
 msgid "Cell Phone."
 msgstr "Celular."
 
@@ -354,11 +356,11 @@ msgstr "CPF não é válido."
 msgid "CNPJ is not valid."
 msgstr "CNPJ não é válido."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:734
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:741
 msgid "Birthdate is not valid. Use the dd/mm/yyyy format."
 msgstr "Data de nascimento não é válida. Use o formato dd/mm/aaaa."
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:743
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:750
 msgid "Cell Phone is not valid."
 msgstr "Celular não é válido."
 
@@ -367,7 +369,7 @@ msgstr "Celular não é válido."
 msgid "Exempt from State Registration"
 msgstr "Isento de Inscrição Estadual"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:601
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:627
 #: build/classic.js:2
 msgid "required"
 msgstr "obrigatório"
@@ -377,7 +379,7 @@ msgstr "obrigatório"
 msgid "Address line 2"
 msgstr "Complemento"
 
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:877
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:883
 msgid "is not valid"
 msgstr "é inválido"
 
@@ -386,40 +388,40 @@ msgstr "é inválido"
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:813
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:820
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:824
-#: includes/class-extra-checkout-fields-for-brazil-front-end.php:832
+#: includes/class-extra-checkout-fields-for-brazil-front-end.php:838
 msgid "is a required field"
 msgstr "é um campo obrigatório"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:207
+#: includes/class-extra-checkout-fields-for-brazil.php:208
 #: build/blocks/shipping-calculator/index.js:1
 msgid "Settings"
 msgstr "Configurações"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:208
+#: includes/class-extra-checkout-fields-for-brazil.php:209
 msgid "Premium Support"
 msgstr "Suporte Premium"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:209
+#: includes/class-extra-checkout-fields-for-brazil.php:210
 msgid "Contribute"
 msgstr "Contribua"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:363
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:467
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:389
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:493
 msgid "Shipping"
 msgstr "Entrega"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:372
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:379
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:398
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:405
 msgid "Fill the address from the CEP"
 msgstr "Preencher o endereço pelo CEP"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:387
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:394
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:413
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:420
 msgid "Ask only for the CEP in the cart"
 msgstr "Pedir apenas o CEP no carrinho"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:402
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:409
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:428
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:435
 msgid "Shipping calculator on product pages"
 msgstr "Calculadora de frete nas páginas de produto"
 
@@ -437,11 +439,11 @@ msgstr "WooCommerce > Configurações > Geral"
 msgid "Sell and ship only to Brazil"
 msgstr "Vender e entregar apenas para o Brasil"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:536
 msgid "You do not have permission to change the store settings."
 msgstr "Você não tem permissão para alterar as configurações da loja."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:517
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:543
 msgid "The store now sells and ships only to Brazil."
 msgstr "A loja agora vende e entrega apenas para o Brasil."
 
@@ -596,7 +598,7 @@ msgstr "Lembra o CEP usado para calcular o frete."
 msgid "Get quote"
 msgstr "Consultar"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:411
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:437
 msgid "Block themes can place the Shipping Calculator block in the product template instead, which then takes its place."
 msgstr "Temas de blocos podem usar o bloco Calculadora de Frete no modelo de produto, que então ocupa o lugar desta opção."
 
@@ -670,28 +672,28 @@ msgstr "Pedir só a pessoas jurídicas, como obrigatório"
 msgid "Follow the WooCommerce setting"
 msgstr "Seguir a configuração do WooCommerce"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:239
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:584
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:610
 msgid "Disabled"
 msgstr "Desativado"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:585
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:611
 msgid "Optional"
 msgstr "Opcional"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:586
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:612
 msgid "Required"
 msgstr "Obrigatório"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:599
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:625
 msgid "hidden"
 msgstr "oculto"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:600
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:626
 msgid "optional"
 msgstr "opcional"
 
-#: includes/class-extra-checkout-fields-for-brazil-blocks.php:724
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:731
 msgid "State Registration is not valid."
 msgstr "Inscrição Estadual não é válida."
 
@@ -700,11 +702,11 @@ msgstr "Inscrição Estadual não é válida."
 msgid "Exempt"
 msgstr "Isento"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:465
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:491
 msgid "Fields"
 msgstr "Campos"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:466
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:492
 msgid "Features"
 msgstr "Recursos"
 
@@ -767,129 +769,129 @@ msgstr "Verificar o CNPJ"
 msgid "Rejects a CNPJ whose check digits do not match, which catches typos and made-up numbers."
 msgstr "Recusa um CNPJ cujos dígitos verificadores não conferem, o que barra erros de digitação e números inventados."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:187
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:213
 #: build/checkout.js:1
 msgid "Customer details"
 msgstr "Dados do cliente"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:204
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:230
 msgid "Asked of every customer, and refused unless it is a real date."
 msgstr "Pedida a todos os clientes e recusada se não for uma data válida."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:219
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:245
 msgid "Asked of every customer, picked from a list."
 msgstr "Pedido a todos os clientes, escolhido em uma lista."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:226
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:233
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:252
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:259
 msgid "Cell phone"
 msgstr "Celular"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:234
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:260
 msgid "A cell phone field of its own on the billing form, or the Phone field renamed."
 msgstr "Um campo de celular próprio no formulário de cobrança, ou o campo Telefone renomeado."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:236
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:262
 msgid "Separate field, optional"
 msgstr "Campo separado, opcional"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:237
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:263
 msgid "Separate field, required"
 msgstr "Campo separado, obrigatório"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:238
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:264
 msgid "Rename the Phone field to Cell phone"
 msgstr "Renomear o campo Telefone para Celular"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:280
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:306
 msgid "Address"
 msgstr "Endereço"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:289
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:296
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:315
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:322
 msgid "Require the neighborhood"
 msgstr "Exigir o bairro"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:297
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:323
 msgid "Makes Neighborhood a required field on billing and shipping addresses."
 msgstr "Torna o Bairro obrigatório nos endereços de cobrança e de entrega."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:334
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:360
 msgid "Layout"
 msgstr "Disposição"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:343
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:350
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:369
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:376
 msgid "Field layout"
 msgstr "Disposição dos campos"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:354
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:380
 msgid "Side by side, two fields per row"
 msgstr "Lado a lado, dois campos por linha"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:355
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:381
 msgid "Full width, one field per row"
 msgstr "Largura total, um campo por linha"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:380
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:406
 msgid "Fills in the street, neighborhood, city and state once the customer enters a CEP, at checkout and in My Account."
 msgstr "Preenche rua, bairro, cidade e estado assim que o cliente informa o CEP, no checkout e em Minha Conta."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:395
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:421
 msgid "The cart shipping calculator asks only for the CEP and fills in the state and city from it. The cart block gets a calculator of its own."
 msgstr "A calculadora de frete do carrinho pede apenas o CEP e preenche o estado e a cidade a partir dele. O bloco de carrinho ganha uma calculadora própria."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:410
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:436
 msgid "Shows the shipping calculator below the add to cart button."
 msgstr "Exibe a calculadora de frete abaixo do botão de adicionar ao carrinho."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:427
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:434
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:453
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:460
 msgid "Suggest email corrections"
 msgstr "Sugerir correções de e-mail"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:435
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:461
 msgid "Offers a fix when the email domain looks mistyped, such as gmail.con."
 msgstr "Sugere uma correção quando o domínio do e-mail parece digitado errado, como gmail.con."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:442
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:449
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:468
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:475
 msgid "Format fields while typing"
 msgstr "Formatar os campos durante a digitação"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:450
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:476
 msgid "Adds masks to the CPF, CNPJ, CEP, birthdate, phone and cell phone fields."
 msgstr "Adiciona máscaras aos campos de CPF, CNPJ, CEP, data de nascimento, telefone e celular."
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:607
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:633
 #, php-format
 msgid "Asking legal persons only makes the field required for them and hides it from individuals. Otherwise WooCommerce's setting applies, currently %s, which is changed in the checkout page editor or in the Customizer."
 msgstr "Pedir apenas a pessoas jurídicas torna o campo obrigatório para elas e o esconde de pessoas físicas. Caso contrário vale a configuração do WooCommerce, hoje %s, que se altera no editor da página de checkout ou no Personalizador."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:618
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:644
 msgid "How the classic checkout and the My Account address forms arrange the fields. Pick full width if they look broken in your theme."
 msgstr "Como o checkout clássico e os formulários de endereço de Minha Conta organizam os campos. Escolha largura total se eles aparecerem quebrados no seu tema."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:621
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:647
 msgid "Your checkout page uses the Checkout block, which arranges its own fields, so this changes only the My Account address forms."
 msgstr "Sua página de checkout usa o bloco Finalizar compra, que organiza os próprios campos, então isto muda apenas os formulários de endereço de Minha Conta."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:303
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:310
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:329
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:336
 msgid "Offer a No number option"
 msgstr "Oferecer a opção Sem número"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:311
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:337
 msgid "Adds a No number checkbox inside the Number field, for addresses without a house number."
 msgstr "Adiciona uma caixa Sem número dentro do campo Número, para endereços sem número."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:317
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:324
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:343
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:350
 msgid "No number value"
 msgstr "Valor para sem número"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:326
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:352
 msgid "What the Number field holds when No number is ticked, such as S/N or N/A."
 msgstr "O que o campo Número recebe quando Sem número é marcado, como S/N ou N/A."
 
@@ -907,38 +909,38 @@ msgstr "O número aceita apenas dígitos."
 msgid "Number accepts digits only. Tick No number for an address without one."
 msgstr "O número aceita apenas dígitos. Marque Sem número para um endereço sem número."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:246
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:253
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:272
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:279
 msgid "Brazilian phone format"
 msgstr "Formato de telefone brasileiro"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:255
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:281
 msgid "How Phone and Cell phone show and save a Brazilian number on a Brazilian address. Other numbers always keep their country code. The REST API also returns each number as +5511987654321."
 msgstr "Como Telefone e Celular exibem e salvam um número brasileiro em um endereço brasileiro. Os demais números sempre mantêm o código do país. A API REST também retorna cada número como +5511987654321."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:257
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:283
 msgid "(11) 98765-4321, without the country code"
 msgstr "(11) 98765-4321, sem o código do país"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:258
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:284
 msgid "+55 (11) 98765-4321, with the country code"
 msgstr "+55 (11) 98765-4321, com o código do país"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:272
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:291
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:298
 msgid "Offer a country code picker"
 msgstr "Oferecer um seletor de código do país"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:273
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:299
 msgid "Adds a country list inside Phone and Cell phone, set to the address country. Without it, customers type + and the code for a number from another country."
 msgstr "Adiciona uma lista de países dentro de Telefone e Celular, definida pelo país do endereço. Sem ela, o cliente digita + e o código para um número de outro país."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:379
-#: includes/class-extra-checkout-fields-for-brazil-api.php:391
+#: includes/class-extra-checkout-fields-for-brazil-api.php:404
+#: includes/class-extra-checkout-fields-for-brazil-api.php:416
 msgid "Phone in E.164, such as +5511987654321. Empty when it is not a complete number."
 msgstr "Telefone em E.164, como +5511987654321. Vazio quando não é um número completo."
 
-#: includes/class-extra-checkout-fields-for-brazil-api.php:385
+#: includes/class-extra-checkout-fields-for-brazil-api.php:410
 msgid "Cell phone in E.164, such as +5511987654321. Empty when it is not a complete number."
 msgstr "Celular em E.164, como +5511987654321. Vazio quando não é um número completo."
 
@@ -946,3 +948,92 @@ msgstr "Celular em E.164, como +5511987654321. Vazio quando não é um número c
 #: build/classic.js:1
 msgid "Country code"
 msgstr "Código do país"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:186
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:194
+#: includes/admin/views/html-order-billing-data.php:31
+#: includes/admin/views/html-privacy-policy.php:17
+msgid "CNPJ registration"
+msgstr "Situação do CNPJ"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:203
+msgid "Do not look it up"
+msgstr "Não consultar"
+
+#: includes/admin/views/html-privacy-policy.php:16
+msgid "This text applies when the CNPJ registration lookup is turned on."
+msgstr "Este texto se aplica quando a consulta da situação do CNPJ está ativada."
+
+#: includes/admin/views/html-privacy-policy.php:18
+msgid "When you place an order or save your address as a company, we send the CNPJ, and nothing else about you, to BrasilAPI (brasilapi.com.br) and, when it does not answer, OpenCNPJ (opencnpj.org), to check its registration at Receita Federal. The result is kept with the order."
+msgstr "Quando você faz um pedido ou salva seu endereço como empresa, enviamos o CNPJ, e nada mais sobre você, para a BrasilAPI (brasilapi.com.br) e, quando ela não responde, para a OpenCNPJ (opencnpj.org), para consultar a situação cadastral na Receita Federal. O resultado fica guardado com o pedido."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:444
+msgid "CNPJ registration found when the order was placed, or null when it was not looked up or the CNPJ changed since."
+msgstr "Situação do CNPJ encontrada quando o pedido foi feito, ou null quando não foi consultada ou o CNPJ mudou desde então."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:450
+msgid "active, inactive, not_found, or unavailable when no service answered."
+msgstr "active, inactive, not_found, ou unavailable quando nenhum serviço respondeu."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:455
+msgid "Registration situation at Receita Federal, such as ATIVA or BAIXADA. Empty unless found."
+msgstr "Situação cadastral na Receita Federal, como ATIVA ou BAIXADA. Vazia quando não encontrado."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:459
+msgid "Service that answered, such as brasilapi or opencnpj."
+msgstr "Serviço que respondeu, como brasilapi ou opencnpj."
+
+#: includes/class-extra-checkout-fields-for-brazil-api.php:463
+msgid "When it was looked up, in UTC."
+msgstr "Quando foi consultado, em UTC."
+
+#. translators: %s: why the CNPJ is refused, such as "is not active at Receita Federal".
+#: includes/class-extra-checkout-fields-for-brazil-blocks.php:726
+#, php-format
+msgid "CNPJ %s."
+msgstr "CNPJ %s."
+
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:345
+msgid "is not active at Receita Federal"
+msgstr "não está ativo na Receita Federal"
+
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:353
+msgid "was not found at Receita Federal"
+msgstr "não foi encontrado na Receita Federal"
+
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:357
+msgid "could not be checked right now. Try again in a few minutes"
+msgstr "não pôde ser consultado agora. Tente novamente em alguns minutos"
+
+#. translators: 1: registration situation, such as ATIVA or BAIXADA, 2: service, 3: date.
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:423
+#, php-format
+msgid "%1$s at Receita Federal, checked through %2$s on %3$s"
+msgstr "%1$s na Receita Federal, consultado via %2$s em %3$s"
+
+#. translators: %s: date.
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:426
+#, php-format
+msgid "Not found at Receita Federal, checked on %s"
+msgstr "Não encontrado na Receita Federal, consultado em %s"
+
+#. translators: %s: date.
+#: includes/class-extra-checkout-fields-for-brazil-cnpj.php:429
+#, php-format
+msgid "Not checked, no service answered on %s"
+msgstr "Não consultado, nenhum serviço respondeu em %s"
+
+#. translators: 1: BrasilAPI link, 2: OpenCNPJ link.
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:198
+#, php-format
+msgid "Looks the CNPJ up at Receita Federal through %1$s, or %2$s when it does not answer, and keeps the result on the order. Both update monthly, so a company registered in the last weeks is not found yet. Refusing inactive CNPJs accepts one that is not found or could not be checked. Neither option proves the customer represents the company."
+msgstr "Consulta o CNPJ na Receita Federal via %1$s, ou via %2$s quando a primeira não responde, e guarda o resultado no pedido. As duas são atualizadas mensalmente, então uma empresa aberta nas últimas semanas ainda não é encontrada. Recusar CNPJs inativos aceita um que não foi encontrado ou não pôde ser consultado. Nenhuma das opções prova que o cliente representa a empresa."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:204
+msgid "Refuse inactive CNPJs"
+msgstr "Recusar CNPJs inativos"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:205
+msgid "Accept only active CNPJs"
+msgstr "Aceitar apenas CNPJs ativos"

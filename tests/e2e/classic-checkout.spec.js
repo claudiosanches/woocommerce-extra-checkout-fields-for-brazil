@@ -324,6 +324,39 @@ test.describe( 'Classic checkout', () => {
 		await expect( page.locator( '#billing_company' ) ).toHaveValue( '' );
 	} );
 
+	test( 'refuses a CNPJ no longer active at Receita Federal', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, cnpj_lookup: 'active' } );
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await page.fill( '#billing_company', 'Empresa Ltda' );
+		await page.fill( '#billing_cnpj', '19131243000197' );
+		await page.fill( '#billing_ie', '110042490114' );
+		await fillCommonFields( page );
+		await waitForClassicCheckoutIdle( page );
+
+		await page.click( '#place_order' );
+
+		await expect(
+			page.locator(
+				'.woocommerce-error li[data-id="billing_cnpj"], .wc-block-components-notice-banner.is-error[data-id="billing_cnpj"]'
+			)
+		).toContainText( 'CNPJ is not active at Receita Federal.', {
+			timeout: 30_000,
+		} );
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
+
+		await page.fill( '#billing_cnpj', '11222333000181' );
+		await waitForClassicCheckoutIdle( page );
+		await page.click( '#place_order' );
+		await page.waitForURL( /order-received/, { timeout: 45_000 } );
+
+		expect(
+			orderMetaAll( orderIdFromUrl( page.url() ), [ '_billing_cnpj' ] )
+		).toEqual( { _billing_cnpj: VALID.cnpj } );
+	} );
+
 	test( 'offers No number only when the store turns it on', async ( {
 		page,
 	} ) => {

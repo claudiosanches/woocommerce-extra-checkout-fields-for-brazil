@@ -32,6 +32,7 @@ Every field is optional to enable. Turn on only what your store actually needs, 
 
 * CPF and CNPJ are checked against their real check digits, so typos and made-up numbers are rejected before the order is placed. Both checks are optional.
 * The new alphanumeric CNPJ format is supported.
+* Optional CNPJ registration lookup refuses companies that are no longer active at Receita Federal.
 * Input masks format CPF, CNPJ, postcode, birthdate, phone and cell phone while the customer types.
 * Phones from any country, with an optional country code picker. Brazilian numbers keep the format carriers expect, and the REST API also gives each number in E.164.
 * Mail check suggests a correction when an email address has a typo in the domain, such as `gmail.con`.
@@ -73,6 +74,14 @@ When the address autofill here is on, it replaces the one in WooCommerce Correio
 Thanks to [ViaCEP](https://viacep.com.br/) and [BrasilAPI](https://brasilapi.com.br/) for their free CEP lookup services.
 
 A CEP that is not yet in the database, and that WooCommerce Correios could not find, is sent from your store's server to ViaCEP, and to BrasilAPI when ViaCEP does not answer. Only the CEP is sent, and only when a customer uses one of the shipping calculators or has an address filled from the CEP.
+
+### CNPJ registration lookup ###
+
+Off by default. When turned on under Fields, the CNPJ of a company placing an order or saving its address in My Account is sent from your store's server to [BrasilAPI](https://brasilapi.com.br/), and to [OpenCNPJ](https://opencnpj.org/) when BrasilAPI does not answer. Only the CNPJ is sent. Both publish Receita Federal's open data, which is updated monthly.
+
+A CNPJ found inactive (NULA, SUSPENSA, INAPTA or BAIXADA) is refused. A CNPJ that is not found, which happens for companies registered in the last weeks, or that could not be checked because neither service answered, is accepted unless the store chooses to accept only CNPJs found active. The result is kept on the order and shown on the order screen.
+
+The check digits and the registration say that a CNPJ exists and is active. Neither proves that the customer represents the company.
 
 ### Privacy ###
 
@@ -195,6 +204,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - Added a Customer data section to the order confirmation, the order view in My Account and the order emails, listing the documents, birthdate, gender and cell phone apart from WooCommerce's additional information. Block themes get it as a Customer Data block in the order confirmation template, which can be moved or removed in the Site Editor.
 - Fields filled in on the block checkout keep being saved to the historic meta keys (`_billing_cpf`, `_billing_number` and so on), preserving compatibility with gateways, ERPs and other integrations.
 - Added an "Exempt from State Registration" checkbox, which fills the field with ISENTO for companies that have no state registration. (Made possible with help from [Matthieuhal](https://github.com/Matthieuhal)).
+- Added an optional CNPJ registration lookup through BrasilAPI and OpenCNPJ, which refuses inactive CNPJs, or accepts only CNPJs found active, and keeps the result on the order.
 - Added support for the alphanumeric CNPJ. (Made possible with help from [Jonathan Afranio](https://github.com/jonathanafranio)).
 - Added masks and validation to the Brazilian fields on the admin order screen. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).
 - Fixed the Brazilian fields not working on the admin order screen when High-Performance Order Storage is enabled, and the person type not switching after the customer autofill. (Made possible with help from [Tiago Sartor](https://github.com/tiago-sartor)).

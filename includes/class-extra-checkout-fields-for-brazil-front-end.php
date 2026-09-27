@@ -826,6 +826,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 				if ( isset( $settings['validate_cnpj'] ) && ! empty( $billing_cnpj ) && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $billing_cnpj ) ) {
 					$errors->add( 'billing_cnpj_invalid', $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), array( 'id' => 'billing_cnpj' ) );
+				} else {
+					$refusal = Extra_Checkout_Fields_For_Brazil_Cnpj::refusal( $billing_cnpj, $settings );
+
+					if ( '' !== $refusal ) {
+						$errors->add( 'billing_cnpj_refused', sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), $refusal ), array( 'id' => 'billing_cnpj' ) );
+					}
 				}
 
 				if ( 'required' === Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', $settings ) && empty( $billing_ie ) ) {
@@ -944,6 +950,12 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 
 		if ( $company && isset( $settings['validate_cnpj'] ) && '' !== $cnpj && ! Extra_Checkout_Fields_For_Brazil_Validation::is_cnpj( $cnpj ) ) {
 			wc_add_notice( $this->invalid_field_message( __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ) ), 'error', array( 'id' => 'billing_cnpj' ) );
+		} elseif ( $company ) {
+			$refusal = Extra_Checkout_Fields_For_Brazil_Cnpj::refusal( $cnpj, $settings );
+
+			if ( '' !== $refusal ) {
+				wc_add_notice( sprintf( '<strong>%s</strong> %s.', __( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ), $refusal ), 'error', array( 'id' => 'billing_cnpj' ) );
+			}
 		}
 
 		if ( $company && '' !== $ie && ! Extra_Checkout_Fields_For_Brazil_Validation::is_ie( $ie ) ) {

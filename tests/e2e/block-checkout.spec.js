@@ -385,6 +385,41 @@ test.describe( 'Block checkout', () => {
 		expect( orderIdFromUrl( page.url() ) ).toBeNull();
 	} );
 
+	test( 'refuses a CNPJ no longer active at Receita Federal', async ( {
+		page,
+	} ) => {
+		setSettings( { ...ALL_FIELDS, cnpj_lookup: 'active' } );
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await fillCommonFields( page );
+		await page.fill( field( 'company' ), 'Acme Comercio Ltda' );
+		await page.fill( field( 'ie' ), '110042490114' );
+		await page.fill( field( 'cnpj' ), '19.131.243/0001-97' );
+
+		await placeOrder( page );
+
+		await expect( page.locator( ERROR_BANNER ) ).toContainText(
+			'CNPJ is not active at Receita Federal.'
+		);
+		expect( orderIdFromUrl( page.url() ) ).toBeNull();
+
+		await page.fill( field( 'cnpj' ), VALID.cnpj );
+		await page.waitForTimeout( 2000 );
+		await page.click(
+			'button.wc-block-components-checkout-place-order-button'
+		);
+		await page.waitForURL( /order-received/, { timeout: 45_000 } );
+
+		expect(
+			wpCli( [
+				'eval',
+				`echo wc_get_order( ${ orderIdFromUrl(
+					page.url()
+				) } )->get_meta( '_billing_cnpj_lookup' )['status'];`,
+			] )
+		).toBe( 'active' );
+	} );
+
 	test( 'fills the State Registration with ISENTO from the exempt box', async ( {
 		page,
 	} ) => {
