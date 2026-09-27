@@ -274,13 +274,16 @@ class SettingsMatrixTest extends WP_UnitTestCase {
 			}
 		}
 
-		$this->assertTrue( $fields['csbmw/number']['required'], 'number should be required' );
+		// Both apply to Brazilian addresses only, so they carry a rule.
+		$this->assertIsArray( $fields['csbmw/number']['required'], 'number should be required in Brazil' );
+		$this->assertIsArray( $fields['csbmw/number']['hidden'], 'number should be hidden abroad' );
+		$this->assertIsArray( $fields['csbmw/neighborhood']['hidden'], 'neighborhood should be hidden abroad' );
 
 		if ( $has( 'cellphone' ) ) {
 			$this->assertSame( '2' === $cell_phone, $fields['csbmw/cellphone']['required'], 'cellphone requiredness is wrong' );
 		}
 
-		$this->assertSame( '1' === $neighborhood_required, $fields['csbmw/neighborhood']['required'], 'neighborhood requiredness is wrong' );
+		$this->assertSame( '1' === $neighborhood_required, is_array( $fields['csbmw/neighborhood']['required'] ), 'neighborhood requiredness is wrong' );
 
 		// Number sits right after address line 1 and neighborhood after address
 		// line 2, matching the order the classic checkout has always used.
