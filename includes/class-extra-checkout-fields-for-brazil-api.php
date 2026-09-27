@@ -28,6 +28,7 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		add_filter( 'woocommerce_rest_prepare_shop_order_object', array( $this, 'orders_response' ), 100, 2 );
 		add_filter( 'woocommerce_rest_customer_schema', array( $this, 'addresses_schema' ), 100 );
 		add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'addresses_schema' ), 100 );
+		add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'orders_schema' ), 100 );
 	}
 
 	/**
@@ -269,6 +270,8 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
+		$response->data['billing']['cnpj_lookup'] = $this->order_cnpj_lookup( $order );
+
 		$response->data['billing']  = array_merge( $response->data['billing'], $this->order_phones( $order, 'billing' ) );
 		$response->data['shipping'] = array_merge( $response->data['shipping'], $this->order_phones( $order, 'shipping' ) );
 
@@ -277,6 +280,28 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['shipping']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
 
 		return $response;
+	}
+
+	/**
+	 * Registration found for an order's CNPJ.
+	 *
+	 * @param WC_Order $order Order.
+	 *
+	 * @return array|null
+	 */
+	protected function order_cnpj_lookup( $order ) {
+		$result = Extra_Checkout_Fields_For_Brazil_Cnpj::order_result( $order );
+
+		if ( ! $result ) {
+			return null;
+		}
+
+		return array(
+			'status'     => $result['status'],
+			'situation'  => $result['situation'],
+			'provider'   => $result['provider'],
+			'checked_at' => $result['checked_at'],
+		);
 	}
 
 	/**
@@ -402,6 +427,44 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+		);
+
+		return $properties;
+	}
+
+	/**
+	 * Add the fields only orders have to the schema.
+	 *
+	 * @param array $properties Schema properties.
+	 *
+	 * @return array
+	 */
+	public function orders_schema( $properties ) {
+		$properties['billing']['properties']['cnpj_lookup'] = array(
+			'description' => __( 'CNPJ registration found when the order was placed, or null when it was not looked up or the CNPJ changed since.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => array( 'object', 'null' ),
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+			'properties'  => array(
+				'status'     => array(
+					'description' => __( 'active, inactive, not_found, or unavailable when no service answered.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+					'enum'        => array( 'active', 'inactive', 'not_found', 'unavailable' ),
+				),
+				'situation'  => array(
+					'description' => __( 'Registration situation at Receita Federal, such as ATIVA or BAIXADA. Empty unless found.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+				),
+				'provider'   => array(
+					'description' => __( 'Service that answered, such as brasilapi or opencnpj.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+				),
+				'checked_at' => array(
+					'description' => __( 'When it was looked up, in UTC.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+					'format'      => 'date-time',
+				),
+			),
 		);
 
 		return $properties;

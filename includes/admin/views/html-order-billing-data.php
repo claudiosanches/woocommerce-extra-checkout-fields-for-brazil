@@ -26,6 +26,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php if ( ( 2 === intval( $order->get_meta( '_billing_persontype' ) ) && 1 === $person_type ) || 3 === $person_type ) : ?>
 				<strong><?php esc_html_e( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_company() ); ?><br />
 				<strong><?php esc_html_e( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cnpj' ) ); ?><br />
+				<?php $cnpj_lookup = Extra_Checkout_Fields_For_Brazil_Cnpj::order_result( $order ); ?>
+				<?php if ( $cnpj_lookup ) : ?>
+					<strong><?php esc_html_e( 'CNPJ registration', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( Extra_Checkout_Fields_For_Brazil_Cnpj::describe( $cnpj_lookup ) ); ?><br />
+				<?php endif; ?>
 
 				<?php if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', (array) $settings ) ) : ?>
 					<strong><?php esc_html_e( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_ie' ) ); ?><br />

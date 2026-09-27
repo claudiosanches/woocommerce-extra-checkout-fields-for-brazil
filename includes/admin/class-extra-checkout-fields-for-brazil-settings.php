@@ -181,6 +181,32 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		add_settings_field(
+			'cnpj_lookup',
+			__( 'CNPJ registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'select_element_callback' ),
+			$option,
+			'documents_section',
+			array(
+				'menu'        => $option,
+				'class'       => 'bmw-row-cnpj-lookup',
+				'id'          => 'cnpj_lookup',
+				'title'       => __( 'CNPJ registration', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => 'off',
+				'description' => sprintf(
+					/* translators: 1: BrasilAPI link, 2: OpenCNPJ link. */
+					__( 'Looks the CNPJ up at Receita Federal through %1$s, or %2$s when it does not answer, and keeps the result on the order. Both update monthly, so a company registered in the last weeks is not found yet. Refusing inactive CNPJs accepts one that is not found or could not be checked. Neither option proves the customer represents the company.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'<a href="https://brasilapi.com.br/" target="_blank" rel="noopener noreferrer">BrasilAPI</a>',
+					'<a href="https://opencnpj.org/" target="_blank" rel="noopener noreferrer">OpenCNPJ</a>'
+				),
+				'options'     => array(
+					'off'    => __( 'Do not look it up', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'active' => __( 'Refuse inactive CNPJs', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'strict' => __( 'Accept only active CNPJs', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+			)
+		);
+
 		// Customer details section.
 		add_settings_section(
 			'details_section',

@@ -12,9 +12,10 @@ const APPLIES_TO = {
 		'ie',
 		'validate-cpf',
 		'validate-cnpj',
+		'cnpj-lookup',
 	],
 	2: [ 'only-brazil', 'rg', 'validate-cpf' ],
-	3: [ 'only-brazil', 'company', 'ie', 'validate-cnpj' ],
+	3: [ 'only-brazil', 'company', 'ie', 'validate-cnpj', 'cnpj-lookup' ],
 };
 
 // Every row the selection governs, so none is left behind by a setting that

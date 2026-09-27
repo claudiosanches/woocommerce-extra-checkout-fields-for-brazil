@@ -27,6 +27,7 @@ test.describe( 'Settings screen', () => {
 		await expect( row( page, 'ie' ) ).toBeHidden();
 		await expect( row( page, 'validate-cpf' ) ).toBeHidden();
 		await expect( row( page, 'validate-cnpj' ) ).toBeHidden();
+		await expect( row( page, 'cnpj-lookup' ) ).toBeHidden();
 
 		await page.selectOption( '#person_type', '1' );
 		await expect( row( page, 'only-brazil' ) ).toBeVisible();
@@ -34,6 +35,7 @@ test.describe( 'Settings screen', () => {
 		await expect( row( page, 'ie' ) ).toBeVisible();
 		await expect( row( page, 'validate-cpf' ) ).toBeVisible();
 		await expect( row( page, 'validate-cnpj' ) ).toBeVisible();
+		await expect( row( page, 'cnpj-lookup' ) ).toBeVisible();
 
 		// Individuals have no CNPJ to check, and legal persons no CPF.
 		await page.selectOption( '#person_type', '2' );
@@ -42,6 +44,7 @@ test.describe( 'Settings screen', () => {
 		await expect( row( page, 'ie' ) ).toBeHidden();
 		await expect( row( page, 'validate-cpf' ) ).toBeVisible();
 		await expect( row( page, 'validate-cnpj' ) ).toBeHidden();
+		await expect( row( page, 'cnpj-lookup' ) ).toBeHidden();
 
 		await page.selectOption( '#person_type', '3' );
 		await expect( row( page, 'company' ) ).toBeVisible();
@@ -49,6 +52,7 @@ test.describe( 'Settings screen', () => {
 		await expect( row( page, 'ie' ) ).toBeVisible();
 		await expect( row( page, 'validate-cpf' ) ).toBeHidden();
 		await expect( row( page, 'validate-cnpj' ) ).toBeVisible();
+		await expect( row( page, 'cnpj-lookup' ) ).toBeVisible();
 	} );
 
 	test( 'leaves the unrelated options alone', async ( { page } ) => {
