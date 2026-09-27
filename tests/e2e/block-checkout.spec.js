@@ -479,11 +479,25 @@ test.describe( 'Block checkout', () => {
 			'_billing_cnpj',
 			'_billing_ie',
 			'_wc_other/csbmw/cnpj',
+			'_wc_other/csbmw/company',
 		] );
 
 		expect( meta._billing_cpf ).toBe( VALID.cpf );
 		expect( meta._billing_cnpj ).toBe( '' );
 		expect( meta._billing_ie ).toBe( '' );
 		expect( meta[ '_wc_other/csbmw/cnpj' ] ).toBe( '' );
+		expect( meta[ '_wc_other/csbmw/company' ] ).toBe( '' );
+		expect(
+			wpCli( [
+				'eval',
+				`echo wc_get_order( ${ orderId } )->get_billing_company();`,
+			] )
+		).toBe( '' );
+
+		// The session is what fills in the next checkout.
+		await goToBlockCheckout( page );
+		await page.selectOption( field( 'persontype' ), '2' );
+		await expect( page.locator( field( 'cnpj' ) ) ).toHaveValue( '' );
+		await expect( page.locator( field( 'company' ) ) ).toHaveValue( '' );
 	} );
 } );

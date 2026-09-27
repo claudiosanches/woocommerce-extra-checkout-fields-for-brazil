@@ -132,8 +132,11 @@ class LegacySyncTest extends WP_UnitTestCase {
 		$hooks = array(
 			'woocommerce_set_additional_field_value'                  => 'write_legacy_meta',
 			'woocommerce_process_shop_order_meta'                     => 'write_block_meta',
-			'woocommerce_checkout_create_order'                       => 'clear_unused_documents',
-			'woocommerce_store_api_checkout_update_order_from_request' => 'clear_unused_documents',
+			'woocommerce_checkout_create_order'                       => 'clear_unused_details',
+			'woocommerce_store_api_checkout_update_order_from_request' => 'clear_unused_details',
+			'woocommerce_checkout_update_customer'                    => 'clear_unused_details',
+			'woocommerce_store_api_checkout_update_customer_from_request' => 'clear_unused_details',
+			'woocommerce_customer_save_address'                       => 'clear_customer_details',
 			'woocommerce_billing_fields'                              => 'remove_duplicated_account_fields',
 			'woocommerce_admin_billing_fields'                        => 'remove_duplicated_admin_fields',
 			'woocommerce_filter_fields_for_order_confirmation'        => 'hide_address_fields_from_confirmation',
@@ -414,7 +417,7 @@ class LegacySyncTest extends WP_UnitTestCase {
 	public function test_an_order_screen_save_clears_the_documents_of_the_other_person_type() {
 		$order = $this->order_with_both_documents();
 
-		$this->sync->clear_order_documents( $order->get_id() );
+		$this->sync->clear_order_details( $order->get_id() );
 
 		$saved = wc_get_order( $order->get_id() );
 
@@ -437,7 +440,7 @@ class LegacySyncTest extends WP_UnitTestCase {
 		$order->update_meta_data( '_billing_persontype', '2' );
 		$order->save();
 
-		$this->sync->clear_order_documents( $order->get_id() );
+		$this->sync->clear_order_details( $order->get_id() );
 
 		$saved = wc_get_order( $order->get_id() );
 
@@ -461,7 +464,7 @@ class LegacySyncTest extends WP_UnitTestCase {
 			foreach ( $hooks as $hook ) {
 				if ( is_array( $hook['function'] )
 					&& $hook['function'][0] instanceof Extra_Checkout_Fields_For_Brazil_Legacy_Sync
-					&& 'clear_order_documents' === $hook['function'][1] ) {
+					&& 'clear_order_details' === $hook['function'][1] ) {
 					$priority = $registered;
 					$accepted = $hook['accepted_args'];
 				}

@@ -280,6 +280,7 @@ test.describe( 'Classic checkout', () => {
 			'_billing_cpf',
 			'_billing_cnpj',
 			'_billing_ie',
+			'_billing_company',
 			'_billing_number',
 			'_billing_neighborhood',
 		] );
@@ -290,5 +291,11 @@ test.describe( 'Classic checkout', () => {
 		expect( meta._billing_neighborhood ).toBe( 'Bela Vista' );
 		expect( meta._billing_cnpj ).toBe( '' );
 		expect( meta._billing_ie ).toBe( '' );
+		expect( meta._billing_company ).toBe( '' );
+
+		// The session is what fills in the next checkout.
+		await goToClassicCheckout( page );
+		await page.selectOption( '#billing_persontype', '2' );
+		await expect( page.locator( '#billing_company' ) ).toHaveValue( '' );
 	} );
 } );

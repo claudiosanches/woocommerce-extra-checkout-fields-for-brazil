@@ -39,15 +39,23 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 		add_action( 'woocommerce_customer_save_address', array( $this, 'write_customer_block_meta' ), 20, 2 );
 
 		// Both checkouts submit every document field they rendered, so an order
-		// can arrive carrying the documents of the person type the customer
+		// can arrive carrying the details of the person type the customer
 		// moved away from. Clear them before the order is saved.
-		add_action( 'woocommerce_checkout_create_order', array( $this, 'clear_unused_documents' ), 20 );
-		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'clear_unused_documents' ), 20 );
+		add_action( 'woocommerce_checkout_create_order', array( $this, 'clear_unused_details' ), 20 );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'clear_unused_details' ), 20 );
+
+		// The customer keeps them too, and the next checkout would fill them in
+		// again. The classic checkout copies the company into the session with
+		// no person type beside it, so the order decides there.
+		add_action( 'woocommerce_checkout_update_customer', array( $this, 'clear_unused_details' ) );
+		add_action( 'woocommerce_store_api_checkout_update_customer_from_request', array( $this, 'clear_unused_details' ) );
+		add_action( 'woocommerce_checkout_create_order', array( $this, 'clear_session_details' ), 20 );
+		add_action( 'woocommerce_customer_save_address', array( $this, 'clear_customer_details' ), 10, 2 );
 
 		// The order screen submits them too, and its person type can be changed.
 		// WooCommerce saves that screen's fields at priority 40, so this has to
 		// run after it to see the person type that was chosen.
-		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_documents' ), 45 );
+		add_action( 'woocommerce_process_shop_order_meta', array( $this, 'clear_order_details' ), 45 );
 
 		foreach ( $this->get_keys() as $key ) {
 			add_filter(
@@ -364,55 +372,122 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	}
 
 	/**
-	 * Empty the documents of the person type the order is not for.
+	 * The person type an order or customer is for.
+	 *
+	 * @param WC_Data $wc_object Order or customer.
+	 * @param array   $settings  Plugin settings.
+	 *
+	 * @return string 1 for individuals, 2 for legal persons, empty when unknown.
+	 */
+	protected static function get_person_type( $wc_object, $settings ) {
+		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
+
+		// A store that accepts one person type never asks, so the setting is
+		// the answer: 2 means individuals, 3 means legal persons.
+		if ( 2 === $person_type || 3 === $person_type ) {
+			return (string) ( $person_type - 1 );
+		}
+
+		if ( 1 !== $person_type ) {
+			return '';
+		}
+
+		$selected = (string) $wc_object->get_meta( self::get_legacy_key( 'persontype', 'other', $wc_object ) );
+
+		return isset( self::UNUSED_DOCUMENTS[ $selected ] ) ? $selected : '';
+	}
+
+	/**
+	 * Empty the details of the person type an order or customer is not for.
 	 *
 	 * A customer who fills in a CNPJ and then switches to Individuals still
 	 * submits it, and so does a request crafted against the Store API. Leaving
 	 * it stored hands gateways and ERPs a document that contradicts the order.
+	 * The company goes too while the store asks it of legal persons only.
 	 *
-	 * @param WC_Order $order Order being created.
+	 * @param WC_Data     $wc_object   Order or customer being saved.
+	 * @param string|null $person_type Person type, read from the object when not given.
 	 *
 	 * @return void
 	 */
-	public function clear_unused_documents( $order ) {
-		if ( ! $order instanceof WC_Order ) {
+	public function clear_unused_details( $wc_object, $person_type = null ) {
+		if ( ! $wc_object instanceof WC_Order && ! $wc_object instanceof WC_Customer ) {
 			return;
 		}
 
-		$settings    = (array) get_option( 'wcbcf_settings', array() );
-		$person_type = isset( $settings['person_type'] ) ? intval( $settings['person_type'] ) : 0;
-
-		if ( 0 === $person_type ) {
-			return;
-		}
-
-		// A store that accepts one person type never asks, so the setting is
-		// the answer: 2 means individuals, 3 means legal persons.
-		if ( 1 === $person_type ) {
-			$selected = (string) $order->get_meta( '_billing_persontype' );
-		} else {
-			$selected = 2 === $person_type ? '1' : '2';
-		}
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+		$selected = is_string( $person_type ) ? $person_type : self::get_person_type( $wc_object, $settings );
 
 		if ( ! isset( self::UNUSED_DOCUMENTS[ $selected ] ) ) {
 			return;
 		}
 
-		foreach ( self::UNUSED_DOCUMENTS[ $selected ] as $key ) {
-			$order->update_meta_data( self::get_legacy_key( $key, 'other', $order ), '' );
+		$unused = self::UNUSED_DOCUMENTS[ $selected ];
+
+		// Outside Brazil a Brazil-only store asks for no person type, and the
+		// company is WooCommerce's own field.
+		$asked = ! isset( $settings['only_brazil'] ) || 'BR' === $wc_object->get_billing_country();
+
+		if ( '1' === $selected && $asked && Extra_Checkout_Fields_For_Brazil::has_dynamic_company( $settings ) ) {
+			$unused[] = 'company';
+		}
+
+		foreach ( $unused as $key ) {
+			self::set_legacy_value( $key, 'other', $wc_object, '' );
 
 			// An order from the classic checkout has no block meta, and an
-			// empty document is no reason to give it some.
+			// empty value is no reason to give it some.
 			$block_key = self::get_block_key( $key, 'other' );
 
-			if ( $order->meta_exists( $block_key ) ) {
-				$order->update_meta_data( $block_key, '' );
+			if ( $wc_object->meta_exists( $block_key ) ) {
+				$wc_object->update_meta_data( $block_key, '' );
 			}
 		}
 	}
 
 	/**
-	 * Clear the documents of the other person type after an order screen save.
+	 * Clear the details a classic checkout left in the customer's session.
+	 *
+	 * @param WC_Order $order Order being created.
+	 *
+	 * @return void
+	 */
+	public function clear_session_details( $order ) {
+		if ( ! $order instanceof WC_Order || ! WC()->customer instanceof WC_Customer ) {
+			return;
+		}
+
+		$settings = (array) get_option( 'wcbcf_settings', array() );
+
+		$this->clear_unused_details( WC()->customer, self::get_person_type( $order, $settings ) );
+		WC()->customer->save();
+	}
+
+	/**
+	 * Clear the details of the other person type after an account address save.
+	 *
+	 * @param int    $user_id      Customer being saved.
+	 * @param string $address_type Address the form saved.
+	 *
+	 * @return void
+	 */
+	public function clear_customer_details( $user_id, $address_type = 'billing' ) {
+		if ( 'billing' !== $address_type ) {
+			return;
+		}
+
+		$customer = new WC_Customer( $user_id );
+
+		if ( ! $customer->get_id() ) {
+			return;
+		}
+
+		$this->clear_unused_details( $customer );
+		$customer->save();
+	}
+
+	/**
+	 * Clear the details of the other person type after an order screen save.
 	 *
 	 * The order WooCommerce hands this action was loaded before the screen was
 	 * saved and still carries the person type the order is moving away from, so
@@ -422,14 +497,14 @@ class Extra_Checkout_Fields_For_Brazil_Legacy_Sync {
 	 *
 	 * @return void
 	 */
-	public function clear_order_documents( $order_id ) {
+	public function clear_order_details( $order_id ) {
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
 			return;
 		}
 
-		$this->clear_unused_documents( $order );
+		$this->clear_unused_details( $order );
 		$order->save();
 	}
 
