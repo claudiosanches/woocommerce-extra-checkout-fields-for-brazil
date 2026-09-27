@@ -241,6 +241,39 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		add_settings_field(
+			'phone_format',
+			__( 'Brazilian phone format', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'select_element_callback' ),
+			$option,
+			'details_section',
+			array(
+				'menu'        => $option,
+				'id'          => 'phone_format',
+				'title'       => __( 'Brazilian phone format', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => 'national',
+				'description' => __( 'How Phone and Cell phone show and save a Brazilian number on a Brazilian address. Other numbers always keep their country code. The REST API also returns each number as +5511987654321.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'options'     => array(
+					'national'      => __( '(11) 98765-4321, without the country code', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'international' => __( '+55 (11) 98765-4321, with the country code', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'phone_country_picker',
+			__( 'Offer a country code picker', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'details_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'phone_country_picker',
+				'title' => __( 'Offer a country code picker', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'Adds a country list inside Phone and Cell phone, set to the address country. Without it, customers type + and the code for a number from another country.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
 		// Address section.
 		add_settings_section(
 			'address_section',

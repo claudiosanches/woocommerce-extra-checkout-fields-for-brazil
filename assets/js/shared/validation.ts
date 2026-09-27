@@ -71,14 +71,6 @@ export function isCnpj( value: DocumentValue ): boolean {
 	return `${ first }${ second }` === cnpj.substring( 12 );
 }
 
-export function isPhone( value: DocumentValue ): boolean {
-	return /^\d{10,11}$/.test( sanitize( value ) );
-}
-
-export function isCellphone( value: DocumentValue ): boolean {
-	return /^\d{11}$/.test( sanitize( value ) );
-}
-
 export function isPostcode( value: DocumentValue ): boolean {
 	return /^\d{8}$/.test( sanitize( value ) );
 }

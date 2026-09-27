@@ -42,6 +42,7 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 				array(
 					'person_type' => (string) absint( $settings['person_type'] ),
 					'no_number'   => Extra_Checkout_Fields_For_Brazil::no_number_value( (array) $settings ),
+					'phone'       => Extra_Checkout_Fields_For_Brazil_Phone::script_params( (array) $settings ),
 				)
 			);
 		}

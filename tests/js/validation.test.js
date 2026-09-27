@@ -1,9 +1,7 @@
 import {
-	isCellphone,
 	isCnpj,
 	isCpf,
 	isDate,
-	isPhone,
 	isPostcode,
 } from '../../assets/js/shared/validation';
 
@@ -41,18 +39,7 @@ describe( 'isCnpj', () => {
 	] )( 'rejects %p', ( value ) => expect( isCnpj( value ) ).toBe( false ) );
 } );
 
-describe( 'contact validators', () => {
-	it( 'accepts ten and eleven digit phone numbers', () => {
-		expect( isPhone( '(11) 3333-4444' ) ).toBe( true );
-		expect( isPhone( '(11) 98765-4321' ) ).toBe( true );
-		expect( isPhone( '113333444' ) ).toBe( false );
-	} );
-
-	it( 'requires eleven digits for a cell phone', () => {
-		expect( isCellphone( '(11) 98765-4321' ) ).toBe( true );
-		expect( isCellphone( '(11) 3333-4444' ) ).toBe( false );
-	} );
-
+describe( 'isPostcode', () => {
 	it( 'requires eight digits for a postcode', () => {
 		expect( isPostcode( '01310-100' ) ).toBe( true );
 		expect( isPostcode( '0131010' ) ).toBe( false );

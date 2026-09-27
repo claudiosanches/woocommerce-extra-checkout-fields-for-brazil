@@ -11,7 +11,7 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { dispatch, select } from '@wordpress/data';
+import { dispatch, select, subscribe } from '@wordpress/data';
 import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
 import type { Formatter, MaskName } from '../shared/mask';
@@ -21,6 +21,14 @@ import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { bindNoNumber } from '../shared/no-number';
 import { keepDigits } from '../shared/house-number';
+import {
+	bindPhonePicker,
+	formatPhoneNumber,
+	pickerFor,
+	rebasePhone,
+	rewritePhone,
+} from '../shared/phone';
+import type { PhoneParams } from '../shared/phone';
 import { stripCountryFormats } from '../shared/address-format';
 import type { CountryFormats } from '../shared/address-format';
 import '../../scss/checkout/checkout.scss';
@@ -32,6 +40,7 @@ interface BlocksParams {
 	postcodeAutofill?: string;
 	postcodeUrl?: string;
 	noNumber?: string;
+	phone?: PhoneParams;
 }
 
 interface CartAddressStore {
@@ -74,15 +83,12 @@ const MASKS: Record< string, MaskName > = {
 	[ field( 'contact', 'cpf' ) ]: 'cpf',
 	[ field( 'contact', 'cnpj' ) ]: 'cnpj',
 	[ field( 'contact', 'birthdate' ) ]: 'date',
-	[ field( 'contact', 'cellphone' ) ]: 'phone',
 };
 
 // Core fields only get a Brazilian mask while the address is Brazilian.
 const BRAZIL_ONLY_MASKS: Record< string, MaskName > = {
 	'billing-postcode': 'cep',
 	'shipping-postcode': 'cep',
-	'billing-phone': 'phone',
-	'shipping-phone': 'phone',
 };
 
 const inputById = ( id: string ): HTMLInputElement | null => {
@@ -185,6 +191,142 @@ function writeControlled( input: HTMLInputElement, value: string ): void {
 }
 
 type Group = 'billing' | 'shipping';
+
+const phoneParams: PhoneParams = params.phone || {};
+
+// The cell phone has no address of its own and follows the billing one.
+const PHONES: Record< string, Group > = {
+	'billing-phone': 'billing',
+	'shipping-phone': 'shipping',
+	[ field( 'contact', 'cellphone' ) ]: 'billing',
+};
+
+/**
+ * Country of an address, as the cart holds it.
+ *
+ * @param group Address group.
+ * @return Country code.
+ */
+function addressCountry( group: Group ): string {
+	const data: CustomerData = select( CART_STORE_KEY ).getCustomerData();
+
+	return (
+		( 'shipping' === group ? data?.shippingAddress : data?.billingAddress )
+			?.country || ''
+	);
+}
+
+/**
+ * Format a phone as it is typed, before React reads the event.
+ *
+ * @param event Input event.
+ */
+function handlePhoneInput( event: Event ): void {
+	const input = event.target;
+
+	if ( ! ( input instanceof window.HTMLInputElement ) ) {
+		return;
+	}
+
+	const group = PHONES[ input.id ];
+
+	if ( group ) {
+		rewritePhone(
+			input,
+			formatPhoneNumber(
+				input.value,
+				addressCountry( group ),
+				phoneParams
+			),
+			( target, value ) => NATIVE_VALUE_SETTER.call( target, value )
+		);
+	}
+}
+
+function setupPhonePickers(): void {
+	Object.entries( PHONES ).forEach( ( [ id, group ] ) => {
+		const input = inputById( id );
+
+		if ( ! input ) {
+			// React leaves the picker behind when it unmounts the field.
+			document
+				.querySelectorAll( `.wcbcf-phone-code[data-bmw-for="${ id }"]` )
+				.forEach( ( element ) => element.remove() );
+
+			return;
+		}
+
+		if ( ! pickerFor( input ) ) {
+			delete input.dataset.bmwPhonePicker;
+		}
+
+		bindPhonePicker( input, {
+			country: () => addressCountry( group ),
+			params: phoneParams,
+			write: writeControlled,
+		} );
+	} );
+}
+
+const countries: Partial< Record< Group, string > > = {};
+
+/**
+ * Carry the phones over when an address changes country, so a number typed
+ * without a code keeps the country it was typed for.
+ */
+function followAddressCountries(): void {
+	( [ 'billing', 'shipping' ] as Group[] ).forEach( ( group ) => {
+		const previous = countries[ group ];
+		const next = addressCountry( group );
+
+		countries[ group ] = next;
+
+		if ( undefined === previous || previous === next ) {
+			return;
+		}
+
+		// Written once the form has rendered the new country. The address
+		// form sends its whole address with each change, so a phone written
+		// now would carry the previous country back with it.
+		window.setTimeout( () => rebasePhones( group, previous, next ) );
+	} );
+}
+
+/**
+ * Carry an address's phones over to its new country.
+ *
+ * @param group    Address group.
+ * @param previous Previous country.
+ * @param next     New country.
+ */
+function rebasePhones( group: Group, previous: string, next: string ): void {
+	Object.entries( PHONES ).forEach( ( [ id, phoneGroup ] ) => {
+		const input = inputById( id );
+
+		if ( ! input || phoneGroup !== group ) {
+			return;
+		}
+
+		if ( 'yes' === params.maskedinput ) {
+			const value = rebasePhone(
+				input.value,
+				previous,
+				next,
+				phoneParams
+			);
+
+			if ( value !== input.value ) {
+				writeControlled( input, value );
+			}
+		}
+
+		bindPhonePicker( input, {
+			country: () => addressCountry( group ),
+			params: phoneParams,
+			write: writeControlled,
+		} )();
+	} );
+}
 
 const autofills: Partial< Record< Group, () => void > > = {};
 
@@ -415,7 +557,11 @@ function setupMailcheck(): void {
 function init(): void {
 	if ( 'yes' === params.maskedinput ) {
 		document.addEventListener( 'input', handleInput, true );
+		document.addEventListener( 'input', handlePhoneInput, true );
 	}
+
+	followAddressCountries();
+	subscribe( followAddressCountries, CART_STORE_KEY );
 
 	if ( 'yes' === params.postcodeAutofill ) {
 		document.addEventListener( 'input', handleAutofill );
@@ -425,6 +571,7 @@ function init(): void {
 
 	setupIeExempt();
 	setupNoNumber();
+	setupPhonePickers();
 	setupCustomerDetails();
 	setupMailcheck();
 
@@ -433,6 +580,7 @@ function init(): void {
 	new window.MutationObserver( () => {
 		setupIeExempt();
 		setupNoNumber();
+		setupPhonePickers();
 		setupCustomerDetails();
 		setupMailcheck();
 	} ).observe( document.body, {

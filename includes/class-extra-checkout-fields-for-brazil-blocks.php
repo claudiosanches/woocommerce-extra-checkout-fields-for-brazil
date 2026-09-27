@@ -60,7 +60,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		'company'      => 100,
 		'ie'           => 20,
 		'birthdate'    => 10,
-		'cellphone'    => 15,
+		'cellphone'    => 25,
 		'number'       => 30,
 		'neighborhood' => 100,
 	);
@@ -735,8 +735,11 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 		}
 
 		// The same check the classic checkout puts on this field through the
-		// WooCommerce phone validator.
-		if ( 'cellphone' === $key && ! WC_Validation::is_phone( $value ) ) {
+		// WooCommerce phone validator. The field has no address of its own, so
+		// the billing one in the cart stands in.
+		$country = WC()->customer instanceof WC_Customer ? WC()->customer->get_billing_country() : null;
+
+		if ( 'cellphone' === $key && ! WC_Validation::is_phone( $value, $country ) ) {
 			$errors->add( 'woocommerce_invalid_cellphone', __( 'Cell Phone is not valid.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
@@ -811,6 +814,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'postcodeAutofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
 				'noNumber'         => Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ),
+				'phone'            => Extra_Checkout_Fields_For_Brazil_Phone::script_params( (array) $settings ),
 			)
 		);
 	}
