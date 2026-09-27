@@ -44,6 +44,8 @@ The plugin supports both the block checkout and the classic shortcode checkout, 
 
 On the block checkout, fields appear and disappear as the customer picks a person type or changes country, using WooCommerce's own rules rather than custom scripts.
 
+A returning customer sees their saved documents, birthdate and gender summed up in a card with an Edit link, as WooCommerce shows a saved address, with the CPF shown as **\*.456.789-** and the RG hidden the same way.
+
 Values entered on the block checkout are also written to the historic meta keys (`_billing_cpf`, `_billing_number`, `_shipping_neighborhood` and the rest), so payment gateways, shipping plugins, ERPs and invoicing integrations that read them keep working with no changes.
 
 ### Address formatting
@@ -253,6 +255,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 -   Added a No number option, off by default, that puts a No number checkbox inside the Number field and fills it with S/N or a value the store sets, on both checkouts, My Account and the order screen.
 -   A Brazilian address now starts with the CEP beside the street on both checkouts and My Account, since the CEP fills most of the address in, followed by the second address line, Number beside Neighborhood, and city beside state.
 -   The block checkout heads the documents, birthdate and gender as Customer details inside the contact step, leaving email and cell phone as the contact information.
+-   A returning customer whose details are complete sees them summed up on the block checkout, as WooCommerce sums up a saved address, with the CPF and RG partly hidden, until they choose to edit them. The fields open again if the order is refused.
 -   Number now takes digits only, since carriers reject numbers such as 1-12, and every entry point refuses anything else apart from the No number value.
 -   Fixed the classic checkout and the My Account address forms dropping the side by side layout of the address as soon as the page loaded, and My Account listing Number and Neighborhood after the whole form.
 -   Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.

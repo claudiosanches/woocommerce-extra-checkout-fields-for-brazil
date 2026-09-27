@@ -202,6 +202,60 @@ test.describe( 'My account', () => {
 		);
 	} );
 
+	test( 'sums up the customer details on the block checkout', async ( {
+		page,
+	} ) => {
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await goToBlockCheckout( page );
+
+		const card = page.locator( '.wcbcf-customer-details-card' );
+
+		await expect( card ).toContainText( 'Individual' );
+		await expect( card ).toContainText(
+			'CPF ***.456.789-**, RG **887*, 01/01/1980, Female'
+		);
+		await expect( page.locator( '#contact-csbmw-cpf' ) ).toBeHidden();
+		await expect(
+			page.locator( '#contact-csbmw-cellphone' )
+		).toBeVisible();
+
+		await page
+			.getByRole( 'button', { name: 'Edit customer details' } )
+			.click();
+
+		await expect( card ).toHaveCount( 0 );
+		await expect( page.locator( '#contact-csbmw-cpf' ) ).toBeVisible();
+		await expect(
+			page.locator( '#contact-csbmw-persontype' )
+		).toBeFocused();
+	} );
+
+	test( 'opens the summed up details when the order is refused', async ( {
+		page,
+	} ) => {
+		setCustomerMeta( 'billing_cpf', '123.456.789-00' );
+
+		await logIn( page, CUSTOMER.user, CUSTOMER.pass );
+		await goToBlockCheckout( page );
+		await expect(
+			page.locator( '.wcbcf-customer-details-card' )
+		).toBeVisible();
+
+		// Let the block push the prefilled details to the Store API first.
+		await page.waitForTimeout( 2000 );
+		await page.click(
+			'button.wc-block-components-checkout-place-order-button'
+		);
+
+		await expect(
+			page.locator( '.wc-block-components-notice-banner.is-error' )
+		).toContainText( 'CPF' );
+		await expect(
+			page.locator( '.wcbcf-customer-details-card' )
+		).toHaveCount( 0 );
+		await expect( page.locator( '#contact-csbmw-cpf' ) ).toBeVisible();
+	} );
+
 	test( 'drops the legal person details of a customer who became an individual', async ( {
 		page,
 	} ) => {

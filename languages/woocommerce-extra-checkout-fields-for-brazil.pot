@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T09:49:40+00:00\n"
+"POT-Creation-Date: 2026-09-27T17:44:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -55,6 +55,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:948
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:123
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:239
+#: build/checkout.js:1
 msgid "CPF"
 msgstr ""
 
@@ -67,6 +68,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:206
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:813
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:124
+#: build/checkout.js:1
 msgid "RG"
 msgstr ""
 
@@ -81,6 +83,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:952
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:957
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:125
+#: build/checkout.js:1
 msgid "CNPJ"
 msgstr ""
 
@@ -95,6 +98,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:842
 #: includes/class-extra-checkout-fields-for-brazil-front-end.php:962
 #: includes/class-extra-checkout-fields-for-brazil-order-details.php:126
+#: build/checkout.js:1
 msgid "State Registration"
 msgstr ""
 
@@ -946,7 +950,7 @@ msgstr ""
 
 #: build/admin-order.js:1
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "No number"
 msgstr ""
 
@@ -987,18 +991,34 @@ msgid "Choose the product to quote in the block settings."
 msgstr ""
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Country code"
 msgstr ""
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Exempt from State Registration"
 msgstr ""
 
 #: build/checkout.js:1
-#: build/classic.js:1
+#: build/classic.js:2
 msgid "Exempt"
+msgstr ""
+
+#: build/checkout.js:1
+msgid "Edit customer details"
+msgstr ""
+
+#: build/checkout.js:1
+msgid "Edit"
+msgstr ""
+
+#: build/checkout.js:1
+msgid "Individual"
+msgstr ""
+
+#: build/checkout.js:1
+msgid "Legal person"
 msgstr ""
 
 #. translators: %s: email address with the domain corrected

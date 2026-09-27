@@ -12,7 +12,11 @@
 
 import { __ } from '@wordpress/i18n';
 import { dispatch, select, subscribe } from '@wordpress/data';
-import { CART_STORE_KEY, CHECKOUT_STORE_KEY } from '@woocommerce/block-data';
+import {
+	CART_STORE_KEY,
+	CHECKOUT_STORE_KEY,
+	VALIDATION_STORE_KEY,
+} from '@woocommerce/block-data';
 import { getSetting } from '@woocommerce/settings';
 import type { Formatter, MaskName } from '../shared/mask';
 import { caretIndex, caretOffset, formatCep, formatters } from '../shared/mask';
@@ -21,6 +25,7 @@ import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
 import { bindNoNumber } from '../shared/no-number';
 import { keepDigits } from '../shared/house-number';
+import { obscureCpf, obscureRg } from '../shared/obscure';
 import {
 	bindPhonePicker,
 	formatPhoneNumber,
@@ -494,37 +499,283 @@ function handleNumberInput( event: Event ): void {
 }
 
 const CUSTOMER_DETAILS_CLASS = 'wcbcf-customer-details-title';
+const CUSTOMER_DETAILS_CARD_CLASS = 'wcbcf-customer-details-card';
+
+/**
+ * Where the customer details card stands: waiting for the form, deciding once
+ * it renders, collapsed into the card, or open for the customer to edit.
+ */
+let customerDetails: 'waiting' | 'deciding' | 'collapsed' | 'editing' =
+	'waiting';
+
+const contactForm = (): Element | null | undefined =>
+	document
+		.getElementById( 'email' )
+		?.closest( '.wc-block-components-address-form' );
+
+// The cell phone sits beside the email, apart from the other details.
+const isCustomerDetail = ( element: Element ): boolean =>
+	new RegExp( `${ namespace }-(?!cellphone)` ).test( element.className );
+
+/**
+ * Whether a customer detail has a validation error.
+ *
+ * WooCommerce keeps a hidden error for each required field left empty or
+ * invalid, and shows them all when the order is placed.
+ *
+ * @param visibleOnly Count only the errors on show.
+ * @return Whether one is found.
+ */
+function hasCustomerDetailErrors( visibleOnly: boolean ): boolean {
+	const errors: Record< string, { hidden?: boolean } > =
+		select( VALIDATION_STORE_KEY ).getValidationErrors() || {};
+
+	return Object.entries( errors ).some(
+		( [ id, error ] ) =>
+			id.startsWith( `contact_${ namespace }/` ) &&
+			id !== `contact_${ namespace }/cellphone` &&
+			! ( visibleOnly && error?.hidden )
+	);
+}
+
+/**
+ * The details as the card lists them, in the order of the form.
+ *
+ * @param form Contact form.
+ * @return Primary and secondary lines.
+ */
+function customerDetailsSummary( form: Element ): {
+	primary: string;
+	secondary: string;
+} {
+	const values: Record< string, string > = {};
+	const key = new RegExp( `${ namespace }-([a-z]+)` );
+
+	Array.from( form.children )
+		.filter( isCustomerDetail )
+		.forEach( ( row ) => {
+			const name = key.exec( row.className )?.[ 1 ];
+			const control = row.querySelector( 'select, input' );
+
+			if (
+				! name ||
+				! (
+					control instanceof window.HTMLSelectElement ||
+					control instanceof window.HTMLInputElement
+				) ||
+				! control.value
+			) {
+				return;
+			}
+
+			values[ name ] =
+				control instanceof window.HTMLSelectElement
+					? control.selectedOptions[ 0 ]?.text || ''
+					: control.value;
+		} );
+
+	const labelled = ( label: string, value?: string ) =>
+		value ? `${ label } ${ value }` : '';
+
+	// The select offers them in the plural.
+	const personTypes: Record< string, string > = {
+		1: __( 'Individual', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		2: __( 'Legal person', 'woocommerce-extra-checkout-fields-for-brazil' ),
+	};
+	const personType = form.querySelector< HTMLSelectElement >(
+		`#${ field( 'contact', 'persontype' ) }`
+	)?.value;
+
+	return {
+		primary: values.company || personTypes[ personType || '' ] || '',
+		secondary: [
+			labelled(
+				__( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				values.cpf && obscureCpf( values.cpf )
+			),
+			labelled(
+				__( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				values.rg && obscureRg( values.rg )
+			),
+			labelled(
+				__( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				values.cnpj
+			),
+			labelled(
+				__(
+					'State Registration',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				),
+				values.ie
+			),
+			values.birthdate,
+			values.gender,
+		]
+			.filter( Boolean )
+			.join( ', ' ),
+	};
+}
+
+/**
+ * Open the customer details for editing, for the rest of the page.
+ *
+ * @param focus Move the focus to the first of them.
+ */
+function openCustomerDetails( focus: boolean ): void {
+	const card = document.querySelector( `.${ CUSTOMER_DETAILS_CARD_CLASS }` );
+	const form = card?.parentElement;
+
+	customerDetails = 'editing';
+	card?.remove();
+
+	if ( ! focus ) {
+		return;
+	}
+
+	Array.from( form?.children || [] )
+		.find( isCustomerDetail )
+		?.querySelector< HTMLElement >( 'select, input' )
+		?.focus();
+}
+
+/**
+ * Build the card standing for the customer details, drawn as WooCommerce's
+ * address cards.
+ *
+ * @return Card.
+ */
+function createCustomerDetailsCard(): HTMLElement {
+	const card = document.createElement( 'div' );
+	const summary = document.createElement( 'div' );
+	const edit = document.createElement( 'button' );
+
+	card.className = `wc-block-components-address-card ${ CUSTOMER_DETAILS_CARD_CLASS }`;
+	summary.className = `${ CUSTOMER_DETAILS_CARD_CLASS }-summary`;
+	( [ 'primary', 'secondary' ] as const ).forEach( ( line ) => {
+		const span = document.createElement( 'span' );
+
+		span.className = `${ CUSTOMER_DETAILS_CARD_CLASS }-${ line }`;
+		summary.append( span );
+	} );
+
+	edit.type = 'button';
+	edit.className = 'wc-block-components-address-card__edit';
+	edit.setAttribute( 'aria-controls', 'contact' );
+	edit.setAttribute( 'aria-expanded', 'false' );
+	edit.setAttribute(
+		'aria-label',
+		__(
+			'Edit customer details',
+			'woocommerce-extra-checkout-fields-for-brazil'
+		)
+	);
+	edit.textContent = __(
+		'Edit',
+		'woocommerce-extra-checkout-fields-for-brazil'
+	);
+	edit.addEventListener( 'click', () => openCustomerDetails( true ) );
+
+	card.append( summary, edit );
+
+	return card;
+}
+
+/**
+ * Write the summary into the card, leaving unchanged lines alone so the
+ * observer calling this is not woken again.
+ *
+ * @param card Card.
+ * @param form Contact form.
+ */
+function fillCustomerDetailsCard( card: Element, form: Element ): void {
+	Object.entries( customerDetailsSummary( form ) ).forEach(
+		( [ line, text ] ) => {
+			const span = card.querySelector(
+				`.${ CUSTOMER_DETAILS_CARD_CLASS }-${ line }`
+			);
+
+			if ( span && span.textContent !== text ) {
+				span.textContent = text;
+			}
+		}
+	);
+}
+
+/**
+ * Collapse details a returning customer already filled in, as WooCommerce
+ * collapses a complete address.
+ *
+ * Decided once, after the form has rendered and set its validation errors.
+ * A customer starting from an empty form keeps it open.
+ */
+function decideCustomerDetails(): void {
+	customerDetails = 'deciding';
+
+	window.requestAnimationFrame( () =>
+		window.setTimeout( () => {
+			const form = contactForm();
+			const filled = Array.from( form?.children || [] )
+				.filter( isCustomerDetail )
+				.some(
+					( row ) =>
+						!! row.querySelector< HTMLInputElement >(
+							'select, input'
+						)?.value
+				);
+
+			customerDetails =
+				filled && ! hasCustomerDetailErrors( false )
+					? 'collapsed'
+					: 'editing';
+			setupCustomerDetails();
+		} )
+	);
+}
 
 /**
  * Head the documents and personal details in the contact step, which
  * WooCommerce offers extensions as the only place for them.
  *
  * WooCommerce has no heading of its own to give here, so one is placed
- * before the first of them, and moved or dropped as they come and go.
+ * before the first of them, and moved or dropped as they come and go. The
+ * card summing them up goes between the two.
  */
 function setupCustomerDetails(): void {
-	const form = document
-		.getElementById( 'email' )
-		?.closest( '.wc-block-components-address-form' );
+	const form = contactForm();
 
 	if ( ! form ) {
 		return;
 	}
 
-	const first = Array.from( form.children ).find(
-		( child ) =>
-			! child.classList.contains( CUSTOMER_DETAILS_CLASS ) &&
-			/csbmw-(?!cellphone)/.test( child.className )
-	);
+	const first = Array.from( form.children ).find( isCustomerDetail );
 	let heading = form.querySelector( `:scope > .${ CUSTOMER_DETAILS_CLASS }` );
+	let card = form.querySelector(
+		`:scope > .${ CUSTOMER_DETAILS_CARD_CLASS }`
+	);
 
 	if ( ! first ) {
 		heading?.remove();
+		card?.remove();
 
 		return;
 	}
 
-	if ( heading?.nextElementSibling === first ) {
+	if ( 'waiting' === customerDetails ) {
+		decideCustomerDetails();
+	}
+
+	if ( 'collapsed' === customerDetails ) {
+		card ??= createCustomerDetailsCard();
+		fillCustomerDetailsCard( card, form );
+
+		if ( card.nextElementSibling !== first ) {
+			form.insertBefore( card, first );
+		}
+	}
+
+	const next = card || first;
+
+	if ( heading?.nextElementSibling === next ) {
 		return;
 	}
 
@@ -538,7 +789,22 @@ function setupCustomerDetails(): void {
 		);
 	}
 
-	form.insertBefore( heading, first );
+	form.insertBefore( heading, next );
+}
+
+/**
+ * Open the collapsed details once one of them shows an error, or once the
+ * order is refused, since the server's reasons come as a notice naming no
+ * field. The focus stays on the notice WooCommerce moves it to.
+ */
+function followCustomerDetailErrors(): void {
+	if (
+		'collapsed' === customerDetails &&
+		( hasCustomerDetailErrors( true ) ||
+			select( CHECKOUT_STORE_KEY ).hasError() )
+	) {
+		openCustomerDetails( false );
+	}
 }
 
 function setupMailcheck(): void {
@@ -562,6 +828,8 @@ function init(): void {
 
 	followAddressCountries();
 	subscribe( followAddressCountries, CART_STORE_KEY );
+	subscribe( followCustomerDetailErrors, VALIDATION_STORE_KEY );
+	subscribe( followCustomerDetailErrors, CHECKOUT_STORE_KEY );
 
 	if ( 'yes' === params.postcodeAutofill ) {
 		document.addEventListener( 'input', handleAutofill );

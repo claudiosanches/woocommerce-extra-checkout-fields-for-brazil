@@ -25,3 +25,36 @@
 	flex: 0 0 100%;
 	margin-top: 32px;
 }
+
+// Sums up the customer details a returning customer already filled in,
+// hiding their fields until the customer asks to edit them. The card itself
+// is drawn by WooCommerce's address card styles.
+.wcbcf-customer-details-card:not(#csbmw) {
+	flex: 0 0 100%;
+	margin-top: 16px;
+
+	/* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
+	.wc-block-components-address-card__edit {
+		padding: 0;
+	}
+}
+
+.wcbcf-customer-details-card-summary {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.wcbcf-customer-details-card-primary {
+	font-weight: 500;
+
+	&:empty {
+		display: none;
+	}
+}
+
+/* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
+.wcbcf-customer-details-card ~ [class*="address-form__csbmw-"]:not([class*="__csbmw-cellphone"]),
+.wcbcf-customer-details-card ~ [class*="select-input-csbmw-"] {
+	display: none;
+}

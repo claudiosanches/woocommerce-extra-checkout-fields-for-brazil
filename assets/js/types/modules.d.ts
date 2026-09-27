@@ -42,6 +42,7 @@ declare module '@woocommerce/blocks-checkout' {
 declare module '@woocommerce/block-data' {
 	export const CART_STORE_KEY: 'wc/store/cart';
 	export const CHECKOUT_STORE_KEY: 'wc/store/checkout';
+	export const VALIDATION_STORE_KEY: 'wc/store/validation';
 }
 
 declare module '@woocommerce/price-format' {
