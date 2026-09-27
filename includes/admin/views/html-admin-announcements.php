@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</li>
 		<li>
 			<strong><?php esc_html_e( 'Shipping by CEP', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></strong>
-			<span><?php esc_html_e( 'Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping section.', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
+			<span><?php esc_html_e( 'Customers can quote shipping on product pages and in the cart with the CEP alone. Turn it on in the Shipping tab.', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></span>
 		</li>
 		<li>
 			<strong><?php esc_html_e( 'New integration guidance', 'woocommerce-extra-checkout-fields-for-brazil' ); ?></strong>

@@ -497,7 +497,7 @@ test.describe( 'Shipping calculators', () => {
 
 		await logIn( page, ADMIN.user, ADMIN.pass );
 		await page.goto(
-			'/wp-admin/admin.php?page=woocommerce-extra-checkout-fields-for-brazil'
+			'/wp-admin/admin.php?page=woocommerce-extra-checkout-fields-for-brazil&tab=shipping'
 		);
 
 		const section = page.locator( '.bmw-section-shipping' );
@@ -512,6 +512,9 @@ test.describe( 'Shipping calculators', () => {
 		await expect( section.locator( '.bmw-settings-notice' ) ).toHaveCount(
 			0
 		);
+		await expect(
+			page.getByRole( 'tab', { name: 'Shipping' } )
+		).toHaveAttribute( 'aria-selected', 'true' );
 		expect(
 			wpCli( [ 'option', 'get', 'woocommerce_allowed_countries' ] )
 		).toBe( 'specific' );

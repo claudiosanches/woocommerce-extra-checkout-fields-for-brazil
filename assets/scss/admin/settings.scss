@@ -19,6 +19,24 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.bmw-settings-tabs {
+    margin-bottom: 24px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+// A dot after the title. Both pseudo elements already draw the tab's own
+// underline and focus ring.
+.bmw-settings-tabs .bmw-has-changes {
+    padding-right: 28px;
+    background:
+        radial-gradient(circle, var(--wp-admin-theme-color, #3858e9) 3px, transparent 3.5px)
+        no-repeat right 11px center / 8px 8px;
+}
+
+.bmw-settings-card.bmw-is-other-tab {
+    display: none;
+}
+
 .bmw-settings-card {
     overflow: hidden;
     margin-bottom: 24px;
@@ -145,9 +163,31 @@
     line-height: 1.4;
 }
 
+// Kept in view at the bottom of the screen on long tabs. At rest it is the
+// button alone, a card gap below the last card. The negative margin takes
+// back the padding the bar needs once stuck, so nothing moves when it is.
 #bmw-settings .submit {
-    margin: 0;
-    padding: 0;
+    position: sticky;
+    bottom: -1px;
+    z-index: 1;
+    margin: -12px 0 0;
+    padding: 12px 0;
+}
+
+// Stuck, it becomes a bar across the screen: a layer behind the button
+// reaches past the column on both sides, and the admin content clips it at
+// the menu and the screen edge so it adds no horizontal scroll.
+#wpcontent:has(#bmw-settings) {
+    overflow-x: clip;
+}
+
+#bmw-settings .submit.bmw-is-stuck::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 -100vmax;
+    border-top: 1px solid #dcdcde;
+    background: #fff;
 }
 
 .bmw-settings-sidebar {
