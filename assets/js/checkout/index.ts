@@ -18,6 +18,7 @@ import { caretIndex, caretOffset, formatCep, formatters } from '../shared/mask';
 import { createAutofill } from '../shared/postcode';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
+import { bindNoNumber } from '../shared/no-number';
 import { stripCountryFormats } from '../shared/address-format';
 import type { CountryFormats } from '../shared/address-format';
 import '../../scss/checkout/checkout.scss';
@@ -28,6 +29,7 @@ interface BlocksParams {
 	mailcheck?: string;
 	postcodeAutofill?: string;
 	postcodeUrl?: string;
+	noNumber?: string;
 }
 
 interface CartAddressStore {
@@ -309,6 +311,24 @@ function setupIeExempt(): void {
 	bindIeExempt( input, { write: writeControlled } );
 }
 
+function setupNoNumber(): void {
+	( [ 'billing', 'shipping' ] as Group[] ).forEach( ( group ) => {
+		const id = field( group, 'number' );
+		const input = inputById( id );
+
+		if ( ! input ) {
+			// Another country unmounts the field, leaving the toggle behind.
+			document
+				.querySelectorAll( `.wcbcf-no-number[data-bmw-for="${ id }"]` )
+				.forEach( ( element ) => element.remove() );
+
+			return;
+		}
+
+		bindNoNumber( input, params.noNumber, { write: writeControlled } );
+	} );
+}
+
 function setupMailcheck(): void {
 	if ( 'yes' !== params.mailcheck ) {
 		return;
@@ -332,12 +352,14 @@ function init(): void {
 	}
 
 	setupIeExempt();
+	setupNoNumber();
 	setupMailcheck();
 
 	// The contact block mounts after the first paint and can remount, so keep
 	// watching rather than binding once.
 	new window.MutationObserver( () => {
 		setupIeExempt();
+		setupNoNumber();
 		setupMailcheck();
 	} ).observe( document.body, {
 		childList: true,

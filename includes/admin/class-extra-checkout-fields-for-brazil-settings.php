@@ -265,6 +265,36 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		add_settings_field(
+			'no_number',
+			__( 'Offer a No number option', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'address_section',
+			array(
+				'menu'  => $option,
+				'id'    => 'no_number',
+				'title' => __( 'Offer a No number option', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'Adds a No number checkbox inside the Number field, for addresses without a house number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
+		add_settings_field(
+			'no_number_value',
+			__( 'No number value', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'text_element_callback' ),
+			$option,
+			'address_section',
+			array(
+				'menu'        => $option,
+				'id'          => 'no_number_value',
+				'title'       => __( 'No number value', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default'     => Extra_Checkout_Fields_For_Brazil::NO_NUMBER_VALUE,
+				'description' => __( 'What the Number field holds when No number is ticked, such as S/N or N/A.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'class'       => 'bmw-row-no-number-value',
+			)
+		);
+
 		// Layout section.
 		add_settings_section(
 			'layout_section',
@@ -559,6 +589,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		}
 
 		return $description;
+	}
+
+	/**
+	 * Text element fallback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function text_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = (array) get_option( $menu, array() );
+		$current = isset( $options[ $id ] ) && '' !== $options[ $id ] ? $options[ $id ] : ( isset( $args['default'] ) ? $args['default'] : '' );
+
+		include __DIR__ . '/views/html-text-field.php';
 	}
 
 	/**

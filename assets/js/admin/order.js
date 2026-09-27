@@ -1,6 +1,7 @@
 /* global bmwShopOrderParams */
 
 import { bindMask } from '../shared/mask';
+import { bindNoNumber } from '../shared/no-number';
 import {
 	isCellphone,
 	isCnpj,
@@ -52,6 +53,13 @@ function setupField( id, { mask, valid } ) {
 jQuery( function ( $ ) {
 	Object.entries( MASKED_FIELDS ).forEach( ( [ id, config ] ) =>
 		setupField( id, config )
+	);
+
+	[ '_billing_number', '_shipping_number' ].forEach( ( id ) =>
+		bindNoNumber(
+			document.getElementById( id ),
+			bmwShopOrderParams.no_number
+		)
 	);
 
 	if ( '1' === bmwShopOrderParams.person_type ) {

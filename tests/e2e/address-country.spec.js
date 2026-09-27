@@ -134,11 +134,20 @@ test.describe( 'Number and Neighborhood by country', () => {
 	test( 'come back with a Brazilian address, laid out in pairs', async ( {
 		page,
 	} ) => {
+		setSettings( { ...ALL_FIELDS, no_number: 1 } );
 		await page.setViewportSize( { width: 1280, height: 900 } );
 		await goToClassicCheckout( page );
 
+		const noNumber = page.locator( 'button.wcbcf-no-number' ).first();
+		await noNumber.click();
+
 		await page.selectOption( '#billing_country', 'US' );
 		await page.selectOption( '#billing_country', 'BR' );
+
+		// WooCommerce emptied the hidden field, and the toggle follows.
+		await expect( page.locator( '#billing_number' ) ).toHaveValue( '' );
+		await expect( noNumber ).toHaveAttribute( 'aria-checked', 'false' );
+		await expect( page.locator( '#billing_number' ) ).toBeEditable();
 
 		const top = async ( key ) =>
 			( await page.locator( `#billing_${ key }_field` ).boundingBox() ).y;

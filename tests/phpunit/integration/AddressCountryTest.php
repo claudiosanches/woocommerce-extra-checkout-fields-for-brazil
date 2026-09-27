@@ -100,4 +100,28 @@ class AddressCountryTest extends WP_UnitTestCase {
 
 		$this->assertContains( 'form-row-wide', WC()->countries->get_country_locale()['BR']['number']['class'] );
 	}
+
+	/**
+	 * What the No number option writes, per settings.
+	 *
+	 * @return array
+	 */
+	public function no_number_provider() {
+		return array(
+			'not offered'         => array( array( 'no_number_value' => 'N/A' ), '' ),
+			'offered, no value'   => array( array( 'no_number' => '1' ), 'S/N' ),
+			'offered, blank'      => array( array( 'no_number' => '1', 'no_number_value' => '  ' ), 'S/N' ),
+			'offered, store sets' => array( array( 'no_number' => '1', 'no_number_value' => 'N/A' ), 'N/A' ),
+		);
+	}
+
+	/**
+	 * @dataProvider no_number_provider
+	 *
+	 * @param array  $settings Plugin settings.
+	 * @param string $expected Value written.
+	 */
+	public function test_the_no_number_value( $settings, $expected ) {
+		$this->assertSame( $expected, Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ) );
+	}
 }

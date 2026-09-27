@@ -802,6 +802,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'maskedinput'      => isset( $settings['maskedinput'] ) ? 'yes' : 'no',
 				'postcodeAutofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcodeUrl'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
+				'noNumber'         => Extra_Checkout_Fields_For_Brazil::no_number_value( $settings ),
 			)
 		);
 	}

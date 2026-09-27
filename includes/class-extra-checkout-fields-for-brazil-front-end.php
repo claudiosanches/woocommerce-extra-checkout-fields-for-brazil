@@ -100,6 +100,7 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 				'only_brazil'       => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
 				'postcode_autofill' => isset( $settings['postcode_autofill'] ) ? 'yes' : 'no',
 				'postcode_url'      => WC_AJAX::get_endpoint( Extra_Checkout_Fields_For_Brazil_Postcodes::AJAX_ENDPOINT ),
+				'no_number'         => Extra_Checkout_Fields_For_Brazil::no_number_value( (array) $settings ),
 			)
 		);
 	}

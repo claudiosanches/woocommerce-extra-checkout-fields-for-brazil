@@ -213,4 +213,26 @@ test.describe( 'Settings screen', () => {
 		await expect( page.locator( '#gender' ) ).toHaveValue( '' );
 		await expect( page.locator( '#company' ) ).toHaveValue( 'dynamic' );
 	} );
+
+	test( 'asks for the No number value only when it is offered', async ( {
+		page,
+	} ) => {
+		const value = row( page, 'no-number-value' );
+
+		await expect( value ).toBeHidden();
+		await page.locator( 'label[for="no_number"]' ).click();
+		await expect( value ).toBeVisible();
+		await expect( page.locator( '#no_number_value' ) ).toHaveValue( 'S/N' );
+	} );
+
+	test( 'offers No number on the order screen', async ( { page } ) => {
+		setSettings( { ...ALL_FIELDS, no_number: 1 } );
+		await page.goto( '/wp-admin/admin.php?page=wc-orders&action=new' );
+
+		const billing = page.locator( '.order_data_column' ).nth( 1 );
+		await billing.locator( 'a.edit_address' ).click();
+		await billing.locator( 'button.wcbcf-no-number' ).click();
+
+		await expect( page.locator( '#_billing_number' ) ).toHaveValue( 'S/N' );
+	} );
 } );

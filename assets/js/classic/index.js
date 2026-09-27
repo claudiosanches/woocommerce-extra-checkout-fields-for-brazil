@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { bindMask } from '../shared/mask';
 import { bindMailcheck } from '../shared/mailcheck';
 import { bindIeExempt } from '../shared/ie-exempt';
+import { bindNoNumber } from '../shared/no-number';
 import { createAutofill } from '../shared/postcode';
 import '../../scss/classic/classic.scss';
 
@@ -84,6 +85,8 @@ jQuery( function ( $ ) {
 			}
 
 			bindIeExempt( document.getElementById( 'billing_ie' ) );
+			this.noNumber( 'billing' );
+			this.noNumber( 'shipping' );
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				bindMailcheck( document.getElementById( 'billing_email' ) );
@@ -97,6 +100,31 @@ jQuery( function ( $ ) {
 				this.autofill( 'billing' );
 				this.autofill( 'shipping' );
 			}
+		},
+
+		/**
+		 * Offer No number inside an address's Number field.
+		 *
+		 * @param {string} group Address group, billing or shipping.
+		 */
+		noNumber( group ) {
+			// My Account renders Number as the block checkout's field.
+			const input =
+				document.getElementById( `${ group }_number` ) ||
+				document.querySelector(
+					`[name="_wc_${ group }/csbmw/number"]`
+				);
+
+			let unbind = bindNoNumber( input, bmwPublicParams.no_number );
+
+			// WooCommerce empties the field when another country hides it,
+			// without an event the toggle would hear, so it starts over.
+			$( document.body ).on( 'country_to_state_changing', () => {
+				setTimeout( () => {
+					unbind();
+					unbind = bindNoNumber( input, bmwPublicParams.no_number );
+				} );
+			} );
 		},
 
 		/**
