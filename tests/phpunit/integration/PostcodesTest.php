@@ -129,6 +129,56 @@ class PostcodesTest extends WP_UnitTestCase {
 		$this->assertCount( 4, $this->requests );
 	}
 
+	public function test_unanswered_lookup_is_told_apart_from_an_unknown_postcode() {
+		$this->assertNull( Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( '30130010' ) );
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Postcodes::is_unavailable( '30130-010' ) );
+		$this->assertSame(
+			array(
+				'postcode'     => '30130010',
+				'address'      => '',
+				'neighborhood' => '',
+				'city'         => '',
+				'state'        => 'MG',
+			),
+			Extra_Checkout_Fields_For_Brazil_Postcodes::get_unconfirmed_address( '30130010' )
+		);
+
+		$this->responses['viacep.com.br'] = array( 200, array( 'erro' => 'true' ) );
+
+		$this->assertNull( Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( '30130010' ) );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Postcodes::is_unavailable( '30130010' ) );
+		$this->assertNull( Extra_Checkout_Fields_For_Brazil_Postcodes::get_unconfirmed_address( '30130010' ) );
+	}
+
+	/**
+	 * Each state's CEPs, including the states holding two ranges.
+	 */
+	public function test_state_comes_from_the_postcode_range() {
+		$states = array(
+			'01001000' => 'SP',
+			'19999999' => 'SP',
+			'20040020' => 'RJ',
+			'69005000' => 'AM',
+			'69301000' => 'RR',
+			'69400000' => 'AM',
+			'69900000' => 'AC',
+			'70040000' => 'DF',
+			'72800000' => 'GO',
+			'73000000' => 'DF',
+			'74000000' => 'GO',
+			'76801000' => 'RO',
+			'77001000' => 'TO',
+			'90010000' => 'RS',
+			'99999999' => 'RS',
+			'00999999' => '',
+			'0100100'  => '',
+		);
+
+		foreach ( $states as $postcode => $state ) {
+			$this->assertSame( $state, Extra_Checkout_Fields_For_Brazil_Postcodes::get_state( (string) $postcode ), $postcode );
+		}
+	}
+
 	public function test_address_without_a_brazilian_state_is_discarded() {
 		$this->responses['viacep.com.br'] = array(
 			200,

@@ -210,7 +210,7 @@ msgstr "Telefone"
 msgid "Brazilian Market"
 msgstr "Brazilian Market"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:476
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:501
 msgid "Input helpers"
 msgstr "Auxiliares de preenchimento"
 
@@ -331,7 +331,7 @@ msgstr "Celular não é válido."
 msgid "Exempt from State Registration"
 msgstr "Isento de Inscrição Estadual"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:659
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:684
 #: build/classic.js:2
 msgid "required"
 msgstr "obrigatório"
@@ -368,7 +368,7 @@ msgid "Contribute"
 msgstr "Contribua"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:414
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:525
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:550
 msgid "Shipping"
 msgstr "Entrega"
 
@@ -382,8 +382,8 @@ msgstr "Preencher o endereço pelo CEP"
 msgid "Ask only for the CEP in the cart"
 msgstr "Pedir apenas o CEP no carrinho"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:453
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:460
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:478
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:485
 msgid "Shipping calculator on product pages"
 msgstr "Calculadora de frete nas páginas de produto"
 
@@ -401,26 +401,25 @@ msgstr "WooCommerce > Configurações > Geral"
 msgid "Sell and ship only to Brazil"
 msgstr "Vender e entregar apenas para o Brasil"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:568
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:593
 msgid "You do not have permission to change the store settings."
 msgstr "Você não tem permissão para alterar as configurações da loja."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:575
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:600
 msgid "The store now sells and ships only to Brazil."
 msgstr "A loja agora vende e entrega apenas para o Brasil."
 
-#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:396
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:510
 msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
-#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:404
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:884
-#: build/shipping-cart.js:1
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:520
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1028
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
 msgstr "Informe um CEP válido."
 
-#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:410
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:543
 msgid "CEP not found."
 msgstr "CEP não encontrado."
 
@@ -438,18 +437,20 @@ msgstr "Calcular"
 msgid "I don't know my CEP"
 msgstr "Não sei meu CEP"
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:655
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:728
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
 msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:661
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:890
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:742
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1034
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:876
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:880
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1020
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1024
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -458,20 +459,20 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1057
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1201
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1059
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1203
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
 msgstr[0] "Entrega em até %d dia útil"
 msgstr[1] "Entrega em até %d dias úteis"
 
-#: build/shipping-cart.js:1
+#: build/shipping-cart.js:2
 #: build/shipping.js:1
 msgid "No shipping options for this CEP."
 msgstr "Nenhuma opção de entrega para este CEP."
@@ -626,23 +627,23 @@ msgid "Follow the WooCommerce setting"
 msgstr "Seguir a configuração do WooCommerce"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:642
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:667
 msgid "Disabled"
 msgstr "Desativado"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:643
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:668
 msgid "Optional"
 msgstr "Opcional"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:644
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:669
 msgid "Required"
 msgstr "Obrigatório"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:657
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:682
 msgid "hidden"
 msgstr "oculto"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:658
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:683
 msgid "optional"
 msgstr "opcional"
 
@@ -655,11 +656,11 @@ msgstr "Inscrição Estadual não é válida."
 msgid "Exempt"
 msgstr "Isento"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:523
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:548
 msgid "Fields"
 msgstr "Campos"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:524
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:549
 msgid "Features"
 msgstr "Recursos"
 
@@ -794,35 +795,35 @@ msgstr "Preenche rua, bairro, cidade e estado assim que o cliente informa o CEP,
 msgid "The cart shipping calculator asks only for the CEP and fills in the state and city from it. The cart block gets a calculator of its own."
 msgstr "A calculadora de frete do carrinho pede apenas o CEP e preenche o estado e a cidade a partir dele. O bloco de carrinho ganha uma calculadora própria."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:485
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:492
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:517
 msgid "Suggest email corrections"
 msgstr "Sugerir correções de e-mail"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:493
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:518
 msgid "Offers a fix when the email domain looks mistyped, such as gmail.con."
 msgstr "Sugere uma correção quando o domínio do e-mail parece digitado errado, como gmail.con."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:500
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:507
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:525
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:532
 msgid "Format fields while typing"
 msgstr "Formatar os campos durante a digitação"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:508
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:533
 msgid "Adds masks to the CPF, CNPJ, CEP, birthdate, phone and cell phone fields."
 msgstr "Adiciona máscaras aos campos de CPF, CNPJ, CEP, data de nascimento, telefone e celular."
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:665
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:690
 #, php-format
 msgid "Asking legal persons only makes the field required for them and hides it from individuals. Otherwise WooCommerce's setting applies, currently %s, which is changed in the checkout page editor or in the Customizer."
 msgstr "Pedir apenas a pessoas jurídicas torna o campo obrigatório para elas e o esconde de pessoas físicas. Caso contrário vale a configuração do WooCommerce, hoje %s, que se altera no editor da página de checkout ou no Personalizador."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:676
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:701
 msgid "How the classic checkout and the My Account address forms arrange the fields. Pick full width if they look broken in your theme."
 msgstr "Como o checkout clássico e os formulários de endereço de Minha Conta organizam os campos. Escolha largura total se eles aparecerem quebrados no seu tema."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:679
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:704
 msgid "Your checkout page uses the Checkout block, which arranges its own fields, so this changes only the My Account address forms."
 msgstr "Sua página de checkout usa o bloco Finalizar compra, que organiza os próprios campos, então isto muda apenas os formulários de endereço de Minha Conta."
 
@@ -1029,27 +1030,27 @@ msgstr "Primeira letra do gênero como foi salvo, como F ou M."
 msgid "Cell phone as stored."
 msgstr "Celular como foi salvo."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:462
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:487
 msgid "Below the price and after the summary apply to classic themes only. A Shipping Calculator block or [csbmw_shipping_calculator] shortcode placed for the product takes the place of this one."
 msgstr "Abaixo do preço e depois do resumo valem só para temas clássicos. Um bloco Calculadora de Frete ou shortcode [csbmw_shipping_calculator] inserido para o produto toma o lugar desta."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:464
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:489
 msgid "Off, or only where placed"
 msgstr "Desativada, ou só onde for inserida"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:465
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:490
 msgid "Below the add to cart button"
 msgstr "Abaixo do botão de adicionar ao carrinho"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:466
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:491
 msgid "Above the add to cart button"
 msgstr "Acima do botão de adicionar ao carrinho"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:467
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:492
 msgid "Below the price"
 msgstr "Abaixo do preço"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:468
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:493
 msgid "After the product summary"
 msgstr "Depois do resumo do produto"
 
@@ -1114,3 +1115,54 @@ msgstr "Mostrar Brasil como texto"
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:332
 msgid "Hide the field"
 msgstr "Ocultar o campo"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:456
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:463
+msgid "Require the CEP before checkout"
+msgstr "Exigir o CEP antes da finalização"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:464
+msgid "Sends customers back to the cart to calculate shipping when they reach checkout without a CEP. Carts with nothing to ship go straight through."
+msgstr "Manda o cliente de volta ao carrinho para calcular o frete quando ele chega à finalização da compra sem um CEP. Carrinhos sem nada para entregar passam direto."
+
+#. translators: %s: link to the WooCommerce shipping settings
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:467
+#, php-format
+msgid "Needs the cart shipping calculator, which is off in %s."
+msgstr "Depende da calculadora de frete do carrinho, que está desativada em %s."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:468
+msgid "WooCommerce > Settings > Shipping > Shipping settings"
+msgstr "WooCommerce > Configurações > Entrega > Configurações de entrega"
+
+#: includes/class-extra-checkout-fields-for-brazil-postcodes.php:534
+msgid "CEP lookup is unavailable right now."
+msgstr "A consulta de CEP está indisponível no momento."
+
+#. translators: %s: state name
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:701
+#: build/shipping-cart.js:2
+#, php-format,js-format
+msgid "The address for this CEP could not be looked up right now, so shipping is quoted for %s."
+msgstr "Não foi possível consultar o endereço deste CEP agora, então o frete foi calculado para %s."
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:732
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "A CEP has 8 digits."
+msgstr "O CEP tem 8 dígitos."
+
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:930
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "Enter your CEP to calculate shipping before checkout."
+msgstr "Informe seu CEP para calcular o frete antes de finalizar a compra."
+
+#: build/shipping-cart.js:1
+msgid "Could not look up the CEP. Try again."
+msgstr "Não foi possível consultar o CEP. Tente novamente."
+
+#: build/shipping-cart.js:1
+#: build/shipping.js:1
+msgid "Enter your CEP to see the shipping options for your address."
+msgstr "Informe seu CEP para ver as opções de entrega para o seu endereço."

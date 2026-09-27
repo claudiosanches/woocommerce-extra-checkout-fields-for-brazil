@@ -99,6 +99,47 @@ async function openProduct( page ) {
 	return page.locator( '.csbmw-shipping-calculator' );
 }
 
+/**
+ * Make the shortcode cart page the store's cart while a callback runs. The
+ * calculator posts to the cart page, and the checkout sends customers back
+ * to it.
+ *
+ * @param {Function} callback Receives the page ID.
+ * @return {Promise<void>}
+ */
+async function withClassicCart( callback ) {
+	const cartPage = wpCli( [ 'option', 'get', 'woocommerce_cart_page_id' ] );
+	const classicCart = wpCli( [
+		'option',
+		'get',
+		'csbmw_e2e_classic_cart_page',
+	] );
+
+	wpCli( [ 'option', 'update', 'woocommerce_cart_page_id', classicCart ] );
+
+	try {
+		await callback( classicCart );
+	} finally {
+		wpCli( [ 'option', 'update', 'woocommerce_cart_page_id', cartPage ] );
+	}
+}
+
+/**
+ * Click the cart block's checkout button.
+ *
+ * WooCommerce hides it on a wide screen while its place is below the fold.
+ *
+ * @param {import('@playwright/test').Page} page Page.
+ * @return {Promise<void>}
+ */
+async function proceedToCheckout( page ) {
+	await page.locator( '.wc-block-cart__submit' ).scrollIntoViewIfNeeded();
+	await page.getByRole( 'link', { name: 'Proceed to Checkout' } ).click();
+}
+
+/** A CEP the table lacks, which the offline lookup leaves unanswered. */
+const UNANSWERED_POSTCODE = '30130010';
+
 test.describe( 'Shipping calculators', () => {
 	test.beforeAll( () => {
 		shipOnlyToBrazil();
@@ -231,6 +272,115 @@ test.describe( 'Shipping calculators', () => {
 		await expect( shipping ).toContainText( /30[.,]00/ );
 	} );
 
+	test( 'guides the CEP in the cart block', async ( { page } ) => {
+		await addShippedProduct( page );
+		await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+		const calculator = page.locator( '.csbmw-cart-shipping-calculator' );
+		const input = calculator.getByLabel( 'CEP' );
+		const button = calculator.getByRole( 'button', { name: 'Calculate' } );
+		const error = calculator.getByRole( 'alert' );
+
+		await expect( calculator ).toContainText(
+			'Enter your CEP to see the shipping options for your address.'
+		);
+
+		await button.click();
+		await expect( error ).toHaveText( 'Enter your CEP.' );
+
+		await input.pressSequentially( '3013' );
+		await input.blur();
+		await expect( error ).toHaveText( 'A CEP has 8 digits.' );
+
+		await input.fill( '' );
+		await input.pressSequentially( UNKNOWN_POSTCODE );
+		await button.click();
+		await expect( error ).toHaveText(
+			'CEP not found. Check the number and try again.'
+		);
+
+		await input.fill( '' );
+		await input.pressSequentially( UNANSWERED_POSTCODE );
+		await button.click();
+		await expect( calculator ).toContainText(
+			'The address for this CEP could not be looked up right now, so shipping is quoted for Minas Gerais.'
+		);
+		await expect(
+			page.locator( '.wc-block-components-totals-shipping' )
+		).toContainText( 'PAC E2E' );
+	} );
+
+	test( 'keeps the customer in the cart until a CEP is given, when required', async ( {
+		page,
+	} ) => {
+		setSettings( { ...SETTINGS, require_cart_postcode: 1 } );
+		await addShippedProduct( page );
+		await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+		const calculator = page.locator( '.csbmw-cart-shipping-calculator' );
+		const required =
+			'Enter your CEP to calculate shipping before checkout.';
+
+		await proceedToCheckout( page );
+		await expect( calculator.getByRole( 'alert' ) ).toHaveText( required );
+		await expect( calculator.getByLabel( 'CEP' ) ).toBeFocused();
+		await expect( page ).toHaveURL( /\/cart\/$/ );
+
+		// The server holds back a customer who goes around the button.
+		await page.goto( '/checkout/', { waitUntil: 'domcontentloaded' } );
+		await expect( page ).toHaveURL(
+			/\/cart\/\?csbmw_postcode_required=1$/
+		);
+		await expect( page.getByText( required ) ).toBeVisible();
+
+		await calculator
+			.getByLabel( 'CEP' )
+			.pressSequentially( POSTCODES.rio.postcode );
+		await calculator.getByRole( 'button', { name: 'Calculate' } ).click();
+		await expect( calculator ).toContainText( 'Rio de Janeiro - RJ' );
+
+		await proceedToCheckout( page );
+		await expect( page ).toHaveURL( /\/checkout\/$/ );
+	} );
+
+	test( 'keeps the customer in the classic cart until a CEP is given, when required', async ( {
+		page,
+	} ) => {
+		setSettings( { ...SETTINGS, require_cart_postcode: 1 } );
+
+		await withClassicCart( async ( classicCart ) => {
+			await addShippedProduct( page );
+			await page.goto( `/?page_id=${ classicCart }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			await page.locator( '.checkout-button' ).click();
+			await expect(
+				page.locator( '.shipping-calculator-form' )
+			).toContainText(
+				'Enter your CEP to calculate shipping before checkout.'
+			);
+			await expect(
+				page.locator( '#calc_shipping_postcode' )
+			).toBeFocused();
+			await expect( page ).not.toHaveURL( /checkout/ );
+		} );
+	} );
+
+	test( 'lets a cart with nothing to ship through without a CEP', async ( {
+		page,
+	} ) => {
+		setSettings( { ...SETTINGS, require_cart_postcode: 1 } );
+
+		const productId = wpCli( [ 'option', 'get', 'csbmw_e2e_product' ] );
+
+		await page.goto( `/?add-to-cart=${ productId }`, {
+			waitUntil: 'domcontentloaded',
+		} );
+		await page.goto( '/checkout/', { waitUntil: 'domcontentloaded' } );
+		await expect( page ).toHaveURL( /\/checkout\/$/ );
+	} );
+
 	test( 'quotes the cart for the CEP entered on the product page', async ( {
 		page,
 	} ) => {
@@ -280,36 +430,21 @@ test.describe( 'Shipping calculators', () => {
 	} );
 
 	test( 'asks only for the CEP in the classic cart', async ( { page } ) => {
-		const cartPage = wpCli( [
-			'option',
-			'get',
-			'woocommerce_cart_page_id',
-		] );
-		const classicCart = wpCli( [
-			'option',
-			'get',
-			'csbmw_e2e_classic_cart_page',
-		] );
-
-		// The calculator posts to the cart page, so the shortcode page has to
-		// be it for the duration.
-		wpCli( [
-			'option',
-			'update',
-			'woocommerce_cart_page_id',
-			classicCart,
-		] );
-
-		try {
+		await withClassicCart( async ( classicCart ) => {
 			await addShippedProduct( page );
 			await page.goto( `/?page_id=${ classicCart }`, {
 				waitUntil: 'domcontentloaded',
 			} );
 
-			await page.locator( '.shipping-calculator-button' ).click();
-
+			// Open from the start, since the customer has no CEP yet.
 			const form = page.locator( '.shipping-calculator-form' );
 
+			await expect( form ).toBeVisible();
+			await expect(
+				form.locator( '.csbmw-shipping-calculator-prompt' )
+			).toHaveText(
+				'Enter your CEP to see the shipping options for your address.'
+			);
 			await expect(
 				form.locator( '#calc_shipping_country' )
 			).toHaveCount( 0 );
@@ -337,14 +472,51 @@ test.describe( 'Shipping calculators', () => {
 			await expect(
 				page.locator( '.woocommerce-shipping-totals' )
 			).toContainText( 'SEDEX E2E' );
-		} finally {
-			wpCli( [
-				'option',
-				'update',
-				'woocommerce_cart_page_id',
-				cartPage,
-			] );
-		}
+		} );
+	} );
+
+	test( 'checks the CEP in the classic cart and quotes its state while the lookup is down', async ( {
+		page,
+	} ) => {
+		await withClassicCart( async ( classicCart ) => {
+			await addShippedProduct( page );
+			await page.goto( `/?page_id=${ classicCart }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			const form = page.locator( '.shipping-calculator-form' );
+			const input = form.locator( '#calc_shipping_postcode' );
+			const error = form.locator( '.csbmw-shipping-calculator-error' );
+
+			await input.pressSequentially( '3013' );
+			await input.blur();
+			await expect( error ).toContainText( 'A CEP has 8 digits.' );
+			await expect( input ).toHaveAttribute( 'aria-invalid', 'true' );
+
+			// Nothing is sent for a CEP too short to look up.
+			let posted = false;
+
+			page.on( 'request', ( request ) => {
+				posted ||= 'POST' === request.method();
+			} );
+			await form.getByRole( 'button', { name: 'Update' } ).click();
+			await expect( error ).toContainText( 'A CEP has 8 digits.' );
+			expect( posted ).toBe( false );
+
+			await input.fill( '' );
+			await input.pressSequentially( UNANSWERED_POSTCODE );
+			await expect( error ).toBeEmpty();
+			await form.getByRole( 'button', { name: 'Update' } ).click();
+
+			await expect(
+				page.getByText(
+					'The address for this CEP could not be looked up right now, so shipping is quoted for Minas Gerais.'
+				)
+			).toBeVisible();
+			await expect(
+				page.locator( '.woocommerce-shipping-totals' )
+			).toContainText( 'PAC E2E' );
+		} );
 	} );
 
 	test( 'fills the block checkout address from the CEP', async ( {

@@ -7,6 +7,7 @@ import { bindMask, formatCep } from '../shared/mask';
 import {
 	getJson,
 	postcodeDigits,
+	postcodeError,
 	followPostcodeConsent,
 	rememberPostcode,
 	rememberedPostcode,
@@ -21,6 +22,7 @@ export interface ShippingParams {
 	// Trusted SVG markup printed by the plugin.
 	findPostcodeIcon?: string;
 	postcodeOnly?: string;
+	requirePostcode?: string;
 	notices?: Partial< Record< NoticeType, string > >;
 }
 
@@ -645,9 +647,32 @@ function enhanceCartCalculator(): void {
 	input.setAttribute( 'placeholder', '00000-000' );
 	bindMask( input, 'cep' );
 
-	input.form?.addEventListener( 'submit', () =>
-		rememberPostcode( input.value )
-	);
+	const errors = element( 'div', 'csbmw-shipping-calculator-error' );
+
+	errors.id = 'csbmw-calc-postcode-error';
+	errors.setAttribute( 'aria-live', 'polite' );
+	input.setAttribute( 'aria-describedby', errors.id );
+
+	input.addEventListener( 'input', () => cartCalculatorError( '' ) );
+	input.addEventListener( 'blur', () => {
+		if ( input.value && ! postcodeDigits( input.value ) ) {
+			cartCalculatorError( postcodeError( input.value ) );
+		}
+	} );
+
+	// Runs before WooCommerce's handler on the document, which it stops.
+	input.form?.addEventListener( 'submit', ( event ) => {
+		if ( ! postcodeDigits( input.value ) ) {
+			event.preventDefault();
+			event.stopPropagation();
+			cartCalculatorError( postcodeError( input.value ) );
+			input.focus();
+
+			return;
+		}
+
+		rememberPostcode( input.value );
+	} );
 
 	const label = row.querySelector( 'label' );
 
@@ -672,6 +697,83 @@ function enhanceCartCalculator(): void {
 	link.rel = 'noopener noreferrer';
 	link.insertAdjacentHTML( 'beforeend', params.findPostcodeIcon || '' );
 	row.append( link );
+	row.after( errors );
+
+	if ( ! postcodeDigits( input.defaultValue ) ) {
+		row.before(
+			element(
+				'p',
+				'csbmw-shipping-calculator-prompt',
+				__(
+					'Enter your CEP to see the shipping options for your address.',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				)
+			)
+		);
+		// After WooCommerce's cart script has closed it on load.
+		window.jQuery?.( () => window.setTimeout( openCartCalculator ) );
+	}
+}
+
+/**
+ * Show an error under the classic cart calculator's CEP.
+ *
+ * @param text Message, or an empty string to clear it.
+ */
+function cartCalculatorError( text: string ): void {
+	const input = document.getElementById( 'calc_shipping_postcode' );
+
+	document
+		.getElementById( 'csbmw-calc-postcode-error' )
+		?.replaceChildren( ...( text ? [ notice( 'error', text ) ] : [] ) );
+	input?.setAttribute( 'aria-invalid', text ? 'true' : 'false' );
+	input
+		?.closest( '.form-row' )
+		?.classList.toggle( 'woocommerce-invalid', !! text );
+}
+
+/**
+ * Open the classic cart calculator, which WooCommerce starts closed.
+ */
+function openCartCalculator(): void {
+	const section = document.getElementById( 'shipping-calculator-form' );
+
+	if ( section ) {
+		section.style.display = 'block';
+	}
+
+	document
+		.querySelector( '.shipping-calculator-button' )
+		?.setAttribute( 'aria-expanded', 'true' );
+}
+
+/**
+ * Keep a customer without a CEP in the classic cart, when the store asks for
+ * one before checkout. The server sends back anyone who gets past this.
+ *
+ * @param event Click.
+ */
+function holdCheckout( event: MouseEvent ): void {
+	const input = document.getElementById( 'calc_shipping_postcode' );
+
+	if (
+		! ( input instanceof window.HTMLInputElement ) ||
+		postcodeDigits( input.defaultValue ) ||
+		! ( event.target instanceof window.Element ) ||
+		! event.target.closest( '.wc-proceed-to-checkout .checkout-button' )
+	) {
+		return;
+	}
+
+	event.preventDefault();
+	openCartCalculator();
+	cartCalculatorError(
+		__(
+			'Enter your CEP to calculate shipping before checkout.',
+			'woocommerce-extra-checkout-fields-for-brazil'
+		)
+	);
+	input.focus();
 }
 
 function init(): void {
@@ -698,6 +800,10 @@ function init(): void {
 		.forEach( bindProductCalculator );
 
 	enhanceCartCalculator();
+
+	if ( 'yes' === params.postcodeOnly && 'yes' === params.requirePostcode ) {
+		document.addEventListener( 'click', holdCheckout, true );
+	}
 
 	followPostcodeConsent( () => {
 		try {

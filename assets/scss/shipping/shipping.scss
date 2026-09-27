@@ -102,6 +102,12 @@ $small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
 	display: contents;
 }
 
+.csbmw-shipping-calculator-prompt {
+	font-size: $small-text;
+	line-height: 1.5;
+	margin: 0 0 0.75em;
+}
+
 .csbmw-shipping-calculator-error {
 	margin-top: 0.75em;
 

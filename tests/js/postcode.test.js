@@ -5,10 +5,12 @@
 import {
 	createAutofill,
 	describeAddress,
+	findPostcode,
 	followPostcodeConsent,
 	lookupPostcode,
 	planAutofill,
 	postcodeDigits,
+	postcodeError,
 	rememberPostcode,
 	rememberedPostcode,
 } from '../../assets/js/shared/postcode';
@@ -44,6 +46,71 @@ describe( 'describeAddress', () => {
 		expect(
 			describeAddress( { ...ADDRESS, address: '', neighborhood: '' } )
 		).toBe( 'São Paulo - SP' );
+	} );
+
+	it( 'names only the state when the city is unknown', () => {
+		expect(
+			describeAddress( {
+				...ADDRESS,
+				address: '',
+				neighborhood: '',
+				city: '',
+			} )
+		).toBe( 'SP' );
+	} );
+} );
+
+describe( 'postcodeError', () => {
+	it( 'asks for a CEP or for all its digits', () => {
+		expect( postcodeError( '' ) ).toBe( 'Enter your CEP.' );
+		expect( postcodeError( '0100' ) ).toBe( 'A CEP has 8 digits.' );
+	} );
+} );
+
+describe( 'findPostcode', () => {
+	afterEach( () => {
+		delete window.fetch;
+	} );
+
+	/**
+	 * Answer every request with an error carrying the given data.
+	 *
+	 * @param {Object} data Error data.
+	 */
+	const failWith = ( data ) => {
+		window.fetch = jest.fn().mockResolvedValue( {
+			json: () => Promise.resolve( { success: false, data } ),
+		} );
+	};
+
+	it( 'gives the state while the lookup services do not answer', async () => {
+		failWith( {
+			message: 'CEP lookup is unavailable right now.',
+			code: 'unavailable',
+			state: 'MG',
+		} );
+
+		await expect(
+			findPostcode( '/?wc-ajax=lookup', '30130-010' )
+		).resolves.toEqual( {
+			address: null,
+			error: 'unavailable',
+			state: 'MG',
+		} );
+	} );
+
+	it( 'tells an unknown CEP from a failed request', async () => {
+		failWith( { message: 'CEP not found.', code: 'not_found' } );
+
+		await expect(
+			findPostcode( '/?wc-ajax=lookup', '99999-997' )
+		).resolves.toEqual( { address: null, error: 'not_found' } );
+
+		window.fetch = jest.fn().mockRejectedValue( new Error( 'Offline' ) );
+
+		await expect(
+			findPostcode( '/?wc-ajax=lookup', '99999-997' )
+		).resolves.toEqual( { address: null, error: 'failed' } );
 	} );
 } );
 

@@ -274,7 +274,8 @@ These apply to every calculator and to the address autofill on both checkouts an
 A service is a callback that takes the CEP's eight digits and returns an array with
 `postcode`, `address`, `neighborhood`, `city` and `state`, false when it knows the CEP does
 not exist, or null when it could not answer. An address without a city or a valid state is
-ignored.
+ignored. When no service answers and none says the CEP does not exist, the cart
+calculators quote the state the CEP belongs to.
 
 ```php
 // Ask an internal service before the public ones.

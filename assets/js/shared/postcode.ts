@@ -2,6 +2,8 @@
  * Address lookup by CEP, through the plugin's WC AJAX endpoint.
  */
 
+import { __ } from '@wordpress/i18n';
+
 export interface PostcodeAddress {
 	postcode: string;
 	address: string;
@@ -15,7 +17,28 @@ interface Response< T > {
 	data: T | { message?: string };
 }
 
-const lookups = new Map< string, Promise< PostcodeAddress | null > >();
+export interface PostcodeResult {
+	address: PostcodeAddress | null;
+	// Why there is no address: the CEP is unknown, the lookup services did
+	// not answer, or the request itself failed.
+	error?: 'not_found' | 'unavailable' | 'failed';
+	// The CEP's state, while the lookup services do not answer.
+	state?: string;
+}
+
+/**
+ * Error from a WC AJAX endpoint, with the data it answered.
+ */
+export class RequestError extends Error {
+	data: Record< string, string >;
+
+	constructor( message: string, data: Record< string, string > = {} ) {
+		super( message );
+		this.data = data;
+	}
+}
+
+const lookups = new Map< string, Promise< PostcodeResult > >();
 
 // Mirrored by Extra_Checkout_Fields_For_Brazil_Privacy::POSTCODE_COOKIE.
 const POSTCODE_COOKIE = 'csbmw_postcode';
@@ -143,6 +166,24 @@ export function postcodeDigits( value: string | null | undefined ): string {
 }
 
 /**
+ * What is wrong with a CEP too short to look up.
+ *
+ * @param value CEP as typed.
+ * @return Message.
+ */
+export function postcodeError( value: string ): string {
+	return value.replace( /\D/g, '' )
+		? __(
+				'A CEP has 8 digits.',
+				'woocommerce-extra-checkout-fields-for-brazil'
+		  )
+		: __(
+				'Enter your CEP.',
+				'woocommerce-extra-checkout-fields-for-brazil'
+		  );
+}
+
+/**
  * Send a GET request to a WC AJAX endpoint.
  *
  * @param url    Endpoint URL.
@@ -171,16 +212,65 @@ export async function getJson< T >(
 
 		body = ( await response.json() ) as Response< T >;
 	} catch {
-		throw new Error( '' );
+		throw new RequestError( '' );
 	}
 
 	if ( ! body.success ) {
-		const data = body.data as { message?: string };
+		const data = ( body.data || {} ) as Record< string, string >;
 
-		throw new Error( data?.message || '' );
+		throw new RequestError( data.message || '', data );
 	}
 
 	return body.data as T;
+}
+
+/**
+ * What the lookup says of a CEP, asked once per page.
+ *
+ * @param url      Endpoint URL.
+ * @param postcode CEP, with or without the hyphen.
+ * @return Result, with no address and no error for an incomplete CEP.
+ */
+export function findPostcode(
+	url: string,
+	postcode: string
+): Promise< PostcodeResult > {
+	const digits = postcodeDigits( postcode );
+
+	if ( ! digits || ! url ) {
+		return Promise.resolve( { address: null } );
+	}
+
+	let lookup = lookups.get( digits );
+
+	if ( ! lookup ) {
+		lookup = getJson< PostcodeAddress >( url, { postcode: digits } ).then(
+			( address ): PostcodeResult => ( { address } ),
+			( failure ): PostcodeResult => {
+				// Only an address is kept, so the customer can retry.
+				lookups.delete( digits );
+
+				const data =
+					failure instanceof RequestError ? failure.data : {};
+
+				if ( 'unavailable' === data.code && data.state ) {
+					return {
+						address: null,
+						error: 'unavailable',
+						state: data.state,
+					};
+				}
+
+				return {
+					address: null,
+					error: data.code ? 'not_found' : 'failed',
+				};
+			}
+		);
+		lookups.set( digits, lookup );
+	}
+
+	return lookup;
 }
 
 /**
@@ -194,27 +284,7 @@ export function lookupPostcode(
 	url: string,
 	postcode: string
 ): Promise< PostcodeAddress | null > {
-	const digits = postcodeDigits( postcode );
-
-	if ( ! digits || ! url ) {
-		return Promise.resolve( null );
-	}
-
-	let lookup = lookups.get( digits );
-
-	if ( ! lookup ) {
-		lookup = getJson< PostcodeAddress >( url, { postcode: digits } ).catch(
-			() => {
-				// A failure is not cached, so the customer can retry.
-				lookups.delete( digits );
-
-				return null;
-			}
-		);
-		lookups.set( digits, lookup );
-	}
-
-	return lookup;
+	return findPostcode( url, postcode ).then( ( result ) => result.address );
 }
 
 /**
@@ -224,7 +294,9 @@ export function lookupPostcode(
  * @return Street, neighborhood, city and state, skipping the empty ones.
  */
 export function describeAddress( address: PostcodeAddress ): string {
-	const place = `${ address.city } - ${ address.state }`;
+	const place = [ address.city, address.state ]
+		.filter( Boolean )
+		.join( ' - ' );
 
 	return [ address.address, address.neighborhood, place ]
 		.filter( Boolean )
