@@ -54,6 +54,15 @@ test.describe( 'Number and Neighborhood by country', () => {
 			await top( '#shipping-postcode' )
 		);
 
+		// The name comes before the country, spaced as any other row.
+		const lastName = await page
+			.locator( '#shipping-last_name' )
+			.boundingBox();
+		expect(
+			( await top( '#shipping-country' ) ) -
+				( lastName.y + lastName.height )
+		).toBe( 12 );
+
 		await page
 			.getByLabel( 'Use same address for billing' )
 			.setChecked( false );

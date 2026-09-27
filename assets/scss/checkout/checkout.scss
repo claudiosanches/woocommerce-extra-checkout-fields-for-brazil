@@ -19,6 +19,13 @@
 	flex: 1 0 calc(50% - 12px);
 }
 
+// WooCommerce takes the top margin off the country, expecting it first, but
+// it follows the name here.
+/* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
+.wc-block-checkout__form .wc-block-components-address-form__country:not(:first-child) .wc-blocks-components-select {
+	margin-top: 12px;
+}
+
 // Heads the documents and personal details in the contact step, as a step
 // title of WooCommerce's own. Only its place in the form is set here.
 .wcbcf-customer-details-title:not(#csbmw) {

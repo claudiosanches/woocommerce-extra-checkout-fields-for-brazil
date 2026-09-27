@@ -607,6 +607,14 @@ class Extra_Checkout_Fields_For_Brazil_Front_End {
 			$locales['BR'][ $key ]['priority'] = $priority;
 		}
 
+		// The checkout block asks for the country before the name. The classic
+		// forms already put it after, at 40, and would read a lower value too.
+		$countries = array_merge( WC()->countries->get_allowed_countries(), WC()->countries->get_shipping_countries() );
+
+		foreach ( array_keys( $countries ) as $country ) {
+			$locales[ $country ]['country']['priority'] = 40;
+		}
+
 		$locales['BR']['number']['hidden']         = false;
 		$locales['BR']['number']['required']       = true;
 		$locales['BR']['neighborhood']['hidden']   = false;

@@ -75,6 +75,10 @@ class AddressCountryTest extends WP_UnitTestCase {
 		$this->assertSame( 42, $locale['BR']['postcode']['priority'] );
 		$this->assertSame( 44, $locale['BR']['address_1']['priority'] );
 		$this->assertSame( 46, $locale['BR']['address_2']['priority'] );
+
+		// After the name on the checkout block too, whatever the country.
+		$this->assertSame( 40, $locale['BR']['country']['priority'] );
+		$this->assertSame( 40, $locale['US']['country']['priority'] );
 	}
 
 	public function test_the_locale_reaches_both_forms() {
