@@ -246,6 +246,33 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	}
 
 	/**
+	 * Rule matching a Brazilian address, whichever address the field is on.
+	 *
+	 * @return array
+	 */
+	protected function rule_address_is_brazil() {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'customer' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'address' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'country' => array( 'const' => 'BR' ),
+							),
+							'required'   => array( 'country' ),
+						),
+					),
+					'required'   => array( 'address' ),
+				),
+			),
+			'required'   => array( 'customer' ),
+		);
+	}
+
+	/**
 	 * Combine rules so all of them must match.
 	 *
 	 * @param array $rules Rules to combine.
@@ -548,6 +575,9 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 	protected function register_address_fields() {
 		$labels = self::address_field_labels();
 
+		// Other countries' address formats print neither field.
+		$brazil = array( $this->rule_address_is_brazil() );
+
 		$this->register_field(
 			'number',
 			array(
@@ -556,10 +586,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'index'      => 41,
 				'attributes' => $this->text_attributes( 'number' ),
 			),
-			array(
-				'required' => true,
-				'hidden'   => false,
-			)
+			$this->conditions( $brazil )
 		);
 
 		$this->register_field(
@@ -570,10 +597,7 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				'index'      => 51,
 				'attributes' => $this->text_attributes( 'neighborhood' ),
 			),
-			array(
-				'required' => '1' === (string) $this->setting( 'neighborhood_required', '0' ),
-				'hidden'   => false,
-			)
+			$this->conditions( $brazil, array(), '1' === (string) $this->setting( 'neighborhood_required', '0' ) )
 		);
 	}
 

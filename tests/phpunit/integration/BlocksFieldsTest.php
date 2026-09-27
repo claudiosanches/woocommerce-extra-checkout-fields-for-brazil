@@ -132,19 +132,6 @@ class BlocksFieldsTest extends WP_UnitTestCase {
 		$this->assertFalse( $fields['csbmw/cpf']['hidden'] );
 	}
 
-	public function test_neighborhood_requiredness_follows_its_setting() {
-		$fields = $this->register_with( array( 'person_type' => 0 ) );
-		$this->assertFalse( $fields['csbmw/neighborhood']['required'] );
-
-		$fields = $this->register_with(
-			array(
-				'person_type'           => 0,
-				'neighborhood_required' => '1',
-			)
-		);
-		$this->assertTrue( $fields['csbmw/neighborhood']['required'] );
-	}
-
 	public function test_validate_field_reports_missing_required_values() {
 		update_option( 'wcbcf_settings', array( 'person_type' => 2 ) );
 

@@ -204,4 +204,57 @@ class BlockRulesTest extends WP_UnitTestCase {
 			$this->assertFieldState( $key, true, true, $this->document( '1', 'US' ) );
 		}
 	}
+
+	/**
+	 * A document for one address, the way the checkout evaluates address fields.
+	 *
+	 * @param string $group   Address, billing or shipping.
+	 * @param array  $countries Billing and shipping countries.
+	 *
+	 * @return DocumentObject
+	 */
+	protected function address_document( $group, array $countries ) {
+		$document = new DocumentObject(
+			array(
+				'customer' => array(
+					'billing_address'  => array( 'country' => $countries['billing'] ),
+					'shipping_address' => array( 'country' => $countries['shipping'] ),
+				),
+			)
+		);
+		$document->set_context( $group . '_address' );
+
+		return $document;
+	}
+
+	public function test_number_and_neighborhood_follow_each_address_country() {
+		$this->register(
+			array(
+				'person_type'           => 0,
+				'neighborhood_required' => '1',
+			)
+		);
+
+		$countries = array(
+			'billing'  => 'US',
+			'shipping' => 'BR',
+		);
+
+		foreach ( array( 'number', 'neighborhood' ) as $key ) {
+			$this->assertFieldState( $key, false, false, $this->address_document( 'billing', $countries ) );
+			$this->assertFieldState( $key, true, true, $this->address_document( 'shipping', $countries ) );
+		}
+	}
+
+	public function test_neighborhood_requiredness_follows_its_setting() {
+		$this->register( array( 'person_type' => 0 ) );
+
+		$brazil = array(
+			'billing'  => 'BR',
+			'shipping' => 'BR',
+		);
+
+		$this->assertFieldState( 'neighborhood', true, false, $this->address_document( 'billing', $brazil ) );
+		$this->assertFieldState( 'number', true, true, $this->address_document( 'billing', $brazil ) );
+	}
 }

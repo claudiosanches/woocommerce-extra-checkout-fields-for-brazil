@@ -10,3 +10,16 @@
 	color: #c00;
 	font-size: small;
 }
+
+// Every pair starts a line of its own. WooCommerce sorts these rows by the
+// country locale and leaves their clearing elements behind, so a taller row
+// on the right would otherwise push the next pair out of place.
+/* stylelint-disable selector-class-pattern -- WooCommerce's class names. */
+:is(
+	.woocommerce-billing-fields__field-wrapper,
+	.woocommerce-shipping-fields__field-wrapper,
+	.woocommerce-address-fields__field-wrapper
+) > .form-row-first {
+	clear: both;
+}
+/* stylelint-enable selector-class-pattern */
