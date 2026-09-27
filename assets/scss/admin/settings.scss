@@ -175,9 +175,9 @@
 }
 
 // Stuck, it becomes a bar across the screen: a layer behind the button
-// reaches past the column on both sides, and the admin body clips it to the
-// screen so it adds no horizontal scroll.
-#wpbody:has(#bmw-settings) {
+// reaches past the column on both sides, and the admin content clips it at
+// the menu and the screen edge so it adds no horizontal scroll.
+#wpcontent:has(#bmw-settings) {
     overflow-x: clip;
 }
 
