@@ -14,7 +14,26 @@ import '../../scss/classic/classic.scss';
  * Classic (shortcode) checkout and account address form.
  */
 jQuery( function ( $ ) {
-	const unbinders = new Map();
+	const unbinders = new WeakMap();
+	const bound = new WeakMap();
+
+	/**
+	 * Bind a feature to an element once, however often the fields are bound.
+	 *
+	 * @param {?HTMLElement}                   element Element.
+	 * @param {string}                         feature Feature name.
+	 * @param {(element: HTMLElement) => void} bind    Binds the feature.
+	 */
+	const once = ( element, feature, bind ) => {
+		const features = element && ( bound.get( element ) || new Set() );
+
+		if ( ! features || features.has( feature ) ) {
+			return;
+		}
+
+		bound.set( element, features.add( feature ) );
+		bind( element );
+	};
 
 	const mask = ( selector, format ) => {
 		document.querySelectorAll( selector ).forEach( ( input ) => {
@@ -45,8 +64,20 @@ jQuery( function ( $ ) {
 
 	const bmwFrontEnd = {
 		init() {
+			this.listen();
+			this.bind();
+
+			// Checkouts such as Fluid Checkout render the address sections
+			// again when they refresh, and the new fields arrive unbound.
+			$( document.body ).on( 'updated_checkout', () => this.bind() );
+		},
+
+		/**
+		 * Listen on the document, which outlives any field.
+		 */
+		listen() {
 			if ( '0' !== bmwPublicParams.person_type ) {
-				this.personTypeFields();
+				this.applyPersonType = this.personTypeFields();
 			}
 
 			if ( 'yes' === bmwPublicParams.maskedinput ) {
@@ -73,7 +104,37 @@ jQuery( function ( $ ) {
 						}
 					}
 				);
+			}
 
+			this.binders = [
+				this.phones( 'billing', [
+					'billing_phone',
+					'billing_cellphone',
+				] ),
+				this.phones( 'shipping', [ 'shipping_phone' ] ),
+				this.houseNumber( 'billing' ),
+				this.houseNumber( 'shipping' ),
+			];
+
+			if ( 'yes' === bmwPublicParams.postcode_autofill ) {
+				this.autofill( 'billing' );
+				this.autofill( 'shipping' );
+			}
+		},
+
+		/**
+		 * Bind the fields on the page that are not bound yet.
+		 */
+		bind() {
+			if ( this.applyPersonType ) {
+				once(
+					document.querySelector( '.person-type-field' ),
+					'person-type',
+					this.applyPersonType
+				);
+			}
+
+			if ( 'yes' === bmwPublicParams.maskedinput ) {
 				if ( 'BR' === $( '#billing_country' ).val() ) {
 					this.maskBilling();
 				}
@@ -85,23 +146,21 @@ jQuery( function ( $ ) {
 				this.maskGeneral();
 			}
 
-			this.phones( 'billing', [ 'billing_phone', 'billing_cellphone' ] );
-			this.phones( 'shipping', [ 'shipping_phone' ] );
-			bindIeExempt( document.getElementById( 'billing_ie' ) );
-			this.houseNumber( 'billing' );
-			this.houseNumber( 'shipping' );
+			this.binders.forEach( ( bindFields ) => bindFields() );
+			once( document.getElementById( 'billing_ie' ), 'ie', bindIeExempt );
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
-				bindMailcheck( document.getElementById( 'billing_email' ) );
+				once(
+					document.getElementById( 'billing_email' ),
+					'mailcheck',
+					bindMailcheck
+				);
 			}
 
 			if ( $().select2 ) {
-				$( '.wc-ecfb-select' ).select2();
-			}
-
-			if ( 'yes' === bmwPublicParams.postcode_autofill ) {
-				this.autofill( 'billing' );
-				this.autofill( 'shipping' );
+				$( '.wc-ecfb-select' )
+					.not( '.select2-hidden-accessible' )
+					.select2();
 			}
 		},
 
@@ -111,28 +170,24 @@ jQuery( function ( $ ) {
 		 *
 		 * @param {string}   group Address group, billing or shipping.
 		 * @param {string[]} ids   Phone input ids.
+		 * @return {() => void} Binds the phones on the page.
 		 */
 		phones( group, ids ) {
 			const params = bmwPublicParams.phone || {};
 			const masked = 'yes' === bmwPublicParams.maskedinput;
 			const country = () => $( `#${ group }_country` ).val() || '';
-			const inputs = ids
-				.map( ( id ) => document.getElementById( id ) )
-				.filter( Boolean );
-			const syncs = inputs.map( ( input ) => {
-				if ( masked ) {
-					bindPhone( input, country, params );
-				}
-
-				return bindPhonePicker( input, { country, params } );
-			} );
+			const inputs = () =>
+				ids
+					.map( ( id ) => document.getElementById( id ) )
+					.filter( Boolean );
+			const syncs = new WeakMap();
 			let previous = country();
 
 			$( document.body ).on( 'change', `#${ group }_country`, () => {
 				const next = country();
 
 				if ( masked && next !== previous ) {
-					inputs.forEach( ( input ) => {
+					inputs().forEach( ( input ) => {
 						input.value = rebasePhone(
 							input.value,
 							previous,
@@ -143,35 +198,64 @@ jQuery( function ( $ ) {
 				}
 
 				previous = next;
-				syncs.forEach( ( sync ) => sync() );
+				inputs().forEach( ( input ) => syncs.get( input )?.() );
 			} );
+
+			return () =>
+				inputs().forEach( ( input ) =>
+					once( input, 'phone', () => {
+						if ( masked ) {
+							bindPhone( input, country, params );
+						}
+
+						syncs.set(
+							input,
+							bindPhonePicker( input, { country, params } )
+						);
+					} )
+				);
 		},
 
 		/**
 		 * Take digits only in an address's Number field, and offer No number.
 		 *
 		 * @param {string} group Address group, billing or shipping.
+		 * @return {() => void} Binds the Number field on the page.
 		 */
 		houseNumber( group ) {
 			// My Account renders Number as the block checkout's field.
-			const input =
+			const field = () =>
 				document.getElementById( `${ group }_number` ) ||
 				document.querySelector(
 					`[name="_wc_${ group }/csbmw/number"]`
 				);
-
-			bindHouseNumber( input, bmwPublicParams.no_number );
-
-			let unbind = bindNoNumber( input, bmwPublicParams.no_number );
+			const toggles = new WeakMap();
 
 			// WooCommerce empties the field when another country hides it,
 			// without an event the toggle would hear, so it starts over.
 			$( document.body ).on( 'country_to_state_changing', () => {
 				setTimeout( () => {
-					unbind();
-					unbind = bindNoNumber( input, bmwPublicParams.no_number );
+					const input = field();
+					const unbind = input && toggles.get( input );
+
+					if ( unbind ) {
+						unbind();
+						toggles.set(
+							input,
+							bindNoNumber( input, bmwPublicParams.no_number )
+						);
+					}
 				} );
 			} );
+
+			return () =>
+				once( field(), 'number', ( input ) => {
+					bindHouseNumber( input, bmwPublicParams.no_number );
+					toggles.set(
+						input,
+						bindNoNumber( input, bmwPublicParams.no_number )
+					);
+				} );
 		},
 
 		/**
@@ -288,58 +372,66 @@ jQuery( function ( $ ) {
 				}
 			};
 
-			/**
-			 * Maybe run handle fields
-			 *
-			 * @param {boolean} checkCountry
-			 */
-			const maybeRunHandleFields = function ( checkCountry = false ) {
-				if ( '1' === bmwPublicParams.person_type ) {
-					$( '#billing_persontype' )
-						.on( 'change', function () {
-							handleFields( $( this ).val(), checkCountry );
-						} )
-						.trigger( 'change' );
+			const onlyBrazil = 'no' !== bmwPublicParams.only_brazil;
+			const choosable = '1' === bmwPublicParams.person_type;
+
+			const applyChoice = () =>
+				handleFields( $( '#billing_persontype' ).val(), onlyBrazil );
+
+			const applyCountry = () => {
+				if ( 'BR' !== $( '#billing_country' ).val() ) {
+					$( '.person-type-field' ).removeClass(
+						'validate-required is-active woocommerce-validated'
+					);
+					$( '.person-type-field label .required' ).remove();
+					return;
 				}
+
+				// person_type 2 means individuals and 3 means legal person, so
+				// offsetting by one gives what #billing_persontype would hold.
+				const personType = choosable
+					? $( '#billing_persontype' ).val()
+					: String( bmwPublicParams.person_type - 1 );
+
+				handleFields( personType );
 			};
 
-			if ( 'no' === bmwPublicParams.only_brazil ) {
-				markPersonTypeRequired();
-
-				maybeRunHandleFields();
-			} else {
-				$( '.person-type-field' ).removeClass(
-					'validate-required is-active woocommerce-validated'
+			if ( choosable ) {
+				$( document.body ).on(
+					'change',
+					'#billing_persontype',
+					applyChoice
 				);
-				$( '.person-type-field label .required' ).remove();
-				maybeRunHandleFields( true );
-
-				$( '#billing_country' )
-					.on( 'change', function () {
-						if ( 'BR' !== $( this ).val() ) {
-							$( '.person-type-field' ).removeClass(
-								'validate-required is-active woocommerce-validated'
-							);
-							$( '.person-type-field label .required' ).remove();
-							return;
-						}
-
-						if ( '0' === bmwPublicParams.person_type ) {
-							return;
-						}
-
-						// person_type 2 means individuals and 3 means legal
-						// person, so offsetting by one gives what
-						// #billing_persontype would hold.
-						const personType =
-							'1' === bmwPublicParams.person_type
-								? $( '#billing_persontype' ).val()
-								: String( bmwPublicParams.person_type - 1 );
-
-						handleFields( personType );
-					} )
-					.trigger( 'change' );
 			}
+
+			if ( onlyBrazil ) {
+				$( document.body ).on(
+					'change',
+					'#billing_country',
+					applyCountry
+				);
+			}
+
+			// Called directly, as a change on the country would refresh the
+			// checkout.
+			return () => {
+				if ( onlyBrazil ) {
+					$( '.person-type-field' ).removeClass(
+						'validate-required is-active woocommerce-validated'
+					);
+					$( '.person-type-field label .required' ).remove();
+				} else {
+					markPersonTypeRequired();
+				}
+
+				if ( choosable ) {
+					applyChoice();
+				}
+
+				if ( onlyBrazil ) {
+					applyCountry();
+				}
+			};
 		},
 
 		maskBilling() {
