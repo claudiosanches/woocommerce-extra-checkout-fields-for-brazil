@@ -1,0 +1,370 @@
+/*
+ * Product page and cart shipping calculators. Inputs, buttons, notices and the
+ * cart's shipping options use WooCommerce's own classes, so these rules mostly
+ * lay them out.
+ */
+
+// WooCommerce's separator color, as its cart and checkout use, which a theme
+// can set. Otherwise it follows the text color, so dark themes get light lines.
+$border: var(--wc-separator-color, color-mix(in srgb, currentcolor 20%, transparent));
+
+// The theme's small size, as WooCommerce gives its fields on block themes,
+// but never above a step below the card text, as some themes set it large.
+$small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
+
+.csbmw-shipping-calculator {
+	margin: 1.5em 0;
+	max-width: 30rem;
+
+	// WooCommerce pads every child after the first inside the add to cart
+	// form block, which the classic hook prints the calculator into.
+	padding-left: 0;
+	padding-right: 0;
+
+	.screen-reader-text {
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+}
+
+// A step below the product summary text, as secondary information, and no
+// larger than the root text on themes with large body text.
+.csbmw-shipping-calculator-card {
+	font-size: min(0.875em, 1rem);
+}
+
+.csbmw-shipping-calculator-icon {
+	flex: none;
+	height: 20px;
+	width: 20px;
+}
+
+.csbmw-shipping-calculator-label {
+	display: block;
+	font-size: $small-text;
+	margin-bottom: 0.5em;
+}
+
+// Some themes space out every form in the page content.
+.csbmw-shipping-calculator .csbmw-shipping-calculator-form {
+	margin: 0;
+}
+
+.csbmw-shipping-calculator-row {
+	display: flex;
+	gap: 0.75em;
+}
+
+.csbmw-shipping-calculator-input {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+// The field style WooCommerce gives its own checkout fields, so a theme that
+// restyles those restyles this one too.
+.csbmw-shipping-calculator .csbmw-shipping-calculator-input {
+	background-color: var(--wc-form-color-background, #fff);
+	border: var(--wc-form-border-width, 1px) solid var(--wc-form-border-color, rgba(32, 7, 7, 0.8));
+	border-radius: var(--wc-form-border-radius, 0);
+	box-sizing: border-box;
+	color: var(--wc-form-color-text, #000);
+
+	// WooCommerce pads its form fields this way, but only reaches this one
+	// through the add to cart form, which the block is not inside.
+	font-family: inherit;
+	font-size: inherit;
+	line-height: normal;
+	padding: 0.9rem 1.1rem;
+}
+
+.csbmw-shipping-calculator-button {
+	flex: none;
+}
+
+.csbmw-shipping-calculator-find {
+	align-items: center;
+	display: inline-flex;
+	font-size: $small-text;
+	gap: 0.25em;
+	margin-top: 0.5em;
+
+	.csbmw-shipping-calculator-icon {
+		height: 14px;
+		width: 14px;
+	}
+}
+
+.csbmw-shipping-calculator-find-icon {
+	display: contents;
+}
+
+.csbmw-shipping-calculator-error {
+	margin-top: 0.75em;
+
+	&:empty {
+		display: none;
+	}
+
+	> * {
+		margin: 0;
+	}
+}
+
+.csbmw-shipping-calculator-destination {
+	align-items: center;
+	background: none;
+	border: 0;
+	border-bottom: 1px solid $border;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	gap: 0.75em;
+	padding: 0 0 14px;
+	text-align: left;
+	width: 100%;
+
+	.csbmw-shipping-calculator-icon:last-child {
+		opacity: 0.6;
+
+		@media (prefers-reduced-motion: no-preference) {
+			transition: opacity 0.2s, transform 0.4s ease;
+		}
+	}
+
+	&:hover .csbmw-shipping-calculator-icon:last-child,
+	&:focus-visible .csbmw-shipping-calculator-icon:last-child {
+		opacity: 1;
+		transform: rotate(180deg);
+	}
+}
+
+.csbmw-shipping-calculator-place {
+	flex: 1;
+}
+
+.csbmw-shipping-calculator-results {
+	padding-top: 14px;
+
+	&[aria-busy="true"] {
+		opacity: 0.5;
+	}
+
+	> * {
+		margin: 0;
+	}
+}
+
+.csbmw-shipping-calculator-message {
+	font-size: var(--wp--preset--font-size--small, 0.875em);
+	opacity: 0.8;
+}
+
+ul.csbmw-shipping-calculator-rates {
+	display: grid;
+	gap: 10px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.csbmw-shipping-calculator-rate {
+	align-items: center;
+	display: grid;
+	gap: 0.75em;
+	grid-template-columns: 1fr auto;
+}
+
+.csbmw-shipping-calculator-rate-name,
+.csbmw-shipping-calculator-rate-cost {
+	font-weight: 600;
+}
+
+.csbmw-shipping-calculator-rate-delivery:not(:empty) {
+	margin-left: 0.25em;
+}
+
+.csbmw-shipping-calculator-rate-cost {
+	white-space: nowrap;
+}
+
+.csbmw-shipping-calculator-dialog {
+	background: var(--wp--preset--color--base, #fff);
+	border: 1px solid $border;
+	border-radius: var(--wc-card-border-radius, 8px);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast, inherit);
+	max-width: calc(100vw - 32px);
+	padding: 24px;
+	width: 28rem;
+    margin: auto;
+
+	&::backdrop {
+		background: rgba(0, 0, 0, 0.45);
+	}
+
+	// Fades and rises in, and back out. Keeping display and the top layer
+	// through the transition lets the close animate too.
+	@media (prefers-reduced-motion: no-preference) {
+		opacity: 0;
+		transform: translateY(12px) scale(0.98);
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease,
+			overlay 0.2s allow-discrete,
+			display 0.2s allow-discrete;
+
+		&[open] {
+			opacity: 1;
+			transform: none;
+		}
+
+		&::backdrop {
+			opacity: 0;
+			transition:
+				opacity 0.2s ease,
+				overlay 0.2s allow-discrete,
+				display 0.2s allow-discrete;
+		}
+
+		&[open]::backdrop {
+			opacity: 1;
+		}
+
+		@starting-style {
+
+			&[open],
+			&[open]::backdrop {
+				opacity: 0;
+			}
+
+			&[open] {
+				transform: translateY(12px) scale(0.98);
+			}
+		}
+	}
+
+	// A click on its padding focuses the dialog itself. The fields and
+	// buttons inside keep their own focus rings.
+	&:focus,
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.csbmw-shipping-calculator-dialog-header {
+	align-items: flex-start;
+	display: flex;
+	gap: 1em;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+
+.csbmw-shipping-calculator-dialog-title {
+	font-size: 1.125em;
+	font-weight: 600;
+	margin: 0;
+}
+
+.csbmw-shipping-calculator-close {
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	line-height: 0;
+	margin: -4px -4px 0 0;
+	padding: 4px;
+}
+
+// Themes restyle every button on hover, often with selectors that outrank a
+// class. The id in :not() lifts these above them, and keeps the card's look.
+.csbmw-shipping-calculator-destination,
+.csbmw-shipping-calculator-close {
+
+	&:is(:hover, :focus, :active):not(#csbmw) {
+		background: none;
+		box-shadow: none;
+		color: inherit;
+		outline: none;
+		text-decoration: none;
+	}
+}
+
+.csbmw-shipping-calculator-close > svg {
+	opacity: 0.6;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: opacity 0.2s;
+	}
+}
+
+.csbmw-shipping-calculator-close:is(:hover, :focus-visible) > svg {
+	opacity: 1;
+}
+
+// Keyboard focus rings the icon alone, as focus comes back here each time
+// the dialog closes.
+.csbmw-shipping-calculator-close:focus-visible:not(#csbmw) > .csbmw-shipping-calculator-icon,
+.csbmw-shipping-calculator-destination:focus-visible:not(#csbmw) > .csbmw-shipping-calculator-icon:last-child {
+	border-radius: 50%;
+	outline: 2px solid currentcolor;
+	outline-offset: 3px;
+}
+
+.csbmw-cart-shipping-calculator {
+	margin: 0;
+
+	// Theme padding and WooCommerce's 3em minimum leave buttons taller than
+	// its text inputs, so the button takes the field's height instead. The
+	// button's WooCommerce class outranks that minimum's selector.
+	.csbmw-shipping-calculator-form {
+		align-items: stretch;
+	}
+
+	.csbmw-shipping-calculator-form .csbmw-shipping-calculator-button.wc-block-components-button {
+		height: auto;
+		min-height: 0;
+		padding-bottom: 0;
+		padding-top: 0;
+	}
+
+	&[aria-busy="true"] .csbmw-shipping-calculator-results {
+		opacity: 0.6;
+	}
+
+	fieldset.csbmw-shipping-calculator-rates {
+		border: 0;
+		margin: 0;
+		min-width: 0;
+		padding: 0;
+	}
+
+	.wc-block-components-validation-error {
+		margin-top: 4px;
+	}
+}
+
+// A font size chosen for the block sizes the whole calculator, which the rules
+// above otherwise fit to the product summary. WordPress marks the wrapper with
+// a preset's class or a custom size's inline style.
+.wp-block-csbmw-shipping-calculator:is([class*="-font-size"], [style*="font-size"]) {
+
+	.csbmw-shipping-calculator-card {
+		font-size: 1em;
+	}
+
+	.csbmw-shipping-calculator-label,
+	.csbmw-shipping-calculator-find {
+		font-size: 0.875em;
+	}
+
+	.csbmw-shipping-calculator-input,
+	.csbmw-shipping-calculator-button {
+		font-size: inherit;
+	}
+}

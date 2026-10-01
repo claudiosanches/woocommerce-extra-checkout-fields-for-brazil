@@ -1,0 +1,10 @@
+{
+	"plugins": [ "https://downloads.wordpress.org/plugin/woocommerce.zip", "." ],
+	"port": 8978,
+	"testsEnvironment": false,
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_DISPLAY": false,
+		"SCRIPT_DEBUG": false
+	}
+}
