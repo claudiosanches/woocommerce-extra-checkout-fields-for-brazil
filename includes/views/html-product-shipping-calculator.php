@@ -19,7 +19,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * Fires before the shipping calculator is rendered on the single product page.
+ *
+ * @since 5.0.0
+ */
+do_action( 'csbmw_before_shipping_calculator' );
 ?>
+
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> data-product-id="<?php echo esc_attr( $product_id ); ?>" data-variation-id="<?php echo esc_attr( $variation_id ); ?>" data-variable="<?php echo $variable ? '1' : '0'; ?>" data-product-url="<?php echo esc_url( $product_url ); ?>" data-postcode="<?php echo esc_attr( $postcode ); ?>"<?php echo $inline ? ' data-change-postcode-in="block"' : ''; ?><?php echo $automatic ? ' data-automatic="1"' : ''; ?>>
 	<div class="csbmw-shipping-calculator-card">
 		<div class="csbmw-shipping-calculator-empty">
@@ -62,3 +70,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</li>
 	</template>
 </div>
+
+<?php
+/**
+ * Fires after the shipping calculator is rendered on the single product page.
+ *
+ * @since 5.0.0
+ */
+do_action( 'csbmw_after_shipping_calculator' );
