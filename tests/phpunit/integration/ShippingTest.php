@@ -212,6 +212,18 @@ class ShippingTest extends WP_UnitTestCase {
 	 * An incomplete CEP is reported before anything is looked up.
 	 */
 	public function test_calculator_rejects_an_incomplete_postcode() {
+		$portugal = array(
+			'country'  => 'PT',
+			'state'    => '',
+			'postcode' => '1000-001',
+			'city'     => 'Lisboa',
+		);
+
+		// Other countries' postcodes are WooCommerce's to check.
+		$this->ship_only_to( array( 'BR', 'PT' ) );
+		$this->assertSame( $portugal, $this->shipping->calculator_address( $portugal ) );
+		$this->ship_only_to( array( 'BR' ) );
+
 		$this->expectExceptionMessage( 'A CEP has 8 digits.' );
 
 		$this->shipping->calculator_address(
@@ -325,6 +337,16 @@ class ShippingTest extends WP_UnitTestCase {
 		WC()->customer->set_shipping_postcode( '00000-000' );
 		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
 
+		// A store shipping beyond Brazil has no CEP to require.
+		$this->ship_only_to( array( 'BR', 'PT' ) );
+		WC()->customer->set_shipping_country( 'PT' );
+		WC()->customer->set_shipping_postcode( '1000-001' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		WC()->customer->set_shipping_country( 'BR' );
+		WC()->customer->set_shipping_postcode( '' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		$this->ship_only_to( array( 'BR' ) );
+
 		WC()->customer->set_shipping_postcode( '' );
 		WC()->cart->empty_cart();
 		WC()->cart->add_to_cart( $virtual->get_id() );
@@ -362,6 +384,10 @@ class ShippingTest extends WP_UnitTestCase {
 
 		$this->set_permalink_structure( '/%postname%' );
 		$this->assertSame( array( '/finalizar', '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+
+		$this->ship_only_to( array( 'BR', 'PT' ) );
+		$this->assertSame( array(), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+		$this->ship_only_to( array( 'BR' ) );
 
 		// A link with a query is never prefetched.
 		$this->set_permalink_structure( '' );
