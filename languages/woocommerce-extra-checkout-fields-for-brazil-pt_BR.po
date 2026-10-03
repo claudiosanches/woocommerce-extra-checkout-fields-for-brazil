@@ -1032,7 +1032,7 @@ msgstr "Celular como foi salvo."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:487
 msgid "Below the price and after the summary apply to classic themes only. A Shipping Calculator block or [csbmw_shipping_calculator] shortcode placed for the product takes the place of this one."
-msgstr "Abaixo do preço e depois do resumo valem só para temas clássicos. Um bloco Calculadora de Frete ou shortcode [csbmw_shipping_calculator] inserido para o produto toma o lugar desta."
+msgstr "As opções Abaixo do preço e Depois do resumo do produto funcionam só em temas clássicos. Um bloco Calculadora de Frete ou o shortcode [csbmw_shipping_calculator] adicionado ao produto substitui esta calculadora."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:489
 msgid "Off, or only where placed"
