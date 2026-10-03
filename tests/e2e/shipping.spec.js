@@ -490,7 +490,9 @@ test.describe( 'Shipping calculators', () => {
 
 			await input.pressSequentially( '3013' );
 			await input.blur();
-			await expect( error ).toContainText( 'Enter all 8 digits of the CEP.' );
+			await expect( error ).toContainText(
+				'Enter all 8 digits of the CEP.'
+			);
 			await expect( input ).toHaveAttribute( 'aria-invalid', 'true' );
 
 			// Nothing is sent for a CEP too short to look up.
@@ -500,7 +502,9 @@ test.describe( 'Shipping calculators', () => {
 				posted ||= 'POST' === request.method();
 			} );
 			await form.getByRole( 'button', { name: 'Update' } ).click();
-			await expect( error ).toContainText( 'Enter all 8 digits of the CEP.' );
+			await expect( error ).toContainText(
+				'Enter all 8 digits of the CEP.'
+			);
 			expect( posted ).toBe( false );
 
 			await input.fill( '' );
