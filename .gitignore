@@ -7,3 +7,4 @@ build/
 artifacts/
 playwright-report/
 composer.phar
+.php-cs-fixer*
