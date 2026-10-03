@@ -276,7 +276,8 @@ Minha conta.
 Um serviço é um callback que recebe os oito dígitos do CEP e retorna um array com
 `postcode`, `address`, `neighborhood`, `city` e `state`, false quando sabe que o CEP não
 existe, ou null quando não conseguiu responder. Um endereço sem cidade ou sem um estado válido
-é ignorado.
+é ignorado. Quando nenhum serviço responde e nenhum diz que o CEP não existe, as calculadoras
+do carrinho cotam o frete para o estado a que o CEP pertence.
 
 ```php
 // Consulta um serviço interno antes dos públicos.

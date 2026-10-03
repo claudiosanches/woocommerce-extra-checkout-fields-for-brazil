@@ -238,6 +238,7 @@ This plugin is licensed under the [GNU General Public License](https://www.gnu.o
 - The block checkout heads the documents, birthdate and gender as Customer details inside the contact step, leaving email and cell phone as the contact information.
 - A returning customer whose details are complete sees them summed up on the block checkout, as WooCommerce sums up a saved address, with the CPF and RG partly hidden, until they choose to edit them. The fields open again if the order is refused.
 - Number now takes digits only, since carriers reject numbers such as 1-12, and every entry point refuses anything else apart from the No number value.
+- The cart calculators ask for the CEP until one is given and point out an incomplete CEP as it is typed. When the address lookup does not answer, they quote the state the CEP belongs to instead of calling it unknown. A new setting sends customers back to the cart when they reach checkout without a CEP, for carts that ship something.
 - Fixed the classic checkout and the My Account address forms dropping the side by side layout of the address as soon as the page loaded, and My Account listing Number and Neighborhood after the whole form.
 - Fixed the "Exempt from State Registration" checkbox rendering at the top of the classic checkout billing form instead of next to the field it fills.
 - Fixed the order screen keeping the documents of the person type an order was moved away from, as the checkout already clears them.

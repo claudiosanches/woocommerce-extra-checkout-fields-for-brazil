@@ -191,6 +191,11 @@ class ShippingTest extends WP_UnitTestCase {
 	 * An unknown CEP is reported rather than calculated for.
 	 */
 	public function test_calculator_rejects_an_unknown_postcode() {
+		add_filter(
+			'csbmw_postcode_services',
+			static fn() => array( 'unknown' => '__return_false' )
+		);
+
 		$this->expectException( Exception::class );
 
 		$this->shipping->calculator_address(
@@ -201,6 +206,168 @@ class ShippingTest extends WP_UnitTestCase {
 				'city'     => '',
 			)
 		);
+	}
+
+	/**
+	 * An incomplete CEP is reported before anything is looked up.
+	 */
+	public function test_calculator_rejects_an_incomplete_postcode() {
+		$portugal = array(
+			'country'  => 'PT',
+			'state'    => '',
+			'postcode' => '1000-001',
+			'city'     => 'Lisboa',
+		);
+
+		// Other countries' postcodes are WooCommerce's to check.
+		$this->ship_only_to( array( 'BR', 'PT' ) );
+		$this->assertSame( $portugal, $this->shipping->calculator_address( $portugal ) );
+		$this->ship_only_to( array( 'BR' ) );
+
+		$this->expectExceptionMessage( 'Enter all 8 digits of the CEP.' );
+
+		$this->shipping->calculator_address(
+			array(
+				'country'  => '',
+				'state'    => '',
+				'postcode' => '2004002',
+				'city'     => '',
+			)
+		);
+	}
+
+	/**
+	 * While no lookup service answers, the calculator quotes the CEP's state
+	 * and says so.
+	 */
+	public function test_calculator_quotes_the_state_while_the_lookup_is_down() {
+		if ( null === WC()->session ) {
+			wc_load_cart();
+		}
+
+		wc_clear_notices();
+
+		$address = $this->shipping->calculator_address(
+			array(
+				'country'  => '',
+				'state'    => '',
+				'postcode' => '30130010',
+				'city'     => '',
+			)
+		);
+
+		$this->assertSame(
+			array(
+				'country'  => 'BR',
+				'state'    => 'MG',
+				'postcode' => '30130-010',
+				'city'     => '',
+			),
+			$address
+		);
+		$this->assertStringContainsString( 'quoted for Minas Gerais', wc_get_notices( 'notice' )[0]['notice'] );
+
+		// The same CEP again keeps the city the customer has.
+		WC()->customer->set_shipping_postcode( '30130-010' );
+		WC()->customer->set_shipping_city( 'Belo Horizonte' );
+
+		$address = $this->shipping->calculator_address(
+			array(
+				'country'  => '',
+				'state'    => '',
+				'postcode' => '30130010',
+				'city'     => '',
+			)
+		);
+
+		$this->assertSame( 'Belo Horizonte', $address['city'] );
+		wc_clear_notices();
+	}
+
+	/**
+	 * The CEP requirement needs the cart calculator, and holds back only a
+	 * cart that ships without a CEP.
+	 */
+	public function test_checkout_needs_a_cart_postcode_when_required() {
+		if ( null === WC()->session ) {
+			wc_load_cart();
+		}
+
+		update_option( 'woocommerce_enable_shipping_calc', 'yes' );
+
+		$zone = new WC_Shipping_Zone();
+		$zone->set_zone_name( 'Brasil' );
+		$zone->add_location( 'BR', 'country' );
+		$zone->save();
+		$zone->add_shipping_method( 'flat_rate' );
+
+		$shipped = new WC_Product_Simple();
+		$shipped->set_regular_price( '10' );
+		$shipped->save();
+
+		$virtual = new WC_Product_Simple();
+		$virtual->set_regular_price( '10' );
+		$virtual->set_virtual( true );
+		$virtual->save();
+
+		WC()->cart->empty_cart();
+		WC()->cart->add_to_cart( $shipped->get_id() );
+		WC()->customer->set_shipping_country( 'BR' );
+		WC()->customer->set_shipping_postcode( '' );
+
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+
+		update_option(
+			'wcbcf_settings',
+			array(
+				'postcode_only_calculator' => '1',
+				'require_cart_postcode'    => '1',
+			)
+		);
+
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+
+		update_option( 'woocommerce_enable_shipping_calc', 'no' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		update_option( 'woocommerce_enable_shipping_calc', 'yes' );
+
+		// Only the format counts, whatever the lookup says.
+		WC()->customer->set_shipping_postcode( '0000000' );
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		WC()->customer->set_shipping_postcode( '00000-000' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+
+		// A store shipping beyond Brazil has no CEP to require.
+		$this->ship_only_to( array( 'BR', 'PT' ) );
+		WC()->customer->set_shipping_country( 'PT' );
+		WC()->customer->set_shipping_postcode( '1000-001' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		WC()->customer->set_shipping_country( 'BR' );
+		WC()->customer->set_shipping_postcode( '' );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+		$this->ship_only_to( array( 'BR' ) );
+
+		WC()->customer->set_shipping_postcode( '' );
+		WC()->cart->empty_cart();
+		WC()->cart->add_to_cart( $virtual->get_id() );
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::needs_cart_postcode() );
+
+		WC()->cart->empty_cart();
+	}
+
+	/**
+	 * A prefetch or prerender is told apart from a visit.
+	 */
+	public function test_speculative_requests_are_recognized() {
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
+
+		$_SERVER['HTTP_SEC_PURPOSE'] = 'prefetch;prerender';
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
+		unset( $_SERVER['HTTP_SEC_PURPOSE'] );
+
+		$_SERVER['HTTP_PURPOSE'] = 'prefetch';
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
+		unset( $_SERVER['HTTP_PURPOSE'] );
 	}
 
 	/**

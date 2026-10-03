@@ -115,6 +115,14 @@
     transition: transform 0.15s ease;
 }
 
+.bmw-switch-field.is-disabled {
+    cursor: default;
+}
+
+.bmw-switch-field.is-disabled .bmw-switch-track {
+    opacity: 0.5;
+}
+
 .bmw-switch-field:has(.bmw-switch-input:checked) .bmw-switch-track {
     background: #46a66f;
 }
@@ -139,6 +147,11 @@
     margin: 0;
     font-size: 14px;
     font-weight: 600;
+}
+
+.bmw-switch-field.is-disabled h3,
+.bmw-switch-field.is-disabled .label {
+    opacity: 0.5;
 }
 
 .bmw-select-field h3 label {

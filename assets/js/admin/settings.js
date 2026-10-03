@@ -49,4 +49,10 @@ jQuery( function ( $ ) {
 			$( '.bmw-row-no-number-value' ).toggle( this.checked );
 		} )
 		.trigger( 'change' );
+
+	$( '#postcode_only_calculator' )
+		.on( 'change', function () {
+			$( '.bmw-row-require-cart-postcode' ).toggle( this.checked );
+		} )
+		.trigger( 'change' );
 } );

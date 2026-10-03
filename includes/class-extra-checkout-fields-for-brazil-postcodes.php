@@ -53,6 +53,52 @@ class Extra_Checkout_Fields_For_Brazil_Postcodes {
 	const NOT_FOUND_TTL = DAY_IN_SECONDS;
 
 	/**
+	 * Where each state's CEPs start, as the first five digits, in order. A CEP
+	 * belongs to the last start at or below it.
+	 *
+	 * @var array
+	 */
+	const STATE_RANGES = array(
+		1000  => 'SP',
+		20000 => 'RJ',
+		29000 => 'ES',
+		30000 => 'MG',
+		40000 => 'BA',
+		49000 => 'SE',
+		50000 => 'PE',
+		57000 => 'AL',
+		58000 => 'PB',
+		59000 => 'RN',
+		60000 => 'CE',
+		64000 => 'PI',
+		65000 => 'MA',
+		66000 => 'PA',
+		68900 => 'AP',
+		69000 => 'AM',
+		69300 => 'RR',
+		69400 => 'AM',
+		69900 => 'AC',
+		70000 => 'DF',
+		72800 => 'GO',
+		73000 => 'DF',
+		73700 => 'GO',
+		76800 => 'RO',
+		77000 => 'TO',
+		78000 => 'MT',
+		79000 => 'MS',
+		80000 => 'PR',
+		88000 => 'SC',
+		90000 => 'RS',
+	);
+
+	/**
+	 * CEPs no service answered for during this request.
+	 *
+	 * @var array
+	 */
+	protected static $unavailable = array();
+
+	/**
 	 * Initialize hooks.
 	 */
 	public function __construct() {
@@ -126,6 +172,8 @@ class Extra_Checkout_Fields_For_Brazil_Postcodes {
 	 */
 	public static function get_address( $postcode ) {
 		$postcode = self::sanitize( $postcode );
+
+		unset( self::$unavailable[ $postcode ] );
 
 		if ( 8 !== strlen( $postcode ) ) {
 			return null;
@@ -202,9 +250,75 @@ class Extra_Checkout_Fields_For_Brazil_Postcodes {
 		// that failed says nothing, so the next request tries again.
 		if ( $unknown ) {
 			set_transient( 'csbmw_postcode_unknown_' . $postcode, 1, self::NOT_FOUND_TTL );
+		} else {
+			self::$unavailable[ $postcode ] = true;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Whether get_address() found nothing because no service answered, rather
+	 * than because the CEP does not exist.
+	 *
+	 * @param string $postcode CEP, with or without the hyphen.
+	 *
+	 * @return bool
+	 */
+	public static function is_unavailable( $postcode ) {
+		return isset( self::$unavailable[ self::sanitize( $postcode ) ] );
+	}
+
+	/**
+	 * State a CEP belongs to, known without asking any service.
+	 *
+	 * @param string $postcode CEP, with or without the hyphen.
+	 *
+	 * @return string State code, or an empty string.
+	 */
+	public static function get_state( $postcode ) {
+		$postcode = self::sanitize( $postcode );
+
+		if ( 8 !== strlen( $postcode ) ) {
+			return '';
+		}
+
+		$prefix = (int) substr( $postcode, 0, 5 );
+		$state  = '';
+
+		foreach ( self::STATE_RANGES as $start => $code ) {
+			if ( $start > $prefix ) {
+				break;
+			}
+
+			$state = $code;
+		}
+
+		return $state;
+	}
+
+	/**
+	 * What is known of a CEP while no service answers: its state.
+	 *
+	 * @param string $postcode CEP, with or without the hyphen.
+	 *
+	 * @return array|null Address with only the CEP and state, or null when the
+	 *                    lookup did not fail or the CEP has no state.
+	 */
+	public static function get_unconfirmed_address( $postcode ) {
+		$state = self::is_unavailable( $postcode ) ? self::get_state( $postcode ) : '';
+
+		if ( '' === $state ) {
+			return null;
+		}
+
+		return array(
+			'postcode'     => self::sanitize( $postcode ),
+			'address'      => '',
+			'neighborhood' => '',
+			'city'         => '',
+			'state'        => $state,
+		);
 	}
 
 	/**
@@ -401,13 +515,35 @@ class Extra_Checkout_Fields_For_Brazil_Postcodes {
 		// A CEP the customer mistyped is an answer, not a failed request, so it
 		// does not get an error status for the browser to log.
 		if ( 8 !== strlen( $postcode ) ) {
-			wp_send_json_error( array( 'message' => __( 'Enter a valid CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
+			wp_send_json_error(
+				array(
+					'message' => __( 'Enter a valid CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'code'    => 'invalid',
+				)
+			);
 		}
 
 		$address = self::get_address( $postcode );
 
 		if ( null === $address ) {
-			wp_send_json_error( array( 'message' => __( 'CEP not found.', 'woocommerce-extra-checkout-fields-for-brazil' ) ) );
+			$unconfirmed = self::get_unconfirmed_address( $postcode );
+
+			if ( null !== $unconfirmed ) {
+				wp_send_json_error(
+					array(
+						'message' => __( 'CEP lookup is unavailable right now.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'code'    => 'unavailable',
+						'state'   => $unconfirmed['state'],
+					)
+				);
+			}
+
+			wp_send_json_error(
+				array(
+					'message' => __( 'CEP not found.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'code'    => 'not_found',
+				)
+			);
 		}
 
 		wp_send_json_success( $address );

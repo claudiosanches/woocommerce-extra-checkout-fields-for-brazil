@@ -43,6 +43,13 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	const APPLIED_POSTCODE = 'csbmw_applied_postcode';
 
 	/**
+	 * Query argument telling the cart why checkout sent the customer back.
+	 *
+	 * @var string
+	 */
+	const POSTCODE_REQUIRED = 'csbmw_postcode_required';
+
+	/**
 	 * Shortcode printing the product calculator.
 	 *
 	 * @var string
@@ -130,6 +137,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		add_filter( 'woocommerce_customer_allowed_session_meta_keys', array( $this, 'session_meta_keys' ) );
 		add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'apply_remembered_postcode' ) );
 		add_action( 'woocommerce_before_shipping_calculator', array( $this, 'enqueue_calculator_script' ) );
+		add_action( 'template_redirect', array( $this, 'require_cart_postcode' ) );
 
 		// Cart block.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cart_block_calculator' ) );
@@ -176,6 +184,33 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	 */
 	public static function is_postcode_only() {
 		return self::setting( 'postcode_only_calculator' ) && self::is_brazil_only();
+	}
+
+	/**
+	 * Whether the cart asks for a CEP before checkout.
+	 *
+	 * @return bool
+	 */
+	public static function requires_postcode() {
+		return self::setting( 'require_cart_postcode' ) && self::is_postcode_only() && 'yes' === get_option( 'woocommerce_enable_shipping_calc' );
+	}
+
+	/**
+	 * Whether a customer reaching checkout goes back to the cart for a CEP.
+	 *
+	 * Only the CEP's format counts, so a lookup outage never holds anyone back.
+	 *
+	 * @return bool
+	 */
+	public static function needs_cart_postcode() {
+		$cart     = WC()->cart;
+		$customer = WC()->customer;
+
+		if ( ! self::requires_postcode() || null === $cart || ! $customer instanceof WC_Customer || $cart->is_empty() || ! $cart->needs_shipping() ) {
+			return false;
+		}
+
+		return 'BR' !== $customer->get_shipping_country() || 8 !== strlen( Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( $customer->get_shipping_postcode() ) );
 	}
 
 	/**
@@ -238,6 +273,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 				'findPostcodeUrl'  => self::find_postcode_url(),
 				'findPostcodeIcon' => self::icon( 'arrow-top-right-on-square' ),
 				'postcodeOnly'     => self::is_postcode_only() ? 'yes' : 'no',
+				'requirePostcode'  => self::requires_postcode() ? 'yes' : 'no',
 				'notices'          => array(
 					'error'  => self::notice_template( 'error' ),
 					'notice' => self::notice_template( 'notice' ),
@@ -635,6 +671,42 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 	}
 
 	/**
+	 * Address to quote by while the CEP lookup is down, telling the customer.
+	 *
+	 * The same CEP keeps the city and street the customer already has.
+	 *
+	 * @param string $postcode CEP.
+	 *
+	 * @return array|null
+	 */
+	protected static function unconfirmed_address( $postcode ) {
+		$found = Extra_Checkout_Fields_For_Brazil_Postcodes::get_unconfirmed_address( $postcode );
+
+		if ( null === $found ) {
+			return null;
+		}
+
+		$customer = WC()->customer;
+
+		if ( Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( $customer->get_shipping_postcode() ) === $found['postcode'] && $customer->get_shipping_city() ) {
+			$found['city'] = $customer->get_shipping_city();
+		}
+
+		$states = WC()->countries->get_states( 'BR' );
+
+		wc_add_notice(
+			sprintf(
+				/* translators: %s: state name */
+				esc_html__( 'The address for this CEP could not be looked up right now, so shipping is quoted for %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				esc_html( isset( $states[ $found['state'] ] ) ? $states[ $found['state'] ] : $found['state'] )
+			),
+			'notice'
+		);
+
+		return $found;
+	}
+
+	/**
 	 * Fill the country, state and city the classic calculator no longer asks.
 	 *
 	 * WC_Shortcode_Cart::calculate_shipping() applies this filter inside a try
@@ -655,7 +727,15 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			throw new Exception( esc_html__( 'Enter your CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
+		if ( 8 !== strlen( Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( $address['postcode'] ) ) ) {
+			throw new Exception( esc_html__( 'Enter all 8 digits of the CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+		}
+
 		$found = Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( $address['postcode'] );
+
+		if ( null === $found ) {
+			$found = self::unconfirmed_address( $address['postcode'] );
+		}
 
 		if ( null === $found ) {
 			throw new Exception( esc_html__( 'CEP not found. Check the number and try again.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
@@ -832,6 +912,55 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			wp_enqueue_script( self::HANDLE );
 			wp_enqueue_style( self::HANDLE );
 		}
+	}
+
+	/**
+	 * Send a customer who reaches checkout without a CEP back to the cart.
+	 *
+	 * The reason travels in the URL rather than the session, since browsers
+	 * prefetch the checkout link and would leave the notice on a cart page
+	 * nobody sees.
+	 *
+	 * @return void
+	 */
+	public function require_cart_postcode() {
+		if ( is_cart() ) {
+			if ( isset( $_GET[ self::POSTCODE_REQUIRED ] ) && self::needs_cart_postcode() ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				wc_add_notice( __( 'Enter your CEP to calculate shipping before checkout.', 'woocommerce-extra-checkout-fields-for-brazil' ), 'notice' );
+			}
+
+			return;
+		}
+
+		if ( ! is_checkout() || is_wc_endpoint_url() || wc_get_page_id( 'cart' ) <= 0 || ! self::needs_cart_postcode() ) {
+			return;
+		}
+
+		// Refused rather than redirected, or the browser would replay the
+		// redirect on the click that follows, even after a CEP is given.
+		if ( self::is_speculative_request() ) {
+			status_header( 503 );
+			exit;
+		}
+
+		wp_safe_redirect( add_query_arg( self::POSTCODE_REQUIRED, '1', wc_get_cart_url() ) );
+		exit;
+	}
+
+	/**
+	 * Whether the browser asked for the page ahead of a click, to prefetch or
+	 * prerender it.
+	 *
+	 * @return bool
+	 */
+	public static function is_speculative_request() {
+		foreach ( array( 'HTTP_SEC_PURPOSE', 'HTTP_PURPOSE' ) as $header ) {
+			if ( isset( $_SERVER[ $header ] ) && false !== strpos( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ), 'prefetch' ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

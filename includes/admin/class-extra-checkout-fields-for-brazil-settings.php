@@ -443,7 +443,32 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 				'menu'  => $option,
 				'id'    => 'postcode_only_calculator',
 				'title' => __( 'Ask only for the CEP in the cart', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'The cart shipping calculator asks only for the CEP and fills in the state and city from it. The cart block gets a calculator of its own.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'The cart shipping calculator asks only for the CEP and fills in the state and city from it. The Cart block gets the plugin\'s own calculator, which asks only for the CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			)
+		);
+
+		// Cart CEP requirement option. It depends on WooCommerce's cart
+		// calculator, which it disables but keeps the value of.
+		$cart_calculator = 'yes' === get_option( 'woocommerce_enable_shipping_calc' );
+
+		add_settings_field(
+			'require_cart_postcode',
+			__( 'Require the CEP before checkout', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'shipping_section',
+			array(
+				'menu'        => $option,
+				'id'          => 'require_cart_postcode',
+				'title'       => __( 'Require the CEP before checkout', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'       => __( 'Sends customers back to the cart to calculate shipping when they reach checkout without a CEP. Carts with nothing to ship go straight through.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => $cart_calculator ? null : sprintf(
+					/* translators: %s: link to the WooCommerce shipping settings */
+					__( 'Needs the cart shipping calculator, which is off in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping&section=options' ) ) . '">' . esc_html__( 'WooCommerce > Settings > Shipping > Shipping settings', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
+				),
+				'disabled'    => ! $cart_calculator,
+				'class'       => 'bmw-row-require-cart-postcode',
 			)
 		);
 

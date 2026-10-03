@@ -5,6 +5,7 @@ const {
 	setSettings,
 	shipEverywhere,
 	shipOnlyToBrazil,
+	wpCli,
 } = require( './utils' );
 
 const ADMIN = { user: 'admin', pass: 'password' };
@@ -247,6 +248,65 @@ test.describe( 'Settings screen', () => {
 			await expect( row( page, 'country-field' ) ).toBeVisible();
 		} finally {
 			shipEverywhere();
+		}
+	} );
+
+	test( 'offers the CEP requirement with the CEP-only cart calculator', async ( {
+		page,
+	} ) => {
+		const requirement = row( page, 'require-cart-postcode' );
+
+		await tab( page, 'Shipping' ).click();
+		await expect( requirement ).toBeHidden();
+		await page.locator( 'label[for="postcode_only_calculator"]' ).click();
+		await expect( requirement ).toBeVisible();
+		await expect( page.locator( '#require_cart_postcode' ) ).toBeEnabled();
+	} );
+
+	test( 'disables the CEP requirement without the cart calculator and keeps it', async ( {
+		page,
+	} ) => {
+		setSettings( {
+			...ALL_FIELDS,
+			postcode_only_calculator: 1,
+			require_cart_postcode: 1,
+		} );
+		wpCli( [
+			'option',
+			'update',
+			'woocommerce_enable_shipping_calc',
+			'no',
+		] );
+
+		try {
+			await page.goto( `${ SETTINGS }&tab=shipping` );
+
+			const requirement = row( page, 'require-cart-postcode' );
+
+			await expect(
+				page.locator( '#require_cart_postcode' )
+			).toBeDisabled();
+			await expect( requirement ).toContainText(
+				'Needs the cart shipping calculator, which is off in WooCommerce > Settings > Shipping > Shipping settings.'
+			);
+
+			await page.click( '#submit' );
+			await expect( page.locator( '.notice-success' ) ).toBeVisible();
+			expect(
+				wpCli( [
+					'option',
+					'pluck',
+					'wcbcf_settings',
+					'require_cart_postcode',
+				] )
+			).toBe( '1' );
+		} finally {
+			wpCli( [
+				'option',
+				'update',
+				'woocommerce_enable_shipping_calc',
+				'yes',
+			] );
 		}
 	} );
 
