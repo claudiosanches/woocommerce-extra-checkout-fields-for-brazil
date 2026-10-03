@@ -138,7 +138,6 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'apply_remembered_postcode' ) );
 		add_action( 'woocommerce_before_shipping_calculator', array( $this, 'enqueue_calculator_script' ) );
 		add_action( 'template_redirect', array( $this, 'require_cart_postcode' ) );
-		add_filter( 'wp_speculation_rules_href_exclude_paths', array( $this, 'exclude_checkout_from_prefetch' ) );
 
 		// Cart block.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cart_block_calculator' ) );
@@ -937,48 +936,31 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			return;
 		}
 
+		// Refused rather than redirected, or the browser would replay the
+		// redirect on the click that follows, even after a CEP is given.
+		if ( self::is_speculative_request() ) {
+			status_header( 503 );
+			exit;
+		}
+
 		wp_safe_redirect( add_query_arg( self::POSTCODE_REQUIRED, '1', wc_get_cart_url() ) );
 		exit;
 	}
 
 	/**
-	 * Keep browsers from prefetching the checkout while it may send the
-	 * customer back to the cart.
+	 * Whether the browser asked for the page ahead of a click, to prefetch or
+	 * prerender it.
 	 *
-	 * WordPress prefetches a link as it is pressed, before the cart can hold
-	 * the customer back, and the browser would later follow that stale
-	 * redirect even after a CEP is given.
-	 *
-	 * @param string[] $paths Path patterns, relative to the home URL.
-	 *
-	 * @return string[]
+	 * @return bool
 	 */
-	public function exclude_checkout_from_prefetch( $paths ) {
-		if ( ! self::requires_postcode() ) {
-			return $paths;
+	public static function is_speculative_request() {
+		foreach ( array( 'HTTP_SEC_PURPOSE', 'HTTP_PURPOSE' ) as $header ) {
+			if ( isset( $_SERVER[ $header ] ) && false !== strpos( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ), 'prefetch' ) ) {
+				return true;
+			}
 		}
 
-		$url = wc_get_checkout_url();
-
-		// WordPress already leaves out links with a query, as with plain
-		// permalinks.
-		if ( wp_parse_url( $url, PHP_URL_QUERY ) ) {
-			return $paths;
-		}
-
-		$home     = untrailingslashit( (string) wp_parse_url( home_url(), PHP_URL_PATH ) );
-		$checkout = (string) wp_parse_url( $url, PHP_URL_PATH );
-
-		if ( '' !== $home && 0 === strpos( $checkout, $home ) ) {
-			$checkout = substr( $checkout, strlen( $home ) );
-		}
-
-		// Without the trailing slash too, for permalinks that leave it out.
-		$checkout = untrailingslashit( $checkout );
-		$paths[]  = $checkout;
-		$paths[]  = $checkout . '/*';
-
-		return $paths;
+		return false;
 	}
 
 	/**

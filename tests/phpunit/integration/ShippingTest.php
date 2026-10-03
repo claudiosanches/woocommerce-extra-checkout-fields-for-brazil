@@ -356,42 +356,18 @@ class ShippingTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * The checkout is not prefetched while it may send the customer back.
+	 * A prefetch or prerender is told apart from a visit.
 	 */
-	public function test_checkout_is_not_prefetched_while_a_postcode_is_required() {
-		$checkout = self::factory()->post->create(
-			array(
-				'post_type'   => 'page',
-				'post_name'   => 'finalizar',
-				'post_status' => 'publish',
-			)
-		);
-		update_option( 'woocommerce_checkout_page_id', $checkout );
-		update_option( 'woocommerce_enable_shipping_calc', 'yes' );
-		$this->set_permalink_structure( '/%postname%/' );
+	public function test_speculative_requests_are_recognized() {
+		$this->assertFalse( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
 
-		$this->assertSame( array(), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+		$_SERVER['HTTP_SEC_PURPOSE'] = 'prefetch;prerender';
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
+		unset( $_SERVER['HTTP_SEC_PURPOSE'] );
 
-		update_option(
-			'wcbcf_settings',
-			array(
-				'postcode_only_calculator' => '1',
-				'require_cart_postcode'    => '1',
-			)
-		);
-
-		$this->assertSame( array( '/finalizar', '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
-
-		$this->set_permalink_structure( '/%postname%' );
-		$this->assertSame( array( '/finalizar', '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
-
-		$this->ship_only_to( array( 'BR', 'PT' ) );
-		$this->assertSame( array(), $this->shipping->exclude_checkout_from_prefetch( array() ) );
-		$this->ship_only_to( array( 'BR' ) );
-
-		// A link with a query is never prefetched.
-		$this->set_permalink_structure( '' );
-		$this->assertSame( array(), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+		$_SERVER['HTTP_PURPOSE'] = 'prefetch';
+		$this->assertTrue( Extra_Checkout_Fields_For_Brazil_Shipping::is_speculative_request() );
+		unset( $_SERVER['HTTP_PURPOSE'] );
 	}
 
 	/**
