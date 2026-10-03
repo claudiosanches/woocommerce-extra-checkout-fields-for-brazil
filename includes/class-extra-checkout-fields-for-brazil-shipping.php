@@ -973,7 +973,10 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 			$checkout = substr( $checkout, strlen( $home ) );
 		}
 
-		$paths[] = trailingslashit( $checkout ) . '*';
+		// Without the trailing slash too, for permalinks that leave it out.
+		$checkout = untrailingslashit( $checkout );
+		$paths[]  = $checkout;
+		$paths[]  = $checkout . '/*';
 
 		return $paths;
 	}

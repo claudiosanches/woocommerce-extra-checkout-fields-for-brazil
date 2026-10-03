@@ -358,7 +358,10 @@ class ShippingTest extends WP_UnitTestCase {
 			)
 		);
 
-		$this->assertSame( array( '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+		$this->assertSame( array( '/finalizar', '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
+
+		$this->set_permalink_structure( '/%postname%' );
+		$this->assertSame( array( '/finalizar', '/finalizar/*' ), $this->shipping->exclude_checkout_from_prefetch( array() ) );
 
 		// A link with a query is never prefetched.
 		$this->set_permalink_structure( '' );
