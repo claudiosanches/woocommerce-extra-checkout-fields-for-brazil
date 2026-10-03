@@ -63,7 +63,7 @@ describe( 'describeAddress', () => {
 describe( 'postcodeError', () => {
 	it( 'asks for a CEP or for all its digits', () => {
 		expect( postcodeError( '' ) ).toBe( 'Enter your CEP.' );
-		expect( postcodeError( '0100' ) ).toBe( 'A CEP has 8 digits.' );
+		expect( postcodeError( '0100' ) ).toBe( 'Enter all 8 digits of the CEP.' );
 	} );
 } );
 

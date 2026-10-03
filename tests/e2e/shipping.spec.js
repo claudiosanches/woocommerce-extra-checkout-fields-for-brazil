@@ -290,7 +290,7 @@ test.describe( 'Shipping calculators', () => {
 
 		await input.pressSequentially( '3013' );
 		await input.blur();
-		await expect( error ).toHaveText( 'A CEP has 8 digits.' );
+		await expect( error ).toHaveText( 'Enter all 8 digits of the CEP.' );
 
 		await input.fill( '' );
 		await input.pressSequentially( UNKNOWN_POSTCODE );
@@ -490,7 +490,7 @@ test.describe( 'Shipping calculators', () => {
 
 			await input.pressSequentially( '3013' );
 			await input.blur();
-			await expect( error ).toContainText( 'A CEP has 8 digits.' );
+			await expect( error ).toContainText( 'Enter all 8 digits of the CEP.' );
 			await expect( input ).toHaveAttribute( 'aria-invalid', 'true' );
 
 			// Nothing is sent for a CEP too short to look up.
@@ -500,7 +500,7 @@ test.describe( 'Shipping calculators', () => {
 				posted ||= 'POST' === request.method();
 			} );
 			await form.getByRole( 'button', { name: 'Update' } ).click();
-			await expect( error ).toContainText( 'A CEP has 8 digits.' );
+			await expect( error ).toContainText( 'Enter all 8 digits of the CEP.' );
 			expect( posted ).toBe( false );
 
 			await input.fill( '' );

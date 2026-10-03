@@ -224,7 +224,7 @@ class ShippingTest extends WP_UnitTestCase {
 		$this->assertSame( $portugal, $this->shipping->calculator_address( $portugal ) );
 		$this->ship_only_to( array( 'BR' ) );
 
-		$this->expectExceptionMessage( 'A CEP has 8 digits.' );
+		$this->expectExceptionMessage( 'Enter all 8 digits of the CEP.' );
 
 		$this->shipping->calculator_address(
 			array(

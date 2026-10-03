@@ -1149,8 +1149,8 @@ msgstr "Não foi possível consultar o endereço deste CEP agora, então o frete
 #: includes/class-extra-checkout-fields-for-brazil-shipping.php:732
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
-msgid "A CEP has 8 digits."
-msgstr "O CEP tem 8 dígitos."
+msgid "Enter all 8 digits of the CEP."
+msgstr "Digite os 8 dígitos do CEP."
 
 #: includes/class-extra-checkout-fields-for-brazil-shipping.php:930
 #: build/shipping-cart.js:1

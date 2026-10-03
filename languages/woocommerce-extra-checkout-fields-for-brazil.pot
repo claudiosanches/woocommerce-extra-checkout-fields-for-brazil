@@ -927,7 +927,7 @@ msgstr ""
 #: includes/class-extra-checkout-fields-for-brazil-shipping.php:732
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
-msgid "A CEP has 8 digits."
+msgid "Enter all 8 digits of the CEP."
 msgstr ""
 
 #: includes/class-extra-checkout-fields-for-brazil-shipping.php:742

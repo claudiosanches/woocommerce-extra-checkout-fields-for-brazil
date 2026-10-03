@@ -174,7 +174,7 @@ export function postcodeDigits( value: string | null | undefined ): string {
 export function postcodeError( value: string ): string {
 	return value.replace( /\D/g, '' )
 		? __(
-				'A CEP has 8 digits.',
+				'Enter all 8 digits of the CEP.',
 				'woocommerce-extra-checkout-fields-for-brazil'
 		  )
 		: __(

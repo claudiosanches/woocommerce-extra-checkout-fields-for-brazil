@@ -729,7 +729,7 @@ class Extra_Checkout_Fields_For_Brazil_Shipping {
 		}
 
 		if ( 8 !== strlen( Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( $address['postcode'] ) ) ) {
-			throw new Exception( esc_html__( 'A CEP has 8 digits.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
+			throw new Exception( esc_html__( 'Enter all 8 digits of the CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ) );
 		}
 
 		$found = Extra_Checkout_Fields_For_Brazil_Postcodes::get_address( $address['postcode'] );
