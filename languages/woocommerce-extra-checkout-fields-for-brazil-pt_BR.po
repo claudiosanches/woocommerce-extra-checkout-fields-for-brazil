@@ -414,7 +414,7 @@ msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:520
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1028
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1031
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
 msgstr "Informe um CEP válido."
@@ -444,13 +444,13 @@ msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
 #: includes/class-extra-checkout-fields-for-brazil-shipping.php:742
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1034
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1037
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1020
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1024
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1023
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1027
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -459,13 +459,13 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1201
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1204
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1203
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1206
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -792,8 +792,8 @@ msgid "Fills in the street, neighborhood, city and state once the customer enter
 msgstr "Preenche rua, bairro, cidade e estado assim que o cliente informa o CEP, no checkout e em Minha Conta."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:446
-msgid "The cart shipping calculator asks only for the CEP and fills in the state and city from it. The cart block gets a calculator of its own."
-msgstr "A calculadora de frete do carrinho pede apenas o CEP e preenche o estado e a cidade a partir dele. O bloco de carrinho ganha uma calculadora própria."
+msgid "The cart shipping calculator asks only for the CEP and fills in the state and city from it. The Cart block gets the plugin's own calculator, which asks only for the CEP."
+msgstr "A calculadora de frete do carrinho pede apenas o CEP e preenche o estado e a cidade a partir dele. O bloco Carrinho recebe a calculadora do plugin, que pede apenas o CEP."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:510
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:517

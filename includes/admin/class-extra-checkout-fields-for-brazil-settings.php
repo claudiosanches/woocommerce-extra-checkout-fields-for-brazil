@@ -443,7 +443,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 				'menu'  => $option,
 				'id'    => 'postcode_only_calculator',
 				'title' => __( 'Ask only for the CEP in the cart', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'label' => __( 'The cart shipping calculator asks only for the CEP and fills in the state and city from it. The cart block gets a calculator of its own.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label' => __( 'The cart shipping calculator asks only for the CEP and fills in the state and city from it. The Cart block gets the plugin\'s own calculator, which asks only for the CEP.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			)
 		);
 
