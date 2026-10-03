@@ -1,0 +1,589 @@
+/**
+ * CEP-only shipping calculator for the cart block.
+ *
+ * WooCommerce 10 removed the calculator from the cart block, so this one is
+ * added to the order summary through the checkout SlotFill. It is built from
+ * the markup of WooCommerce's own coupon form and shipping options, so it
+ * takes their styles.
+ */
+
+import { __, sprintf } from '@wordpress/i18n';
+import { useEffect, useRef, useState } from '@wordpress/element';
+import type { ChangeEvent, FormEvent } from 'react';
+import { select, subscribe, useDispatch } from '@wordpress/data';
+import { registerPlugin } from '@wordpress/plugins';
+import { ExperimentalOrderMeta } from '@woocommerce/blocks-checkout';
+import { CART_STORE_KEY } from '@woocommerce/block-data';
+import {
+	formatPrice,
+	getCurrencyFromPriceResponse,
+} from '@woocommerce/price-format';
+import { getSetting } from '@woocommerce/settings';
+import { formatCep } from '../shared/mask';
+import {
+	describeAddress,
+	findPostcode,
+	postcodeDigits,
+	postcodeError,
+	rememberPostcode,
+} from '../shared/postcode';
+import type { PostcodeAddress } from '../shared/postcode';
+import type { ShippingParams } from './shipping';
+
+type Address = Record< string, string >;
+
+interface CartRate {
+	rate_id: string;
+	name: string;
+	price: string;
+	taxes: string;
+	selected: boolean;
+	currency_code: string;
+	currency_symbol: string;
+	currency_minor_unit: number;
+	currency_decimal_separator: string;
+	currency_thousand_separator: string;
+	currency_prefix: string;
+	currency_suffix: string;
+}
+
+interface CartPackage {
+	package_id: number | string;
+	shipping_rates: CartRate[];
+}
+
+interface Cart {
+	cartNeedsShipping: boolean;
+	billingAddress: Address;
+	shippingAddress: Address;
+	shippingRates: CartPackage[];
+}
+
+interface CartStore {
+	setBillingAddress: ( address: Address ) => void;
+	setShippingAddress: ( address: Address ) => void;
+	selectShippingRate: (
+		rateId: string,
+		packageId: number | string
+	) => Promise< unknown >;
+}
+
+const includeTaxes = getSetting( 'displayCartPricesIncludingTax', false );
+const countryData = getSetting< Record< string, { states?: Address } > >(
+	'countryData',
+	{}
+);
+
+const params: ShippingParams = window.bmwShippingParams || {};
+const NEIGHBORHOOD = 'csbmw/neighborhood';
+const NUMBER = 'csbmw/number';
+const INPUT_ID = 'csbmw-cart-postcode';
+const ERROR_ID = 'csbmw-cart-postcode-error';
+const requirePostcode = 'yes' === params.requirePostcode;
+
+/**
+ * Rate price as the cart shows its other prices.
+ *
+ * @param rate Shipping rate.
+ * @return Formatted price.
+ */
+function ratePrice( rate: CartRate ): string {
+	let price = parseInt( rate.price, 10 );
+
+	if ( includeTaxes ) {
+		price += parseInt( rate.taxes, 10 );
+	}
+
+	return price > 0
+		? formatPrice( price, getCurrencyFromPriceResponse( rate ) )
+		: __( 'Free', 'woocommerce-extra-checkout-fields-for-brazil' );
+}
+
+/**
+ * Name of a Brazilian state.
+ *
+ * @param code State code.
+ * @return Name, or the code when unknown.
+ */
+function stateName( code: string ): string {
+	return countryData.BR?.states?.[ code ] || code;
+}
+
+/**
+ * An address moved to the place a CEP belongs to.
+ *
+ * A different CEP means a different street, so the street, complement,
+ * number and neighborhood are replaced along with it.
+ *
+ * @param current Address the customer has.
+ * @param found   Address found by CEP.
+ * @return Address to save.
+ */
+function moveTo( current: Address, found: PostcodeAddress ): Address {
+	const address: Address = {
+		...current,
+		country: 'BR',
+		state: found.state,
+		city: found.city,
+		postcode: formatCep( found.postcode ),
+	};
+
+	if ( postcodeDigits( current.postcode ) !== found.postcode ) {
+		address.address_1 = found.address;
+		address.address_2 = '';
+		address[ NEIGHBORHOOD ] = found.neighborhood;
+		address[ NUMBER ] = '';
+	}
+
+	return address;
+}
+
+/**
+ * The cart's destination, when it is a complete Brazilian address.
+ *
+ * @param address Shipping address.
+ * @return One line describing it, or an empty string.
+ */
+function destination( address: Address ): string {
+	if ( 'BR' !== address.country || ! postcodeDigits( address.postcode ) ) {
+		return '';
+	}
+
+	return describeAddress( {
+		postcode: address.postcode || '',
+		address: address.address_1 || '',
+		neighborhood: address[ NEIGHBORHOOD ] || '',
+		city: address.city || '',
+		state: address.state || '',
+	} );
+}
+
+/**
+ * Wait for WooCommerce to send the customer's address to the store.
+ *
+ * The cart store sends address changes itself, shortly after they are made.
+ *
+ * @return Resolves once the update finishes, or after ten seconds.
+ */
+function addressSaved(): Promise< void > {
+	return new Promise( ( resolve ) => {
+		let started = false;
+		let timer = 0;
+
+		const unsubscribe = subscribe( () => {
+			const updating = select( CART_STORE_KEY ).isCustomerDataUpdating();
+
+			if ( updating ) {
+				started = true;
+			} else if ( started ) {
+				done();
+			}
+		}, CART_STORE_KEY );
+
+		function done() {
+			unsubscribe();
+			window.clearTimeout( timer );
+			resolve();
+		}
+
+		timer = window.setTimeout( done, 10000 );
+	} );
+}
+
+function Rates( { cart }: { cart: Cart } ) {
+	const { selectShippingRate } = useDispatch( CART_STORE_KEY ) as CartStore;
+
+	return (
+		<fieldset className="csbmw-shipping-calculator-rates">
+			<legend className="screen-reader-text">
+				{ __(
+					'Shipping options',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+			</legend>
+			{ cart.shippingRates.map( ( pack ) => (
+				<div
+					key={ pack.package_id }
+					className="wc-block-components-radio-control"
+				>
+					{ pack.shipping_rates.map( ( rate ) => {
+						const id = `csbmw-rate-${ pack.package_id }-${ rate.rate_id }`;
+
+						return (
+							<label
+								key={ rate.rate_id }
+								htmlFor={ id }
+								className={
+									'wc-block-components-radio-control__option' +
+									( rate.selected
+										? ' wc-block-components-radio-control__option-checked'
+										: '' )
+								}
+							>
+								<input
+									id={ id }
+									className="wc-block-components-radio-control__input"
+									type="radio"
+									name={ `csbmw-rate-${ pack.package_id }` }
+									value={ rate.rate_id }
+									checked={ rate.selected }
+									aria-describedby={ `${ id }__secondary-label` }
+									onChange={ () =>
+										selectShippingRate(
+											rate.rate_id,
+											pack.package_id
+										)
+									}
+								/>
+								<div className="wc-block-components-radio-control__option-layout">
+									<div className="wc-block-components-radio-control__label-group">
+										<span className="wc-block-components-radio-control__label">
+											{ rate.name }
+										</span>
+										<span
+											id={ `${ id }__secondary-label` }
+											className="wc-block-components-radio-control__secondary-label"
+										>
+											<span className="wc-block-formatted-money-amount wc-block-components-formatted-money-amount">
+												{ ratePrice( rate ) }
+											</span>
+										</span>
+									</div>
+								</div>
+							</label>
+						);
+					} ) }
+				</div>
+			) ) }
+		</fieldset>
+	);
+}
+
+function Calculator( { cart }: { cart: Cart } ) {
+	// Follows the cart until the customer types, since the cart can finish
+	// loading after the calculator first renders.
+	const [ typed, setTyped ] = useState< string | null >( null );
+	const [ focused, setFocused ] = useState( false );
+	const [ error, setError ] = useState( '' );
+	const [ busy, setBusy ] = useState( false );
+	// CEP and state quoted while the lookup did not answer.
+	const [ unconfirmed, setUnconfirmed ] = useState( {
+		postcode: '',
+		state: '',
+	} );
+	const input = useRef< HTMLInputElement >( null );
+	const { setBillingAddress, setShippingAddress } = useDispatch(
+		CART_STORE_KEY
+	) as CartStore;
+
+	const saved =
+		'BR' === cart.shippingAddress.country
+			? formatCep( cart.shippingAddress.postcode )
+			: '';
+	const postcode = typed ?? saved;
+	const place = destination( cart.shippingAddress );
+	const hasRates = cart.shippingRates.some(
+		( pack ) => pack.shipping_rates.length
+	);
+	const quotedState =
+		unconfirmed.postcode && unconfirmed.postcode === postcodeDigits( saved )
+			? unconfirmed.state
+			: '';
+
+	// Read by the click listener, which is added once.
+	const missing = useRef( false );
+	const pending = useRef< Promise< void > | null >( null );
+	missing.current = ! postcodeDigits( saved );
+
+	useEffect( () => {
+		if ( ! requirePostcode ) {
+			return;
+		}
+
+		const hold = ( event: MouseEvent ) => {
+			const link =
+				event.target instanceof window.Element
+					? event.target.closest< HTMLElement >(
+							'.wc-block-cart__submit-button'
+					  )
+					: null;
+
+			if ( ! link || ( ! pending.current && ! missing.current ) ) {
+				return;
+			}
+
+			// Kept from WooCommerce too, which would show its spinner.
+			event.preventDefault();
+			event.stopPropagation();
+
+			// The server checks the CEP, so it has to be saved first.
+			if ( pending.current ) {
+				pending.current.then( () => link.click() );
+
+				return;
+			}
+
+			setError(
+				__(
+					'Enter your CEP to calculate shipping before checkout.',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				)
+			);
+			input.current?.focus();
+		};
+
+		document.addEventListener( 'click', hold, true );
+
+		return () => document.removeEventListener( 'click', hold, true );
+	}, [] );
+
+	const submit = async ( event: FormEvent< HTMLFormElement > ) => {
+		event.preventDefault();
+
+		if ( busy ) {
+			return;
+		}
+
+		const digits = postcodeDigits( postcode );
+
+		if ( ! digits ) {
+			setError( postcodeError( postcode ) );
+
+			return;
+		}
+
+		setBusy( true );
+		setError( '' );
+
+		let done = () => {};
+
+		pending.current = new Promise( ( resolve ) => ( done = resolve ) );
+
+		try {
+			await calculate( digits );
+		} finally {
+			pending.current = null;
+			done();
+			setBusy( false );
+		}
+	};
+
+	/**
+	 * Look up a CEP and save the address it points to.
+	 *
+	 * @param digits CEP digits.
+	 */
+	const calculate = async ( digits: string ) => {
+		const result = await findPostcode( params.postcodeUrl || '', digits );
+		let found = result.address;
+
+		// Quoted by the CEP's state, keeping the city of the same CEP.
+		if ( ! found && 'unavailable' === result.error && result.state ) {
+			found = {
+				postcode: digits,
+				address: '',
+				neighborhood: '',
+				city:
+					postcodeDigits( cart.shippingAddress.postcode ) === digits
+						? cart.shippingAddress.city || ''
+						: '',
+				state: result.state,
+			};
+		}
+
+		if ( ! found ) {
+			setError(
+				'failed' === result.error
+					? __(
+							'Could not look up the CEP. Try again.',
+							'woocommerce-extra-checkout-fields-for-brazil'
+					  )
+					: __(
+							'CEP not found. Check the number and try again.',
+							'woocommerce-extra-checkout-fields-for-brazil'
+					  )
+			);
+
+			return;
+		}
+
+		setUnconfirmed( {
+			postcode: result.address ? '' : digits,
+			state: result.address ? '' : found.state,
+		} );
+
+		const saving = addressSaved();
+
+		setShippingAddress( moveTo( cart.shippingAddress, found ) );
+
+		// As WooCommerce's own calculator does, until the customer has
+		// started a billing address of their own.
+		if ( ! cart.billingAddress.first_name ) {
+			setBillingAddress( moveTo( cart.billingAddress, found ) );
+		}
+
+		await saving;
+		rememberPostcode( found.postcode );
+		setTyped( null );
+	};
+
+	return (
+		<div
+			className="csbmw-shipping-calculator csbmw-cart-shipping-calculator"
+			aria-busy={ busy }
+		>
+			<span className="csbmw-shipping-calculator-label">
+				{ __(
+					'Calculate shipping',
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+			</span>
+			<form
+				className="wc-block-components-totals-coupon__form csbmw-shipping-calculator-form"
+				noValidate
+				onSubmit={ submit }
+			>
+				<div
+					className={
+						'wc-block-components-text-input wc-block-components-totals-coupon__input' +
+						( focused || postcode ? ' is-active' : '' ) +
+						( error ? ' has-error' : '' )
+					}
+				>
+					<input
+						ref={ input }
+						id={ INPUT_ID }
+						type="text"
+						inputMode="numeric"
+						autoComplete="postal-code"
+						value={ postcode }
+						aria-invalid={ error ? 'true' : 'false' }
+						aria-describedby={ error ? ERROR_ID : undefined }
+						onFocus={ () => setFocused( true ) }
+						onBlur={ () => {
+							setFocused( false );
+
+							if ( typed && ! postcodeDigits( typed ) ) {
+								setError( postcodeError( typed ) );
+							}
+						} }
+						onChange={ (
+							event: ChangeEvent< HTMLInputElement >
+						) => {
+							setTyped( formatCep( event.target.value ) );
+							setError( '' );
+						} }
+					/>
+					<label htmlFor={ INPUT_ID }>
+						{ __(
+							'CEP',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+					</label>
+				</div>
+				<button
+					className="wc-block-components-button wp-element-button wc-block-components-totals-coupon__button contained csbmw-shipping-calculator-button"
+					type="submit"
+					disabled={ busy }
+				>
+					{ busy && (
+						<span
+							className="wc-block-components-spinner"
+							aria-hidden
+						/>
+					) }
+					<span className="wc-block-components-button__text">
+						{ __(
+							'Calculate',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+					</span>
+				</button>
+			</form>
+			{ error && (
+				<div
+					className="wc-block-components-validation-error"
+					role="alert"
+				>
+					<p id={ ERROR_ID }>
+						<span>{ error }</span>
+					</p>
+				</div>
+			) }
+			<a
+				className="csbmw-shipping-calculator-find"
+				href={ params.findPostcodeUrl }
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{ __(
+					"I don't know my CEP",
+					'woocommerce-extra-checkout-fields-for-brazil'
+				) }
+				<span
+					className="csbmw-shipping-calculator-find-icon"
+					dangerouslySetInnerHTML={ {
+						__html: params.findPostcodeIcon || '',
+					} }
+				/>
+			</a>
+			<div
+				className="csbmw-shipping-calculator-results"
+				aria-live="polite"
+			>
+				{ ! place && (
+					<p className="csbmw-shipping-calculator-message">
+						{ __(
+							'Enter your CEP to see the shipping options for your address.',
+							'woocommerce-extra-checkout-fields-for-brazil'
+						) }
+					</p>
+				) }
+				{ place && ! quotedState && (
+					<p className="csbmw-shipping-calculator-address">
+						{ place }
+					</p>
+				) }
+				{ place && quotedState && (
+					<p className="csbmw-shipping-calculator-message">
+						{ sprintf(
+							/* translators: %s: state name */
+							__(
+								'The address for this CEP could not be looked up right now, so shipping is quoted for %s.',
+								'woocommerce-extra-checkout-fields-for-brazil'
+							),
+							stateName( quotedState )
+						) }
+					</p>
+				) }
+				{ place &&
+					( hasRates ? (
+						<Rates cart={ cart } />
+					) : (
+						<p className="csbmw-shipping-calculator-message">
+							{ __(
+								'No shipping options for this CEP.',
+								'woocommerce-extra-checkout-fields-for-brazil'
+							) }
+						</p>
+					) ) }
+			</div>
+		</div>
+	);
+}
+
+// The order summary slot also renders on the checkout.
+function CartOnly( { cart, context }: { cart?: Cart; context?: string } ) {
+	return 'woocommerce/cart' === context && cart?.cartNeedsShipping ? (
+		<Calculator cart={ cart } />
+	) : null;
+}
+
+registerPlugin( 'csbmw-cart-shipping-calculator', {
+	render: () => (
+		<ExperimentalOrderMeta>
+			<CartOnly />
+		</ExperimentalOrderMeta>
+	),
+	scope: 'woocommerce-checkout',
+} );

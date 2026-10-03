@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "csbmw/shipping-calculator",
+	"title": "Shipping Calculator",
+	"category": "woocommerce",
+	"description": "Lets customers check the shipping options for a product by entering their CEP.",
+	"keywords": [ "cep", "frete", "shipping" ],
+	"textdomain": "woocommerce-extra-checkout-fields-for-brazil",
+	"attributes": {
+		"productId": {
+			"type": "number",
+			"default": 0
+		},
+		"variationId": {
+			"type": "number",
+			"default": 0
+		},
+		"changePostcodeIn": {
+			"type": "string",
+			"enum": [ "dialog", "block" ],
+			"default": "dialog"
+		}
+	},
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"editorScript": "file:./index.tsx",
+	"viewScript": "woocommerce-extra-checkout-fields-for-brazil-shipping",
+	"style": "woocommerce-extra-checkout-fields-for-brazil-shipping"
+}

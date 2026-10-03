@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "csbmw/order-customer-data",
+	"title": "Customer Data",
+	"category": "woocommerce",
+	"icon": "id",
+	"description": "Shows the customer's documents, birthdate, gender and cell phone on the order confirmation.",
+	"keywords": [ "cpf", "cnpj", "order" ],
+	"textdomain": "woocommerce-extra-checkout-fields-for-brazil",
+	"attributes": {
+		"align": {
+			"type": "string",
+			"default": "wide"
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"blockHooks": {
+		"woocommerce/order-confirmation-totals-wrapper": "after"
+	},
+	"editorScript": "file:./index.tsx",
+	"style": "wc-blocks-style-order-confirmation-additional-fields"
+}
