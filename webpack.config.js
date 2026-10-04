@@ -24,6 +24,10 @@ module.exports = {
 			__dirname,
 			'assets/js/blocks/shipping-calculator/index.tsx'
 		),
+		'blocks/spending-goals/index': path.resolve(
+			__dirname,
+			'assets/js/blocks/spending-goals/index.tsx'
+		),
 		shipping: path.resolve( __dirname, 'assets/js/shipping/shipping.ts' ),
 		'shipping-cart': path.resolve(
 			__dirname,

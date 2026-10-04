@@ -228,8 +228,7 @@ Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` i
 que a opção Meta de compra nas restrições de uso dele grava. O plugin aplica o cupom quando o
 subtotal do carrinho alcança o mínimo e retira quando o subtotal fica abaixo dele. Um cupom
 que o cliente remove fica de fora até um produto ser adicionado, uma quantidade aumentar ou o
-subtotal ficar abaixo do mínimo e alcançá-lo de novo. Nada é aplicado enquanto a barra está desligada em
-todos os lugares.
+subtotal ficar abaixo do mínimo e alcançá-lo de novo.
 
 O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em
 `extensions["csbmw-goals"].bar`, null quando não há meta para mostrar:
@@ -238,8 +237,25 @@ O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra 
 | ------------ | ----------------------------------------------------------------------------------------------------- |
 | `style`      | `milestones`, uma barra marcando todas as metas, ou `next`, só a próxima meta                         |
 | `message`    | Quanto falta no carrinho para a próxima meta, ou o que ele ganhou                                     |
+| `parts`      | A mensagem em partes, cada uma com o `text` e se é uma recompensa em destaque em `strong`             |
 | `progress`   | Quanto da barra está preenchido, de 0 a 100                                                           |
 | `milestones` | Cada meta com o `label`, o `amount`, a `position` na barra de 0 a 100 e se foi alcançada em `reached` |
+| `colors`     | As cores `bar` e `track` da loja, vazias para seguir o tema                                           |
+
+O bloco Metas de Compra e o shortcode `[csbmw_spending_goals]` colocam a barra em qualquer outro
+lugar, como uma página, um modelo de produto ou o cabeçalho. Um deles na página do produto toma
+o lugar da barra que a configuração coloca ali. Os dois acompanham o carrinho quando um produto
+é adicionado sem recarregar a página.
+
+| Atributo do shortcode | Valor                                                        |
+| --------------------- | ------------------------------------------------------------ |
+| `style`               | `milestones` ou `next`. Vazio segue a configuração           |
+| `bar_color`           | Cor hexadecimal da barra. Vazio usa a da loja, ou a do texto |
+| `track_color`         | Cor hexadecimal do trilho. Vazio usa a da loja               |
+
+```text
+[csbmw_spending_goals style="next" bar_color="#1e8a3c"]
+```
 
 ## Hooks
 

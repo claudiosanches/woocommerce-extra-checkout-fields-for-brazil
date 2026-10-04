@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "csbmw/spending-goals",
+    "title": "Spending Goals",
+    "category": "woocommerce",
+    "description": "Shows how much more the cart needs for free shipping or a coupon set as a spending goal.",
+    "keywords": [
+        "frete grátis",
+        "free shipping",
+        "cupom",
+        "coupon",
+        "progress"
+    ],
+    "textdomain": "woocommerce-extra-checkout-fields-for-brazil",
+    "attributes": {
+        "goalsStyle": {
+            "type": "string",
+            "enum": ["", "milestones", "next"],
+            "default": ""
+        },
+        "barColor": {
+            "type": "string",
+            "default": ""
+        },
+        "trackColor": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "color": {
+            "text": true,
+            "background": true,
+            "link": false,
+            "__experimentalDefaultControls": {
+                "text": true,
+                "background": true
+            }
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "__experimentalBorder": {
+            "color": true,
+            "radius": true,
+            "style": true,
+            "width": true,
+            "__experimentalDefaultControls": {
+                "radius": true
+            }
+        }
+    },
+    "editorScript": "file:./index.tsx",
+    "viewScript": "woocommerce-extra-checkout-fields-for-brazil-goals",
+    "style": "woocommerce-extra-checkout-fields-for-brazil-goals"
+}

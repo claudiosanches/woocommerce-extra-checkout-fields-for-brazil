@@ -55,4 +55,25 @@ jQuery( function ( $ ) {
 			$( '.bmw-row-require-cart-postcode' ).toggle( this.checked );
 		} )
 		.trigger( 'change' );
+
+	// The picker sets the value itself, which the unsaved changes marker
+	// would not hear.
+	$( '.bmw-color-picker' ).wpColorPicker( {
+		change: ( event ) =>
+			window.setTimeout( () =>
+				event.target.dispatchEvent(
+					new window.Event( 'input', { bubbles: true } )
+				)
+			),
+		clear() {
+			const input = $( this )
+				.closest( '.wp-picker-container' )
+				.find( '.bmw-color-picker' )
+				.get( 0 );
+
+			input?.dispatchEvent(
+				new window.Event( 'input', { bubbles: true } )
+			);
+		},
+	} );
 } );

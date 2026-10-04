@@ -331,7 +331,7 @@ msgstr "Celular não é válido."
 msgid "Exempt from State Registration"
 msgstr "Isento de Inscrição Estadual"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:777
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:798
 #: build/classic.js:2
 msgid "required"
 msgstr "obrigatório"
@@ -356,6 +356,7 @@ msgstr "é um campo obrigatório"
 
 #: includes/class-extra-checkout-fields-for-brazil.php:243
 #: build/blocks/shipping-calculator/index.js:1
+#: build/blocks/spending-goals/index.js:1
 msgid "Settings"
 msgstr "Configurações"
 
@@ -368,7 +369,7 @@ msgid "Contribute"
 msgstr "Contribua"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:414
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:627
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:648
 msgid "Shipping"
 msgstr "Entrega"
 
@@ -401,11 +402,11 @@ msgstr "WooCommerce > Configurações > Geral"
 msgid "Sell and ship only to Brazil"
 msgstr "Vender e entregar apenas para o Brasil"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:686
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:707
 msgid "You do not have permission to change the store settings."
 msgstr "Você não tem permissão para alterar as configurações da loja."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:693
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:714
 msgid "The store now sells and ships only to Brazil."
 msgstr "A loja agora vende e entrega apenas para o Brasil."
 
@@ -627,23 +628,23 @@ msgid "Follow the WooCommerce setting"
 msgstr "Seguir a configuração do WooCommerce"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:760
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:781
 msgid "Disabled"
 msgstr "Desativado"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:761
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:782
 msgid "Optional"
 msgstr "Opcional"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:762
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:783
 msgid "Required"
 msgstr "Obrigatório"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:775
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:796
 msgid "hidden"
 msgstr "oculto"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:776
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:797
 msgid "optional"
 msgstr "opcional"
 
@@ -656,11 +657,11 @@ msgstr "Inscrição Estadual não é válida."
 msgid "Exempt"
 msgstr "Isento"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:625
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:646
 msgid "Fields"
 msgstr "Campos"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:626
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:647
 msgid "Features"
 msgstr "Recursos"
 
@@ -814,16 +815,16 @@ msgid "Adds masks to the CPF, CNPJ, CEP, birthdate, phone and cell phone fields.
 msgstr "Adiciona máscaras aos campos de CPF, CNPJ, CEP, data de nascimento, telefone e celular."
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:783
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:804
 #, php-format
 msgid "Asking legal persons only makes the field required for them and hides it from individuals. Otherwise WooCommerce's setting applies, currently %s, which is changed in the checkout page editor or in the Customizer."
 msgstr "Pedir apenas a pessoas jurídicas torna o campo obrigatório para elas e o esconde de pessoas físicas. Caso contrário vale a configuração do WooCommerce, hoje %s, que se altera no editor da página de checkout ou no Personalizador."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:794
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:815
 msgid "How the classic checkout and the My Account address forms arrange the fields. Pick full width if they look broken in your theme."
 msgstr "Como o checkout clássico e os formulários de endereço de Minha Conta organizam os campos. Escolha largura total se eles aparecerem quebrados no seu tema."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:797
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:818
 msgid "Your checkout page uses the Checkout block, which arranges its own fields, so this changes only the My Account address forms."
 msgstr "Sua página de checkout usa o bloco Finalizar compra, que organiza os próprios campos, então isto muda apenas os formulários de endereço de Minha Conta."
 
@@ -1168,7 +1169,8 @@ msgid "Enter your CEP to see the shipping options for your address."
 msgstr "Informe seu CEP para ver as opções de entrega para o seu endereço."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:540
-#: includes/views/html-spending-goals.php:18
+#: includes/views/html-spending-goals.php:26
+#: build/blocks/spending-goals/index.js:1
 #: build/goals-blocks.js:1
 msgid "Spending goals"
 msgstr "Metas de compra"
@@ -1218,6 +1220,7 @@ msgstr "WooCommerce > Configurações > Entrega"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:598
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:605
+#: build/blocks/spending-goals/index.js:1
 msgid "Several goals"
 msgstr "Várias metas"
 
@@ -1226,58 +1229,124 @@ msgid "One bar with every goal marked (default)"
 msgstr "Uma barra com todas as metas marcadas (padrão)"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:609
+#: build/blocks/spending-goals/index.js:1
 msgid "The next goal only"
 msgstr "Só a próxima meta"
 
 #. translators: %s: link to the WooCommerce coupons
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:672
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:693
 #, php-format
 msgid "A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its usage restrictions, next to its minimum spend, and applies once the cart reaches it. Manage them in %s."
 msgstr "Uma barra mostra quanto falta no carrinho para cada meta. Um cupom vira meta com a opção Meta de compra marcada nas restrições de uso, junto ao gasto mínimo, e é aplicado quando o carrinho o alcança. Gerencie os cupons em %s."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:673
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:694
 msgid "Marketing > Coupons"
 msgstr "Marketing > Cupons"
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:206
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:473
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:271
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:538
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:949
 msgid "free shipping"
 msgstr "frete grátis"
 
 #. translators: %s: discount, such as 10%
 #. translators: %s: discount amount
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:209
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:215
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:274
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:280
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:956
 #, php-format
 msgid "%s off"
 msgstr "%s de desconto"
 
 #. translators: %s: discount amount
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:212
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:277
 #, php-format
 msgid "%s off each item"
 msgstr "%s de desconto em cada item"
 
 #. translators: 1: amount still to spend, 2: what the customer gets, such as free shipping
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:548
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:626
 #, php-format
 msgid "Add %1$s more to get %2$s."
 msgstr "Adicione mais %1$s para ganhar %2$s."
 
 #. translators: %s: what the customer got, such as free shipping and 10% off
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:554
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:632
 #, php-format
 msgid "You got %s."
 msgstr "Você ganhou %s."
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:697
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:809
 msgid "Spending goal"
 msgstr "Meta de compra"
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:698
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:810
 msgid "Show how much more the cart needs to reach the minimum spend, and apply the coupon once it does."
 msgstr "Mostra quanto falta no carrinho para alcançar o gasto mínimo e aplica o cupom quando alcança."
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:889
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1121
 msgid "Spending goals progress bar, or null with no goal to show."
 msgstr "Barra de progresso das metas de compra, ou null quando não há meta para mostrar."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:615
+msgid "Bar color"
+msgstr "Cor da barra"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:616
+msgid "Track color"
+msgstr "Cor do trilho"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:630
+msgid "Leave empty to follow the theme's text color. A Spending Goals block or shortcode can set its own."
+msgstr "Deixe vazio para seguir a cor do texto do tema. Um bloco Metas de Compra ou shortcode pode definir a sua."
+
+#: build/blocks/spending-goals/index.js:1
+msgid "As in the store settings"
+msgstr "Como nas configurações da loja"
+
+#: build/blocks/spending-goals/index.js:1
+msgid "One bar with every goal marked"
+msgstr "Uma barra com todas as metas marcadas"
+
+#: build/blocks/spending-goals/index.js:1
+msgid "Bar"
+msgstr "Barra"
+
+#: build/blocks/spending-goals/index.js:1
+msgid "Track"
+msgstr "Trilho"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block title"
+msgid "Spending Goals"
+msgstr "Metas de Compra"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block description"
+msgid "Shows how much more the cart needs for free shipping or a coupon set as a spending goal."
+msgstr "Mostra quanto falta no carrinho para o frete grátis ou para um cupom definido como meta de compra."
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block keyword"
+msgid "frete grátis"
+msgstr "frete grátis"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block keyword"
+msgid "free shipping"
+msgstr "frete gratuito"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block keyword"
+msgid "cupom"
+msgstr "cupom"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block keyword"
+msgid "coupon"
+msgstr "desconto"
+
+#: build/blocks/spending-goals/block.json
+msgctxt "block keyword"
+msgid "progress"
+msgstr "progresso"

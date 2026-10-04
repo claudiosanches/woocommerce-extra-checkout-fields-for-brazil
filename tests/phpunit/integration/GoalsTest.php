@@ -213,15 +213,16 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Nothing is applied while the bar shows nowhere.
+	 * A goal coupon applies even with no bar shown on its own, as a block or
+	 * shortcode may show it.
 	 */
-	public function test_goal_coupon_waits_for_the_bar() {
+	public function test_goal_coupon_applies_without_an_automatic_bar() {
 		update_option( 'wcbcf_settings', array() );
 		$this->coupon( 'meta', 300 );
 
 		$this->fill_cart( 6 );
 
-		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
 	}
 
 	/**
@@ -313,6 +314,26 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Free shipping from the zone and from a coupon shows once, by the
+	 * nearest way.
+	 */
+	public function test_same_reward_shows_once() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'fretegratis', 250 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->save();
+		$this->fill_cart( 2 );
+
+		$this->assertSame( array( 'free_shipping' => 100.0 ), $this->remaining() );
+
+		$coupon->set_minimum_amount( 150 );
+		$coupon->save();
+
+		$this->assertSame( array( 'free shipping' => 50.0 ), $this->remaining() );
+	}
+
+	/**
 	 * Free shipping stays out when the setting is off or nothing ships.
 	 */
 	public function test_free_shipping_needs_the_setting_and_a_shipped_cart() {
@@ -346,8 +367,59 @@ class GoalsTest extends WP_UnitTestCase {
 		$this->assertSame( array( 50.0, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
 		$this->assertSame( array( true, false ), wp_list_pluck( $bar['milestones'], 'reached' ) );
 
+		$this->assertSame(
+			array( '10% off' ),
+			array_values( wp_list_pluck( wp_list_filter( $bar['parts'], array( 'strong' => true ) ), 'text' ) )
+		);
+
 		$this->fill_cart( 6 );
-		$this->assertSame( 'You got free shipping and 10% off.', Extra_Checkout_Fields_For_Brazil_Goals::get_bar()['message'] );
+		$bar = Extra_Checkout_Fields_For_Brazil_Goals::get_bar();
+
+		$this->assertSame( 'You got free shipping and 10% off.', $bar['message'] );
+		$this->assertSame(
+			array(
+				array(
+					'text'   => 'You got ',
+					'strong' => false,
+				),
+				array(
+					'text'   => 'free shipping',
+					'strong' => true,
+				),
+				array(
+					'text'   => ' and ',
+					'strong' => false,
+				),
+				array(
+					'text'   => '10% off',
+					'strong' => true,
+				),
+				array(
+					'text'   => '.',
+					'strong' => false,
+				),
+			),
+			$bar['parts']
+		);
+	}
+
+	/**
+	 * Past the last goal the bar holds still: full, with each goal at its own
+	 * amount, even as a discount grows with the cart.
+	 */
+	public function test_bar_holds_still_past_the_last_goal() {
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->coupon( 'meta', 300 );
+
+		foreach ( array( 6, 12, 40 ) as $quantity ) {
+			$this->fill_cart( $quantity );
+			$bar = Extra_Checkout_Fields_For_Brazil_Goals::get_bar();
+
+			$this->assertSame( 100.0, $bar['progress'] );
+			$this->assertSame( array( 'free shipping', '10% off' ), wp_list_pluck( $bar['milestones'], 'label' ) );
+			$this->assertSame( array( 50.0, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
+			$this->assertSame( 'You got free shipping and 10% off.', $bar['message'] );
+		}
 	}
 
 	/**
@@ -399,6 +471,78 @@ class GoalsTest extends WP_UnitTestCase {
 		$response = rest_do_request( new WP_REST_Request( 'GET', '/wc/store/v1/cart' ) );
 
 		$this->assertNull( $response->get_data()['extensions']->{'csbmw-goals'}['bar'] );
+	}
+
+	/**
+	 * A placed bar can choose its own style, and the store's colors travel
+	 * with the bar.
+	 */
+	public function test_bar_takes_a_style_and_the_store_colors() {
+		update_option(
+			'wcbcf_settings',
+			array(
+				'goals_free_shipping' => '1',
+				'goals_bar_color'     => '#123abc',
+				'goals_track_color'   => 'red',
+			)
+		);
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->fill_cart( 2 );
+
+		$this->assertSame( 'milestones', Extra_Checkout_Fields_For_Brazil_Goals::get_bar()['style'] );
+		$this->assertSame( 'next', Extra_Checkout_Fields_For_Brazil_Goals::get_bar( null, 'next' )['style'] );
+		$this->assertSame( 'milestones', Extra_Checkout_Fields_For_Brazil_Goals::get_bar( null, 'other' )['style'] );
+		$this->assertSame(
+			array(
+				'bar'   => '#123abc',
+				'track' => '',
+			),
+			Extra_Checkout_Fields_For_Brazil_Goals::get_bar()['colors']
+		);
+		$this->assertStringContainsString( 'style="--csbmw-goals-default-bar:#123abc;"', Extra_Checkout_Fields_For_Brazil_Goals::render( 'cart' ) );
+	}
+
+	/**
+	 * The block and the shortcode print a holder with their own style and
+	 * colors, kept while empty so a cart change can fill it.
+	 */
+	public function test_block_and_shortcode_print_the_bar() {
+		update_option( 'wcbcf_settings', array( 'goals_free_shipping' => '1' ) );
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->fill_cart( 2 );
+
+		$shortcode = do_shortcode( '[csbmw_spending_goals style="next" bar_color="#ff0000" track_color="nope"]' );
+
+		$this->assertStringContainsString( 'class="csbmw-goals-holder is-placed" style="--csbmw-goals-bar:#ff0000;" data-goals-style="next"', $shortcode );
+		$this->assertStringContainsString( 'csbmw-goals-style-next', $shortcode );
+		$this->assertTrue( wp_script_is( Extra_Checkout_Fields_For_Brazil_Goals::HANDLE ) );
+
+		$block = do_blocks( '<!-- wp:csbmw/spending-goals {"goalsStyle":"milestones","trackColor":"#00ff00"} /-->' );
+
+		$this->assertStringContainsString( '--csbmw-goals-track:#00ff00', $block );
+		$this->assertStringContainsString( 'data-goals-style="milestones"', $block );
+		$this->assertStringContainsString( '50.00 more to get free shipping.', $block );
+
+		WC()->cart->empty_cart();
+		update_option( 'wcbcf_settings', array() );
+
+		$this->assertMatchesRegularExpression( '/<div class="csbmw-goals-holder is-placed" data-goals-style=""><\/div>/', do_shortcode( '[csbmw_spending_goals]' ) );
+	}
+
+	/**
+	 * The settings keep only hex colors.
+	 */
+	public function test_settings_keep_only_hex_colors() {
+		$settings = new Extra_Checkout_Fields_For_Brazil_Settings();
+		$output   = $settings->validate_options(
+			array(
+				'goals_bar_color'   => '#AbCdEf',
+				'goals_track_color' => 'javascript:alert(1)',
+			)
+		);
+
+		$this->assertSame( '#AbCdEf', $output['goals_bar_color'] );
+		$this->assertSame( '', $output['goals_track_color'] );
 	}
 
 	/**

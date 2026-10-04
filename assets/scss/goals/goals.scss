@@ -3,7 +3,9 @@
  * Colors follow the text, so the bar suits light and dark themes alike.
  */
 
-$track: var(--wc-separator-color, color-mix(in srgb, currentcolor 15%, transparent));
+// A placed bar's own colors, then the store's, then the theme's.
+$bar: var(--csbmw-goals-bar, var(--csbmw-goals-default-bar, currentcolor));
+$track: var(--csbmw-goals-track, var(--csbmw-goals-default-track, var(--wc-separator-color, color-mix(in srgb, currentcolor 15%, transparent))));
 $small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
 
 .csbmw-goals {
@@ -26,7 +28,7 @@ $small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
 $mark: 14px;
 
 .csbmw-goals-fill {
-	background: currentcolor;
+	background: $bar;
 	border-radius: inherit;
 	height: 100%;
 	left: 0;
@@ -50,7 +52,7 @@ $mark: 14px;
 // A ring on the track, filled once the goal is reached.
 .csbmw-goals-mark {
 	background: var(--wp--preset--color--base, #fff);
-	border: 2px solid currentcolor;
+	border: 2px solid $bar;
 	border-radius: 50%;
 	box-sizing: border-box;
 	height: $mark;
@@ -61,39 +63,8 @@ $mark: 14px;
 	width: $mark;
 
 	&.is-reached {
-		background: currentcolor;
+		background: $bar;
 	}
-}
-
-.csbmw-goals-milestones {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.25em 1.25em;
-	list-style: none;
-	margin: 0.75em 0 0;
-	padding: 0;
-}
-
-.csbmw-goals-label {
-	display: inline-block;
-
-	&::first-letter {
-		text-transform: uppercase;
-	}
-}
-
-.csbmw-goals-milestone {
-	display: flex;
-	gap: 0.4em;
-	margin: 0;
-
-	&.is-reached .csbmw-goals-label {
-		font-weight: 600;
-	}
-}
-
-.csbmw-goals-amount {
-	opacity: 0.75;
 }
 
 // The classic checkout prints it in a row of the order review table.
@@ -105,4 +76,19 @@ $mark: 14px;
 .csbmw-goals-row .csbmw-goals {
 	font-weight: 400;
 	margin: 0;
+}
+
+// A block or shortcode stays in the page while there is no goal, so a cart
+// change can fill it.
+.csbmw-goals-holder:empty {
+	display: none;
+}
+
+.csbmw-goals-holder.is-placed .csbmw-goals {
+	margin: 0;
+}
+
+// A bar placed on the page takes the place of the product page's own.
+body:has(.csbmw-goals-holder.is-placed) .csbmw-goals-holder.is-automatic {
+	display: none;
 }

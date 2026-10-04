@@ -101,10 +101,10 @@ test.describe( 'Spending goals', () => {
 		await expect( bar.locator( '.csbmw-goals-message' ) ).toHaveText(
 			FREE_SHIPPING
 		);
-		await expect( bar.locator( '.csbmw-goals-milestone' ) ).toHaveText( [
-			/free shipping\s*R\$150\.00/i,
-			/10% off\s*R\$300\.00/,
-		] );
+		await expect( bar.locator( '.csbmw-goals-mark' ) ).toHaveCount( 2 );
+		await expect(
+			bar.locator( '.csbmw-goals-mark.is-reached' )
+		).toHaveCount( 0 );
 		await expect( bar.getByRole( 'progressbar' ) ).toHaveAttribute(
 			'aria-valuenow',
 			'33'
@@ -191,7 +191,7 @@ test.describe( 'Spending goals', () => {
 		} );
 
 		const message = page.locator(
-			'.csbmw-goals-product .csbmw-goals-message'
+			'.csbmw-goals-holder.is-automatic .csbmw-goals-message'
 		);
 
 		await expect( message ).toHaveText(
@@ -227,5 +227,118 @@ test.describe( 'Spending goals', () => {
 		await expect( page.locator( '.csbmw-goals-message' ) ).toHaveText(
 			'Add R$200.00 more to get 10% off.'
 		);
+	} );
+
+	test( 'takes the store colors in the cart block', async ( { page } ) => {
+		setSettings( { ...SETTINGS, goals_bar_color: '#00aa00' } );
+		await addProduct( page, 2 );
+		await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+		await expect( page.locator( '.csbmw-goals-fill' ) ).toHaveCSS(
+			'background-color',
+			'rgb(0, 170, 0)'
+		);
+	} );
+
+	test( 'a placed block follows the cart with its own style and colors', async ( {
+		page,
+	} ) => {
+		const pageId = wpCli( [
+			'post',
+			'create',
+			'--post_type=page',
+			'--post_status=publish',
+			'--post_title=CSBMW E2E Goals',
+			'--post_content=<!-- wp:csbmw/spending-goals {"goalsStyle":"next","barColor":"#ff0000"} /-->',
+			'--porcelain',
+		] );
+		const productId = wpCli( [
+			'option',
+			'get',
+			'csbmw_e2e_shipped_product',
+		] );
+
+		try {
+			await addProduct( page, 2 );
+			await page.goto( `/?page_id=${ pageId }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			const holder = page.locator( '.csbmw-goals-holder.is-placed' );
+
+			await expect( holder.locator( '.csbmw-goals-message' ) ).toHaveText(
+				FREE_SHIPPING
+			);
+			await expect( holder.locator( '.csbmw-goals' ) ).toHaveClass(
+				/csbmw-goals-style-next/
+			);
+			await expect( holder.locator( '.csbmw-goals-fill' ) ).toHaveCSS(
+				'background-color',
+				'rgb(255, 0, 0)'
+			);
+
+			await page.evaluate( async ( id ) => {
+				const body = new window.FormData();
+
+				body.append( 'product_id', id );
+				body.append( 'quantity', '4' );
+				await window.fetch( '/?wc-ajax=add_to_cart', {
+					method: 'POST',
+					body,
+				} );
+				document.body.dispatchEvent(
+					new window.Event( 'wc-blocks_added_to_cart' )
+				);
+			}, productId );
+
+			await expect( holder.locator( '.csbmw-goals-message' ) ).toHaveText(
+				ALL_REACHED
+			);
+		} finally {
+			wpCli( [ 'post', 'delete', pageId, '--force' ] );
+		}
+	} );
+
+	test( 'a shortcode on the product takes the place of its own bar', async ( {
+		page,
+	} ) => {
+		const productId = wpCli( [
+			'option',
+			'get',
+			'csbmw_e2e_shipped_product',
+		] );
+		const description = wpCli( [
+			'post',
+			'get',
+			productId,
+			'--field=post_content',
+		] );
+
+		wpCli( [
+			'post',
+			'update',
+			productId,
+			'--post_content=[csbmw_spending_goals]',
+		] );
+
+		try {
+			await page.goto( `/?p=${ productId }`, {
+				waitUntil: 'domcontentloaded',
+			} );
+
+			await expect(
+				page.locator( '.csbmw-goals-holder.is-placed .csbmw-goals' )
+			).toBeVisible();
+			await expect(
+				page.locator( '.csbmw-goals-holder.is-automatic' )
+			).toBeHidden();
+		} finally {
+			wpCli( [
+				'post',
+				'update',
+				productId,
+				`--post_content=${ description }`,
+			] );
+		}
 	} );
 } );

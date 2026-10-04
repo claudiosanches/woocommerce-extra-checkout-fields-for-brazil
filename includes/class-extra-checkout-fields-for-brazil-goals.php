@@ -52,6 +52,20 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	const ENDPOINT = 'csbmw_spending_goals';
 
 	/**
+	 * Shortcode printing the bar.
+	 *
+	 * @var string
+	 */
+	const SHORTCODE = 'csbmw_spending_goals';
+
+	/**
+	 * Ways the bar shows several goals.
+	 *
+	 * @var string[]
+	 */
+	const STYLES = array( 'milestones', 'next' );
+
+	/**
 	 * Store API namespace of the cart data.
 	 *
 	 * @var string
@@ -84,6 +98,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		add_action( 'woocommerce_removed_coupon', array( $this, 'remember_declined_coupon' ) );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
 		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
+
+		add_action( 'init', array( $this, 'register_block' ) );
+		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
 
 		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_field' ), 10, 2 );
 		add_action( 'woocommerce_coupon_options_save', array( $this, 'save_coupon_field' ), 10, 2 );
@@ -124,7 +141,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Whether the bar shows anywhere, which also turns on applying coupons.
+	 * Whether the bar shows anywhere on its own, without a block or shortcode.
 	 *
 	 * @return bool
 	 */
@@ -141,12 +158,58 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * How the bar shows several goals.
 	 *
+	 * @param string $choice A block's or shortcode's own choice, empty to
+	 *                       follow the setting.
+	 *
 	 * @return string milestones or next.
 	 */
-	public static function style() {
+	public static function style( $choice = '' ) {
+		if ( in_array( $choice, self::STYLES, true ) ) {
+			return $choice;
+		}
+
 		$settings = self::settings();
 
 		return isset( $settings['goals_style'] ) && 'next' === $settings['goals_style'] ? 'next' : 'milestones';
+	}
+
+	/**
+	 * Bar and track colors from the settings, empty to follow the theme.
+	 *
+	 * @return array
+	 */
+	public static function colors() {
+		$settings = self::settings();
+
+		return array(
+			'bar'   => isset( $settings['goals_bar_color'] ) ? (string) sanitize_hex_color( $settings['goals_bar_color'] ) : '',
+			'track' => isset( $settings['goals_track_color'] ) ? (string) sanitize_hex_color( $settings['goals_track_color'] ) : '',
+		);
+	}
+
+	/**
+	 * Custom properties giving a placed bar its own colors.
+	 *
+	 * @param string $bar   Bar color.
+	 * @param string $track Track color.
+	 *
+	 * @return string
+	 */
+	protected static function color_vars( $bar, $track ) {
+		$vars = '';
+
+		foreach ( array(
+			'--csbmw-goals-bar'   => $bar,
+			'--csbmw-goals-track' => $track,
+		) as $name => $color ) {
+			$color = sanitize_hex_color( (string) $color );
+
+			if ( $color ) {
+				$vars .= $name . ':' . $color . ';';
+			}
+		}
+
+		return $vars;
 	}
 
 	/**
@@ -504,6 +567,20 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		usort( $goals, static fn( $a, $b ) => $a['remaining'] <=> $b['remaining'] );
 
+		// The same reward reached two ways, such as free shipping from the zone
+		// and from a coupon, shows once, by the nearest way.
+		$rewards = array();
+
+		foreach ( $goals as $index => $goal ) {
+			if ( isset( $rewards[ $goal['label'] ] ) ) {
+				unset( $goals[ $index ] );
+			}
+
+			$rewards[ $goal['label'] ] = true;
+		}
+
+		$goals = array_values( $goals );
+
 		/**
 		 * Filter the spending goals shown for a cart.
 		 *
@@ -518,12 +595,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * What the bar shows for the cart.
 	 *
-	 * @param WC_Cart|null $cart Cart.
+	 * @param WC_Cart|null $cart  Cart.
+	 * @param string       $style A block's or shortcode's own style, empty to
+	 *                            follow the setting.
 	 *
-	 * @return array|null Style, message, progress and milestones, or null with
-	 *                    no goal to show.
+	 * @return array|null Style, message and its parts, progress, milestones
+	 *                    and colors, or null with no goal to show.
 	 */
-	public static function get_bar( $cart = null ) {
+	public static function get_bar( $cart = null, $style = '' ) {
 		$cart  = $cart ? $cart : WC()->cart;
 		$goals = self::get_goals( $cart );
 
@@ -531,10 +610,110 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			return null;
 		}
 
-		$subtotal = (float) $cart->get_displayed_subtotal();
-		$style    = self::style();
-		$next     = null;
-		$reached  = array();
+		return self::build_bar( $goals, (float) $cart->get_displayed_subtotal(), self::style( $style ) );
+	}
+
+	/**
+	 * A piece of the message.
+	 *
+	 * @param string $text   Text.
+	 * @param bool   $strong Whether it is a reward, shown in bold.
+	 *
+	 * @return array
+	 */
+	protected static function part( $text, $strong = false ) {
+		return array(
+			'text'   => $text,
+			'strong' => $strong,
+		);
+	}
+
+	/**
+	 * Fill a translated message with parts, keeping the translation's word
+	 * order.
+	 *
+	 * @param string  $format Message with %s or %1$s placeholders.
+	 * @param array[] $values Parts for each placeholder, in order.
+	 *
+	 * @return array[]
+	 */
+	protected static function fill( $format, $values ) {
+		$parts = array();
+		$next  = 0;
+
+		foreach ( (array) preg_split( '/(%(?:\d+\$)?s)/', $format, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY ) as $piece ) {
+			if ( preg_match( '/^%(?:(\d+)\$)?s$/', $piece, $match ) ) {
+				$index = empty( $match[1] ) ? $next : (int) $match[1] - 1;
+				$parts = array_merge( $parts, $values[ $index ] ?? array() );
+				++$next;
+			} else {
+				$parts[] = self::part( $piece );
+			}
+		}
+
+		return $parts;
+	}
+
+	/**
+	 * Rewards as a list, such as "free shipping and 10% off", each in bold,
+	 * joined as WordPress joins lists in the site's language.
+	 *
+	 * @param string[] $rewards Rewards.
+	 *
+	 * @return array[]
+	 */
+	protected static function rewards_list( $rewards ) {
+		/** This filter is documented in wp-includes/formatting.php */
+		$separators = apply_filters(
+			'wp_sprintf_l',
+			array(
+				/* translators: Used to join items in a list with more than 2 items. */
+				'between'          => sprintf( __( '%1$s, %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+				/* translators: Used to join last two items in a list with more than 2 times. */
+				'between_last_two' => sprintf( __( '%1$s, and %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+				/* translators: Used to join items in a list with only 2 items. */
+				'between_only_two' => sprintf( __( '%1$s and %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+			)
+		);
+		$count      = count( $rewards );
+		$parts      = array();
+
+		foreach ( array_values( $rewards ) as $index => $reward ) {
+			if ( $index > 0 ) {
+				if ( 2 === $count ) {
+					$parts[] = self::part( $separators['between_only_two'] );
+				} else {
+					$parts[] = self::part( $index === $count - 1 ? $separators['between_last_two'] : $separators['between'] );
+				}
+			}
+
+			$parts[] = self::part( $reward, true );
+		}
+
+		return $parts;
+	}
+
+	/**
+	 * What the bar shows for some goals.
+	 *
+	 * @param array[] $goals    Goals, nearest first.
+	 * @param float   $subtotal Cart subtotal.
+	 * @param string  $style    milestones or next.
+	 *
+	 * @return array
+	 */
+	protected static function build_bar( $goals, $subtotal, $style ) {
+		// Where each goal falls on a bar measured in the cart subtotal. A goal
+		// still ahead sits where the cart will reach it. One reached stays at
+		// its own amount, so the bar holds still as the cart grows past it.
+		foreach ( $goals as $index => $goal ) {
+			$goals[ $index ]['position'] = 0 >= $goal['remaining'] ? $goal['threshold'] : $subtotal + $goal['remaining'];
+		}
+
+		usort( $goals, static fn( $a, $b ) => $a['position'] <=> $b['position'] );
+
+		$next    = null;
+		$reached = array();
 
 		foreach ( $goals as $goal ) {
 			if ( 0 >= $goal['remaining'] ) {
@@ -545,36 +724,36 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		if ( null !== $next ) {
-			$message = sprintf(
+			$parts = self::fill(
 				/* translators: 1: amount still to spend, 2: what the customer gets, such as free shipping */
 				__( 'Add %1$s more to get %2$s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				self::price( $next['remaining'] ),
-				$next['label']
+				array(
+					array( self::part( self::price( $next['remaining'] ) ) ),
+					array( self::part( $next['label'], true ) ),
+				)
 			);
 		} else {
-			/* translators: %s: what the customer got, such as free shipping and 10% off */
-			$message = sprintf( __( 'You got %s.', 'woocommerce-extra-checkout-fields-for-brazil' ), wp_sprintf( '%l', $reached ) );
+			$parts = self::fill(
+				/* translators: %s: what the customer got, such as free shipping and 10% off */
+				__( 'You got %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				array( self::rewards_list( $reached ) )
+			);
 		}
 
-		// Where each goal falls on a bar measured in the cart subtotal.
-		$positions = array_map( static fn( $goal ) => max( 0, $subtotal + $goal['remaining'] ), $goals );
+		$message = implode( '', wp_list_pluck( $parts, 'text' ) );
 
-		if ( 'next' === $style ) {
-			$end      = null === $next ? $subtotal : $subtotal + $next['remaining'];
-			$progress = $end > 0 ? min( 100, $subtotal / $end * 100 ) : 100;
-		} else {
-			$end      = max( $subtotal, max( $positions ) );
-			$progress = $end > 0 ? $subtotal / $end * 100 : 100;
-		}
+		// The bar ends at the next goal, or at the last one, and stays full past it.
+		$end      = 'next' === $style && null !== $next ? $next['position'] : max( wp_list_pluck( $goals, 'position' ) );
+		$progress = $end > 0 ? min( 100, $subtotal / $end * 100 ) : 100;
 
 		$milestones = array();
 
 		if ( 'milestones' === $style ) {
-			foreach ( $goals as $index => $goal ) {
+			foreach ( $goals as $goal ) {
 				$milestones[] = array(
 					'label'    => $goal['label'],
 					'amount'   => self::price( $goal['threshold'] ),
-					'position' => round( $end > 0 ? $positions[ $index ] / $end * 100 : 100, 2 ),
+					'position' => round( $end > 0 ? min( 100, $goal['position'] / $end * 100 ) : 100, 2 ),
 					'reached'  => 0 >= $goal['remaining'],
 				);
 			}
@@ -583,8 +762,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		return array(
 			'style'      => $style,
 			'message'    => $message,
+			'parts'      => $parts,
 			'progress'   => round( $progress, 2 ),
 			'milestones' => $milestones,
+			'colors'     => self::colors(),
 		);
 	}
 
@@ -600,7 +781,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	public function apply_reached_coupons( $cart ) {
 		$session = WC()->session;
 
-		if ( $this->applying || ! $session || ! self::is_enabled() ) {
+		if ( $this->applying || ! $session ) {
 			return;
 		}
 
@@ -760,12 +941,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * Markup of the bar.
 	 *
-	 * @param string $place Key of PLACES.
+	 * @param string $place Key of PLACES, or block for a placed bar.
+	 * @param string $style A placed bar's own style, empty to follow the
+	 *                      setting.
 	 *
 	 * @return string Empty with no goal to show.
 	 */
-	public static function render( $place ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- The view prints it.
-		$bar = self::get_bar();
+	public static function render( $place, $style = '' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed -- The view prints it.
+		$bar = self::get_bar( null, $style );
 
 		if ( null === $bar ) {
 			return '';
@@ -809,17 +992,144 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	public function product_bar() {
 		if ( self::shows_in( 'product' ) ) {
-			echo '<div class="csbmw-goals-product">' . self::render( 'product' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div class="csbmw-goals-holder is-automatic">' . self::render( 'product' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
 	/**
-	 * WC AJAX endpoint printing the product page bar for the cart now.
+	 * WC AJAX endpoint printing a product page or placed bar for the cart now.
 	 *
 	 * @return void
 	 */
 	public function ajax_bar() {
-		wp_send_json_success( array( 'html' => self::shows_in( 'product' ) ? self::render( 'product' ) : '' ) );
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read only, for the visitor's own cart.
+		$style  = isset( $_GET['style'] ) ? sanitize_key( wp_unslash( $_GET['style'] ) ) : '';
+		$placed = ! empty( $_GET['placed'] );
+		// phpcs:enable
+
+		wp_send_json_success( array( 'html' => $placed || self::shows_in( 'product' ) ? self::render( $placed ? 'block' : 'product', $style ) : '' ) );
+	}
+
+	/**
+	 * Register the bar's style and refresh script, and the block.
+	 *
+	 * @return void
+	 */
+	public function register_block() {
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE, 'goals' );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'goals' );
+		wp_localize_script(
+			self::HANDLE,
+			'bmwGoalsParams',
+			array(
+				'url' => WC_AJAX::get_endpoint( self::ENDPOINT ),
+			)
+		);
+
+		$block = register_block_type(
+			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/spending-goals',
+			array(
+				'render_callback' => array( $this, 'render_block' ),
+			)
+		);
+
+		if ( $block ) {
+			foreach ( $block->editor_script_handles as $handle ) {
+				Extra_Checkout_Fields_For_Brazil_Assets::set_translations( $handle );
+				wp_add_inline_script( $handle, 'window.bmwGoalsEditor = ' . wp_json_encode( self::editor_preview() ) . ';', 'before' );
+			}
+		}
+	}
+
+	/**
+	 * Sample bars the editor shows, as the store would draw them.
+	 *
+	 * @return array
+	 */
+	protected static function editor_preview() {
+		$goals = array(
+			array(
+				'type'      => 'free_shipping',
+				'label'     => __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'threshold' => 150.0,
+				'remaining' => 50.0,
+			),
+			array(
+				'type'      => 'coupon',
+				/* translators: %s: discount, such as 10% */
+				'label'     => sprintf( __( '%s off', 'woocommerce-extra-checkout-fields-for-brazil' ), '10%' ),
+				'threshold' => 300.0,
+				'remaining' => 200.0,
+			),
+		);
+		$bars  = array();
+
+		foreach ( self::STYLES as $style ) {
+			$bars[ $style ] = self::build_bar( $goals, 100.0, $style );
+		}
+
+		return array(
+			'style' => self::style(),
+			'bars'  => $bars,
+		);
+	}
+
+	/**
+	 * A placed bar, kept in the page while empty so a cart change can fill it.
+	 *
+	 * @param string $wrapper Attributes of the wrapper element.
+	 * @param string $style   Its own style, empty to follow the setting.
+	 *
+	 * @return string
+	 */
+	protected static function placed( $wrapper, $style ) {
+		wp_enqueue_style( self::HANDLE );
+		wp_enqueue_script( self::HANDLE );
+
+		return '<div ' . $wrapper . ' data-goals-style="' . esc_attr( $style ) . '">' . self::render( 'block', $style ) . '</div>';
+	}
+
+	/**
+	 * Render the Spending Goals block.
+	 *
+	 * @param array $attributes Block attributes.
+	 *
+	 * @return string
+	 */
+	public function render_block( $attributes ) {
+		$style = isset( $attributes['goalsStyle'] ) && in_array( $attributes['goalsStyle'], self::STYLES, true ) ? $attributes['goalsStyle'] : '';
+		$vars  = self::color_vars( $attributes['barColor'] ?? '', $attributes['trackColor'] ?? '' );
+		$extra = array( 'class' => 'csbmw-goals-holder is-placed' );
+
+		if ( '' !== $vars ) {
+			$extra['style'] = $vars;
+		}
+
+		return self::placed( get_block_wrapper_attributes( $extra ), $style );
+	}
+
+	/**
+	 * Shortcode printing the bar.
+	 *
+	 * @param array|string $atts Shortcode attributes: style, bar_color and
+	 *                           track_color.
+	 *
+	 * @return string
+	 */
+	public function shortcode( $atts ) {
+		$atts  = shortcode_atts(
+			array(
+				'style'       => '',
+				'bar_color'   => '',
+				'track_color' => '',
+			),
+			$atts,
+			self::SHORTCODE
+		);
+		$style = in_array( $atts['style'], self::STYLES, true ) ? $atts['style'] : '';
+		$vars  = self::color_vars( $atts['bar_color'], $atts['track_color'] );
+
+		return self::placed( 'class="csbmw-goals-holder is-placed"' . ( '' !== $vars ? ' style="' . esc_attr( $vars ) . '"' : '' ), $style );
 	}
 
 	/**
@@ -851,18 +1161,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			return;
 		}
 
-		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'goals' );
 		wp_enqueue_style( self::HANDLE );
 
 		if ( $product ) {
-			Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE, 'goals' );
-			wp_localize_script(
-				self::HANDLE,
-				'bmwGoalsParams',
-				array(
-					'url' => WC_AJAX::get_endpoint( self::ENDPOINT ),
-				)
-			);
 			wp_enqueue_script( self::HANDLE );
 		}
 

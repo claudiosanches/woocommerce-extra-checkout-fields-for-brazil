@@ -611,6 +611,27 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		$colors = array(
+			'goals_bar_color'   => __( 'Bar color', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'goals_track_color' => __( 'Track color', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		);
+
+		foreach ( $colors as $id => $title ) {
+			add_settings_field(
+				$id,
+				$title,
+				array( $this, 'color_element_callback' ),
+				$option,
+				'goals_section',
+				array(
+					'menu'        => $option,
+					'id'          => $id,
+					'title'       => $title,
+					'description' => __( 'Leave empty to follow the theme\'s text color. A Spending Goals block or shortcode can set its own.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				)
+			);
+		}
+
 		// Register settings.
 		register_setting( $option, $option, array( $this, 'validate_options' ) );
 	}
@@ -840,6 +861,20 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 	}
 
 	/**
+	 * Color element fallback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function color_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$current = isset( $options[ $id ] ) ? (string) sanitize_hex_color( $options[ $id ] ) : '';
+
+		include __DIR__ . '/views/html-color-field.php';
+	}
+
+	/**
 	 * Valid options.
 	 *
 	 * @param  array $input options to valid.
@@ -853,7 +888,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		foreach ( $input as $key => $value ) {
 			// Check to see if the current option has a value. If so, process it.
 			if ( isset( $input[ $key ] ) ) {
-				$output[ $key ] = sanitize_text_field( $input[ $key ] );
+				$output[ $key ] = in_array( $key, array( 'goals_bar_color', 'goals_track_color' ), true ) ? (string) sanitize_hex_color( $input[ $key ] ) : sanitize_text_field( $input[ $key ] );
 			}
 		}
 

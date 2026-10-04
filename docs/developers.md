@@ -227,8 +227,7 @@ A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_go
 `yes`, which the Spending goal box in its usage restrictions sets. The plugin applies it once
 the cart subtotal reaches the minimum and takes it back when the subtotal drops below it. A
 coupon the customer removes stays off until a product is added, a quantity goes up, or the
-subtotal drops below the minimum and reaches it again. Nothing is applied while the bar is turned off
-everywhere.
+subtotal drops below the minimum and reaches it again.
 
 The Store API cart carries the bar for the Cart and Checkout blocks in
 `extensions["csbmw-goals"].bar`, null when there is no goal to show:
@@ -237,8 +236,24 @@ The Store API cart carries the bar for the Cart and Checkout blocks in
 | ------------ | ----------------------------------------------------------------------------------------------------- |
 | `style`      | `milestones`, one bar marking every goal, or `next`, the next goal only                               |
 | `message`    | What the cart still needs for the next goal, or what it got                                           |
+| `parts`      | The message in pieces, each with its `text` and whether it is a reward shown `strong`                 |
 | `progress`   | How full the bar is, from 0 to 100                                                                    |
 | `milestones` | Each goal with its `label`, `amount`, `position` on the bar from 0 to 100 and whether it is `reached` |
+| `colors`     | The store's `bar` and `track` colors, empty to follow the theme                                       |
+
+The Spending Goals block and the `[csbmw_spending_goals]` shortcode place the bar anywhere else,
+such as a page, a product template or a header. One on a product page takes the place of the
+bar the setting adds there. Both follow the cart when a product is added without a page load.
+
+| Shortcode attribute | Value                                                     |
+| ------------------- | --------------------------------------------------------- |
+| `style`             | `milestones` or `next`. Empty follows the setting         |
+| `bar_color`         | Hex color of the bar. Empty uses the store's, or the text |
+| `track_color`       | Hex color of the track. Empty uses the store's            |
+
+```text
+[csbmw_spending_goals style="next" bar_color="#1e8a3c"]
+```
 
 ## Hooks
 
