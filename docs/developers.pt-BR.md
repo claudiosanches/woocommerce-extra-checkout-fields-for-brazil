@@ -226,8 +226,9 @@ add_action(
 
 Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` igual a `yes`,
 que a opção Meta de compra nas restrições de uso dele grava. O plugin aplica o cupom quando o
-subtotal do carrinho alcança o mínimo, retira quando o subtotal fica abaixo dele e não volta
-a aplicar depois que o cliente o remove. Nada é aplicado enquanto a barra está desligada em
+subtotal do carrinho alcança o mínimo e retira quando o subtotal fica abaixo dele. Um cupom
+que o cliente remove fica de fora até um produto ser adicionado, uma quantidade aumentar ou o
+subtotal ficar abaixo do mínimo e alcançá-lo de novo. Nada é aplicado enquanto a barra está desligada em
 todos os lugares.
 
 O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em

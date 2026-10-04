@@ -181,6 +181,38 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A removed goal coupon comes back once the cart grows, or drops below
+	 * its minimum and reaches it again.
+	 */
+	public function test_removed_goal_coupon_returns_when_the_cart_changes() {
+		$this->coupon( 'meta', 300 );
+		$this->fill_cart( 6 );
+		$key = array_key_first( WC()->cart->get_cart() );
+
+		WC()->cart->remove_coupon( 'meta' );
+		WC()->cart->calculate_totals();
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->set_quantity( $key, 7 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->remove_coupon( 'meta' );
+		WC()->cart->calculate_totals();
+		WC()->cart->add_to_cart( $this->product->get_id(), 1 );
+		WC()->cart->calculate_totals();
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->remove_coupon( 'meta' );
+		WC()->cart->calculate_totals();
+		WC()->cart->set_quantity( $key, 7 );
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->set_quantity( $key, 5 );
+		WC()->cart->set_quantity( $key, 6 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
 	 * Nothing is applied while the bar shows nowhere.
 	 */
 	public function test_goal_coupon_waits_for_the_bar() {

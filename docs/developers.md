@@ -225,8 +225,9 @@ add_action(
 
 A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_goal` meta is
 `yes`, which the Spending goal box in its usage restrictions sets. The plugin applies it once
-the cart subtotal reaches the minimum, takes it back when the subtotal drops below it, and
-leaves it off once the customer removes it. Nothing is applied while the bar is turned off
+the cart subtotal reaches the minimum and takes it back when the subtotal drops below it. A
+coupon the customer removes stays off until a product is added, a quantity goes up, or the
+subtotal drops below the minimum and reaches it again. Nothing is applied while the bar is turned off
 everywhere.
 
 The Store API cart carries the bar for the Cart and Checkout blocks in

@@ -82,6 +82,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	public function __construct() {
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'apply_reached_coupons' ), 20 );
 		add_action( 'woocommerce_removed_coupon', array( $this, 'remember_declined_coupon' ) );
+		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
+		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
 
 		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_field' ), 10, 2 );
 		add_action( 'woocommerce_coupon_options_save', array( $this, 'save_coupon_field' ), 10, 2 );
@@ -588,7 +590,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 	/**
 	 * Apply each goal coupon the cart reaches, and take back the ones it no
-	 * longer reaches. A coupon the customer removed stays removed.
+	 * longer reaches. A coupon the customer removed stays removed until the
+	 * cart grows or drops below its minimum.
 	 *
 	 * @param WC_Cart $cart Cart.
 	 *
@@ -622,7 +625,12 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 				continue;
 			}
 
-			if ( ! $reached || in_array( $code, $declined, true ) || ! self::is_eligible( $coupon, $cart ) ) {
+			if ( ! $reached ) {
+				$declined = array_values( array_diff( $declined, array( $code ) ) );
+				continue;
+			}
+
+			if ( in_array( $code, $declined, true ) || ! self::is_eligible( $coupon, $cart ) ) {
 				continue;
 			}
 
@@ -638,6 +646,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		$session->set( self::APPLIED, $applied );
+		$session->set( self::DECLINED, $declined );
 
 		if ( $changed ) {
 			$cart->calculate_totals();
@@ -677,6 +686,32 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			$session->set( self::APPLIED, array_values( array_diff( (array) $session->get( self::APPLIED, array() ), array( $code ) ) ) );
 
 			return;
+		}
+	}
+
+	/**
+	 * Offer the removed goal coupons again once the cart grows.
+	 *
+	 * @return void
+	 */
+	public function forget_declined_coupons() {
+		if ( WC()->session ) {
+			WC()->session->set( self::DECLINED, array() );
+		}
+	}
+
+	/**
+	 * Offer the removed goal coupons again when a quantity goes up.
+	 *
+	 * @param string $cart_item_key Cart item key.
+	 * @param int    $quantity      New quantity.
+	 * @param int    $old_quantity  Previous quantity.
+	 *
+	 * @return void
+	 */
+	public function forget_declined_coupons_on_increase( $cart_item_key, $quantity, $old_quantity ) {
+		if ( $quantity > $old_quantity ) {
+			$this->forget_declined_coupons();
 		}
 	}
 
