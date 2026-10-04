@@ -534,6 +534,83 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			)
 		);
 
+		// Spending goals section.
+		add_settings_section(
+			'goals_section',
+			__( 'Spending goals', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'goals_section_callback' ),
+			$option,
+			$this->section_args( 'bmw-section-goals', 'features' )
+		);
+
+		$places = array(
+			'goals_cart'     => array(
+				__( 'Show in the cart', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				__( 'Beside the cart totals, on the Cart block and the classic cart.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			),
+			'goals_checkout' => array(
+				__( 'Show in the checkout', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				__( 'In the order summary, on the Checkout block and the classic checkout.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			),
+			'goals_product'  => array(
+				__( 'Show on product pages', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				__( 'Above the add to cart button, counting what the cart already holds.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			),
+		);
+
+		foreach ( $places as $id => $texts ) {
+			add_settings_field(
+				$id,
+				$texts[0],
+				array( $this, 'checkbox_element_callback' ),
+				$option,
+				'goals_section',
+				array(
+					'menu'  => $option,
+					'id'    => $id,
+					'title' => $texts[0],
+					'label' => $texts[1],
+				)
+			);
+		}
+
+		add_settings_field(
+			'goals_free_shipping',
+			__( 'Count toward free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'checkbox_element_callback' ),
+			$option,
+			'goals_section',
+			array(
+				'menu'        => $option,
+				'id'          => 'goals_free_shipping',
+				'title'       => __( 'Count toward free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'label'       => __( 'Uses the minimum order amount of the Free shipping method in the customer\'s shipping zone. Before the CEP is known, it shows only when every zone a Brazilian address can fall in asks for the same amount.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => sprintf(
+					/* translators: %s: link to the WooCommerce shipping zones */
+					__( 'Set the minimum in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping' ) ) . '">' . esc_html__( 'WooCommerce > Settings > Shipping', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
+				),
+			)
+		);
+
+		add_settings_field(
+			'goals_style',
+			__( 'Several goals', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			array( $this, 'select_element_callback' ),
+			$option,
+			'goals_section',
+			array(
+				'menu'    => $option,
+				'id'      => 'goals_style',
+				'title'   => __( 'Several goals', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'default' => '',
+				'options' => array(
+					''     => __( 'One bar with every goal marked (default)', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'next' => __( 'The next goal only', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				),
+			)
+		);
+
 		// Register settings.
 		register_setting( $option, $option, array( $this, 'validate_options' ) );
 	}
@@ -581,6 +658,22 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 		$url = wp_nonce_url( admin_url( 'admin-post.php?action=csbmw_ship_only_to_brazil' ), 'csbmw_ship_only_to_brazil' );
 
 		include __DIR__ . '/views/html-shipping-notice.php';
+	}
+
+	/**
+	 * Say where the goals come from.
+	 */
+	public function goals_section_callback() {
+		printf(
+			'<p class="bmw-section-description">%s</p>',
+			wp_kses_post(
+				sprintf(
+					/* translators: %s: link to the WooCommerce coupons */
+					__( 'A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its usage restrictions, next to its minimum spend, and applies once the cart reaches it. Manage them in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'<a href="' . esc_url( admin_url( 'edit.php?post_type=shop_coupon' ) ) . '">' . esc_html__( 'Marketing > Coupons', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
+				)
+			)
+		);
 	}
 
 	/**

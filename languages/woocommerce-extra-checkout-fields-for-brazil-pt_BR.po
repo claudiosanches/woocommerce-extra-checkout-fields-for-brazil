@@ -331,7 +331,7 @@ msgstr "Celular não é válido."
 msgid "Exempt from State Registration"
 msgstr "Isento de Inscrição Estadual"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:684
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:777
 #: build/classic.js:2
 msgid "required"
 msgstr "obrigatório"
@@ -354,21 +354,21 @@ msgstr "é inválido"
 msgid "is a required field"
 msgstr "é um campo obrigatório"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:242
+#: includes/class-extra-checkout-fields-for-brazil.php:243
 #: build/blocks/shipping-calculator/index.js:1
 msgid "Settings"
 msgstr "Configurações"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:243
+#: includes/class-extra-checkout-fields-for-brazil.php:244
 msgid "Premium Support"
 msgstr "Suporte Premium"
 
-#: includes/class-extra-checkout-fields-for-brazil.php:244
+#: includes/class-extra-checkout-fields-for-brazil.php:245
 msgid "Contribute"
 msgstr "Contribua"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:414
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:550
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:627
 msgid "Shipping"
 msgstr "Entrega"
 
@@ -401,11 +401,11 @@ msgstr "WooCommerce > Configurações > Geral"
 msgid "Sell and ship only to Brazil"
 msgstr "Vender e entregar apenas para o Brasil"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:593
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:686
 msgid "You do not have permission to change the store settings."
 msgstr "Você não tem permissão para alterar as configurações da loja."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:600
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:693
 msgid "The store now sells and ships only to Brazil."
 msgstr "A loja agora vende e entrega apenas para o Brasil."
 
@@ -414,7 +414,7 @@ msgid "CEP lookup is disabled."
 msgstr "A consulta de CEP está desativada."
 
 #: includes/class-extra-checkout-fields-for-brazil-postcodes.php:520
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1031
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1013
 #: build/shipping.js:1
 msgid "Enter a valid CEP."
 msgstr "Informe um CEP válido."
@@ -437,20 +437,20 @@ msgstr "Calcular"
 msgid "I don't know my CEP"
 msgstr "Não sei meu CEP"
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:728
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:727
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter your CEP."
 msgstr "Informe seu CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:742
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1037
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:741
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1019
 #: build/shipping-cart.js:1
 msgid "CEP not found. Check the number and try again."
 msgstr "CEP não encontrado. Confira o número e tente novamente."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1023
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1027
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1005
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1009
 #: build/shipping.js:1
 msgid "Could not calculate shipping. Try again."
 msgstr "Não foi possível calcular o frete. Tente novamente."
@@ -459,13 +459,13 @@ msgstr "Não foi possível calcular o frete. Tente novamente."
 msgid "Choose the product options first."
 msgstr "Escolha as opções do produto primeiro."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1204
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1186
 #: build/shipping-cart.js:1
 msgid "Free"
 msgstr "Grátis"
 
 #. translators: %d: number of working days
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1206
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:1188
 #, php-format
 msgid "Delivery within %d working day"
 msgid_plural "Delivery within %d working days"
@@ -478,7 +478,7 @@ msgid "No shipping options for this CEP."
 msgstr "Nenhuma opção de entrega para este CEP."
 
 #: includes/class-extra-checkout-fields-for-brazil-privacy.php:54
-#: includes/views/html-product-shipping-calculator.php:50
+#: includes/views/html-product-shipping-calculator.php:58
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "CEP"
@@ -512,19 +512,19 @@ msgstr "Opções de entrega"
 msgid "Enter your CEP"
 msgstr "Digite seu CEP"
 
-#: includes/views/html-product-shipping-calculator.php:28
+#: includes/views/html-product-shipping-calculator.php:36
 msgid "Calculate shipping and delivery time"
 msgstr "Calcular frete e prazo"
 
-#: includes/views/html-product-shipping-calculator.php:36
+#: includes/views/html-product-shipping-calculator.php:44
 msgid "Change CEP"
 msgstr "Alterar CEP"
 
-#: includes/views/html-product-shipping-calculator.php:45
+#: includes/views/html-product-shipping-calculator.php:53
 msgid "Enter a CEP to see the shipping options"
 msgstr "Informe um CEP para ver as opções de entrega"
 
-#: includes/views/html-product-shipping-calculator.php:46
+#: includes/views/html-product-shipping-calculator.php:54
 msgid "Close"
 msgstr "Fechar"
 
@@ -627,23 +627,23 @@ msgid "Follow the WooCommerce setting"
 msgstr "Seguir a configuração do WooCommerce"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:265
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:667
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:760
 msgid "Disabled"
 msgstr "Desativado"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:668
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:761
 msgid "Optional"
 msgstr "Opcional"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:669
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:762
 msgid "Required"
 msgstr "Obrigatório"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:682
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:775
 msgid "hidden"
 msgstr "oculto"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:683
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:776
 msgid "optional"
 msgstr "opcional"
 
@@ -656,11 +656,11 @@ msgstr "Inscrição Estadual não é válida."
 msgid "Exempt"
 msgstr "Isento"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:548
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:625
 msgid "Fields"
 msgstr "Campos"
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:549
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:626
 msgid "Features"
 msgstr "Recursos"
 
@@ -814,16 +814,16 @@ msgid "Adds masks to the CPF, CNPJ, CEP, birthdate, phone and cell phone fields.
 msgstr "Adiciona máscaras aos campos de CPF, CNPJ, CEP, data de nascimento, telefone e celular."
 
 #. translators: %s: hidden, optional or required.
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:690
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:783
 #, php-format
 msgid "Asking legal persons only makes the field required for them and hides it from individuals. Otherwise WooCommerce's setting applies, currently %s, which is changed in the checkout page editor or in the Customizer."
 msgstr "Pedir apenas a pessoas jurídicas torna o campo obrigatório para elas e o esconde de pessoas físicas. Caso contrário vale a configuração do WooCommerce, hoje %s, que se altera no editor da página de checkout ou no Personalizador."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:701
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:794
 msgid "How the classic checkout and the My Account address forms arrange the fields. Pick full width if they look broken in your theme."
 msgstr "Como o checkout clássico e os formulários de endereço de Minha Conta organizam os campos. Escolha largura total se eles aparecerem quebrados no seu tema."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:704
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:797
 msgid "Your checkout page uses the Checkout block, which arranges its own fields, so this changes only the My Account address forms."
 msgstr "Sua página de checkout usa o bloco Finalizar compra, que organiza os próprios campos, então isto muda apenas os formulários de endereço de Minha Conta."
 
@@ -1140,19 +1140,19 @@ msgid "CEP lookup is unavailable right now."
 msgstr "A consulta de CEP está indisponível no momento."
 
 #. translators: %s: state name
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:701
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:700
 #: build/shipping-cart.js:2
 #, php-format,js-format
 msgid "The address for this CEP could not be looked up right now, so shipping is quoted for %s."
 msgstr "Não foi possível consultar o endereço deste CEP agora, então o frete foi calculado para %s."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:732
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:731
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter all 8 digits of the CEP."
 msgstr "Digite os 8 dígitos do CEP."
 
-#: includes/class-extra-checkout-fields-for-brazil-shipping.php:930
+#: includes/class-extra-checkout-fields-for-brazil-shipping.php:929
 #: build/shipping-cart.js:1
 #: build/shipping.js:1
 msgid "Enter your CEP to calculate shipping before checkout."
@@ -1166,3 +1166,118 @@ msgstr "Não foi possível consultar o CEP. Tente novamente."
 #: build/shipping.js:1
 msgid "Enter your CEP to see the shipping options for your address."
 msgstr "Informe seu CEP para ver as opções de entrega para o seu endereço."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:540
+#: includes/views/html-spending-goals.php:18
+#: build/goals-blocks.js:1
+msgid "Spending goals"
+msgstr "Metas de compra"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:548
+msgid "Show in the cart"
+msgstr "Mostrar no carrinho"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:549
+msgid "Beside the cart totals, on the Cart block and the classic cart."
+msgstr "Junto aos totais do carrinho, no bloco Carrinho e no carrinho clássico."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:552
+msgid "Show in the checkout"
+msgstr "Mostrar na finalização da compra"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:553
+msgid "In the order summary, on the Checkout block and the classic checkout."
+msgstr "No resumo do pedido, no bloco Finalizar compra e na finalização clássica."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:556
+msgid "Show on product pages"
+msgstr "Mostrar nas páginas de produto"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:557
+msgid "Above the add to cart button, counting what the cart already holds."
+msgstr "Acima do botão de adicionar ao carrinho, contando o que já está no carrinho."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:579
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:586
+msgid "Count toward free shipping"
+msgstr "Contar para o frete grátis"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:587
+msgid "Uses the minimum order amount of the Free shipping method in the customer's shipping zone. Before the CEP is known, it shows only when every zone a Brazilian address can fall in asks for the same amount."
+msgstr "Usa o valor mínimo do pedido do método Frete grátis na área de entrega do cliente. Antes de o CEP ser informado, só aparece quando todas as áreas em que um endereço brasileiro pode cair pedem o mesmo valor."
+
+#. translators: %s: link to the WooCommerce shipping zones
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:590
+#, php-format
+msgid "Set the minimum in %s."
+msgstr "Defina o mínimo em %s."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:591
+msgid "WooCommerce > Settings > Shipping"
+msgstr "WooCommerce > Configurações > Entrega"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:598
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:605
+msgid "Several goals"
+msgstr "Várias metas"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:608
+msgid "One bar with every goal marked (default)"
+msgstr "Uma barra com todas as metas marcadas (padrão)"
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:609
+msgid "The next goal only"
+msgstr "Só a próxima meta"
+
+#. translators: %s: link to the WooCommerce coupons
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:672
+#, php-format
+msgid "A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its usage restrictions, next to its minimum spend, and applies once the cart reaches it. Manage them in %s."
+msgstr "Uma barra mostra quanto falta no carrinho para cada meta. Um cupom vira meta com a opção Meta de compra marcada nas restrições de uso, junto ao gasto mínimo, e é aplicado quando o carrinho o alcança. Gerencie os cupons em %s."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:673
+msgid "Marketing > Coupons"
+msgstr "Marketing > Cupons"
+
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:206
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:473
+msgid "free shipping"
+msgstr "frete grátis"
+
+#. translators: %s: discount, such as 10%
+#. translators: %s: discount amount
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:209
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:215
+#, php-format
+msgid "%s off"
+msgstr "%s de desconto"
+
+#. translators: %s: discount amount
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:212
+#, php-format
+msgid "%s off each item"
+msgstr "%s de desconto em cada item"
+
+#. translators: 1: amount still to spend, 2: what the customer gets, such as free shipping
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:548
+#, php-format
+msgid "Add %1$s more to get %2$s."
+msgstr "Adicione mais %1$s para ganhar %2$s."
+
+#. translators: %s: what the customer got, such as free shipping and 10% off
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:554
+#, php-format
+msgid "You got %s."
+msgstr "Você ganhou %s."
+
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:697
+msgid "Spending goal"
+msgstr "Meta de compra"
+
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:698
+msgid "Show how much more the cart needs to reach the minimum spend, and apply the coupon once it does."
+msgstr "Mostra quanto falta no carrinho para alcançar o gasto mínimo e aplica o cupom quando alcança."
+
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:889
+msgid "Spending goals progress bar, or null with no goal to show."
+msgstr "Barra de progresso das metas de compra, ou null quando não há meta para mostrar."

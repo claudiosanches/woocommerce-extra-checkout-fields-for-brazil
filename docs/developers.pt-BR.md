@@ -222,6 +222,24 @@ add_action(
 );
 ```
 
+## Metas de compra
+
+Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` igual a `yes`,
+que a opção Meta de compra nas restrições de uso dele grava. O plugin aplica o cupom quando o
+subtotal do carrinho alcança o mínimo, retira quando o subtotal fica abaixo dele e não volta
+a aplicar depois que o cliente o remove. Nada é aplicado enquanto a barra está desligada em
+todos os lugares.
+
+O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em
+`extensions["csbmw-goals"].bar`, null quando não há meta para mostrar:
+
+| Chave        | Valor                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `style`      | `milestones`, uma barra marcando todas as metas, ou `next`, só a próxima meta                         |
+| `message`    | Quanto falta no carrinho para a próxima meta, ou o que ele ganhou                                     |
+| `progress`   | Quanto da barra está preenchido, de 0 a 100                                                           |
+| `milestones` | Cada meta com o `label`, o `amount`, a `position` na barra de 0 a 100 e se foi alcançada em `reached` |
+
 ## Hooks
 
 ### Campos
@@ -357,6 +375,25 @@ add_filter(
 			},
 		) + $services;
 	}
+);
+```
+
+### Metas de compra
+
+| Filtro                             | Argumentos          | Uso                                                                                                        |
+| ---------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `csbmw_spending_goals`             | `$goals`, `$cart`   | Metas que a barra mostra, a mais próxima primeiro, cada uma com `type`, `label`, `threshold` e `remaining` |
+| `csbmw_spending_goal_coupon_label` | `$label`, `$coupon` | O que uma meta de cupom dá, como "10% de desconto"                                                         |
+
+```php
+// Nomeia o brinde do cupom em vez do desconto.
+add_filter(
+	'csbmw_spending_goal_coupon_label',
+	function ( $label, $coupon ) {
+		return 'brinde' === $coupon->get_code() ? 'uma ecobag de brinde' : $label;
+	},
+	10,
+	2
 );
 ```
 

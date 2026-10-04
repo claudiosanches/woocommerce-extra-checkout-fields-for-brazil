@@ -1,0 +1,108 @@
+/*
+ * Spending goals progress bar, on the cart, the checkout and product pages.
+ * Colors follow the text, so the bar suits light and dark themes alike.
+ */
+
+$track: var(--wc-separator-color, color-mix(in srgb, currentcolor 15%, transparent));
+$small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
+
+.csbmw-goals {
+	font-size: $small-text;
+	line-height: 1.5;
+	margin: 0 0 1.5em;
+}
+
+.csbmw-goals-message {
+	margin: 0 0 0.5em;
+}
+
+.csbmw-goals-bar {
+	background: $track;
+	border-radius: 999px;
+	height: 8px;
+	position: relative;
+}
+
+$mark: 14px;
+
+.csbmw-goals-fill {
+	background: currentcolor;
+	border-radius: inherit;
+	height: 100%;
+	left: 0;
+	max-width: 100%;
+	position: absolute;
+	top: 0;
+	transition: width 0.3s ease;
+	width: calc(var(--csbmw-progress) * 1%);
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+// With rings on the track, both measure from the first ring's center to the
+// last one's, so the rings stay inside the bar.
+.csbmw-goals-style-milestones .csbmw-goals-fill {
+	width: calc(#{$mark} / 2 + (100% - #{$mark}) * var(--csbmw-progress) / 100);
+}
+
+// A ring on the track, filled once the goal is reached.
+.csbmw-goals-mark {
+	background: var(--wp--preset--color--base, #fff);
+	border: 2px solid currentcolor;
+	border-radius: 50%;
+	box-sizing: border-box;
+	height: $mark;
+	left: calc(#{$mark} / 2 + (100% - #{$mark}) * var(--csbmw-position) / 100);
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: $mark;
+
+	&.is-reached {
+		background: currentcolor;
+	}
+}
+
+.csbmw-goals-milestones {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25em 1.25em;
+	list-style: none;
+	margin: 0.75em 0 0;
+	padding: 0;
+}
+
+.csbmw-goals-label {
+	display: inline-block;
+
+	&::first-letter {
+		text-transform: uppercase;
+	}
+}
+
+.csbmw-goals-milestone {
+	display: flex;
+	gap: 0.4em;
+	margin: 0;
+
+	&.is-reached .csbmw-goals-label {
+		font-weight: 600;
+	}
+}
+
+.csbmw-goals-amount {
+	opacity: 0.75;
+}
+
+// The classic checkout prints it in a row of the order review table.
+.csbmw-goals-row td {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.csbmw-goals-row .csbmw-goals {
+	font-weight: 400;
+	margin: 0;
+}

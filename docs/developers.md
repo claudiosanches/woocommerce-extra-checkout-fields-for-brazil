@@ -221,6 +221,24 @@ add_action(
 );
 ```
 
+## Spending goals
+
+A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_goal` meta is
+`yes`, which the Spending goal box in its usage restrictions sets. The plugin applies it once
+the cart subtotal reaches the minimum, takes it back when the subtotal drops below it, and
+leaves it off once the customer removes it. Nothing is applied while the bar is turned off
+everywhere.
+
+The Store API cart carries the bar for the Cart and Checkout blocks in
+`extensions["csbmw-goals"].bar`, null when there is no goal to show:
+
+| Key          | Value                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `style`      | `milestones`, one bar marking every goal, or `next`, the next goal only                               |
+| `message`    | What the cart still needs for the next goal, or what it got                                           |
+| `progress`   | How full the bar is, from 0 to 100                                                                    |
+| `milestones` | Each goal with its `label`, `amount`, `position` on the bar from 0 to 100 and whether it is `reached` |
+
 ## Hooks
 
 ### Fields
@@ -355,6 +373,25 @@ add_filter(
 			},
 		) + $services;
 	}
+);
+```
+
+### Spending goals
+
+| Filter                             | Arguments           | Use                                                                                                   |
+| ---------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `csbmw_spending_goals`             | `$goals`, `$cart`   | Goals the bar shows, nearest first, each with `type`, `label`, `threshold` and the `remaining` amount |
+| `csbmw_spending_goal_coupon_label` | `$label`, `$coupon` | What a coupon goal gives, such as "10% off"                                                           |
+
+```php
+// Name the coupon's gift rather than its discount.
+add_filter(
+	'csbmw_spending_goal_coupon_label',
+	function ( $label, $coupon ) {
+		return 'brinde' === $coupon->get_code() ? 'a free tote bag' : $label;
+	},
+	10,
+	2
 );
 ```
 
