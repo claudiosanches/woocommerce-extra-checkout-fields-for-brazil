@@ -243,7 +243,8 @@ The Store API cart carries the bar for the Cart and Checkout blocks in
 
 The Spending Goals block and the `[csbmw_spending_goals]` shortcode place the bar anywhere else,
 such as a page, a product template or a header. One on a product page takes the place of the
-bar the setting adds there. Both follow the cart when a product is added without a page load.
+bar the setting adds there. Both follow the cart when a product is added without a page load,
+and as the Cart and Checkout blocks change it.
 
 | Shortcode attribute | Value                                                     |
 | ------------------- | --------------------------------------------------------- |

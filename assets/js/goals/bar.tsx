@@ -63,7 +63,7 @@ export function GoalsBar( { bar, place }: { bar: Bar; place: string } ) {
 				) }
 				aria-valuemin={ 0 }
 				aria-valuemax={ 100 }
-				aria-valuenow={ Math.round( bar.progress ) }
+				aria-valuenow={ Math.floor( bar.progress ) }
 				aria-valuetext={ bar.message }
 			>
 				<span

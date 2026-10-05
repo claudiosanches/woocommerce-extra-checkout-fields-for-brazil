@@ -30,7 +30,7 @@ foreach ( array_filter( $bar['colors'] ) as $csbmw_part => $csbmw_color ) {
 		}
 		?>
 	</p>
-	<div class="csbmw-goals-bar" role="progressbar" aria-label="<?php esc_attr_e( 'Spending goals', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr( (string) round( $bar['progress'] ) ); ?>" aria-valuetext="<?php echo esc_attr( $bar['message'] ); ?>">
+	<div class="csbmw-goals-bar" role="progressbar" aria-label="<?php esc_attr_e( 'Spending goals', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr( (string) floor( $bar['progress'] ) ); ?>" aria-valuetext="<?php echo esc_attr( $bar['message'] ); ?>">
 		<span class="csbmw-goals-fill" style="--csbmw-progress: <?php echo esc_attr( (string) $bar['progress'] ); ?>"></span>
 		<?php foreach ( $bar['milestones'] as $milestone ) : ?>
 			<span class="csbmw-goals-mark<?php echo $milestone['reached'] ? ' is-reached' : ''; ?>" style="--csbmw-position: <?php echo esc_attr( (string) $milestone['position'] ); ?>"></span>

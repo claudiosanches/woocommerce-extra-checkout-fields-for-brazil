@@ -245,7 +245,7 @@ O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra 
 O bloco Metas de Compra e o shortcode `[csbmw_spending_goals]` colocam a barra em qualquer outro
 lugar, como uma página, um modelo de produto ou o cabeçalho. Um deles na página do produto toma
 o lugar da barra que a configuração coloca ali. Os dois acompanham o carrinho quando um produto
-é adicionado sem recarregar a página.
+é adicionado sem recarregar a página e quando os blocos Carrinho e Finalizar compra o alteram.
 
 | Atributo do shortcode | Valor                                                        |
 | --------------------- | ------------------------------------------------------------ |

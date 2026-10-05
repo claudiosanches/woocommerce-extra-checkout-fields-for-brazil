@@ -256,6 +256,29 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Goal coupons an individual use coupon replaces come back once the
+	 * customer removes it, since the customer never removed them.
+	 */
+	public function test_goal_coupons_return_after_an_individual_use_coupon() {
+		$own = $this->coupon( 'own', 0, false );
+		$own->set_individual_use( true );
+		$own->save();
+		$this->coupon( 'meta', 300 );
+
+		$this->fill_cart( 6 );
+		$this->assertSame( array( 'meta' ), WC()->cart->get_applied_coupons() );
+
+		WC()->cart->apply_coupon( 'own' );
+		WC()->cart->calculate_totals();
+		$this->assertSame( array( 'own' ), array_values( WC()->cart->get_applied_coupons() ) );
+
+		WC()->cart->remove_coupon( 'own' );
+		WC()->cart->calculate_totals();
+		$this->assertSame( array( 'meta' ), array_values( WC()->cart->get_applied_coupons() ) );
+		$this->assertSame( array( '10% off' => 0.0 ), $this->remaining() );
+	}
+
+	/**
 	 * Free shipping follows the zone's minimum and its discount rule.
 	 */
 	public function test_free_shipping_follows_the_zone() {
@@ -526,7 +549,7 @@ class GoalsTest extends WP_UnitTestCase {
 		WC()->cart->empty_cart();
 		update_option( 'wcbcf_settings', array() );
 
-		$this->assertMatchesRegularExpression( '/<div class="csbmw-goals-holder is-placed" data-goals-style=""><\/div>/', do_shortcode( '[csbmw_spending_goals]' ) );
+		$this->assertMatchesRegularExpression( '/<div class="csbmw-goals-holder is-placed" data-goals-style="" aria-live="polite"><\/div>/', do_shortcode( '[csbmw_spending_goals]' ) );
 	}
 
 	/**

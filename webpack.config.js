@@ -34,6 +34,7 @@ module.exports = {
 			'assets/js/shipping/cart.tsx'
 		),
 		goals: path.resolve( __dirname, 'assets/js/goals/goals.ts' ),
+		'goals-sync': path.resolve( __dirname, 'assets/js/goals/sync.ts' ),
 		'goals-blocks': path.resolve( __dirname, 'assets/js/goals/blocks.tsx' ),
 		'admin-order': path.resolve( __dirname, 'assets/js/admin/order.js' ),
 		'admin-settings': path.resolve(

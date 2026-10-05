@@ -1,52 +1,50 @@
 /**
- * Spending goals in the order summary of the Cart and Checkout blocks, drawn
- * from the data the plugin adds to the Store API cart.
+ * Spending goals at the top of the order summary of the Cart and Checkout
+ * blocks, drawn from the data the plugin adds to the Store API cart. The
+ * plugin prints where the inner block goes, after the summary's title.
  */
 
-import { registerPlugin } from '@wordpress/plugins';
-import { ExperimentalOrderMeta } from '@woocommerce/blocks-checkout';
+import { useSelect } from '@wordpress/data';
+import { registerCheckoutBlock } from '@woocommerce/blocks-checkout';
+import { CART_STORE_KEY } from '@woocommerce/block-data';
 import { GoalsBar } from './bar';
 import type { Bar } from './bar';
 
-interface GoalsBlocksParams {
-	places?: string[];
+interface CartSelectors {
+	getCartData: () => {
+		extensions: Record< string, { bar?: Bar | null } >;
+	};
 }
 
-declare global {
-	interface Window {
-		bmwGoalsBlocksParams?: GoalsBlocksParams;
-	}
-}
+function Goals( { place }: { place?: string } ) {
+	const bar = useSelect(
+		( select ) =>
+			( select( CART_STORE_KEY ) as CartSelectors ).getCartData()
+				.extensions[ 'csbmw-goals' ]?.bar,
+		[]
+	);
 
-const params: GoalsBlocksParams = window.bmwGoalsBlocksParams || {};
-
-const PLACES: Record< string, string > = {
-	'woocommerce/cart': 'cart',
-	'woocommerce/checkout': 'checkout',
-};
-
-function Goals( {
-	extensions,
-	context,
-}: {
-	extensions?: Record< string, { bar?: Bar | null } >;
-	context?: string;
-} ) {
-	const place = PLACES[ context || '' ];
-	const bar = extensions?.[ 'csbmw-goals' ]?.bar;
-
-	if ( ! place || ! bar || ! params.places?.includes( place ) ) {
+	if ( ! place || ! bar ) {
 		return null;
 	}
 
-	return <GoalsBar bar={ bar } place={ place } />;
+	return (
+		<div
+			className="wc-block-components-totals-wrapper csbmw-goals-summary"
+			aria-live="polite"
+		>
+			<GoalsBar bar={ bar } place={ place } />
+		</div>
+	);
 }
 
-registerPlugin( 'csbmw-spending-goals', {
-	render: () => (
-		<ExperimentalOrderMeta>
-			<Goals />
-		</ExperimentalOrderMeta>
-	),
-	scope: 'woocommerce-checkout',
+registerCheckoutBlock( {
+	metadata: {
+		name: 'csbmw/spending-goals-summary',
+		parent: [
+			'woocommerce/cart-order-summary-block',
+			'woocommerce/checkout-order-summary-block',
+		],
+	},
+	component: Goals,
 } );

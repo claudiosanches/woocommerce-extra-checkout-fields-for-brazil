@@ -56,13 +56,27 @@ async function refresh(): Promise< void > {
 	);
 }
 
+let timer = 0;
+
+/**
+ * Redraw once for a burst of cart events, as one change can send several.
+ */
+function schedule(): void {
+	window.clearTimeout( timer );
+	timer = window.setTimeout( refresh, 150 );
+}
+
 // The blocks' add to cart buttons, WooCommerce's classic AJAX buttons, and the
 // classic cart and checkout redrawing their totals.
-document.body.addEventListener( 'wc-blocks_added_to_cart', refresh );
-document.body.addEventListener( 'wc-blocks_removed_from_cart', refresh );
+document.body.addEventListener( 'wc-blocks_added_to_cart', schedule );
+document.body.addEventListener( 'wc-blocks_removed_from_cart', schedule );
+// Changes made in the Cart and Checkout blocks, from sync.ts.
+document.body.addEventListener( 'csbmw_goals_refresh', schedule );
+// The Mini-Cart drawer, which announces a removed item only this way.
+window.addEventListener( 'wc-blocks_store_sync_required', schedule );
 window
 	.jQuery?.( document.body )
 	.on(
 		'added_to_cart removed_from_cart updated_cart_totals updated_checkout',
-		refresh
+		schedule
 	);

@@ -341,4 +341,55 @@ test.describe( 'Spending goals', () => {
 			] );
 		}
 	} );
+
+	test( 'a placed block follows quantity changes in the cart block', async ( {
+		page,
+	} ) => {
+		const cartPage = wpCli( [
+			'option',
+			'get',
+			'woocommerce_cart_page_id',
+		] );
+		const content = wpCli( [
+			'post',
+			'get',
+			cartPage,
+			'--field=post_content',
+		] );
+
+		wpCli( [
+			'post',
+			'update',
+			cartPage,
+			`--post_content=<!-- wp:csbmw/spending-goals /-->${ content }`,
+		] );
+
+		try {
+			await addProduct( page, 2 );
+			await page.goto( '/cart/', { waitUntil: 'domcontentloaded' } );
+
+			const placed = page.locator(
+				'.csbmw-goals-holder.is-placed .csbmw-goals-message'
+			);
+
+			await expect( placed ).toHaveText( FREE_SHIPPING );
+
+			await page
+				.locator(
+					'.wc-block-components-quantity-selector__button--plus'
+				)
+				.first()
+				.click();
+			await expect( placed ).toHaveText(
+				'Add R$150.00 more to get 10% off.'
+			);
+		} finally {
+			wpCli( [
+				'post',
+				'update',
+				cartPage,
+				`--post_content=${ content }`,
+			] );
+		}
+	} );
 } );

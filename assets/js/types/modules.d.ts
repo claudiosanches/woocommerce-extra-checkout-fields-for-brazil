@@ -37,6 +37,11 @@ declare module '@woocommerce/blocks-checkout' {
 	export const ExperimentalOrderMeta: ComponentType< {
 		children?: ReactNode;
 	} >;
+
+	export function registerCheckoutBlock( options: {
+		metadata: { name: string; parent: string[] };
+		component: ComponentType< Record< string, string > >;
+	} ): void;
 }
 
 declare module '@woocommerce/block-data' {

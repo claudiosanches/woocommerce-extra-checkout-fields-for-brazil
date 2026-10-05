@@ -91,11 +91,20 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	protected $applying = false;
 
 	/**
+	 * Whether WooCommerce is taking coupons off for an individual use one.
+	 *
+	 * @var bool
+	 */
+	protected $making_room = false;
+
+	/**
 	 * Initialize hooks.
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'apply_reached_coupons' ), 20 );
 		add_action( 'woocommerce_removed_coupon', array( $this, 'remember_declined_coupon' ) );
+		add_filter( 'woocommerce_apply_individual_use_coupon', array( $this, 'start_making_room' ) );
+		add_action( 'woocommerce_applied_coupon', array( $this, 'stop_making_room' ) );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
 		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
 
@@ -106,6 +115,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		add_action( 'woocommerce_coupon_options_save', array( $this, 'save_coupon_field' ), 10, 2 );
 
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'cart_bar' ) );
+		add_filter( 'render_block_woocommerce/cart-order-summary-heading-block', array( $this, 'cart_summary_bar' ) );
+		add_action( 'woocommerce_blocks_cart_block_registration', array( $this, 'register_integration' ) );
+		add_action( 'woocommerce_blocks_checkout_block_registration', array( $this, 'register_integration' ) );
+		add_filter( 'render_block_woocommerce/checkout-order-summary-cart-items-block', array( $this, 'checkout_summary_bar' ) );
 		add_action( 'woocommerce_review_order_before_order_total', array( $this, 'checkout_bar' ) );
 		add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'product_bar' ) );
 		add_action( 'wc_ajax_' . self::ENDPOINT, array( $this, 'ajax_bar' ) );
@@ -781,7 +794,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	public function apply_reached_coupons( $cart ) {
 		$session = WC()->session;
 
-		if ( $this->applying || ! $session ) {
+		// While an individual use coupon is going on, the goal coupons it
+		// replaces would come straight back.
+		if ( $this->applying || $this->making_room || ! $session ) {
 			return;
 		}
 
@@ -839,8 +854,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * Keep a goal coupon the customer removed from coming back.
 	 *
-	 * WooCommerce also removes a coupon the cart no longer qualifies for,
-	 * which is not the customer's choice.
+	 * WooCommerce also removes a coupon the cart no longer qualifies for, and
+	 * the coupons an individual use one replaces. Neither is the customer's
+	 * choice.
 	 *
 	 * @param string $code Coupon code.
 	 *
@@ -850,7 +866,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$session = WC()->session;
 		$cart    = WC()->cart;
 
-		if ( $this->applying || ! $session || ! $cart ) {
+		if ( $this->applying || $this->making_room || ! $session || ! $cart ) {
 			return;
 		}
 
@@ -868,6 +884,30 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 			return;
 		}
+	}
+
+	/**
+	 * Note that the coupons about to come off make room for an individual use
+	 * one, which is not the customer removing them, nor a reason to apply them
+	 * again.
+	 *
+	 * @param array $keep Coupons to keep.
+	 *
+	 * @return array
+	 */
+	public function start_making_room( $keep ) {
+		$this->making_room = true;
+
+		return $keep;
+	}
+
+	/**
+	 * The individual use coupon is on.
+	 *
+	 * @return void
+	 */
+	public function stop_making_room() {
+		$this->making_room = false;
 	}
 
 	/**
@@ -972,6 +1012,41 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
+	 * Where the Cart and Checkout blocks draw the bar in their order summary,
+	 * which the blocks fill with the inner block of that name.
+	 *
+	 * @param string $place cart or checkout.
+	 *
+	 * @return string
+	 */
+	protected static function summary_bar( $place ) {
+		return '<div data-block-name="csbmw/spending-goals-summary" data-place="' . esc_attr( $place ) . '" class="wp-block-csbmw-spending-goals-summary"></div>';
+	}
+
+	/**
+	 * Bar right after the Cart block's Cart totals heading.
+	 *
+	 * @param string $content Heading markup.
+	 *
+	 * @return string
+	 */
+	public function cart_summary_bar( $content ) {
+		return self::shows_in( 'cart' ) ? $content . self::summary_bar( 'cart' ) : $content;
+	}
+
+	/**
+	 * Bar right after the Checkout block's Order summary title, ahead of the
+	 * items.
+	 *
+	 * @param string $content Items markup.
+	 *
+	 * @return string
+	 */
+	public function checkout_summary_bar( $content ) {
+		return self::shows_in( 'checkout' ) ? self::summary_bar( 'checkout' ) . $content : $content;
+	}
+
+	/**
 	 * Bar above the classic checkout order total, which refreshes with it.
 	 *
 	 * @return void
@@ -992,7 +1067,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	public function product_bar() {
 		if ( self::shows_in( 'product' ) ) {
-			echo '<div class="csbmw-goals-holder is-automatic">' . self::render( 'product' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div class="csbmw-goals-holder is-automatic" aria-live="polite">' . self::render( 'product' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
@@ -1086,7 +1161,22 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		wp_enqueue_style( self::HANDLE );
 		wp_enqueue_script( self::HANDLE );
 
-		return '<div ' . $wrapper . ' data-goals-style="' . esc_attr( $style ) . '">' . self::render( 'block', $style ) . '</div>';
+		if ( self::has_cart_blocks() ) {
+			Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-sync', 'goals-sync' );
+			wp_enqueue_script( self::HANDLE . '-sync' );
+		}
+
+		return '<div ' . $wrapper . ' data-goals-style="' . esc_attr( $style ) . '" aria-live="polite">' . self::render( 'block', $style ) . '</div>';
+	}
+
+	/**
+	 * Whether the page has the Cart or Checkout block, which block themes
+	 * draw from a template rather than the content.
+	 *
+	 * @return bool
+	 */
+	protected static function has_cart_blocks() {
+		return has_block( 'woocommerce/cart' ) || has_block( 'woocommerce/checkout' ) || ( ( is_cart() || is_checkout() ) && wp_is_block_theme() );
 	}
 
 	/**
@@ -1166,18 +1256,20 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		if ( $product ) {
 			wp_enqueue_script( self::HANDLE );
 		}
+	}
 
-		if ( $blocks ) {
-			Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-blocks', 'goals-blocks' );
-			Extra_Checkout_Fields_For_Brazil_Assets::set_translations( self::HANDLE . '-blocks' );
-			wp_localize_script(
-				self::HANDLE . '-blocks',
-				'bmwGoalsBlocksParams',
-				array(
-					'places' => array_values( array_filter( array( 'cart', 'checkout' ), array( __CLASS__, 'shows_in' ) ) ),
-				)
-			);
-			wp_enqueue_script( self::HANDLE . '-blocks' );
+	/**
+	 * Load the order summary inner block with the Cart and Checkout blocks.
+	 *
+	 * @param Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry $registry Integration registry.
+	 *
+	 * @return void
+	 */
+	public function register_integration( $registry ) {
+		include_once __DIR__ . '/class-extra-checkout-fields-for-brazil-goals-integration.php';
+
+		if ( ! $registry->is_registered( 'csbmw-goals' ) ) {
+			$registry->register( new Extra_Checkout_Fields_For_Brazil_Goals_Integration() );
 		}
 	}
 
