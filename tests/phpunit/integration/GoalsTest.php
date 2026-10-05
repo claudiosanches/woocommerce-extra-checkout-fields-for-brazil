@@ -102,8 +102,9 @@ class GoalsTest extends WP_UnitTestCase {
 	 * @param array  $locations Locations, as code => type.
 	 * @param string $minimum   Minimum order amount, or empty for no free shipping.
 	 * @param string $ignore    Whether discounts are left out of the minimum.
+	 * @param string $requires  What free shipping requires.
 	 */
-	protected function zone( array $locations, $minimum, $ignore = 'no' ) {
+	protected function zone( array $locations, $minimum, $ignore = 'no', $requires = 'min_amount' ) {
 		$zone = new WC_Shipping_Zone();
 		$zone->set_zone_name( implode( ',', array_keys( $locations ) ) );
 
@@ -119,7 +120,7 @@ class GoalsTest extends WP_UnitTestCase {
 			update_option(
 				'woocommerce_free_shipping_' . $instance . '_settings',
 				array(
-					'requires'         => 'min_amount',
+					'requires'         => $requires,
 					'min_amount'       => $minimum,
 					'ignore_discounts' => $ignore,
 				)
@@ -142,6 +143,17 @@ class GoalsTest extends WP_UnitTestCase {
 		}
 
 		return $goals;
+	}
+
+	/**
+	 * Shipping methods the cart is offered.
+	 *
+	 * @return string[]
+	 */
+	protected function rates() {
+		$packages = WC()->shipping()->get_packages();
+
+		return array_values( array_map( static fn( $rate ) => $rate->get_method_id(), $packages[0]['rates'] ?? array() ) );
 	}
 
 	/**
@@ -209,6 +221,38 @@ class GoalsTest extends WP_UnitTestCase {
 
 		WC()->cart->set_quantity( $key, 5 );
 		WC()->cart->set_quantity( $key, 6 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
+	 * A goal coupon past its maximum spend comes back once the cart is under
+	 * it again, whoever took it off.
+	 */
+	public function test_goal_coupon_returns_below_its_maximum() {
+		$coupon = $this->coupon( 'meta', 300 );
+		$coupon->set_maximum_amount( 400 );
+		$coupon->save();
+		$this->fill_cart( 6 );
+		$key = array_key_first( WC()->cart->get_cart() );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->set_quantity( $key, 9 );
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+		$this->assertSame( array(), $this->remaining() );
+
+		WC()->cart->set_quantity( $key, 7 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+
+		// WooCommerce takes it off when the maximum drops below the cart.
+		$coupon->set_maximum_amount( 320 );
+		$coupon->save();
+		WC()->cart->check_cart_coupons();
+		wc_clear_notices();
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		$coupon->set_maximum_amount( 400 );
+		$coupon->save();
+		WC()->cart->calculate_totals();
 		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
 	}
 
@@ -290,8 +334,19 @@ class GoalsTest extends WP_UnitTestCase {
 		$this->coupon( 'meta', 100 );
 		WC()->cart->calculate_totals();
 
-		// 100 less the 10% the goal coupon took.
-		$this->assertSame( 60.0, $this->remaining()['free_shipping'] );
+		// 60 after the 10% the goal coupon takes from it too.
+		$this->assertSame( 66.67, $this->remaining()['free_shipping'] );
+		$this->assertNotContains( 'free_shipping', $this->rates() );
+
+		// Adding what the bar asks for is enough.
+		$extra = new WC_Product_Simple();
+		$extra->set_regular_price( '66.67' );
+		$extra->save();
+		WC()->cart->add_to_cart( $extra->get_id(), 1 );
+		WC()->cart->calculate_totals();
+
+		$this->assertContains( 'free_shipping', $this->rates() );
+		$this->assertLessThanOrEqual( 0, $this->remaining()['free_shipping'] );
 	}
 
 	/**
@@ -337,23 +392,58 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Free shipping from the zone and from a coupon shows once, by the
-	 * nearest way.
+	 * A free shipping coupon counts only where the zone takes it.
 	 */
-	public function test_same_reward_shows_once() {
-		$this->zone( array( 'BR' => 'country' ), '200' );
-		$coupon = $this->coupon( 'fretegratis', 250 );
+	public function test_free_shipping_coupon_follows_the_zone() {
+		$coupon = $this->coupon( 'fretegratis', 100 );
 		$coupon->set_amount( 0 );
 		$coupon->set_free_shipping( true );
 		$coupon->save();
+
+		// The zone asks for both, so the coupon alone is not enough.
+		$this->zone( array( 'BR' => 'country' ), '300', 'no', 'both' );
+		$this->fill_cart( 3 );
+		$this->assertTrue( WC()->cart->has_discount( 'fretegratis' ) );
+		$this->assertSame( array( 'free_shipping' => 150.0 ), $this->remaining() );
+		$this->assertNotContains( 'free_shipping', $this->rates() );
+		$this->assertStringStartsWith( 'Add', Extra_Checkout_Fields_For_Brazil_Goals::get_bar()['message'] );
+	}
+
+	/**
+	 * Either the coupon or the minimum, whichever comes first, and the
+	 * coupon alone with the zone's minimum turned off.
+	 */
+	public function test_free_shipping_takes_the_nearest_way() {
+		$coupon = $this->coupon( 'fretegratis', 150 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->save();
+
+		$this->zone( array( 'BR' => 'country' ), '200', 'no', 'either' );
+		$this->fill_cart( 2 );
+		$this->assertSame( array( 'free_shipping' => 50.0 ), $this->remaining() );
+
+		update_option( 'wcbcf_settings', array( 'goals_cart' => '1' ) );
+		$this->assertSame( array( 'free_shipping' => 50.0 ), $this->remaining() );
+
+		$coupon->set_minimum_amount( 250 );
+		$coupon->save();
+		$this->assertSame( array( 'free_shipping' => 150.0 ), $this->remaining() );
+	}
+
+	/**
+	 * A coupon the zone's free shipping ignores claims nothing.
+	 */
+	public function test_free_shipping_coupon_without_a_zone_for_it() {
+		$coupon = $this->coupon( 'fretegratis', 150 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->save();
+
+		$this->zone( array( 'BR' => 'country' ), '200' );
 		$this->fill_cart( 2 );
 
 		$this->assertSame( array( 'free_shipping' => 100.0 ), $this->remaining() );
-
-		$coupon->set_minimum_amount( 150 );
-		$coupon->save();
-
-		$this->assertSame( array( 'free shipping' => 50.0 ), $this->remaining() );
 	}
 
 	/**
@@ -440,7 +530,8 @@ class GoalsTest extends WP_UnitTestCase {
 
 			$this->assertSame( 100.0, $bar['progress'] );
 			$this->assertSame( array( 'free shipping', '10% off' ), wp_list_pluck( $bar['milestones'], 'label' ) );
-			$this->assertSame( array( 50.0, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
+			// Free shipping at 166.67, the 150 it needs after the 10% off.
+			$this->assertSame( array( 55.56, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
 			$this->assertSame( 'You got free shipping and 10% off.', $bar['message'] );
 		}
 	}

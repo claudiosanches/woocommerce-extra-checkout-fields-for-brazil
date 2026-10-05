@@ -280,9 +280,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	protected static function coupon_label( $coupon ) {
 		$amount = (float) $coupon->get_amount();
 
-		if ( 0 >= $amount && $coupon->get_free_shipping() ) {
-			$label = __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' );
-		} elseif ( $coupon->is_type( 'percent' ) ) {
+		if ( $coupon->is_type( 'percent' ) ) {
 			/* translators: %s: discount, such as 10% */
 			$label = sprintf( __( '%s off', 'woocommerce-extra-checkout-fields-for-brazil' ), wc_format_localized_decimal( $amount ) . '%' );
 		} elseif ( $coupon->is_type( 'fixed_product' ) ) {
@@ -340,6 +338,22 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
+	 * Whether a goal coupon is on offer: eligible, and not removed by the
+	 * customer unless they applied it again.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param WC_Cart   $cart   Cart.
+	 *
+	 * @return bool
+	 */
+	protected static function is_offered( $coupon, $cart ) {
+		$code     = wc_format_coupon_code( $coupon->get_code() );
+		$declined = WC()->session ? (array) WC()->session->get( self::DECLINED, array() ) : array();
+
+		return ( ! in_array( $code, $declined, true ) || $cart->has_discount( $code ) ) && self::is_eligible( $coupon, $cart );
+	}
+
+	/**
 	 * Coupon goals for the cart.
 	 *
 	 * @param WC_Cart $cart Cart.
@@ -348,14 +362,12 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	protected static function coupon_goals( $cart ) {
 		$subtotal = (float) $cart->get_displayed_subtotal();
-		$declined = WC()->session ? (array) WC()->session->get( self::DECLINED, array() ) : array();
 		$goals    = array();
 
 		foreach ( self::goal_coupons() as $coupon ) {
-			$code = wc_format_coupon_code( $coupon->get_code() );
-
-			// Removed by the customer, unless they applied it again.
-			if ( ( in_array( $code, $declined, true ) && ! $cart->has_discount( $code ) ) || ! self::is_eligible( $coupon, $cart ) ) {
+			// Free shipping alone depends on the zone, which the free shipping
+			// goal weighs.
+			if ( ( 0 >= (float) $coupon->get_amount() && $coupon->get_free_shipping() ) || ! self::is_offered( $coupon, $cart ) ) {
 				continue;
 			}
 
@@ -373,24 +385,87 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * What free shipping still needs in a zone.
+	 * Subtotal from which the cart holds a coupon that gives free shipping.
 	 *
-	 * @param WC_Shipping_Zone $zone Zone.
-	 * @param WC_Cart          $cart Cart.
+	 * @param WC_Cart $cart Cart.
 	 *
-	 * @return array|null Threshold and remaining amount, or null when the zone
-	 *                    has no free shipping a spend can reach.
+	 * @return float|null Null when no coupon will.
 	 */
-	protected static function zone_free_shipping( $zone, $cart ) {
-		$has_coupon = false;
+	protected static function free_shipping_coupon_at( $cart ) {
+		$at    = null;
+		$codes = array();
 
-		foreach ( $cart->get_coupons() as $coupon ) {
-			if ( $coupon->get_free_shipping() ) {
-				$has_coupon = true;
-				break;
+		foreach ( self::goal_coupons() as $coupon ) {
+			$codes[] = wc_format_coupon_code( $coupon->get_code() );
+
+			if ( $coupon->get_free_shipping() && self::is_offered( $coupon, $cart ) ) {
+				$minimum = (float) $coupon->get_minimum_amount();
+				$at      = null === $at ? $minimum : min( $at, $minimum );
 			}
 		}
 
+		foreach ( $cart->get_coupons() as $code => $coupon ) {
+			if ( $coupon->get_free_shipping() && $coupon->is_valid() && ! in_array( wc_format_coupon_code( $code ), $codes, true ) ) {
+				return 0.0;
+			}
+		}
+
+		return $at;
+	}
+
+	/**
+	 * Subtotal from which a free shipping method's minimum is met, as
+	 * WooCommerce measures it. Percentage discounts take their share of what
+	 * the cart adds, so it takes more than the minimum still missing.
+	 *
+	 * @param WC_Shipping_Free_Shipping $method Free shipping method.
+	 * @param WC_Cart                   $cart   Cart.
+	 *
+	 * @return float|null Null when the discounts keep it out of reach.
+	 */
+	protected static function amount_at( $method, $cart ) {
+		$subtotal = (float) $cart->get_displayed_subtotal();
+		$total    = $subtotal;
+		$rate     = 0.0;
+		$decimals = wc_get_price_decimals();
+
+		if ( 'no' === $method->ignore_discounts ) {
+			$with_tax = $cart->display_prices_including_tax();
+			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+
+			foreach ( $cart->get_coupons() as $code => $coupon ) {
+				if ( $coupon->is_type( 'percent' ) && 0 < $subtotal ) {
+					$rate += (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) / $subtotal;
+				}
+			}
+		}
+
+		$missing = (float) $method->min_amount - round( $total, $decimals );
+
+		if ( 1 <= $rate ) {
+			return 0 >= $missing ? 0.0 : null;
+		}
+
+		// Rounded up to the cent, as less would fall short.
+		$factor = 10 ** $decimals;
+
+		return round( $subtotal + ceil( round( $missing / ( 1 - $rate ) * $factor, 6 ) ) / $factor, $decimals );
+	}
+
+	/**
+	 * Subtotal from which a zone ships for free.
+	 *
+	 * @param WC_Shipping_Zone $zone      Zone.
+	 * @param WC_Cart          $cart      Cart.
+	 * @param float|null       $coupon_at Subtotal from which the cart holds a
+	 *                                    free shipping coupon, or null.
+	 * @param bool             $by_amount Whether the zone's minimum counts as
+	 *                                    a way there, or only as a condition
+	 *                                    the coupon also needs.
+	 *
+	 * @return float|null Null when the zone has no free shipping to reach.
+	 */
+	protected static function zone_free_shipping( $zone, $cart, $coupon_at, $by_amount ) {
 		$best = null;
 
 		foreach ( $zone->get_shipping_methods( true ) as $method ) {
@@ -398,34 +473,27 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 				continue;
 			}
 
-			$requires = (string) $method->requires;
+			$requires  = (string) $method->requires;
+			$amount_at = in_array( $requires, array( 'min_amount', 'either', 'both' ), true ) ? self::amount_at( $method, $cart ) : null;
+			$way       = $by_amount ? $amount_at : null;
 
-			if ( '' === $requires || ( 'either' === $requires && $has_coupon ) ) {
-				$goal = array(
-					'threshold' => 0.0,
-					'remaining' => 0.0,
-				);
-			} elseif ( 'min_amount' === $requires || 'either' === $requires || ( 'both' === $requires && $has_coupon ) ) {
-				$total = (float) $cart->get_displayed_subtotal();
-
-				if ( 'no' === $method->ignore_discounts ) {
-					$total -= (float) $cart->get_discount_total();
-
-					if ( $cart->display_prices_including_tax() ) {
-						$total -= (float) $cart->get_discount_tax();
-					}
-				}
-
-				$goal = array(
-					'threshold' => (float) $method->min_amount,
-					'remaining' => (float) $method->min_amount - round( $total, wc_get_price_decimals() ),
-				);
+			if ( '' === $requires ) {
+				$at = 0.0;
+			} elseif ( 'coupon' === $requires ) {
+				$at = $coupon_at;
+			} elseif ( 'min_amount' === $requires ) {
+				$at = $way;
+			} elseif ( 'either' === $requires ) {
+				$ways = array_filter( array( $coupon_at, $way ), static fn( $value ) => null !== $value );
+				$at   = $ways ? min( $ways ) : null;
+			} elseif ( 'both' === $requires && null !== $coupon_at && null !== $amount_at ) {
+				$at = max( $coupon_at, $amount_at );
 			} else {
-				continue;
+				$at = null;
 			}
 
-			if ( null === $best || $goal['remaining'] < $best['remaining'] ) {
-				$best = $goal;
+			if ( null !== $at && ( null === $best || $at < $best ) ) {
+				$best = $at;
 			}
 		}
 
@@ -489,15 +557,23 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * Before a Brazilian address has a CEP, the zone is unknown, so the goal
 	 * shows only when every zone the address may fall in has the same one.
 	 *
-	 * @param WC_Cart $cart Cart.
+	 * @param WC_Cart $cart      Cart.
+	 * @param bool    $by_amount Whether the zones' minimums count, or only
+	 *                           free shipping coupons.
 	 *
 	 * @return array|null
 	 */
-	protected static function free_shipping_goal( $cart ) {
+	protected static function free_shipping_goal( $cart, $by_amount ) {
 		$customer = WC()->customer;
 
 		// An empty cart, as on a product page, is yet to hold what ships.
 		if ( ! $customer instanceof WC_Customer || ( ! $cart->is_empty() && ! $cart->needs_shipping() ) ) {
+			return null;
+		}
+
+		$coupon_at = self::free_shipping_coupon_at( $cart );
+
+		if ( ! $by_amount && null === $coupon_at ) {
 			return null;
 		}
 
@@ -513,7 +589,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			$goal  = null;
 
 			foreach ( self::brazilian_zones() as $zone ) {
-				$zone_goal = self::zone_free_shipping( $zone, $cart );
+				$zone_goal = self::zone_free_shipping( $zone, $cart, $coupon_at, $by_amount );
 
 				if ( $found && $zone_goal !== $goal ) {
 					return null;
@@ -538,19 +614,19 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 					),
 				)
 			);
-			$goal = self::zone_free_shipping( $zone, $cart );
+			$goal = self::zone_free_shipping( $zone, $cart, $coupon_at, $by_amount );
 		}
 
 		// Free whatever the cart holds, which leaves nothing to reach.
-		if ( null === $goal || 0 >= $goal['threshold'] ) {
+		if ( null === $goal || 0 >= $goal ) {
 			return null;
 		}
 
 		return array(
 			'type'      => 'free_shipping',
 			'label'     => __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
-			'threshold' => $goal['threshold'],
-			'remaining' => $goal['remaining'],
+			'threshold' => $goal,
+			'remaining' => round( $goal - (float) $cart->get_displayed_subtotal(), wc_get_price_decimals() ),
 		);
 	}
 
@@ -569,19 +645,16 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		$goals = self::coupon_goals( $cart );
+		$free  = self::free_shipping_goal( $cart, ! empty( self::settings()['goals_free_shipping'] ) );
 
-		if ( ! empty( self::settings()['goals_free_shipping'] ) ) {
-			$free = self::free_shipping_goal( $cart );
-
-			if ( null !== $free ) {
-				$goals[] = $free;
-			}
+		if ( null !== $free ) {
+			$goals[] = $free;
 		}
 
 		usort( $goals, static fn( $a, $b ) => $a['remaining'] <=> $b['remaining'] );
 
-		// The same reward reached two ways, such as free shipping from the zone
-		// and from a coupon, shows once, by the nearest way.
+		// Coupons giving the same reward, such as two for 10% off, show once,
+		// by the nearest.
 		$rewards = array();
 
 		foreach ( $goals as $index => $goal ) {
@@ -784,8 +857,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 	/**
 	 * Apply each goal coupon the cart reaches, and take back the ones it no
-	 * longer reaches. A coupon the customer removed stays removed until the
-	 * cart grows or drops below its minimum.
+	 * longer reaches or qualifies for, such as past a maximum spend. A coupon
+	 * the customer removed stays removed until the cart grows or drops below
+	 * its minimum.
 	 *
 	 * @param WC_Cart $cart Cart.
 	 *
@@ -812,7 +886,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			$reached = $subtotal >= (float) $coupon->get_minimum_amount();
 
 			if ( $cart->has_discount( $code ) ) {
-				if ( ! $reached && in_array( $code, $applied, true ) ) {
+				if ( in_array( $code, $applied, true ) && ( ! $reached || ! self::is_eligible( $coupon, $cart ) ) ) {
 					$cart->remove_coupon( $code );
 					$applied = array_values( array_diff( $applied, array( $code ) ) );
 					$changed = true;
@@ -834,8 +908,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			add_filter( 'woocommerce_coupon_message', '__return_empty_string' );
 
 			if ( $cart->apply_coupon( $code ) ) {
-				$applied[] = $code;
-				$changed   = true;
+				$applied = array_values( array_unique( array_merge( $applied, array( $code ) ) ) );
+				$changed = true;
 			}
 
 			remove_filter( 'woocommerce_coupon_message', '__return_empty_string' );
@@ -873,14 +947,19 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$code = wc_format_coupon_code( $code );
 
 		foreach ( self::goal_coupons() as $coupon ) {
-			if ( ! wc_is_same_coupon( $coupon->get_code(), $code ) || (float) $cart->get_displayed_subtotal() < (float) $coupon->get_minimum_amount() ) {
+			if ( ! wc_is_same_coupon( $coupon->get_code(), $code ) ) {
 				continue;
+			}
+
+			$session->set( self::APPLIED, array_values( array_diff( (array) $session->get( self::APPLIED, array() ), array( $code ) ) ) );
+
+			if ( (float) $cart->get_displayed_subtotal() < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) {
+				return;
 			}
 
 			$declined   = (array) $session->get( self::DECLINED, array() );
 			$declined[] = $code;
 			$session->set( self::DECLINED, array_values( array_unique( $declined ) ) );
-			$session->set( self::APPLIED, array_values( array_diff( (array) $session->get( self::APPLIED, array() ), array( $code ) ) ) );
 
 			return;
 		}

@@ -228,7 +228,11 @@ Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` i
 que a opção Meta de compra nas restrições de uso dele grava. O plugin aplica o cupom quando o
 subtotal do carrinho alcança o mínimo e retira quando o subtotal fica abaixo dele. Um cupom
 que o cliente remove fica de fora até um produto ser adicionado, uma quantidade aumentar ou o
-subtotal ficar abaixo do mínimo e alcançá-lo de novo.
+subtotal ficar abaixo do mínimo e alcançá-lo de novo. Acima de um gasto máximo ele sai, e volta
+quando o subtotal fica abaixo dele.
+
+Um cupom que só dá frete grátis não tem meta própria. Ele conta para a meta de frete grátis onde
+o método Frete grátis da área aceita um cupom, sozinho ou com o mínimo da área.
 
 O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em
 `extensions["csbmw-goals"].bar`, null quando não há meta para mostrar:

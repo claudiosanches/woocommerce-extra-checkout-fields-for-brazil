@@ -227,7 +227,12 @@ A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_go
 `yes`, which the Spending goal box in its usage restrictions sets. The plugin applies it once
 the cart subtotal reaches the minimum and takes it back when the subtotal drops below it. A
 coupon the customer removes stays off until a product is added, a quantity goes up, or the
-subtotal drops below the minimum and reaches it again.
+subtotal drops below the minimum and reaches it again. Past a maximum spend it comes off, and
+returns once the subtotal is under it.
+
+A coupon that gives only free shipping has no goal of its own. It counts toward the free
+shipping goal where the zone's Free shipping method takes a coupon, alone or with the zone's
+minimum.
 
 The Store API cart carries the bar for the Cart and Checkout blocks in
 `extensions["csbmw-goals"].bar`, null when there is no goal to show:
