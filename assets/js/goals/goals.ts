@@ -18,6 +18,9 @@ declare global {
 
 const params: GoalsParams = window.bmwGoalsParams || {};
 
+// The latest refresh, so an earlier one answered late draws nothing.
+let latest = 0;
+
 /**
  * Draw every bar again for the cart as it is now, asking once for each kind.
  */
@@ -25,6 +28,8 @@ async function refresh(): Promise< void > {
 	if ( ! params.url ) {
 		return;
 	}
+
+	const current = ++latest;
 
 	const holders = Array.from(
 		document.querySelectorAll< HTMLElement >( '.csbmw-goals-holder' )
@@ -49,8 +54,12 @@ async function refresh(): Promise< void > {
 			}
 
 			try {
-				// Markup printed by the plugin's own endpoint.
-				holder.innerHTML = ( await requests.get( key ) ) || '';
+				const html = await requests.get( key );
+
+				if ( current === latest ) {
+					// Markup printed by the plugin's own endpoint.
+					holder.innerHTML = html || '';
+				}
 			} catch {}
 		} )
 	);

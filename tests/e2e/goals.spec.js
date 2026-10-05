@@ -216,6 +216,73 @@ test.describe( 'Spending goals', () => {
 		await expect( message ).toHaveText( FREE_SHIPPING );
 	} );
 
+	test( 'keeps the latest bar when an earlier answer comes late', async ( {
+		page,
+	} ) => {
+		const productId = wpCli( [
+			'option',
+			'get',
+			'csbmw_e2e_shipped_product',
+		] );
+		let delivered;
+		const late = new Promise( ( resolve ) => {
+			delivered = resolve;
+		} );
+		let first = true;
+
+		await page.goto( `/?p=${ productId }`, {
+			waitUntil: 'domcontentloaded',
+		} );
+
+		const message = page.locator(
+			'.csbmw-goals-holder.is-automatic .csbmw-goals-message'
+		);
+
+		await expect( message ).toHaveText(
+			'Add R$150.00 more to get free shipping.'
+		);
+
+		// Answer the first refresh, made with the cart still empty, last.
+		await page.route( /wc-ajax=csbmw_spending_goals/, async ( route ) => {
+			if ( ! first ) {
+				await route.continue();
+				return;
+			}
+
+			first = false;
+
+			const response = await route.fetch();
+
+			await new Promise( ( resolve ) => setTimeout( resolve, 1500 ) );
+			await route.fulfill( { response } );
+			delivered();
+		} );
+
+		await page.evaluate( async ( id ) => {
+			document.body.dispatchEvent(
+				new window.Event( 'csbmw_goals_refresh' )
+			);
+			await new Promise( ( resolve ) => setTimeout( resolve, 300 ) );
+
+			const body = new window.FormData();
+
+			body.append( 'product_id', id );
+			body.append( 'quantity', '2' );
+			await window.fetch( '/?wc-ajax=add_to_cart', {
+				method: 'POST',
+				body,
+			} );
+			document.body.dispatchEvent(
+				new window.Event( 'wc-blocks_added_to_cart' )
+			);
+		}, productId );
+
+		await expect( message ).toHaveText( FREE_SHIPPING );
+		await late;
+		await page.waitForTimeout( 500 );
+		await expect( message ).toHaveText( FREE_SHIPPING );
+	} );
+
 	test( 'shows only where it is turned on', async ( { page } ) => {
 		setSettings( { ...SETTINGS, goals_cart: 0, goals_free_shipping: 0 } );
 		await addProduct( page, 2 );
