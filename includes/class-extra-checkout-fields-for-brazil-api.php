@@ -28,17 +28,18 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		add_filter( 'woocommerce_rest_prepare_shop_order_object', array( $this, 'orders_response' ), 100, 2 );
 		add_filter( 'woocommerce_rest_customer_schema', array( $this, 'addresses_schema' ), 100 );
 		add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'addresses_schema' ), 100 );
+		add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'orders_schema' ), 100 );
 	}
 
 	/**
 	 * Format number.
 	 *
-	 * @param  string $string Number to format.
+	 * @param  string $value Number to format.
 	 *
 	 * @return string
 	 */
-	protected function format_number( $string ) {
-		return str_replace( array( '.', '-', '/' ), '', $string );
+	protected function format_number( $value ) {
+		return str_replace( array( '.', '-', '/' ), '', $value );
 	}
 
 	/**
@@ -62,18 +63,14 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	/**
 	 * Get formatted birthdate.
 	 *
-	 * @param  string $date Date for format.
+	 * @param  string $date Stored birthdate.
 	 *
-	 * @return string
+	 * @return string Such as 1990-01-15T00:00:00, or empty when unrecognisable.
 	 */
 	protected function get_formatted_birthdate( $date ) {
-		$birthdate = explode( '/', $date );
+		$birthdate = DateTime::createFromFormat( '!d/m/Y', Extra_Checkout_Fields_For_Brazil_Legacy_Sync::normalize_birthdate( $date ) );
 
-		if ( isset( $birthdate[1] ) && ! empty( $birthdate[1] ) ) {
-			return sprintf( '%s-%s-%sT00:00:00', $birthdate[1], $birthdate[0], $birthdate[2] );
-		}
-
-		return '';
+		return $birthdate ? $birthdate->format( 'Y-m-d\TH:i:s' ) : '';
 	}
 
 	/**
@@ -84,9 +81,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	 * @return string
 	 */
 	protected function get_person_type( $type ) {
-		$settings = get_option( 'wcbcf_settings' );
+		$settings = (array) get_option( 'wcbcf_settings', array() );
 
-		switch ( intval( $settings['person_type'] ) ) {
+		switch ( intval( $settings['person_type'] ?? 0 ) ) {
 			case 1:
 				$persontype = intval( $type ) === 2 ? 'J' : 'F';
 				break;
@@ -128,6 +125,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$order_data['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 		$order_data['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
+		$order_data['billing_address']  = array_merge( $order_data['billing_address'] ?? array(), $this->order_phones( $order, 'billing' ) );
+		$order_data['shipping_address'] = array_merge( $order_data['shipping_address'] ?? array(), $this->order_phones( $order, 'shipping' ) );
+
 		// Shipping fields.
 		$order_data['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
 		$order_data['shipping_address']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
@@ -145,6 +145,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 			$order_data['customer']['billing_address']['number']       = $order->get_meta( '_billing_number' );
 			$order_data['customer']['billing_address']['neighborhood'] = $order->get_meta( '_billing_neighborhood' );
 			$order_data['customer']['billing_address']['cellphone']    = $order->get_meta( '_billing_cellphone' );
+
+			$order_data['customer']['billing_address']  = array_merge( $order_data['customer']['billing_address'] ?? array(), $this->order_phones( $order, 'billing' ) );
+			$order_data['customer']['shipping_address'] = array_merge( $order_data['customer']['shipping_address'] ?? array(), $this->order_phones( $order, 'shipping' ) );
 
 			// Customer shipping fields.
 			$order_data['customer']['shipping_address']['number']       = $order->get_meta( '_shipping_number' );
@@ -181,6 +184,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$customer_data['billing_address']['neighborhood'] = $customer->get_meta( 'billing_neighborhood' );
 		$customer_data['billing_address']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
 
+		$customer_data['billing_address']  = array_merge( $customer_data['billing_address'] ?? array(), $this->customer_phones( $customer, 'billing' ) );
+		$customer_data['shipping_address'] = array_merge( $customer_data['shipping_address'] ?? array(), $this->customer_phones( $customer, 'shipping' ) );
+
 		// Shipping fields.
 		$customer_data['shipping_address']['number']       = $customer->get_meta( 'shipping_number' );
 		$customer_data['shipping_address']['neighborhood'] = $customer->get_meta( 'shipping_neighborhood' );
@@ -214,6 +220,9 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['birthdate']    = $this->get_formatted_birthdate( $customer->get_meta( 'billing_birthdate' ) );
 		$response->data['billing']['gender']       = substr( $customer->get_meta( 'billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $customer->get_meta( 'billing_cellphone' );
+
+		$response->data['billing']  = array_merge( $response->data['billing'], $this->customer_phones( $customer, 'billing' ) );
+		$response->data['shipping'] = array_merge( $response->data['shipping'], $this->customer_phones( $customer, 'shipping' ) );
 
 		// Shipping fields.
 		$response->data['shipping']['number']       = $customer->get_meta( 'shipping_number' );
@@ -257,6 +266,11 @@ class Extra_Checkout_Fields_For_Brazil_API {
 		$response->data['billing']['gender']       = substr( $order->get_meta( '_billing_gender' ), 0, 1 );
 		$response->data['billing']['cellphone']    = $order->get_meta( '_billing_cellphone' );
 
+		$response->data['billing']['cnpj_lookup'] = $this->order_cnpj_lookup( $order );
+
+		$response->data['billing']  = array_merge( $response->data['billing'], $this->order_phones( $order, 'billing' ) );
+		$response->data['shipping'] = array_merge( $response->data['shipping'], $this->order_phones( $order, 'shipping' ) );
+
 		// Shipping fields.
 		$response->data['shipping']['number']       = $order->get_meta( '_shipping_number' );
 		$response->data['shipping']['neighborhood'] = $order->get_meta( '_shipping_neighborhood' );
@@ -265,72 +279,203 @@ class Extra_Checkout_Fields_For_Brazil_API {
 	}
 
 	/**
-	 * Addresses schena.
+	 * Registration found for an order's CNPJ.
+	 *
+	 * @param WC_Order $order Order.
+	 *
+	 * @return array|null
+	 */
+	protected function order_cnpj_lookup( $order ) {
+		$result = Extra_Checkout_Fields_For_Brazil_Cnpj::order_result( $order );
+
+		if ( ! $result ) {
+			return null;
+		}
+
+		return array(
+			'status'     => $result['status'],
+			'situation'  => $result['situation'],
+			'provider'   => $result['provider'],
+			'checked_at' => $result['checked_at'],
+		);
+	}
+
+	/**
+	 * Phones of an order address in E.164, whatever format they were saved in.
+	 *
+	 * @param WC_Order $order Order.
+	 * @param string   $type  billing or shipping.
+	 *
+	 * @return array
+	 */
+	protected function order_phones( $order, $type ) {
+		$country = 'shipping' === $type ? $order->get_shipping_country() : $order->get_billing_country();
+		$phones  = array( 'phone_e164' => Extra_Checkout_Fields_For_Brazil_Phone::e164( 'shipping' === $type ? $order->get_shipping_phone() : $order->get_billing_phone(), $country ) );
+
+		if ( 'billing' === $type ) {
+			$phones['cellphone_e164'] = Extra_Checkout_Fields_For_Brazil_Phone::e164( $order->get_meta( '_billing_cellphone' ), $country );
+		}
+
+		return $phones;
+	}
+
+	/**
+	 * Phones of a customer address in E.164, whatever format they were saved in.
+	 *
+	 * @param WC_Customer $customer Customer.
+	 * @param string      $type     billing or shipping.
+	 *
+	 * @return array
+	 */
+	protected function customer_phones( $customer, $type ) {
+		$country = 'shipping' === $type ? $customer->get_shipping_country() : $customer->get_billing_country();
+		$phones  = array( 'phone_e164' => Extra_Checkout_Fields_For_Brazil_Phone::e164( 'shipping' === $type ? $customer->get_shipping_phone() : $customer->get_billing_phone(), $country ) );
+
+		if ( 'billing' === $type ) {
+			$phones['cellphone_e164'] = Extra_Checkout_Fields_For_Brazil_Phone::e164( $customer->get_meta( 'billing_cellphone' ), $country );
+		}
+
+		return $phones;
+	}
+
+	/**
+	 * Add the address fields orders and customers share to the schema.
+	 *
+	 * WooCommerce saves only the address keys it has setters for, so these are
+	 * read only. Their meta keys can be written through meta_data.
 	 *
 	 * @param  array $properties Default schema properties.
 	 *
 	 * @return array
 	 */
 	public function addresses_schema( $properties ) {
-		$properties['billing']['properties']['number']        = array(
-			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['number']         = array(
+			'description' => __( 'Number, digits only, or the store\'s No number value such as S/N. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['neighborhood']  = array(
-			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['neighborhood']   = array(
+			'description' => __( 'Neighborhood. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['persontype']    = array(
-			'description' => __( 'Person type.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['persontype']     = array(
+			'description' => __( 'F for an individual, J for a company, empty when the store does not ask.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['cpf']           = array(
-			'description' => __( 'CPF.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['cpf']            = array(
+			'description' => __( 'CPF, digits only.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['rg']            = array(
-			'description' => __( 'RG.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['rg']             = array(
+			'description' => __( 'RG without dots and dashes.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['cnpj']          = array(
-			'description' => __( 'CNPJ.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['cnpj']           = array(
+			'description' => __( 'CNPJ without dots, slash and dash. An alphanumeric CNPJ keeps its letters.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['ie']            = array(
-			'description' => __( 'IE.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['ie']             = array(
+			'description' => __( 'State Registration without dots, slashes and dashes, or ISENTO.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['birthdate']     = array(
-			'description' => __( 'Birthdate.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['birthdate']      = array(
+			'description' => __( 'Birthdate, such as 1990-01-15T00:00:00.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['gender']        = array(
-			'description' => __( 'Gender.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['gender']         = array(
+			'description' => __( 'First letter of the gender as stored, such as F or M.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['billing']['properties']['cellphone']     = array(
-			'description' => __( 'Cell Phone.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['cellphone']      = array(
+			'description' => __( 'Cell phone as stored.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['shipping']['properties']['number']       = array(
-			'description' => __( 'Number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['phone_e164']     = array(
+			'description' => __( 'Phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
 		);
-		$properties['shipping']['properties']['neighborhood'] = array(
-			'description' => __( 'Neighborhood.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+		$properties['billing']['properties']['cellphone_e164'] = array(
+			'description' => __( 'Cell phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'type'        => 'string',
 			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['shipping']['properties']['phone_e164']    = array(
+			'description' => __( 'Phone in E.164, such as +5511987654321. Empty when it is not a complete number.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['shipping']['properties']['number']        = array(
+			'description' => __( 'Number, digits only, or the store\'s No number value such as S/N. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+		$properties['shipping']['properties']['neighborhood']  = array(
+			'description' => __( 'Neighborhood. Empty on foreign addresses.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => 'string',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+
+		return $properties;
+	}
+
+	/**
+	 * Add the fields only orders have to the schema.
+	 *
+	 * @param array $properties Schema properties.
+	 *
+	 * @return array
+	 */
+	public function orders_schema( $properties ) {
+		$properties['billing']['properties']['cnpj_lookup'] = array(
+			'description' => __( 'CNPJ registration found when the order was placed, or null when it was not looked up or the CNPJ changed since.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'type'        => array( 'object', 'null' ),
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+			'properties'  => array(
+				'status'     => array(
+					'description' => __( 'active, inactive, not_found, or unavailable when no service answered.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+					'enum'        => array( 'active', 'inactive', 'not_found', 'unavailable' ),
+				),
+				'situation'  => array(
+					'description' => __( 'Registration situation at Receita Federal, such as ATIVA or BAIXADA. Empty unless found.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+				),
+				'provider'   => array(
+					'description' => __( 'Service that answered, such as brasilapi or opencnpj.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+				),
+				'checked_at' => array(
+					'description' => __( 'When it was looked up, in UTC.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					'type'        => 'string',
+					'format'      => 'date-time',
+				),
+			),
 		);
 
 		return $properties;

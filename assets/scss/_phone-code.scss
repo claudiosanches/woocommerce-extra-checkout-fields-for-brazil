@@ -1,0 +1,125 @@
+// The calling code picker, drawn inside the phone field to the left. A
+// transparent select lies over the flag and code, which keeps the native list
+// with its keyboard and screen reader support. The :not(#csbmw) raises it
+// over theme and WooCommerce field rules.
+
+.woocommerce-input-wrapper:has(> .wcbcf-phone-code) {
+	display: block;
+	position: relative;
+}
+
+.wc-block-components-text-input:has(> .wcbcf-phone-code) {
+	position: relative;
+}
+
+// OpenMoji 17.0 (https://openmoji.org), CC BY-SA 4.0, cut down to the
+// country flags, which Windows draws as letters:
+// pyftsubset OpenMoji-color-glyf_colr_0.ttf --unicodes=U+1F1E6-1F1FF
+// --layout-features='*' --name-IDs='*' --name-languages='*' --flavor=woff2
+@font-face {
+	font-display: swap;
+	font-family: "OpenMoji Flags";
+	// Resolved from the stylesheets that include this file.
+	src: url(../../fonts/openmoji-flags.woff2) format("woff2");
+	unicode-range: U+1F1E6-1F1FF;
+}
+
+// Room for the picker is kept from the first paint, before the script adds
+// it, so the text and the floating label never shift. The body class says
+// the store offers it.
+$picker-width: 49px;
+$text-start: 70px;
+
+// WooCommerce names the classic fields with underscores.
+/* stylelint-disable selector-id-pattern */
+.wcbcf-phone-code-picker {
+
+	:is(
+		#billing-phone,
+		#shipping-phone,
+		#contact-csbmw-cellphone,
+		#billing_phone,
+		#billing_cellphone,
+		#shipping_phone
+	):not(#csbmw) {
+		padding-left: $text-start;
+	}
+
+	.wc-block-components-text-input:has(> :is(#billing-phone, #shipping-phone, #contact-csbmw-cellphone)) label:not(#csbmw) {
+		left: $text-start;
+	}
+}
+/* stylelint-enable selector-id-pattern */
+
+.wcbcf-phone-code:not(#csbmw) {
+	align-items: center;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: flex;
+	left: 12px;
+	margin: 0;
+	padding-right: 12px;
+	position: absolute;
+	width: $picker-width;
+	z-index: 1;
+
+	// A divider between the country and the number.
+	&::after {
+		background: currentcolor;
+		bottom: 25%;
+		content: "";
+		opacity: 0.2;
+		position: absolute;
+		right: 0;
+		top: 25%;
+		width: 1px;
+	}
+}
+
+.wcbcf-phone-code-label {
+	align-items: center;
+	display: inline-flex;
+	line-height: 1;
+	pointer-events: none;
+	white-space: nowrap;
+}
+
+.wcbcf-phone-code-select:not(#csbmw) {
+	appearance: none;
+	cursor: pointer;
+	font-size: 16px;
+	height: 100%;
+	left: 0;
+	margin: 0;
+	opacity: 0;
+	padding: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.wcbcf-phone-code.is-anchored .wcbcf-phone-code-select:not(#csbmw) {
+	pointer-events: none;
+}
+
+// A whole-pixel box, since the glyph is 20.5px wide and would put the
+// chevron on half a pixel.
+.wcbcf-phone-code-flag {
+	font-family: "OpenMoji Flags", sans-serif;
+	text-align: center;
+	width: 21px;
+}
+
+// The same size as on WooCommerce's selects, where the icon is 24px.
+.wcbcf-phone-code-chevron {
+	fill: currentcolor;
+	height: 7px;
+	margin-left: 5px;
+	width: 12px;
+}
+
+// The select is invisible, so its keyboard focus shows on the flag.
+.wcbcf-phone-code:has(.wcbcf-phone-code-select:focus-visible) .wcbcf-phone-code-label {
+	outline: 2px solid currentcolor;
+	outline-offset: 2px;
+}
