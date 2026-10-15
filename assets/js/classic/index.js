@@ -35,6 +35,12 @@ jQuery( function ( $ ) {
 		bind( element );
 	};
 
+	const writeAndDispatch = ( input, value ) => {
+		input.value = value;
+		input.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
+		input.dispatchEvent( new window.Event( 'change', { bubbles: true } ) );
+	};
+
 	const mask = ( selector, format ) => {
 		document.querySelectorAll( selector ).forEach( ( input ) => {
 			if ( unbinders.has( input ) ) {
@@ -147,7 +153,9 @@ jQuery( function ( $ ) {
 			}
 
 			this.binders.forEach( ( bindFields ) => bindFields() );
-			once( document.getElementById( 'billing_ie' ), 'ie', bindIeExempt );
+			once( document.getElementById( 'billing_ie' ), 'ie', ( input ) =>
+				bindIeExempt( input, { write: writeAndDispatch } )
+			);
 
 			if ( 'yes' === bmwPublicParams.mailcheck ) {
 				once(
@@ -242,7 +250,9 @@ jQuery( function ( $ ) {
 						unbind();
 						toggles.set(
 							input,
-							bindNoNumber( input, bmwPublicParams.no_number )
+							bindNoNumber( input, bmwPublicParams.no_number, {
+								write: writeAndDispatch,
+							} )
 						);
 					}
 				} );
@@ -253,7 +263,9 @@ jQuery( function ( $ ) {
 					bindHouseNumber( input, bmwPublicParams.no_number );
 					toggles.set(
 						input,
-						bindNoNumber( input, bmwPublicParams.no_number )
+						bindNoNumber( input, bmwPublicParams.no_number, {
+							write: writeAndDispatch,
+						} )
 					);
 				} );
 		},
