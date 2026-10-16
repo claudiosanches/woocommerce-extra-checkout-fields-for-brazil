@@ -304,10 +304,10 @@ jQuery( function ( $ ) {
 					Object.entries( values ).forEach( ( [ key, value ] ) => {
 						const field = $( fields[ key ] ).val( value );
 
-                        // Fire native events so checkout and UI listeners can react
+						// Fire native events so checkout and UI listeners can react
 						// to the autofill values. The 'change' event is required to
 						// refresh Select2 widgets and recalculate checkout totals.
-						field.each( function () {							
+						field.each( function () {
 							this.dispatchEvent(
 								new window.Event( 'input', {
 									bubbles: true,
