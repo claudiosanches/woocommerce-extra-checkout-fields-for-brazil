@@ -321,7 +321,7 @@ jQuery( function ( $ ) {
 						} );
 
 						// Fire jQuery 'validate' event to clear
-                        // validation errors after autofill.
+						// validation errors after autofill.
 						field.trigger( 'validate' );
 					} );
 				},
