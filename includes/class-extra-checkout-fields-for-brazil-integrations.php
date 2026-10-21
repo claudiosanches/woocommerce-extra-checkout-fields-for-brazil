@@ -18,58 +18,76 @@ class Extra_Checkout_Fields_For_Brazil_Integrations {
 	 * Initialize integrations.
 	 */
 	public function __construct() {
-		// Check if Flux Checkout for WooCommerce is active.
-		if ( defined( 'FLUX_PLUGIN_VERSION' ) ) {
-			add_filter( 'woocommerce_billing_fields', array( $this, 'flux_billing_fields' ), 100 );
-			add_filter( 'woocommerce_shipping_fields', array( $this, 'flux_shipping_fields' ), 100 );
-		}
-
 		add_filter( 'woocommerce_bcash_args', array( $this, 'bcash' ), 1, 2 );
 		add_filter( 'woocommerce_moip_args', array( $this, 'moip' ), 1, 2 );
 		add_filter( 'woocommerce_moip_holder_data', array( $this, 'moip_transparent_checkout' ), 1, 2 );
+
+		// Fluid Checkout's support for this plugin was written for 4.x.
+		add_action( 'init', array( $this, 'fluid_checkout' ), 100 );
+		add_filter( 'fc_checkout_field_args', array( $this, 'fluid_checkout_fields' ), 120 );
+		add_filter( 'fc_checkout_validation_brazilian_documents_script_settings', array( $this, 'fluid_checkout_documents' ), 20 );
 	}
 
 	/**
-	 * Custom Flux Checkout for WooCommerce billing fields.
+	 * Keep this plugin's checkout script and address layout under Fluid
+	 * Checkout.
 	 *
-	 * @param  array $fields Checkout fields.
+	 * Fluid Checkout swaps the script for its copy of the 4.x one, which
+	 * depends on a mask library this plugin no longer registers, so neither
+	 * runs. Its field positions and widths break the address order.
 	 *
-	 * @return array         New fields.
+	 * @return void
 	 */
-	public function flux_billing_fields( $fields ) {
-		// Set correct priority and form-row-wide class.
-		$fields['billing_number']['class']          = array( 'form-row-wide', 'address-field' );
-		$fields['billing_number']['priority']       = 65;
-		$fields['billing_neighborhood']['class']    = array( 'form-row-wide', 'address-field' );
-		$fields['billing_neighborhood']['priority'] = 80;
-		$fields['billing_cellphone']['class']       = array( 'form-row-wide' );
-
-		// Remove tel type to avoid a phone icon.
-		if ( isset( $fields['billing_cpf'] ) ) {
-			$fields['billing_cpf']['type'] = 'text';
+	public function fluid_checkout() {
+		if ( ! class_exists( 'FluidCheckout_WooCommerceExtraCheckoutFieldsForBrazil' ) ) {
+			return;
 		}
-		if ( isset( $fields['billing_cnpj'] ) ) {
-			$fields['billing_cnpj']['type'] = 'text';
+
+		$compat = FluidCheckout_WooCommerceExtraCheckoutFieldsForBrazil::instance();
+
+		remove_action( 'wp_enqueue_scripts', array( $compat, 'replace_wcbcf_script' ), 20 );
+		remove_filter( 'fc_checkout_field_args', array( $compat, 'change_checkout_field_args' ), 110 );
+		remove_filter( 'woocommerce_default_address_fields', array( $compat, 'change_default_locale_field_args' ), 110 );
+	}
+
+	/**
+	 * Adjust what Fluid Checkout changes in the checkout fields.
+	 *
+	 * @param array $fields Field arguments Fluid Checkout merges into the
+	 *                      checkout fields, by field key.
+	 *
+	 * @return array
+	 */
+	public function fluid_checkout_fields( $fields ) {
+		// Company belongs beside the CNPJ while legal persons alone are asked
+		// for it, not among the contact fields.
+		if ( Extra_Checkout_Fields_For_Brazil::has_dynamic_company() ) {
+			unset( $fields['billing_company'] );
+		}
+
+		// Its valid mark would sit over the Exempt and No number toggles.
+		foreach ( array( 'billing_ie', 'billing_number', 'shipping_number' ) as $key ) {
+			$fields[ $key ]['class'] = array_merge( isset( $fields[ $key ]['class'] ) ? (array) $fields[ $key ]['class'] : array(), array( 'fc-no-validation-icon' ) );
 		}
 
 		return $fields;
 	}
 
 	/**
-	 * Custom Flux Checkout for WooCommerce shipping fields.
+	 * Leave the CPF and CNPJ checks to this plugin under Fluid Checkout.
 	 *
-	 * @param  array $fields Checkout fields.
+	 * Its own checks refuse alphanumeric CNPJs and any empty document field
+	 * on show, even an optional one.
 	 *
-	 * @return array         New fields.
+	 * @param array $settings Fluid Checkout's document validation settings.
+	 *
+	 * @return array
 	 */
-	public function flux_shipping_fields( $fields ) {
-		// Set correct priority and form-row-wide class.
-		$fields['shipping_number']['class']          = array( 'form-row-wide', 'address-field' );
-		$fields['shipping_number']['priority']       = 140;
-		$fields['shipping_neighborhood']['class']    = array( 'form-row-wide', 'address-field' );
-		$fields['shipping_neighborhood']['priority'] = 160;
+	public function fluid_checkout_documents( $settings ) {
+		$settings['validateCPF']  = 'no';
+		$settings['validateCNPJ'] = 'no';
 
-		return $fields;
+		return $settings;
 	}
 
 	/**

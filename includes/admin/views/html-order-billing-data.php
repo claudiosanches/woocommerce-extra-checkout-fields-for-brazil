@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php if ( 0 !== $person_type ) : ?>
 			<?php if ( ( 1 === intval( $order->get_meta( '_billing_persontype' ) ) && 1 === $person_type ) || 2 === $person_type ) : ?>
 				<strong><?php esc_html_e( 'CPF', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cpf' ) ); ?><br />
-				<?php if ( isset( $settings['rg'] ) ) : ?>
+				<?php if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'rg', (array) $settings ) ) : ?>
 					<strong><?php esc_html_e( 'RG', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_rg' ) ); ?><br />
 				<?php endif; ?>
 			<?php endif; ?>
@@ -26,8 +26,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php if ( ( 2 === intval( $order->get_meta( '_billing_persontype' ) ) && 1 === $person_type ) || 3 === $person_type ) : ?>
 				<strong><?php esc_html_e( 'Company Name', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_company() ); ?><br />
 				<strong><?php esc_html_e( 'CNPJ', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_cnpj' ) ); ?><br />
+				<?php $cnpj_lookup = Extra_Checkout_Fields_For_Brazil_Cnpj::order_result( $order ); ?>
+				<?php if ( $cnpj_lookup ) : ?>
+					<strong><?php esc_html_e( 'CNPJ registration', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( Extra_Checkout_Fields_For_Brazil_Cnpj::describe( $cnpj_lookup ) ); ?><br />
+				<?php endif; ?>
 
-				<?php if ( isset( $settings['ie'] ) ) : ?>
+				<?php if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'ie', (array) $settings ) ) : ?>
 					<strong><?php esc_html_e( 'State Registration', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_ie' ) ); ?><br />
 				<?php endif; ?>
 			<?php endif; ?>
@@ -35,11 +39,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<strong><?php esc_html_e( 'Company', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_billing_company() ); ?><br />
 		<?php endif; ?>
 
-		<?php if ( isset( $settings['birthdate'] ) ) : ?>
+		<?php if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'birthdate', (array) $settings ) ) : ?>
 			<strong><?php esc_html_e( 'Birthdate', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_birthdate' ) ); ?><br />
 		<?php endif; ?>
 
-		<?php if ( isset( $settings['gender'] ) ) : ?>
+		<?php if ( 'disabled' !== Extra_Checkout_Fields_For_Brazil::field_mode( 'gender', (array) $settings ) ) : ?>
 			<strong><?php esc_html_e( 'Gender', 'woocommerce-extra-checkout-fields-for-brazil' ); ?>: </strong><?php echo esc_html( $order->get_meta( '_billing_gender' ) ); ?><br />
 		<?php endif; ?>
 

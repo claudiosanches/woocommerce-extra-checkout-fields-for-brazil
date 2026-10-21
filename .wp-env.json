@@ -1,0 +1,13 @@
+{
+	"plugins": [ "https://downloads.wordpress.org/plugin/woocommerce.zip", "." ],
+	"port": 8977,
+	"mappings": {
+		"wp-content/mu-plugins": "./tests/e2e/mu-plugins"
+	},
+	"testsEnvironment": false,
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_DISPLAY": false,
+		"SCRIPT_DEBUG": false
+	}
+}
