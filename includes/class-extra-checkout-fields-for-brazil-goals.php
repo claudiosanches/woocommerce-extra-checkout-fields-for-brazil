@@ -341,13 +341,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			}
 		}
 
-		// WooCommerce checks a guest's own uses only at checkout, by the
-		// billing email.
-		$limit = $coupon->get_usage_limit_per_user();
-		$email = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
-		$store = $coupon->get_data_store();
-
-		if ( 0 < $limit && ! get_current_user_id() && '' !== $email && $store && $store->get_usage_by_email( $coupon, $email ) >= $limit ) {
+		if ( self::is_used_up( $coupon, $cart ) ) {
 			return false;
 		}
 
@@ -358,6 +352,66 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		remove_filter( 'woocommerce_coupon_validate_minimum_amount', $ignore_minimum );
 
 		return true === $valid;
+	}
+
+	/**
+	 * Whether the customer has used a coupon as often as it allows each one.
+	 *
+	 * WooCommerce checks only a logged in customer's user ID before checkout.
+	 * At checkout it also counts the account and billing emails, and for a
+	 * guest the accounts that share the billing email, so they count here too.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param WC_Cart   $cart   Cart.
+	 *
+	 * @return bool
+	 */
+	protected static function is_used_up( $coupon, $cart ) {
+		$limit = $coupon->get_usage_limit_per_user();
+		$store = $coupon->get_data_store();
+
+		if ( 0 >= $limit || ! $store ) {
+			return false;
+		}
+
+		$email   = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
+		$users   = get_current_user_id() ? array( get_current_user_id() ) : array();
+		$aliases = array( $email );
+
+		if ( ! $users && '' !== $email ) {
+			$users = get_users(
+				array(
+					'fields'     => 'ID',
+					'meta_key'   => 'billing_email', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'meta_value' => $email, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				)
+			);
+			$owner = get_user_by( 'email', $email );
+
+			if ( $owner ) {
+				$users[]   = $owner->ID;
+				$aliases[] = get_user_meta( $owner->ID, 'billing_email', true );
+			}
+		}
+
+		foreach ( $users as $user_id ) {
+			$user      = get_userdata( (int) $user_id );
+			$aliases[] = (string) $user_id;
+			$aliases[] = $user ? $user->user_email : '';
+		}
+
+		$aliases = array_values( array_unique( array_filter( array_map( static fn( $alias ) => strtolower( (string) $alias ), $aliases ) ) ) );
+
+		if ( ! $aliases ) {
+			return false;
+		}
+
+		$used = array_filter(
+			(array) get_post_meta( $coupon->get_id(), '_used_by', false ),
+			static fn( $alias ) => in_array( strtolower( (string) $alias ), $aliases, true )
+		);
+
+		return count( $used ) + (int) $store->get_tentative_usages_for_user( $coupon->get_id(), $aliases ) >= $limit;
 	}
 
 	/**

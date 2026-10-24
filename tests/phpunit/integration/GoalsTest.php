@@ -461,6 +461,36 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Uses count across the aliases WooCommerce's checkout counts: a guest
+	 * on a customer's email, and a customer who used it as a guest.
+	 */
+	public function test_goal_coupon_counts_uses_across_accounts_and_emails() {
+		$coupon = $this->coupon( 'meta', 100 );
+		$coupon->set_usage_limit_per_user( 1 );
+		$coupon->save();
+
+		$customer = self::factory()->user->create( array( 'user_email' => 'member@example.com' ) );
+		add_post_meta( $coupon->get_id(), '_used_by', (string) $customer );
+
+		WC()->customer->set_billing_email( 'Member@example.com' );
+		$this->fill_cart( 2 );
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		$member = self::factory()->user->create( array( 'user_email' => 'other@example.com' ) );
+		add_post_meta( $coupon->get_id(), '_used_by', 'guest@example.com' );
+		wp_set_current_user( $member );
+		WC()->customer->set_billing_email( 'guest@example.com' );
+		WC()->cart->calculate_totals();
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->customer->set_billing_email( 'fresh@example.com' );
+		WC()->cart->calculate_totals();
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+
+		wp_set_current_user( 0 );
+	}
+
+	/**
 	 * A coupon past its maximum comes off in the same pass that applies the
 	 * one it kept out.
 	 */
