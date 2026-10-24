@@ -234,6 +234,15 @@ quando o subtotal fica abaixo dele.
 Um cupom que só dá frete grátis não tem meta própria. Ele conta para a meta de frete grátis onde
 o método Frete grátis da área aceita um cupom, sozinho ou com o mínimo da área.
 
+Quando o método Frete grátis conta os descontos no mínimo, a meta pede o subtotal que ainda
+alcança o mínimo depois dos cupons do carrinho e dos cupons de meta percentuais ou de valor
+fixo no carrinho que o carrinho alcança antes. Só cupons sobre o carrinho inteiro crescem
+conforme produtos são adicionados. Um cupom limitado a produtos, categorias, marcas, itens em
+promoção ou a um número de itens conta só o desconto que dá agora, e um ainda não aplicado não
+conta nada, então o valor pode ficar abaixo do necessário até ele ser aplicado. Com "Aplicar
+regras de valor mínimo do pedido antes do cupom de desconto" marcado, o mínimo deixa os
+descontos de fora. A meta some enquanto o cliente tem um método de retirada escolhido.
+
 O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em
 `extensions["csbmw-goals"].bar`, null quando não há meta para mostrar:
 

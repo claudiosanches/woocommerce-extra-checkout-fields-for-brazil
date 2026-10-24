@@ -234,6 +234,14 @@ A coupon that gives only free shipping has no goal of its own. It counts toward 
 shipping goal where the zone's Free shipping method takes a coupon, alone or with the zone's
 minimum.
 
+Where the Free shipping method counts discounts toward its minimum, the goal asks for the
+subtotal that still meets it after the cart's coupons and the percentage or fixed cart goal
+coupons the cart reaches first. Only coupons on the whole cart grow as products are added. One
+limited to products, categories, brands, sale items or a number of items counts only the
+discount it gives now, and one not yet applied counts nothing, so the amount can come up short
+until it applies. With "Apply minimum order rule before coupon discount" ticked, the minimum
+leaves discounts out. The goal hides while the customer has a pickup method chosen.
+
 The Store API cart carries the bar for the Cart and Checkout blocks in
 `extensions["csbmw-goals"].bar`, null when there is no goal to show:
 
