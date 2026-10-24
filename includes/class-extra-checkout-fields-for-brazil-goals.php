@@ -436,16 +436,38 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		$with_tax = $cart->display_prices_including_tax();
 		$discount = (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+		$applied  = array();
 
 		// What a coupon limited to some items takes from what the customer
 		// adds is unknown, so only coupons on the whole cart grow with it.
 		foreach ( $cart->get_coupons() as $code => $coupon ) {
-			if ( $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon ) && 0 < $subtotal ) {
-				$rate += (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) / $subtotal;
-			}
+			$amount = (float) $cart->get_coupon_discount_amount( $code, ! $with_tax );
+			$share  = $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon ) && 0 < $subtotal ? $amount / $subtotal : 0.0;
+			$rate  += $share;
+
+			$applied[] = array(
+				'minimum' => (float) $coupon->get_minimum_amount(),
+				'amount'  => $amount,
+				'share'   => $share,
+			);
 		}
 
-		$at      = self::reach( $minimum, $subtotal, $discount, $rate );
+		$at = self::reach( $minimum, $subtotal, $discount, $rate );
+
+		usort( $applied, static fn( $a, $b ) => $b['minimum'] <=> $a['minimum'] );
+
+		// A coupon comes off below its minimum, so a minimum already met holds
+		// from where the cart would be without it.
+		foreach ( $applied as $coupon ) {
+			if ( null === $at || $coupon['minimum'] <= $at ) {
+				break;
+			}
+
+			$discount -= $coupon['amount'];
+			$rate     -= $coupon['share'];
+			$at        = self::reach( $minimum, $subtotal, $discount, $rate );
+		}
+
 		$pending = array_filter(
 			self::goal_coupons(),
 			static fn( $coupon ) => $coupon->is_type( array( 'percent', 'fixed_cart' ) )

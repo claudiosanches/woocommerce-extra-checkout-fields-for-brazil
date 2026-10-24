@@ -373,6 +373,26 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Free shipping reached holds from where it was reached, as a coupon with
+	 * a higher minimum comes off below it.
+	 */
+	public function test_reached_free_shipping_leaves_out_coupons_above_it() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$fixed = $this->coupon( 'fixed', 150 );
+		$fixed->set_discount_type( 'fixed_cart' );
+		$fixed->set_amount( 15 );
+		$fixed->save();
+		$this->coupon( 'meta', 300 );
+
+		$this->fill_cart( 5 );
+		$this->assertSame( -35.0, $this->remaining()['free_shipping'] );
+
+		$this->fill_cart( 7 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+		$this->assertSame( -135.0, $this->remaining()['free_shipping'] );
+	}
+
+	/**
 	 * A goal coupon limited to some products leaves the minimum alone, as
 	 * what it takes depends on what the customer adds.
 	 */
@@ -584,8 +604,8 @@ class GoalsTest extends WP_UnitTestCase {
 
 			$this->assertSame( 100.0, $bar['progress'] );
 			$this->assertSame( array( 'free shipping', '10% off' ), wp_list_pluck( $bar['milestones'], 'label' ) );
-			// Free shipping at 166.67, the 150 it needs after the 10% off.
-			$this->assertSame( array( 55.56, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
+			// Free shipping at 150, as the 10% off comes off below 300.
+			$this->assertSame( array( 50.0, 100.0 ), wp_list_pluck( $bar['milestones'], 'position' ) );
 			$this->assertSame( 'You got free shipping and 10% off.', $bar['message'] );
 		}
 	}
