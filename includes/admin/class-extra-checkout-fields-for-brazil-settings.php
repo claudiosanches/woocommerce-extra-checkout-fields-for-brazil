@@ -694,7 +694,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 			wp_kses_post(
 				sprintf(
 					/* translators: %s: link to the WooCommerce coupons */
-					__( 'A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its usage restrictions, next to its minimum spend, and applies once the cart reaches it. Manage them in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+					__( 'A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its General tab and a minimum spend in Usage restriction, and applies once the cart reaches it. Manage them in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'<a href="' . esc_url( admin_url( 'edit.php?post_type=shop_coupon' ) ) . '">' . esc_html__( 'Marketing > Coupons', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
 				)
 			)

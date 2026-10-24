@@ -225,7 +225,7 @@ add_action(
 ## Metas de compra
 
 Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` igual a `yes`,
-que a opção Meta de compra nas restrições de uso dele grava. O plugin aplica o cupom quando o
+que a opção Meta de compra na aba Geral dele grava. O plugin aplica o cupom quando o
 subtotal do carrinho alcança o mínimo e retira quando o subtotal fica abaixo dele. Um cupom
 que o cliente remove fica de fora até um produto ser adicionado, uma quantidade aumentar ou o
 subtotal ficar abaixo do mínimo e alcançá-lo de novo. Acima de um gasto máximo ele sai, e volta

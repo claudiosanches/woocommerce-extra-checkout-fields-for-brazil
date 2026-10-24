@@ -1126,10 +1126,6 @@ msgstr "Exigir o CEP antes da finalização"
 msgid "Sends customers back to the cart to calculate shipping when they reach checkout without a CEP. Carts with nothing to ship go straight through."
 msgstr "Manda o cliente de volta ao carrinho para calcular o frete quando ele chega à finalização da compra sem um CEP. Carrinhos sem nada para entregar passam direto."
 
-#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:592
-msgid "With Apply minimum order rule before coupon discount ticked in the Free shipping method, coupons do not raise the amount the cart needs."
-msgstr "Com Aplicar regras de valor mínimo do pedido antes do cupom de desconto marcado no método Frete grátis, os cupons não aumentam o valor que falta no carrinho."
-
 #. translators: %s: link to the WooCommerce shipping settings
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:467
 #, php-format
@@ -1222,6 +1218,10 @@ msgstr "Defina o mínimo em %s."
 msgid "WooCommerce > Settings > Shipping"
 msgstr "WooCommerce > Configurações > Entrega"
 
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:592
+msgid "With Apply minimum order rule before coupon discount ticked in the Free shipping method, coupons do not raise the amount the cart needs."
+msgstr "Com Aplicar regras de valor mínimo do pedido antes do cupom de desconto marcado no método Frete grátis, os cupons não aumentam o valor que falta no carrinho."
+
 #. translators: %s: link to the WooCommerce shipping settings
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:594
 #, php-format
@@ -1250,8 +1250,8 @@ msgstr "Só a próxima meta"
 #. translators: %s: link to the WooCommerce coupons
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:693
 #, php-format
-msgid "A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its usage restrictions, next to its minimum spend, and applies once the cart reaches it. Manage them in %s."
-msgstr "Uma barra mostra quanto falta no carrinho para cada meta. Um cupom vira meta com a opção Meta de compra marcada nas restrições de uso, junto ao gasto mínimo, e é aplicado quando o carrinho o alcança. Gerencie os cupons em %s."
+msgid "A bar shows how much more the cart needs for each goal. A coupon becomes a goal with Spending goal ticked in its General tab and a minimum spend in Usage restriction, and applies once the cart reaches it. Manage them in %s."
+msgstr "Uma barra mostra quanto falta no carrinho para cada meta. Um cupom vira meta com a opção Meta de compra marcada na aba Geral e um gasto mínimo em Restrição de uso, e é aplicado quando o carrinho o alcança. Gerencie os cupons em %s."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:694
 msgid "Marketing > Coupons"
@@ -1295,8 +1295,8 @@ msgid "Spending goal"
 msgstr "Meta de compra"
 
 #: includes/class-extra-checkout-fields-for-brazil-goals.php:810
-msgid "Show how much more the cart needs to reach the minimum spend, and apply the coupon once it does."
-msgstr "Mostra quanto falta no carrinho para alcançar o gasto mínimo e aplica o cupom quando alcança."
+msgid "Show how much more the cart needs to reach the minimum spend set in Usage restriction, and apply the coupon once it does."
+msgstr "Mostra quanto falta no carrinho para alcançar o gasto mínimo definido em Restrição de uso e aplica o cupom quando alcança."
 
 #: includes/class-extra-checkout-fields-for-brazil-goals.php:1121
 msgid "Spending goals progress bar, or null with no goal to show."

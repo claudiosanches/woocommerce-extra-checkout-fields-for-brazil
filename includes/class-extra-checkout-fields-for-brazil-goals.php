@@ -111,7 +111,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		add_action( 'init', array( $this, 'register_block' ) );
 		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
 
-		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_field' ), 10, 2 );
+		add_action( 'woocommerce_coupon_options', array( $this, 'coupon_field' ), 10, 2 );
 		add_action( 'woocommerce_coupon_options_save', array( $this, 'save_coupon_field' ), 10, 2 );
 
 		add_action( 'woocommerce_before_cart_totals', array( $this, 'cart_bar' ) );
@@ -1104,7 +1104,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Spending goal checkbox in the coupon's usage restrictions.
+	 * Spending goal checkbox in the coupon's general options.
 	 *
 	 * @param int       $coupon_id Coupon ID.
 	 * @param WC_Coupon $coupon    Coupon.
@@ -1112,18 +1112,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @return void
 	 */
 	public function coupon_field( $coupon_id, $coupon ) {
-		echo '<div class="options_group">';
-
 		woocommerce_wp_checkbox(
 			array(
 				'id'          => 'csbmw_spending_goal',
 				'label'       => __( 'Spending goal', 'woocommerce-extra-checkout-fields-for-brazil' ),
-				'description' => __( 'Show how much more the cart needs to reach the minimum spend, and apply the coupon once it does.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Show how much more the cart needs to reach the minimum spend set in Usage restriction, and apply the coupon once it does.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 				'value'       => wc_bool_to_string( 'yes' === $coupon->get_meta( self::COUPON_META ) ),
 			)
 		);
-
-		echo '</div>';
 	}
 
 	/**

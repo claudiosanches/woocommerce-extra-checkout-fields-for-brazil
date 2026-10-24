@@ -224,7 +224,7 @@ add_action(
 ## Spending goals
 
 A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_goal` meta is
-`yes`, which the Spending goal box in its usage restrictions sets. The plugin applies it once
+`yes`, which the Spending goal box in its General tab sets. The plugin applies it once
 the cart subtotal reaches the minimum and takes it back when the subtotal drops below it. A
 coupon the customer removes stays off until a product is added, a quantity goes up, or the
 subtotal drops below the minimum and reaches it again. Past a maximum spend it comes off, and
