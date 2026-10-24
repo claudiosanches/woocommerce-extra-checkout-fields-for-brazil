@@ -250,7 +250,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			array(
 				'post_type'      => 'shop_coupon',
 				'post_status'    => 'publish',
-				'posts_per_page' => 50,
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
 				'fields'         => 'ids',
 				'meta_key'       => self::COUPON_META, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'meta_value'     => 'yes', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
