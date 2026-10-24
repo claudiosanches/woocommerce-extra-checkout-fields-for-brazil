@@ -236,7 +236,9 @@ minimum.
 
 Where the Free shipping method counts discounts toward its minimum, the goal asks for the
 subtotal that still meets it after the cart's coupons and the percentage or fixed cart goal
-coupons the cart reaches first. Only coupons on the whole cart grow as products are added. One
+coupons the cart reaches first. Each coupon counts only between its minimum and maximum spend,
+an individual use coupon counts alone, and percentages compound when coupons apply one after
+another. Only coupons on the whole cart grow as products are added. One
 limited to products, categories, brands, sale items or a number of items counts only the
 discount it gives now, and one not yet applied counts nothing, so the amount can come up short
 until it applies. With "Apply minimum order rule before coupon discount" ticked, the minimum

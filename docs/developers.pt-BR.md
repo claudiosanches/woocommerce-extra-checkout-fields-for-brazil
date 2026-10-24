@@ -236,7 +236,9 @@ o método Frete grátis da área aceita um cupom, sozinho ou com o mínimo da á
 
 Quando o método Frete grátis conta os descontos no mínimo, a meta pede o subtotal que ainda
 alcança o mínimo depois dos cupons do carrinho e dos cupons de meta percentuais ou de valor
-fixo no carrinho que o carrinho alcança antes. Só cupons sobre o carrinho inteiro crescem
+fixo no carrinho que o carrinho alcança antes. Cada cupom conta só entre o gasto mínimo e o
+máximo dele, um cupom de uso individual conta sozinho, e os percentuais se acumulam quando os
+cupons são aplicados um após o outro. Só cupons sobre o carrinho inteiro crescem
 conforme produtos são adicionados. Um cupom limitado a produtos, categorias, marcas, itens em
 promoção ou a um número de itens conta só o desconto que dá agora, e um ainda não aplicado não
 conta nada, então o valor pode ficar abaixo do necessário até ele ser aplicado. Com "Aplicar

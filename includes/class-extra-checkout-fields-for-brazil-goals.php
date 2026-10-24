@@ -438,9 +438,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 	/**
 	 * Subtotal from which a free shipping method's minimum is met, as
-	 * WooCommerce measures it. Percentage discounts take their share of what
-	 * the cart adds, so it takes more than the minimum still missing, and so
-	 * do the goal coupons the cart reaches on the way.
+	 * WooCommerce measures it, with the discounts the cart takes on the way.
 	 *
 	 * @param WC_Shipping_Free_Shipping $method Free shipping method.
 	 * @param WC_Cart                   $cart   Cart.
@@ -450,45 +448,44 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	protected static function amount_at( $method, $cart ) {
 		$subtotal = self::subtotal( $cart );
 		$minimum  = (float) $method->min_amount;
-		$discount = 0.0;
-		$rate     = 0.0;
+		$total    = $subtotal;
+		$coupons  = array();
 
-		if ( 'no' !== $method->ignore_discounts ) {
-			return self::reach( $minimum, $subtotal, $discount, $rate );
+		if ( 'no' === $method->ignore_discounts ) {
+			$with_tax = $cart->display_prices_including_tax();
+			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+			$coupons  = self::coupons_on_the_way( $cart, $subtotal );
 		}
 
+		// Whether it is met now is what WooCommerce measures, not the estimate.
+		if ( round( $total, wc_get_price_decimals() ) >= $minimum ) {
+			return self::met_since( $minimum, $subtotal, $coupons );
+		}
+
+		return self::met_from( $minimum, $subtotal + self::cent(), $coupons );
+	}
+
+	/**
+	 * Coupons that discount the cart as it grows or shrinks: those on it, in
+	 * the order WooCommerce applies them, then the goal coupons it reaches,
+	 * nearest first.
+	 *
+	 * @param WC_Cart $cart     Cart.
+	 * @param float   $subtotal Cart subtotal.
+	 *
+	 * @return array[] As discount() describes them.
+	 */
+	protected static function coupons_on_the_way( $cart, $subtotal ) {
 		$with_tax = $cart->display_prices_including_tax();
-		$discount = (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
-		$applied  = array();
+		$coupons  = array();
 
 		// What a coupon limited to some items takes from what the customer
 		// adds is unknown, so only coupons on the whole cart grow with it.
 		foreach ( $cart->get_coupons() as $code => $coupon ) {
-			$amount = (float) $cart->get_coupon_discount_amount( $code, ! $with_tax );
-			$share  = $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon ) && 0 < $subtotal ? $amount / $subtotal : 0.0;
-			$rate  += $share;
-
-			$applied[] = array(
-				'minimum' => (float) $coupon->get_minimum_amount(),
-				'amount'  => $amount,
-				'share'   => $share,
-			);
-		}
-
-		$at = self::reach( $minimum, $subtotal, $discount, $rate );
-
-		usort( $applied, static fn( $a, $b ) => $b['minimum'] <=> $a['minimum'] );
-
-		// A coupon comes off below its minimum, so a minimum already met holds
-		// from where the cart would be without it.
-		foreach ( $applied as $coupon ) {
-			if ( null === $at || $coupon['minimum'] <= $at ) {
-				break;
-			}
-
-			$discount -= $coupon['amount'];
-			$rate     -= $coupon['share'];
-			$at        = self::reach( $minimum, $subtotal, $discount, $rate );
+			$whole     = $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon );
+			$coupons[] = $whole
+				? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
+				: self::discount( $coupon, 0.0, (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) );
 		}
 
 		$pending = array_filter(
@@ -502,24 +499,49 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		usort( $pending, static fn( $a, $b ) => (float) $a->get_minimum_amount() <=> (float) $b->get_minimum_amount() );
 
-		// Each one applied pushes the minimum further, which may reach the next.
 		foreach ( $pending as $coupon ) {
-			if ( null === $at || (float) $coupon->get_minimum_amount() > $at ) {
-				break;
-			}
-
-			if ( $coupon->is_type( 'percent' ) ) {
-				$share     = min( 1.0, (float) $coupon->get_amount() / 100 );
-				$rate     += $share;
-				$discount += $share * $subtotal;
-			} else {
-				$discount += (float) $coupon->get_amount();
-			}
-
-			$at = self::reach( $minimum, $subtotal, $discount, $rate );
+			$coupons[] = $coupon->is_type( 'percent' )
+				? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
+				: self::discount( $coupon, 0.0, self::as_displayed( $cart, (float) $coupon->get_amount() ) );
 		}
 
-		return $at;
+		return $coupons;
+	}
+
+	/**
+	 * What a coupon takes while the subtotal is within its minimum and
+	 * maximum spend.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param float     $share  Share of the subtotal it takes.
+	 * @param float     $fixed  Fixed amount it takes.
+	 *
+	 * @return array
+	 */
+	protected static function discount( $coupon, $share, $fixed ) {
+		return array(
+			'minimum'    => (float) $coupon->get_minimum_amount(),
+			'maximum'    => (float) $coupon->get_maximum_amount(),
+			'individual' => $coupon->get_individual_use(),
+			'share'      => min( 1.0, $share ),
+			'fixed'      => $fixed,
+		);
+	}
+
+	/**
+	 * A fixed coupon amount as the cart shows prices. WooCommerce takes it
+	 * with or without tax as prices are entered, which the cart may show the
+	 * other way.
+	 *
+	 * @param WC_Cart $cart   Cart.
+	 * @param float   $amount Coupon amount.
+	 *
+	 * @return float
+	 */
+	protected static function as_displayed( $cart, $amount ) {
+		$entered = (float) $cart->get_subtotal() + ( wc_prices_include_tax() ? (float) $cart->get_subtotal_tax() : 0.0 );
+
+		return 0 < $entered ? $amount * self::subtotal( $cart ) / $entered : $amount;
 	}
 
 	/**
@@ -541,28 +563,144 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Subtotal at which a minimum is met, from the discounts the cart takes
-	 * now and the share of what it adds that percentage discounts take.
+	 * What the coupons take at a subtotal: the share of it the total keeps,
+	 * and a fixed amount. An individual use coupon applies alone, and
+	 * percentages compound when WooCommerce applies coupons one after another.
 	 *
-	 * @param float $minimum  Minimum.
-	 * @param float $subtotal Cart subtotal.
-	 * @param float $discount Discount on the subtotal.
-	 * @param float $rate     Share of each amount added that goes in discounts.
+	 * @param array[] $coupons  Coupons, as discount() describes them.
+	 * @param float   $subtotal Subtotal.
+	 *
+	 * @return float[] Share kept and fixed amount.
+	 */
+	protected static function discounts_at( $coupons, $subtotal ) {
+		$sequential = 'yes' === get_option( 'woocommerce_calc_discounts_sequentially', 'no' );
+		$active     = array();
+		$kept       = 1.0;
+		$fixed      = 0.0;
+
+		foreach ( $coupons as $coupon ) {
+			if ( $subtotal < $coupon['minimum'] || ( 0 < $coupon['maximum'] && $subtotal > $coupon['maximum'] ) ) {
+				continue;
+			}
+
+			if ( $active && ( $coupon['individual'] || $active[0]['individual'] ) ) {
+				continue;
+			}
+
+			$active[] = $coupon;
+			$kept     = $sequential ? $kept * ( 1 - $coupon['share'] ) : $kept - $coupon['share'];
+			$fixed   += $coupon['fixed'];
+		}
+
+		return array( max( 0.0, $kept ), $fixed );
+	}
+
+	/**
+	 * Subtotals where a coupon starts or stops applying, in order.
+	 *
+	 * @param array[] $coupons Coupons, as discount() describes them.
+	 *
+	 * @return float[]
+	 */
+	protected static function breakpoints( $coupons ) {
+		$points = array();
+
+		foreach ( $coupons as $coupon ) {
+			$points[] = $coupon['minimum'];
+
+			if ( 0 < $coupon['maximum'] ) {
+				$points[] = round( $coupon['maximum'] + self::cent(), wc_get_price_decimals() );
+			}
+		}
+
+		$points = array_unique( array_filter( $points, static fn( $point ) => 0 < $point ) );
+		sort( $points );
+
+		return $points;
+	}
+
+	/**
+	 * Lowest subtotal from a starting one at which a minimum is met.
+	 *
+	 * @param float   $minimum Minimum.
+	 * @param float   $from    Subtotal to start from.
+	 * @param array[] $coupons Coupons, as discount() describes them.
 	 *
 	 * @return float|null Null when the discounts keep it out of reach.
 	 */
-	protected static function reach( $minimum, $subtotal, $discount, $rate ) {
-		$decimals = wc_get_price_decimals();
-		$missing  = $minimum - round( $subtotal - $discount, $decimals );
+	protected static function met_from( $minimum, $from, $coupons ) {
+		$start = $from;
+		$ends  = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $from );
 
-		if ( 1 <= $rate ) {
-			return 0 >= $missing ? 0.0 : null;
+		// Between two breakpoints the same coupons apply, so the total grows
+		// in a straight line.
+		foreach ( array_merge( $ends, array( INF ) ) as $end ) {
+			list( $kept, $fixed ) = self::discounts_at( $coupons, $start );
+
+			if ( 0 < $kept ) {
+				$at = max( $start, self::up_to_cent( ( $minimum + $fixed ) / $kept ) );
+
+				if ( $at < $end ) {
+					return $at;
+				}
+			}
+
+			$start = $end;
 		}
 
-		// Rounded up to the cent, as less would fall short.
-		$factor = 10 ** $decimals;
+		return null;
+	}
 
-		return round( $subtotal + ceil( round( $missing / ( 1 - $rate ) * $factor, 6 ) ) / $factor, $decimals );
+	/**
+	 * Lowest subtotal from which a minimum met now stays met up to it, as
+	 * coupons come off below their minimum.
+	 *
+	 * @param float   $minimum  Minimum.
+	 * @param float   $subtotal Cart subtotal.
+	 * @param array[] $coupons  Coupons, as discount() describes them.
+	 *
+	 * @return float
+	 */
+	protected static function met_since( $minimum, $subtotal, $coupons ) {
+		$end    = $subtotal;
+		$starts = array_reverse( array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point <= $subtotal ) );
+
+		foreach ( array_merge( $starts, array( 0.0 ) ) as $start ) {
+			list( $kept, $fixed ) = self::discounts_at( $coupons, $end );
+
+			$at = 0 < $kept ? self::up_to_cent( ( $minimum + $fixed ) / $kept ) : $end;
+
+			if ( $at > $start ) {
+				return min( $at, $end );
+			}
+
+			$end = $start - self::cent();
+		}
+
+		return 0.0;
+	}
+
+	/**
+	 * Smallest amount the store's prices can differ by.
+	 *
+	 * @return float
+	 */
+	protected static function cent() {
+		return 1 / ( 10 ** wc_get_price_decimals() );
+	}
+
+	/**
+	 * An amount rounded up to the cent, as less would fall short.
+	 *
+	 * @param float $amount Amount.
+	 *
+	 * @return float
+	 */
+	protected static function up_to_cent( $amount ) {
+		$decimals = wc_get_price_decimals();
+		$factor   = 10 ** $decimals;
+
+		return round( ceil( round( $amount * $factor, 6 ) ) / $factor, $decimals );
 	}
 
 	/**

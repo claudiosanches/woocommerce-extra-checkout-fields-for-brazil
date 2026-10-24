@@ -146,6 +146,19 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Add another product to the cart.
+	 *
+	 * @param string $price Price.
+	 */
+	protected function add_product( $price ) {
+		$product = new WC_Product_Simple();
+		$product->set_regular_price( $price );
+		$product->save();
+		WC()->cart->add_to_cart( $product->get_id(), 1 );
+		WC()->cart->calculate_totals();
+	}
+
+	/**
 	 * A 20% tax, on prices entered without it and shown with it in the cart.
 	 */
 	protected function tax() {
@@ -494,6 +507,112 @@ class GoalsTest extends WP_UnitTestCase {
 
 		$this->assertCount( 3, WC()->cart->get_applied_coupons() );
 		$this->assertSame( 2, did_action( 'woocommerce_before_calculate_totals' ) - $before );
+	}
+
+	/**
+	 * A fixed goal coupon takes its tax too when the cart shows prices with
+	 * tax and they are entered without it.
+	 */
+	public function test_free_shipping_counts_the_tax_of_a_fixed_coupon() {
+		$this->tax();
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'fixed', 150 );
+		$coupon->set_discount_type( 'fixed_cart' );
+		$coupon->set_amount( 10 );
+		$coupon->save();
+		$this->fill_cart( 2 );
+
+		// 212 less R$10 and its R$2 tax is 200.
+		$this->assertSame( 92.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '76.67' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
+	 * A percentage coupon counts at its own rate, not at what it rounded to
+	 * on a small cart.
+	 */
+	public function test_free_shipping_counts_a_percentage_at_its_rate() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$this->product->set_regular_price( '1.01' );
+		$this->product->save();
+		$this->coupon( 'meta', 1 );
+		$this->fill_cart( 1 );
+
+		$this->assertSame( 221.22, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '221.22' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
+	 * A coupon past its maximum spend no longer takes from the minimum.
+	 */
+	public function test_free_shipping_drops_coupons_past_their_maximum() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'half', 50 );
+		$coupon->set_amount( 50 );
+		$coupon->set_maximum_amount( 100 );
+		$coupon->save();
+		$this->product->set_regular_price( '60' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		$this->assertSame( 140.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '140' );
+		$this->assertFalse( WC()->cart->has_discount( 'half' ) );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
+	 * Percentages applied one after another compound, rather than add up.
+	 */
+	public function test_free_shipping_compounds_sequential_coupons() {
+		update_option( 'woocommerce_calc_discounts_sequentially', 'yes' );
+		$this->zone( array( 'BR' => 'country' ), '200' );
+
+		foreach ( array( 'first' => 110, 'second' => 120 ) as $code => $minimum ) {
+			$coupon = $this->coupon( $code, $minimum );
+			$coupon->set_amount( 50 );
+			$coupon->save();
+		}
+
+		$this->product->set_regular_price( '100' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		// 800 less 50% twice is 200.
+		$this->assertSame( 700.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '700' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
+	 * An individual use coupon keeps the next one out, so only its own
+	 * discount counts.
+	 */
+	public function test_free_shipping_counts_an_individual_use_coupon_alone() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$first = $this->coupon( 'first', 110 );
+		$first->set_amount( 50 );
+		$first->set_individual_use( true );
+		$first->save();
+		$second = $this->coupon( 'second', 120 );
+		$second->set_amount( 50 );
+		$second->save();
+
+		$this->product->set_regular_price( '100' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		$this->assertSame( 300.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '300' );
+		$this->assertSame( array( 'first' ), WC()->cart->get_applied_coupons() );
+		$this->assertContains( 'free_shipping', $this->rates() );
 	}
 
 	/**
