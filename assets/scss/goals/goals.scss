@@ -103,16 +103,16 @@ body:has(.csbmw-goals-holder.is-placed) .csbmw-goals-holder.is-automatic {
 	display: none;
 }
 
-// The checkout's order summary pads its sections at the sides in the
-// sidebar, but not in the collapsible summary of narrow screens, nor does
-// the cart's.
+// The checkout's order summary pads its sections at the sides, but not in
+// the collapsible summary of layouts narrower than the sidebar one, nor
+// does the cart's.
 .wp-block-woocommerce-checkout-order-summary-block .csbmw-goals-summary {
 	padding-left: 16px;
 	padding-right: 16px;
 }
 
 /* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
-.wc-block-components-checkout-order-summary__content .csbmw-goals-summary {
+.wc-block-components-sidebar-layout:not(.is-large) .wc-block-components-checkout-order-summary__content .csbmw-goals-summary {
 	padding-left: 0;
 	padding-right: 0;
 }
