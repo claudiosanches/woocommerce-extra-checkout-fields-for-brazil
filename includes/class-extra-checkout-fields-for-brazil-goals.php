@@ -437,8 +437,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$with_tax = $cart->display_prices_including_tax();
 		$discount = (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
 
+		// What a coupon limited to some items takes from what the customer
+		// adds is unknown, so only coupons on the whole cart grow with it.
 		foreach ( $cart->get_coupons() as $code => $coupon ) {
-			if ( $coupon->is_type( 'percent' ) && 0 < $subtotal ) {
+			if ( $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon ) && 0 < $subtotal ) {
 				$rate += (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) / $subtotal;
 			}
 		}
@@ -447,6 +449,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$pending = array_filter(
 			self::goal_coupons(),
 			static fn( $coupon ) => $coupon->is_type( array( 'percent', 'fixed_cart' ) )
+				&& self::covers_whole_cart( $coupon )
 				&& $subtotal < (float) $coupon->get_minimum_amount()
 				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
 				&& self::is_offered( $coupon, $cart )
@@ -472,6 +475,24 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		return $at;
+	}
+
+	/**
+	 * Whether a coupon discounts every item, whatever the customer adds.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return bool
+	 */
+	protected static function covers_whole_cart( $coupon ) {
+		return ! $coupon->get_product_ids()
+			&& ! $coupon->get_excluded_product_ids()
+			&& ! $coupon->get_product_categories()
+			&& ! $coupon->get_excluded_product_categories()
+			&& ! $coupon->get_exclude_sale_items()
+			&& ! $coupon->get_limit_usage_to_x_items()
+			&& ! $coupon->get_meta( 'product_brands' )
+			&& ! $coupon->get_meta( 'exclude_product_brands' );
 	}
 
 	/**

@@ -373,6 +373,20 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A goal coupon limited to some products leaves the minimum alone, as
+	 * what it takes depends on what the customer adds.
+	 */
+	public function test_free_shipping_leaves_out_coupons_on_some_items() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'meta', 150 );
+		$coupon->set_product_ids( array( $this->product->get_id() ) );
+		$coupon->save();
+		$this->fill_cart( 2 );
+
+		$this->assertSame( 100.0, $this->remaining()['free_shipping'] );
+	}
+
+	/**
 	 * Before the CEP, free shipping shows only when every zone a Brazilian
 	 * address can fall in agrees.
 	 */
