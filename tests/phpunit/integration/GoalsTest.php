@@ -350,6 +350,29 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A goal coupon the cart reaches before free shipping takes its discount
+	 * from the minimum too.
+	 */
+	public function test_free_shipping_counts_goal_coupons_on_the_way() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$this->coupon( 'meta', 150 );
+		$this->coupon( 'later', 250 );
+		$this->fill_cart( 2 );
+
+		// 222.23 less 10% is 200; the coupon from 250 comes after it.
+		$this->assertSame( 122.23, $this->remaining()['free_shipping'] );
+
+		$extra = new WC_Product_Simple();
+		$extra->set_regular_price( '122.23' );
+		$extra->save();
+		WC()->cart->add_to_cart( $extra->get_id(), 1 );
+		WC()->cart->calculate_totals();
+
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * Before the CEP, free shipping shows only when every zone a Brazilian
 	 * address can fall in agrees.
 	 */

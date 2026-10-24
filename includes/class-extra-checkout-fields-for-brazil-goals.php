@@ -416,7 +416,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * Subtotal from which a free shipping method's minimum is met, as
 	 * WooCommerce measures it. Percentage discounts take their share of what
-	 * the cart adds, so it takes more than the minimum still missing.
+	 * the cart adds, so it takes more than the minimum still missing, and so
+	 * do the goal coupons the cart reaches on the way.
 	 *
 	 * @param WC_Shipping_Free_Shipping $method Free shipping method.
 	 * @param WC_Cart                   $cart   Cart.
@@ -425,22 +426,68 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	protected static function amount_at( $method, $cart ) {
 		$subtotal = (float) $cart->get_displayed_subtotal();
-		$total    = $subtotal;
+		$minimum  = (float) $method->min_amount;
+		$discount = 0.0;
 		$rate     = 0.0;
-		$decimals = wc_get_price_decimals();
 
-		if ( 'no' === $method->ignore_discounts ) {
-			$with_tax = $cart->display_prices_including_tax();
-			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+		if ( 'no' !== $method->ignore_discounts ) {
+			return self::reach( $minimum, $subtotal, $discount, $rate );
+		}
 
-			foreach ( $cart->get_coupons() as $code => $coupon ) {
-				if ( $coupon->is_type( 'percent' ) && 0 < $subtotal ) {
-					$rate += (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) / $subtotal;
-				}
+		$with_tax = $cart->display_prices_including_tax();
+		$discount = (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+
+		foreach ( $cart->get_coupons() as $code => $coupon ) {
+			if ( $coupon->is_type( 'percent' ) && 0 < $subtotal ) {
+				$rate += (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) / $subtotal;
 			}
 		}
 
-		$missing = (float) $method->min_amount - round( $total, $decimals );
+		$at      = self::reach( $minimum, $subtotal, $discount, $rate );
+		$pending = array_filter(
+			self::goal_coupons(),
+			static fn( $coupon ) => $coupon->is_type( array( 'percent', 'fixed_cart' ) )
+				&& $subtotal < (float) $coupon->get_minimum_amount()
+				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
+				&& self::is_offered( $coupon, $cart )
+		);
+
+		usort( $pending, static fn( $a, $b ) => (float) $a->get_minimum_amount() <=> (float) $b->get_minimum_amount() );
+
+		// Each one applied pushes the minimum further, which may reach the next.
+		foreach ( $pending as $coupon ) {
+			if ( null === $at || (float) $coupon->get_minimum_amount() > $at ) {
+				break;
+			}
+
+			if ( $coupon->is_type( 'percent' ) ) {
+				$share     = min( 1.0, (float) $coupon->get_amount() / 100 );
+				$rate     += $share;
+				$discount += $share * $subtotal;
+			} else {
+				$discount += (float) $coupon->get_amount();
+			}
+
+			$at = self::reach( $minimum, $subtotal, $discount, $rate );
+		}
+
+		return $at;
+	}
+
+	/**
+	 * Subtotal at which a minimum is met, from the discounts the cart takes
+	 * now and the share of what it adds that percentage discounts take.
+	 *
+	 * @param float $minimum  Minimum.
+	 * @param float $subtotal Cart subtotal.
+	 * @param float $discount Discount on the subtotal.
+	 * @param float $rate     Share of each amount added that goes in discounts.
+	 *
+	 * @return float|null Null when the discounts keep it out of reach.
+	 */
+	protected static function reach( $minimum, $subtotal, $discount, $rate ) {
+		$decimals = wc_get_price_decimals();
+		$missing  = $minimum - round( $subtotal - $discount, $decimals );
 
 		if ( 1 <= $rate ) {
 			return 0 >= $missing ? 0.0 : null;
