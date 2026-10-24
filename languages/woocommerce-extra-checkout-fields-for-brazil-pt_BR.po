@@ -1219,14 +1219,14 @@ msgid "WooCommerce > Settings > Shipping"
 msgstr "WooCommerce > Configurações > Entrega"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:592
-msgid "With Apply minimum order rule before coupon discount ticked in the Free shipping method, coupons do not raise the amount the cart needs."
-msgstr "Com Aplicar regras de valor mínimo do pedido antes do cupom de desconto marcado no método Frete grátis, os cupons não aumentam o valor que falta no carrinho."
+msgid "With \"Apply minimum order rule before coupon discount\" ticked in the Free shipping method, coupons do not raise the amount the cart needs."
+msgstr "Com a opção \"Aplicar regras de valor mínimo do pedido antes do cupom de desconto\" marcada no método Frete grátis, os cupons não aumentam o valor que falta no carrinho."
 
 #. translators: %s: link to the WooCommerce shipping settings
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:594
 #, php-format
-msgid "To leave only free shipping once the cart reaches it, tick Hide shipping rates when free shipping is available in %s."
-msgstr "Para deixar só o frete grátis quando o carrinho chegar a ele, marque Ocultar taxas de envio quando frete grátis estiver disponível em %s."
+msgid "To leave only free shipping once the cart reaches it, tick \"Hide shipping rates when free shipping is available\" in %s."
+msgstr "Para deixar só o frete grátis quando o carrinho chegar a ele, marque \"Ocultar taxas de envio quando frete grátis estiver disponível\" em %s."
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:595
 msgid "Shipping settings"
@@ -1312,7 +1312,7 @@ msgstr "Cor do trilho"
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:630
 msgid "Leave empty to follow the theme's text color. A Spending Goals block or shortcode can set its own."
-msgstr "Deixe vazio para seguir a cor do texto do tema. Um bloco Metas de Compra ou shortcode pode definir a sua."
+msgstr "Deixe vazio para seguir a cor do texto do tema. Um bloco Metas de compra ou shortcode pode definir a sua."
 
 #: build/blocks/spending-goals/index.js:1
 msgid "As in the store settings"
@@ -1333,7 +1333,7 @@ msgstr "Trilho"
 #: build/blocks/spending-goals/block.json
 msgctxt "block title"
 msgid "Spending Goals"
-msgstr "Metas de Compra"
+msgstr "Metas de compra"
 
 #: build/blocks/spending-goals/block.json
 msgctxt "block description"

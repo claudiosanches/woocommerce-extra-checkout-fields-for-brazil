@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T17:44:45+00:00\n"
+"POT-Creation-Date: 2026-10-24T19:10:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woocommerce-extra-checkout-fields-for-brazil\n"
@@ -587,13 +587,13 @@ msgid "WooCommerce > Settings > Shipping"
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:592
-msgid "With Apply minimum order rule before coupon discount ticked in the Free shipping method, coupons do not raise the amount the cart needs."
+msgid "With \"Apply minimum order rule before coupon discount\" ticked in the Free shipping method, coupons do not raise the amount the cart needs."
 msgstr ""
 
 #. translators: %s: link to the WooCommerce shipping settings
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:594
 #, php-format
-msgid "To leave only free shipping once the cart reaches it, tick Hide shipping rates when free shipping is available in %s."
+msgid "To leave only free shipping once the cart reaches it, tick \"Hide shipping rates when free shipping is available\" in %s."
 msgstr ""
 
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:595
@@ -983,7 +983,7 @@ msgstr ""
 #. translators: %s: discount amount
 #: includes/class-extra-checkout-fields-for-brazil-goals.php:285
 #: includes/class-extra-checkout-fields-for-brazil-goals.php:291
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:1298
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1320
 #, php-format
 msgid "%s off"
 msgstr ""
@@ -994,32 +994,32 @@ msgstr ""
 msgid "%s off each item"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:715
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:1291
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:737
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1313
 msgid "free shipping"
 msgstr ""
 
 #. translators: 1: amount still to spend, 2: what the customer gets, such as free shipping
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:903
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:925
 #, php-format
 msgid "Add %1$s more to get %2$s."
 msgstr ""
 
 #. translators: %s: what the customer got, such as free shipping and 10% off
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:912
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:934
 #, php-format
 msgid "You got %s."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:1118
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1140
 msgid "Spending goal"
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:1119
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1141
 msgid "Show how much more the cart needs to reach the minimum spend set in Usage restriction, and apply the coupon once it does."
 msgstr ""
 
-#: includes/class-extra-checkout-fields-for-brazil-goals.php:1480
+#: includes/class-extra-checkout-fields-for-brazil-goals.php:1507
 msgid "Spending goals progress bar, or null with no goal to show."
 msgstr ""
 
