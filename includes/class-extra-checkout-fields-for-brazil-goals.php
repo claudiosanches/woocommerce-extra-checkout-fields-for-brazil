@@ -620,6 +620,26 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
+	 * Whether the customer chose to pick the order up, which leaves no
+	 * shipping to make free.
+	 *
+	 * @return bool
+	 */
+	protected static function picks_up() {
+		$methods = WC()->shipping()->get_shipping_methods();
+		/** This filter is documented in woocommerce/includes/class-wc-customer.php */
+		$pickups = (array) apply_filters( 'woocommerce_local_pickup_methods', array( 'legacy_local_pickup', 'local_pickup' ) );
+
+		foreach ( wc_get_chosen_shipping_method_ids() as $id ) {
+			if ( in_array( $id, $pickups, true ) || ( isset( $methods[ $id ] ) && $methods[ $id ]->supports( 'local-pickup' ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Free shipping goal for the cart's destination.
 	 *
 	 * Before a Brazilian address has a CEP, the zone is unknown, so the goal
@@ -635,7 +655,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$customer = WC()->customer;
 
 		// An empty cart, as on a product page, is yet to hold what ships.
-		if ( ! $customer instanceof WC_Customer || ( ! $cart->is_empty() && ! $cart->needs_shipping() ) ) {
+		if ( ! $customer instanceof WC_Customer || ( ! $cart->is_empty() && ! $cart->needs_shipping() ) || self::picks_up() ) {
 			return null;
 		}
 

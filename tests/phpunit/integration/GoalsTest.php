@@ -387,6 +387,23 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Picking the order up leaves no shipping to make free.
+	 */
+	public function test_free_shipping_leaves_local_pickup_alone() {
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->fill_cart( 2 );
+		WC()->session->set( 'chosen_shipping_methods', array( 'local_pickup:9' ) );
+
+		$this->assertSame( array(), $this->remaining() );
+
+		WC()->session->set( 'chosen_shipping_methods', array( 'pickup_location:0' ) );
+		$this->assertSame( array(), $this->remaining() );
+
+		WC()->session->set( 'chosen_shipping_methods', array( 'flat_rate:1' ) );
+		$this->assertSame( array( 'free_shipping' => 50.0 ), $this->remaining() );
+	}
+
+	/**
 	 * Before the CEP, free shipping shows only when every zone a Brazilian
 	 * address can fall in agrees.
 	 */
