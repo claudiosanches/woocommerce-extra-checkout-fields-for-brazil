@@ -146,6 +146,27 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A 20% tax, on prices entered without it and shown with it in the cart.
+	 */
+	protected function tax() {
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+		update_option( 'woocommerce_prices_include_tax', 'no' );
+		update_option( 'woocommerce_tax_display_cart', 'incl' );
+		WC_Tax::_insert_tax_rate(
+			array(
+				'tax_rate_country'  => '',
+				'tax_rate'          => '20.0000',
+				'tax_rate_name'     => 'Tax',
+				'tax_rate_priority' => 1,
+				'tax_rate_compound' => 0,
+				'tax_rate_shipping' => 1,
+				'tax_rate_order'    => 1,
+				'tax_rate_class'    => '',
+			)
+		);
+	}
+
+	/**
 	 * Shipping methods the cart is offered.
 	 *
 	 * @return string[]
@@ -390,6 +411,20 @@ class GoalsTest extends WP_UnitTestCase {
 		$this->fill_cart( 7 );
 		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
 		$this->assertSame( -135.0, $this->remaining()['free_shipping'] );
+	}
+
+	/**
+	 * A goal coupon applies at its minimum even when tax leaves float noise
+	 * in the subtotal, as WooCommerce rounds it away.
+	 */
+	public function test_goal_coupon_applies_at_its_minimum_with_tax() {
+		$this->tax();
+		$this->product->set_regular_price( '100.10' );
+		$this->product->save();
+		$this->coupon( 'meta', 120.12 );
+		$this->fill_cart( 1 );
+
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
 	}
 
 	/**

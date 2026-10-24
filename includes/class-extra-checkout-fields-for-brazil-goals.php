@@ -237,6 +237,18 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
+	 * Cart subtotal as WooCommerce compares it with coupon minimums, without
+	 * the float noise prices with tax can leave in it.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return float
+	 */
+	protected static function subtotal( $cart ) {
+		return (float) wc_remove_number_precision( wc_add_number_precision( (float) $cart->get_displayed_subtotal() ) );
+	}
+
+	/**
 	 * Coupons marked as spending goals, with a minimum spend.
 	 *
 	 * @return WC_Coupon[]
@@ -362,7 +374,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @return array[]
 	 */
 	protected static function coupon_goals( $cart ) {
-		$subtotal = (float) $cart->get_displayed_subtotal();
+		$subtotal = self::subtotal( $cart );
 		$goals    = array();
 
 		foreach ( self::goal_coupons() as $coupon ) {
@@ -426,7 +438,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @return float|null Null when the discounts keep it out of reach.
 	 */
 	protected static function amount_at( $method, $cart ) {
-		$subtotal = (float) $cart->get_displayed_subtotal();
+		$subtotal = self::subtotal( $cart );
 		$minimum  = (float) $method->min_amount;
 		$discount = 0.0;
 		$rate     = 0.0;
@@ -737,7 +749,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			'type'      => 'free_shipping',
 			'label'     => __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
 			'threshold' => $goal,
-			'remaining' => round( $goal - (float) $cart->get_displayed_subtotal(), wc_get_price_decimals() ),
+			'remaining' => round( $goal - self::subtotal( $cart ), wc_get_price_decimals() ),
 		);
 	}
 
@@ -807,7 +819,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			return null;
 		}
 
-		return self::build_bar( $goals, (float) $cart->get_displayed_subtotal(), self::style( $style ) );
+		return self::build_bar( $goals, self::subtotal( $cart ), self::style( $style ) );
 	}
 
 	/**
@@ -987,7 +999,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		$applied  = (array) $session->get( self::APPLIED, array() );
 		$declined = (array) $session->get( self::DECLINED, array() );
-		$subtotal = (float) $cart->get_displayed_subtotal();
+		$subtotal = self::subtotal( $cart );
 		$changed  = false;
 
 		$this->applying = true;
@@ -1064,7 +1076,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 			$session->set( self::APPLIED, array_values( array_diff( (array) $session->get( self::APPLIED, array() ), array( $code ) ) ) );
 
-			if ( (float) $cart->get_displayed_subtotal() < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) {
+			if ( self::subtotal( $cart ) < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) {
 				return;
 			}
 
