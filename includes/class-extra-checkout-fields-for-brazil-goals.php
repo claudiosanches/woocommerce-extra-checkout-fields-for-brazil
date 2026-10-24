@@ -1011,24 +1011,36 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$declined = (array) $session->get( self::DECLINED, array() );
 		$subtotal = self::subtotal( $cart );
 		$changed  = false;
+		$coupons  = self::goal_coupons();
 
 		$this->applying = true;
 
-		foreach ( self::goal_coupons() as $coupon ) {
-			$code    = wc_format_coupon_code( $coupon->get_code() );
-			$reached = $subtotal >= (float) $coupon->get_minimum_amount();
+		// WooCommerce works the totals out after each coupon; once at the end
+		// is enough.
+		$recalculates = array(
+			'woocommerce_applied_coupon' => remove_action( 'woocommerce_applied_coupon', array( $cart, 'calculate_totals' ), 20 ),
+			'woocommerce_removed_coupon' => remove_action( 'woocommerce_removed_coupon', array( $cart, 'calculate_totals' ), 20 ),
+		);
+
+		// Take off first, as a coupon still on can keep another from applying.
+		foreach ( $coupons as $coupon ) {
+			$code = wc_format_coupon_code( $coupon->get_code() );
+
+			if ( $cart->has_discount( $code ) && in_array( $code, $applied, true ) && ( $subtotal < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) ) {
+				$cart->remove_coupon( $code );
+				$applied = array_values( array_diff( $applied, array( $code ) ) );
+				$changed = true;
+			}
+		}
+
+		foreach ( $coupons as $coupon ) {
+			$code = wc_format_coupon_code( $coupon->get_code() );
 
 			if ( $cart->has_discount( $code ) ) {
-				if ( in_array( $code, $applied, true ) && ( ! $reached || ! self::is_eligible( $coupon, $cart ) ) ) {
-					$cart->remove_coupon( $code );
-					$applied = array_values( array_diff( $applied, array( $code ) ) );
-					$changed = true;
-				}
-
 				continue;
 			}
 
-			if ( ! $reached ) {
+			if ( $subtotal < (float) $coupon->get_minimum_amount() ) {
 				$declined = array_values( array_diff( $declined, array( $code ) ) );
 				continue;
 			}
@@ -1050,6 +1062,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		$session->set( self::APPLIED, $applied );
 		$session->set( self::DECLINED, $declined );
+
+		foreach ( array_keys( array_filter( $recalculates ) ) as $hook ) {
+			add_action( $hook, array( $cart, 'calculate_totals' ), 20, 0 );
+		}
 
 		if ( $changed ) {
 			$cart->calculate_totals();

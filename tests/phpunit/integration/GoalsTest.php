@@ -448,6 +448,55 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A coupon past its maximum comes off in the same pass that applies the
+	 * one it kept out.
+	 */
+	public function test_goal_coupon_replaces_one_past_its_maximum() {
+		$old = $this->coupon( 'old', 100 );
+		$old->set_maximum_amount( 150 );
+		$old->set_individual_use( true );
+		$old->save();
+		// Newer coupons are checked first.
+		wp_update_post(
+			array(
+				'ID'            => $old->get_id(),
+				'post_date'     => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
+				'post_date_gmt' => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
+			)
+		);
+		$new = $this->coupon( 'new', 200 );
+		$new->set_amount( 20 );
+		$new->save();
+
+		$this->fill_cart( 2 );
+		$this->assertTrue( WC()->cart->has_discount( 'old' ) );
+
+		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 4 );
+		$this->assertFalse( WC()->cart->has_discount( 'old' ) );
+		$this->assertTrue( WC()->cart->has_discount( 'new' ) );
+	}
+
+	/**
+	 * Applying several goal coupons works the totals out once more, not once
+	 * per coupon.
+	 */
+	public function test_goal_coupons_apply_in_one_pass() {
+		foreach ( array( 'one', 'two', 'three' ) as $code ) {
+			$coupon = $this->coupon( $code, 100 );
+			$coupon->set_discount_type( 'fixed_cart' );
+			$coupon->set_amount( 1 );
+			$coupon->save();
+		}
+
+		$this->fill_cart( 1 );
+		$before = did_action( 'woocommerce_before_calculate_totals' );
+		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 2 );
+
+		$this->assertCount( 3, WC()->cart->get_applied_coupons() );
+		$this->assertSame( 2, did_action( 'woocommerce_before_calculate_totals' ) - $before );
+	}
+
+	/**
 	 * A goal coupon limited to some products leaves the minimum alone, as
 	 * what it takes depends on what the customer adds.
 	 */
