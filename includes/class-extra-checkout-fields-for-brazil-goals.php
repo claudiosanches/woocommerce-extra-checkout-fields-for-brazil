@@ -341,6 +341,16 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			}
 		}
 
+		// WooCommerce checks a guest's own uses only at checkout, by the
+		// billing email.
+		$limit = $coupon->get_usage_limit_per_user();
+		$email = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
+		$store = $coupon->get_data_store();
+
+		if ( 0 < $limit && ! get_current_user_id() && '' !== $email && $store && $store->get_usage_by_email( $coupon, $email ) >= $limit ) {
+			return false;
+		}
+
 		$ignore_minimum = '__return_false';
 
 		add_filter( 'woocommerce_coupon_validate_minimum_amount', $ignore_minimum );

@@ -428,6 +428,26 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A guest whose billing email used up a coupon is not given it, as
+	 * WooCommerce would refuse it at checkout.
+	 */
+	public function test_goal_coupon_skips_a_guest_who_used_it() {
+		$coupon = $this->coupon( 'meta', 100 );
+		$coupon->set_usage_limit_per_user( 1 );
+		$coupon->save();
+		add_post_meta( $coupon->get_id(), '_used_by', 'used@example.com' );
+
+		WC()->customer->set_billing_email( 'used@example.com' );
+		$this->fill_cart( 2 );
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+		$this->assertArrayNotHasKey( '10% off', $this->remaining() );
+
+		WC()->customer->set_billing_email( 'new@example.com' );
+		WC()->cart->calculate_totals();
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
 	 * A goal coupon limited to some products leaves the minimum alone, as
 	 * what it takes depends on what the customer adds.
 	 */
