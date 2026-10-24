@@ -1218,6 +1218,16 @@ msgstr "Defina o mínimo em %s."
 msgid "WooCommerce > Settings > Shipping"
 msgstr "WooCommerce > Configurações > Entrega"
 
+#. translators: %s: link to the WooCommerce shipping settings
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:594
+#, php-format
+msgid "To leave only free shipping once the cart reaches it, tick Hide shipping rates when free shipping is available in %s."
+msgstr "Para deixar só o frete grátis quando o carrinho chegar a ele, marque Ocultar taxas de envio quando frete grátis estiver disponível em %s."
+
+#: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:595
+msgid "Shipping settings"
+msgstr "Configurações de entrega"
+
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:598
 #: includes/admin/class-extra-checkout-fields-for-brazil-settings.php:605
 #: build/blocks/spending-goals/index.js:1
