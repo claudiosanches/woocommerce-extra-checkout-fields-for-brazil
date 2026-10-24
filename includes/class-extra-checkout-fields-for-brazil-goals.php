@@ -1340,9 +1340,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @param string $wrapper Attributes of the wrapper element.
 	 * @param string $style   Its own style, empty to follow the setting.
 	 *
-	 * @return string
+	 * @return string Empty in REST responses, such as the Store API's cart
+	 *                item descriptions, which run shortcodes.
 	 */
 	protected static function placed( $wrapper, $style ) {
+		if ( wp_is_serving_rest_request() ) {
+			return '';
+		}
+
 		wp_enqueue_style( self::HANDLE );
 		wp_enqueue_script( self::HANDLE );
 

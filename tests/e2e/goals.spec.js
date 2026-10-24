@@ -399,6 +399,17 @@ test.describe( 'Spending goals', () => {
 			await expect(
 				page.locator( '.csbmw-goals-holder.is-automatic' )
 			).toBeHidden();
+
+			// The Store API runs shortcodes in cart item descriptions, which
+			// the Mini-Cart and Cart block print.
+			await addProduct( page, 1 );
+			const cart = await (
+				await page.request.get( '/wp-json/wc/store/v1/cart' )
+			).json();
+
+			expect( cart.items[ 0 ].description ).not.toContain(
+				'csbmw-goals'
+			);
 		} finally {
 			wpCli( [
 				'post',
