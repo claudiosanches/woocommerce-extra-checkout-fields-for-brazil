@@ -452,6 +452,16 @@ test.describe( 'Spending goals', () => {
 
 			await expect( placed ).toHaveText( FREE_SHIPPING );
 
+			let refreshes = 0;
+
+			page.on( 'request', ( request ) => {
+				if (
+					request.url().includes( 'wc-ajax=csbmw_spending_goals' )
+				) {
+					refreshes++;
+				}
+			} );
+
 			await page
 				.locator(
 					'.wc-block-components-quantity-selector__button--plus'
@@ -461,6 +471,10 @@ test.describe( 'Spending goals', () => {
 			await expect( placed ).toHaveText(
 				'Add R$150.00 more to get 10% off.'
 			);
+
+			// One change, one redraw, however many ways the page hears of it.
+			await page.waitForTimeout( 1000 );
+			expect( refreshes ).toBe( 1 );
 		} finally {
 			wpCli( [
 				'post',

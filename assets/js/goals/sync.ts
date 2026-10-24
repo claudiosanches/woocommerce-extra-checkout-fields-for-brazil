@@ -9,6 +9,15 @@ import { CART_STORE_KEY } from '@woocommerce/block-data';
 
 let last = '';
 let timer = 0;
+// Newer WooCommerce announces the blocks' cart changes itself, which the
+// bars already hear.
+let announced = false;
+
+window.addEventListener( 'wc-blocks_store_sync_required', ( event ) => {
+	if ( 'from_@wordpress/data' === ( event as CustomEvent ).detail?.type ) {
+		announced = true;
+	}
+} );
 
 subscribe( () => {
 	const cart = select( CART_STORE_KEY );
@@ -39,11 +48,11 @@ subscribe( () => {
 	}
 
 	window.clearTimeout( timer );
-	timer = window.setTimeout(
-		() =>
+	timer = window.setTimeout( () => {
+		if ( ! announced ) {
 			document.body.dispatchEvent(
 				new window.Event( 'csbmw_goals_refresh' )
-			),
-		300
-	);
+			);
+		}
+	}, 300 );
 }, CART_STORE_KEY );
