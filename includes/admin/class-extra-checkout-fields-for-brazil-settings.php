@@ -589,7 +589,7 @@ class Extra_Checkout_Fields_For_Brazil_Settings {
 					/* translators: %s: link to the WooCommerce shipping zones */
 					__( 'Set the minimum in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping' ) ) . '">' . esc_html__( 'WooCommerce > Settings > Shipping', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
-				) . ' ' . sprintf(
+				) . ' ' . __( 'With Apply minimum order rule before coupon discount ticked in the Free shipping method, coupons do not raise the amount the cart needs.', 'woocommerce-extra-checkout-fields-for-brazil' ) . ' ' . sprintf(
 					/* translators: %s: link to the WooCommerce shipping settings */
 					__( 'To leave only free shipping once the cart reaches it, tick Hide shipping rates when free shipping is available in %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
 					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping&section=options' ) ) . '">' . esc_html__( 'Shipping settings', 'woocommerce-extra-checkout-fields-for-brazil' ) . '</a>'
