@@ -756,6 +756,26 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A zone asking for both has nothing to reach when the coupon's maximum
+	 * spend comes before the zone's minimum.
+	 */
+	public function test_free_shipping_coupon_needs_its_maximum_past_the_minimum() {
+		$coupon = $this->coupon( 'fretegratis', 100 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->set_maximum_amount( 150 );
+		$coupon->save();
+
+		$this->zone( array( 'BR' => 'country' ), '200', 'no', 'both' );
+		$this->fill_cart( 2 );
+		$this->assertSame( array(), $this->remaining() );
+
+		$coupon->set_maximum_amount( 250 );
+		$coupon->save();
+		$this->assertSame( array( 'free_shipping' => 100.0 ), $this->remaining() );
+	}
+
+	/**
 	 * Either the coupon or the minimum, whichever comes first, and the
 	 * coupon alone with the zone's minimum turned off.
 	 */

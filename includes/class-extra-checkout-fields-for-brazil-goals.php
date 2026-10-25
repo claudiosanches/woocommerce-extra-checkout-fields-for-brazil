@@ -462,32 +462,45 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Subtotal from which the cart holds a coupon that gives free shipping.
+	 * Subtotals between which the cart holds a coupon that gives free
+	 * shipping.
 	 *
 	 * @param WC_Cart $cart Cart.
 	 *
-	 * @return float|null Null when no coupon will.
+	 * @return float[][] Lowest and highest subtotal of each coupon.
 	 */
-	protected static function free_shipping_coupon_at( $cart ) {
-		$at    = null;
+	protected static function free_shipping_coupon_spans( $cart ) {
+		$spans = array();
 		$codes = array();
 
 		foreach ( self::goal_coupons() as $coupon ) {
 			$codes[] = wc_format_coupon_code( $coupon->get_code() );
 
 			if ( $coupon->get_free_shipping() && self::is_offered( $coupon, $cart ) ) {
-				$minimum = (float) $coupon->get_minimum_amount();
-				$at      = null === $at ? $minimum : min( $at, $minimum );
+				$spans[] = array( (float) $coupon->get_minimum_amount(), self::maximum( $coupon ) );
 			}
 		}
 
 		foreach ( $cart->get_coupons() as $code => $coupon ) {
 			if ( $coupon->get_free_shipping() && $coupon->is_valid() && ! in_array( wc_format_coupon_code( $code ), $codes, true ) ) {
-				return 0.0;
+				$spans[] = array( 0.0, self::maximum( $coupon ) );
 			}
 		}
 
-		return $at;
+		return $spans;
+	}
+
+	/**
+	 * Highest subtotal a coupon applies to.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return float
+	 */
+	protected static function maximum( $coupon ) {
+		$maximum = (float) $coupon->get_maximum_amount();
+
+		return 0 < $maximum ? $maximum : INF;
 	}
 
 	/**
@@ -784,16 +797,17 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 *
 	 * @param WC_Shipping_Zone $zone      Zone.
 	 * @param WC_Cart          $cart      Cart.
-	 * @param float|null       $coupon_at Subtotal from which the cart holds a
-	 *                                    free shipping coupon, or null.
+	 * @param float[][]        $spans     Subtotals between which the cart
+	 *                                    holds a free shipping coupon.
 	 * @param bool             $by_amount Whether the zone's minimum counts as
 	 *                                    a way there, or only as a condition
 	 *                                    the coupon also needs.
 	 *
 	 * @return float|null Null when the zone has no free shipping to reach.
 	 */
-	protected static function zone_free_shipping( $zone, $cart, $coupon_at, $by_amount ) {
-		$best = null;
+	protected static function zone_free_shipping( $zone, $cart, $spans, $by_amount ) {
+		$best      = null;
+		$coupon_at = $spans ? min( array_column( $spans, 0 ) ) : null;
 
 		foreach ( $zone->get_shipping_methods( true ) as $method ) {
 			if ( ! $method instanceof WC_Shipping_Free_Shipping ) {
@@ -813,8 +827,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			} elseif ( 'either' === $requires ) {
 				$ways = array_filter( array( $coupon_at, $way ), static fn( $value ) => null !== $value );
 				$at   = $ways ? min( $ways ) : null;
-			} elseif ( 'both' === $requires && null !== $coupon_at && null !== $amount_at ) {
-				$at = max( $coupon_at, $amount_at );
+			} elseif ( 'both' === $requires && null !== $amount_at ) {
+				$at = null;
+
+				// The coupon has to last up to the minimum.
+				foreach ( $spans as list( $from, $to ) ) {
+					$both = max( $from, $amount_at );
+					$at   = $both <= $to && ( null === $at || $both < $at ) ? $both : $at;
+				}
 			} else {
 				$at = null;
 			}
@@ -918,9 +938,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			return null;
 		}
 
-		$coupon_at = self::free_shipping_coupon_at( $cart );
+		$spans = self::free_shipping_coupon_spans( $cart );
 
-		if ( ! $by_amount && null === $coupon_at ) {
+		if ( ! $by_amount && ! $spans ) {
 			return null;
 		}
 
@@ -936,7 +956,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			$goal  = null;
 
 			foreach ( self::brazilian_zones() as $zone ) {
-				$zone_goal = self::zone_free_shipping( $zone, $cart, $coupon_at, $by_amount );
+				$zone_goal = self::zone_free_shipping( $zone, $cart, $spans, $by_amount );
 
 				if ( $found && $zone_goal !== $goal ) {
 					return null;
@@ -961,7 +981,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 					),
 				)
 			);
-			$goal = self::zone_free_shipping( $zone, $cart, $coupon_at, $by_amount );
+			$goal = self::zone_free_shipping( $zone, $cart, $spans, $by_amount );
 		}
 
 		// Free whatever the cart holds, which leaves nothing to reach.
