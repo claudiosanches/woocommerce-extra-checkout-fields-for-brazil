@@ -665,6 +665,33 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A coupon an individual use one keeps out now counts once that one
+	 * passes its maximum spend.
+	 */
+	public function test_free_shipping_counts_a_coupon_after_an_individual_use_one() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$first = $this->coupon( 'first', 50 );
+		$first->set_amount( 50 );
+		$first->set_maximum_amount( 100 );
+		$first->set_individual_use( true );
+		$first->save();
+		$second = $this->coupon( 'second', 150 );
+		$second->set_amount( 50 );
+		$second->save();
+
+		$this->product->set_regular_price( '60' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		$this->assertTrue( WC()->cart->has_discount( 'first' ) );
+		$this->assertSame( 340.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '340' );
+		$this->assertSame( array( 'second' ), array_values( WC()->cart->get_applied_coupons() ) );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * A goal coupon limited to some products leaves the minimum alone, as
 	 * what it takes depends on what the customer adds.
 	 */

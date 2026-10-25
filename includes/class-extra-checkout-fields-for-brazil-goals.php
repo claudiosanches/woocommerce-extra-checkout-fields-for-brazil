@@ -320,12 +320,15 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 *
 	 * @param WC_Coupon $coupon Coupon.
 	 * @param WC_Cart   $cart   Cart.
+	 * @param bool      $alone  Whether to leave out the individual use rules
+	 *                          against the cart's coupons, which may be gone
+	 *                          by then.
 	 *
 	 * @return bool
 	 */
-	protected static function is_eligible( $coupon, $cart ) {
+	protected static function is_eligible( $coupon, $cart, $alone = false ) {
 		$code    = wc_format_coupon_code( $coupon->get_code() );
-		$applied = array_filter(
+		$applied = $alone ? array() : array_filter(
 			$cart->get_applied_coupons(),
 			static fn( $other ) => ! wc_is_same_coupon( $other, $code )
 		);
@@ -420,14 +423,15 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 *
 	 * @param WC_Coupon $coupon Coupon.
 	 * @param WC_Cart   $cart   Cart.
+	 * @param bool      $alone  As is_eligible() takes it.
 	 *
 	 * @return bool
 	 */
-	protected static function is_offered( $coupon, $cart ) {
+	protected static function is_offered( $coupon, $cart, $alone = false ) {
 		$code     = wc_format_coupon_code( $coupon->get_code() );
 		$declined = WC()->session ? (array) WC()->session->get( self::DECLINED, array() ) : array();
 
-		return ( ! in_array( $code, $declined, true ) || $cart->has_discount( $code ) ) && self::is_eligible( $coupon, $cart );
+		return ( ! in_array( $code, $declined, true ) || $cart->has_discount( $code ) ) && self::is_eligible( $coupon, $cart, $alone );
 	}
 
 	/**
@@ -559,7 +563,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			static fn( $coupon ) => self::grows_with_cart( $coupon )
 				&& $subtotal < (float) $coupon->get_minimum_amount()
 				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
-				&& self::is_offered( $coupon, $cart )
+				&& self::is_offered( $coupon, $cart, true )
 		);
 
 		usort( $pending, static fn( $a, $b ) => (float) $a->get_minimum_amount() <=> (float) $b->get_minimum_amount() );
