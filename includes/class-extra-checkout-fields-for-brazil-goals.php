@@ -249,7 +249,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Coupons marked as spending goals, with a minimum spend.
+	 * Coupons marked as spending goals, with a minimum spend, nearest
+	 * minimum first, the order they apply in when reached at once.
 	 *
 	 * @return WC_Coupon[]
 	 */
@@ -279,6 +280,11 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 				$coupons[] = $coupon;
 			}
 		}
+
+		usort(
+			$coupons,
+			static fn( $a, $b ) => array( (float) $a->get_minimum_amount(), $b->get_id() ) <=> array( (float) $b->get_minimum_amount(), $a->get_id() )
+		);
 
 		return $coupons;
 	}
@@ -565,8 +571,6 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
 				&& self::is_offered( $coupon, $cart, true )
 		);
-
-		usort( $pending, static fn( $a, $b ) => (float) $a->get_minimum_amount() <=> (float) $b->get_minimum_amount() );
 
 		foreach ( $pending as $coupon ) {
 			$coupons[] = self::whole_discount( $cart, $coupon );

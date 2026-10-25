@@ -499,14 +499,6 @@ class GoalsTest extends WP_UnitTestCase {
 		$old->set_maximum_amount( 150 );
 		$old->set_individual_use( true );
 		$old->save();
-		// Newer coupons are checked first.
-		wp_update_post(
-			array(
-				'ID'            => $old->get_id(),
-				'post_date'     => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
-				'post_date_gmt' => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
-			)
-		);
 		$new = $this->coupon( 'new', 200 );
 		$new->set_amount( 20 );
 		$new->save();
@@ -661,6 +653,37 @@ class GoalsTest extends WP_UnitTestCase {
 
 		$this->add_product( '300' );
 		$this->assertSame( array( 'first' ), WC()->cart->get_applied_coupons() );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
+	 * Goal coupons reached at once apply nearest minimum first, as free
+	 * shipping counts them.
+	 */
+	public function test_goal_coupons_apply_nearest_first() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$near = $this->coupon( 'near', 110 );
+		$near->set_individual_use( true );
+		$near->save();
+		wp_update_post(
+			array(
+				'ID'            => $near->get_id(),
+				'post_date'     => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
+				'post_date_gmt' => gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ),
+			)
+		);
+		$far = $this->coupon( 'far', 120 );
+		$far->set_amount( 80 );
+		$far->save();
+
+		$this->product->set_regular_price( '100' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		$this->assertSame( 122.23, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '122.23' );
+		$this->assertSame( array( 'near' ), array_values( WC()->cart->get_applied_coupons() ) );
 		$this->assertContains( 'free_shipping', $this->rates() );
 	}
 
