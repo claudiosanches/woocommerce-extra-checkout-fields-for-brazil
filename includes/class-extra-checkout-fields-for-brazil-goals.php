@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use Automattic\WooCommerce\Blocks\Domain\Services\Hydration;
+use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema;
 
 /**
@@ -98,13 +100,6 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	protected $making_room = false;
 
 	/**
-	 * Whether WooCommerce is preloading a Store API response into the page.
-	 *
-	 * @var bool
-	 */
-	protected static $hydrating = false;
-
-	/**
 	 * Whether a customer has used up a coupon, by coupon, user and email,
 	 * until the next totals pass.
 	 *
@@ -122,8 +117,6 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		add_action( 'woocommerce_applied_coupon', array( $this, 'stop_making_room' ) );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
 		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
-		add_filter( 'woocommerce_hydration_dispatch_request', array( $this, 'start_hydrating' ) );
-		add_filter( 'woocommerce_hydration_request_after_callbacks', array( $this, 'stop_hydrating' ) );
 
 		add_action( 'init', array( $this, 'register_block' ) );
 		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
@@ -1413,32 +1406,6 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * Note that WooCommerce is preloading a Store API response.
-	 *
-	 * @param mixed $response Response to use instead, or null.
-	 *
-	 * @return mixed
-	 */
-	public function start_hydrating( $response ) {
-		self::$hydrating = true;
-
-		return $response;
-	}
-
-	/**
-	 * The preloaded response is ready.
-	 *
-	 * @param mixed $response Response.
-	 *
-	 * @return mixed
-	 */
-	public function stop_hydrating( $response ) {
-		self::$hydrating = false;
-
-		return $response;
-	}
-
-	/**
 	 * Note that the coupons about to come off make room for an individual use
 	 * one, which is not the customer removing them, nor a reason to apply them
 	 * again.
@@ -1707,7 +1674,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 *                Store API's cart item descriptions, which run shortcodes.
 	 */
 	protected static function placed( $wrapper, $style ) {
-		if ( wp_is_serving_rest_request() || self::$hydrating ) {
+		if ( wp_is_serving_rest_request() || self::is_hydrating() ) {
 			return '';
 		}
 
@@ -1720,6 +1687,18 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		return '<div ' . $wrapper . ' data-goals-style="' . esc_attr( $style ) . '" aria-live="polite">' . self::render( 'block', $style ) . '</div>';
+	}
+
+	/**
+	 * Whether WooCommerce is preloading a Store API response into the page,
+	 * told by the nonce check it turns off for exactly that long.
+	 *
+	 * @return bool
+	 */
+	protected static function is_hydrating() {
+		$hydration = Package::container()->get( Hydration::class );
+
+		return false !== has_filter( 'woocommerce_store_api_disable_nonce_check', array( $hydration, 'disable_nonce_check_callback' ) );
 	}
 
 	/**

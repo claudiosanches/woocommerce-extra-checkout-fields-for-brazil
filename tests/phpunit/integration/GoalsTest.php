@@ -1099,6 +1099,24 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A preload that fails leaves the bars placed after it alone.
+	 */
+	public function test_failed_preload_leaves_placed_bars() {
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->fill_cart( 1 );
+		$fail = static function () {
+			throw new Exception( 'Extension failed.' );
+		};
+		add_filter( 'woocommerce_hydration_dispatch_request', $fail, 20 );
+
+		$hydration = Automattic\WooCommerce\Blocks\Package::container()->get( Automattic\WooCommerce\Blocks\Domain\Services\Hydration::class );
+		$hydration->get_rest_api_response_data( '/wc/store/v1/cart' );
+		remove_filter( 'woocommerce_hydration_dispatch_request', $fail, 20 );
+
+		$this->assertStringContainsString( '100.00 more to get free shipping.', do_shortcode( '[csbmw_spending_goals]' ) );
+	}
+
+	/**
 	 * A placed bar can choose its own style, and the store's colors travel
 	 * with the bar.
 	 */
