@@ -929,6 +929,31 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A zone asking for both needs the minimum met where the coupon applies,
+	 * after the goal coupons reached on the way there.
+	 */
+	public function test_free_shipping_coupon_needs_the_minimum_met_within_it() {
+		$coupon = $this->coupon( 'fretegratis', 250 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->save();
+		$half = $this->coupon( 'half', 220 );
+		$half->set_amount( 50 );
+		$half->save();
+
+		$this->zone( array( 'BR' => 'country' ), '200', 'no', 'both' );
+		$this->product->set_regular_price( '100' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		// From 250 the coupon applies, and 400 less 50% is 200.
+		$this->assertSame( 300.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '300' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * Either the coupon or the minimum, whichever comes first, and the
 	 * coupon alone with the zone's minimum turned off.
 	 */

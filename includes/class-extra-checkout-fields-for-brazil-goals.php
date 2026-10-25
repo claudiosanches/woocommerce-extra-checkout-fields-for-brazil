@@ -538,10 +538,11 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 *
 	 * @param WC_Shipping_Free_Shipping $method Free shipping method.
 	 * @param WC_Cart                   $cart   Cart.
+	 * @param float                     $from   Lowest subtotal to look from.
 	 *
 	 * @return float|null Null when the discounts keep it out of reach.
 	 */
-	protected static function amount_at( $method, $cart ) {
+	protected static function amount_at( $method, $cart, $from = 0.0 ) {
 		$subtotal = self::subtotal( $cart );
 		$minimum  = (float) $method->min_amount;
 		$total    = $subtotal;
@@ -551,6 +552,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			$with_tax = $cart->display_prices_including_tax();
 			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
 			$coupons  = self::coupons_on_the_way( $cart, $subtotal );
+		}
+
+		if ( $from > $subtotal ) {
+			return self::met_from( $minimum, $from, $coupons );
 		}
 
 		// Whether it is met now is what WooCommerce measures, not the estimate.
@@ -868,10 +873,11 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			} elseif ( 'both' === $requires && null !== $amount_at ) {
 				$at = null;
 
-				// The coupon has to last up to the minimum.
+				// The minimum has to be met while the coupon applies, which the
+				// goal coupons reached on the way there can undo.
 				foreach ( $spans as list( $from, $to ) ) {
-					$both = max( $from, $amount_at );
-					$at   = $both <= $to && ( null === $at || $both < $at ) ? $both : $at;
+					$both = $from > $amount_at ? self::amount_at( $method, $cart, $from ) : $amount_at;
+					$at   = null !== $both && $both <= $to && ( null === $at || $both < $at ) ? $both : $at;
 				}
 			} else {
 				$at = null;
