@@ -632,6 +632,30 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Applied one after another, percentages take from what fixed product
+	 * coupons leave, as those apply first.
+	 */
+	public function test_free_shipping_takes_sequential_percentages_after_fixed_product_coupons() {
+		update_option( 'woocommerce_calc_discounts_sequentially', 'yes' );
+		$this->zone( array( 'BR' => 'country' ), '100' );
+		$fixed = $this->coupon( 'fixed', 25 );
+		$fixed->set_discount_type( 'fixed_product' );
+		$fixed->set_amount( 20 );
+		$fixed->set_product_ids( array( $this->product->get_id() ) );
+		$fixed->save();
+		$half = $this->coupon( 'half', 25 );
+		$half->set_amount( 50 );
+		$half->save();
+		$this->fill_cart( 1 );
+
+		// 220 less 20, then less 50%, is 100.
+		$this->assertSame( 170.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '170' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * An individual use coupon keeps the next one out, so only its own
 	 * discount counts.
 	 */

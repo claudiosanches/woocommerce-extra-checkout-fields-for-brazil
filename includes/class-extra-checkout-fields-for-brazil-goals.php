@@ -622,6 +622,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			'individual' => $coupon->get_individual_use(),
 			'share'      => min( 1.0, $share ),
 			'fixed'      => $fixed,
+			// WooCommerce applies these before percentages.
+			'first'      => $coupon->is_type( 'fixed_product' ),
 		);
 	}
 
@@ -662,7 +664,8 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	/**
 	 * What the coupons take at a subtotal: the share of it the total keeps,
 	 * and a fixed amount. An individual use coupon applies alone, and
-	 * percentages compound when WooCommerce applies coupons one after another.
+	 * percentages compound when WooCommerce applies coupons one after another,
+	 * taking also from what fixed product coupons leave.
 	 *
 	 * @param array[] $coupons  Coupons, as discount() describes them.
 	 * @param float   $subtotal Subtotal.
@@ -673,6 +676,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$sequential = 'yes' === get_option( 'woocommerce_calc_discounts_sequentially', 'no' );
 		$active     = array();
 		$kept       = 1.0;
+		$first      = 0.0;
 		$fixed      = 0.0;
 
 		foreach ( $coupons as $coupon ) {
@@ -686,10 +690,17 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 			$active[] = $coupon;
 			$kept     = $sequential ? $kept * ( 1 - $coupon['share'] ) : $kept - $coupon['share'];
-			$fixed   += $coupon['fixed'];
+
+			if ( $coupon['first'] ) {
+				$first += $coupon['fixed'];
+			} else {
+				$fixed += $coupon['fixed'];
+			}
 		}
 
-		return array( max( 0.0, $kept ), $fixed );
+		$kept = max( 0.0, $kept );
+
+		return array( $kept, $fixed + ( $sequential ? $first * $kept : $first ) );
 	}
 
 	/**
