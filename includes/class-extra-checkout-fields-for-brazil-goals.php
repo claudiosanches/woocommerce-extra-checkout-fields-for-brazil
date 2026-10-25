@@ -536,16 +536,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		// What a coupon limited to some items takes from what the customer
 		// adds is unknown, so only coupons on the whole cart grow with it.
 		foreach ( $cart->get_coupons() as $code => $coupon ) {
-			$whole     = $coupon->is_type( 'percent' ) && self::covers_whole_cart( $coupon );
-			$coupons[] = $whole
-				? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
+			$coupons[] = self::grows_with_cart( $coupon )
+				? self::whole_discount( $cart, $coupon )
 				: self::discount( $coupon, 0.0, (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) );
 		}
 
 		$pending = array_filter(
 			self::goal_coupons(),
-			static fn( $coupon ) => $coupon->is_type( array( 'percent', 'fixed_cart' ) )
-				&& self::covers_whole_cart( $coupon )
+			static fn( $coupon ) => self::grows_with_cart( $coupon )
 				&& $subtotal < (float) $coupon->get_minimum_amount()
 				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
 				&& self::is_offered( $coupon, $cart )
@@ -554,12 +552,36 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		usort( $pending, static fn( $a, $b ) => (float) $a->get_minimum_amount() <=> (float) $b->get_minimum_amount() );
 
 		foreach ( $pending as $coupon ) {
-			$coupons[] = $coupon->is_type( 'percent' )
-				? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
-				: self::discount( $coupon, 0.0, self::as_displayed( $cart, (float) $coupon->get_amount() ) );
+			$coupons[] = self::whole_discount( $cart, $coupon );
 		}
 
 		return $coupons;
+	}
+
+	/**
+	 * Whether a coupon takes its full rate or amount from whatever the cart
+	 * grows to: a percentage or fixed cart discount on every item.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return bool
+	 */
+	protected static function grows_with_cart( $coupon ) {
+		return $coupon->is_type( array( 'percent', 'fixed_cart' ) ) && self::covers_whole_cart( $coupon );
+	}
+
+	/**
+	 * What a coupon on the whole cart takes, in full.
+	 *
+	 * @param WC_Cart   $cart   Cart.
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return array As discount() describes it.
+	 */
+	protected static function whole_discount( $cart, $coupon ) {
+		return $coupon->is_type( 'percent' )
+			? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
+			: self::discount( $coupon, 0.0, self::as_displayed( $cart, (float) $coupon->get_amount() ) );
 	}
 
 	/**

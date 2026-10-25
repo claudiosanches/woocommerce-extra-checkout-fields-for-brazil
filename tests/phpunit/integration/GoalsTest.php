@@ -560,6 +560,25 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A fixed coupon larger than the cart takes its whole amount once the
+	 * cart grows past it.
+	 */
+	public function test_free_shipping_counts_a_fixed_coupon_beyond_the_cart() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'fixed', 25 );
+		$coupon->set_discount_type( 'fixed_cart' );
+		$coupon->set_amount( 100 );
+		$coupon->save();
+		$this->fill_cart( 1 );
+
+		$this->assertTrue( WC()->cart->has_discount( 'fixed' ) );
+		$this->assertSame( 250.0, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '250' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * A percentage coupon counts at its own rate, not at what it rounded to
 	 * on a small cart.
 	 */
