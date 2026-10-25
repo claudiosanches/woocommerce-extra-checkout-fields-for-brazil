@@ -954,6 +954,33 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A free shipping coupon counts from where an individual use goal coupon
+	 * reached before it no longer keeps it out.
+	 */
+	public function test_free_shipping_coupon_waits_for_an_individual_use_one() {
+		$coupon = $this->coupon( 'fretegratis', 150 );
+		$coupon->set_amount( 0 );
+		$coupon->set_free_shipping( true );
+		$coupon->save();
+		$solo = $this->coupon( 'solo', 120 );
+		$solo->set_individual_use( true );
+		$solo->save();
+
+		$this->zone( array( 'BR' => 'country' ), '0', 'no', 'coupon' );
+		$this->product->set_regular_price( '100' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+		$this->assertArrayNotHasKey( 'free_shipping', $this->remaining() );
+
+		$solo->set_maximum_amount( 200 );
+		$solo->save();
+		$this->assertSame( 100.01, $this->remaining()['free_shipping'] );
+
+		$this->add_product( '100.01' );
+		$this->assertContains( 'free_shipping', $this->rates() );
+	}
+
+	/**
 	 * Either the coupon or the minimum, whichever comes first, and the
 	 * coupon alone with the zone's minimum turned off.
 	 */

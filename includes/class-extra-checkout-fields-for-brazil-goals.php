@@ -504,9 +504,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 		foreach ( self::goal_coupons() as $coupon ) {
 			$codes[] = wc_format_coupon_code( $coupon->get_code() );
+			$from    = $coupon->get_free_shipping() && self::is_offered( $coupon, $cart, true ) ? self::applies_from( $cart, $coupon ) : null;
 
-			if ( $coupon->get_free_shipping() && self::is_offered( $coupon, $cart ) ) {
-				$spans[] = array( (float) $coupon->get_minimum_amount(), self::maximum( $coupon ) );
+			if ( null !== $from ) {
+				$spans[] = array( $from, self::maximum( $coupon ) );
 			}
 		}
 
@@ -517,6 +518,42 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		return $spans;
+	}
+
+	/**
+	 * Lowest subtotal from which a goal coupon applies, once the cart's
+	 * coupons and the goal coupons reached before it make way.
+	 *
+	 * @param WC_Cart   $cart   Cart.
+	 * @param WC_Coupon $coupon Goal coupon.
+	 *
+	 * @return float|null Null when an individual use coupon keeps it out.
+	 */
+	protected static function applies_from( $cart, $coupon ) {
+		$code    = wc_format_coupon_code( $coupon->get_code() );
+		$minimum = (float) $coupon->get_minimum_amount();
+		$maximum = self::maximum( $coupon );
+		$coupons = array();
+
+		foreach ( $cart->get_coupons() as $applied ) {
+			$coupons[] = self::discount( $applied, 0.0, 0.0 );
+		}
+
+		foreach ( self::goal_coupons() as $goal ) {
+			if ( ! $cart->has_discount( wc_format_coupon_code( $goal->get_code() ) ) && self::is_offered( $goal, $cart, true ) ) {
+				$coupons[] = self::discount( $goal, 0.0, 0.0 );
+			}
+		}
+
+		$points = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $minimum && $point <= $maximum );
+
+		foreach ( array_merge( array( $minimum ), $points ) as $point ) {
+			if ( in_array( $code, array_column( self::active_at( $coupons, $point ), 'code' ), true ) ) {
+				return $point;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -641,6 +678,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	protected static function discount( $coupon, $share, $fixed ) {
 		return array(
+			'code'       => wc_format_coupon_code( $coupon->get_code() ),
 			'minimum'    => (float) $coupon->get_minimum_amount(),
 			'maximum'    => (float) $coupon->get_maximum_amount(),
 			'individual' => $coupon->get_individual_use(),
@@ -698,22 +736,12 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 */
 	protected static function discounts_at( $coupons, $subtotal ) {
 		$sequential = 'yes' === get_option( 'woocommerce_calc_discounts_sequentially', 'no' );
-		$active     = array();
 		$kept       = 1.0;
 		$first      = 0.0;
 		$fixed      = 0.0;
 
-		foreach ( $coupons as $coupon ) {
-			if ( $subtotal < $coupon['minimum'] || ( 0 < $coupon['maximum'] && $subtotal > $coupon['maximum'] ) ) {
-				continue;
-			}
-
-			if ( $active && ( $coupon['individual'] || $active[0]['individual'] ) ) {
-				continue;
-			}
-
-			$active[] = $coupon;
-			$kept     = $sequential ? $kept * ( 1 - $coupon['share'] ) : $kept - $coupon['share'];
+		foreach ( self::active_at( $coupons, $subtotal ) as $coupon ) {
+			$kept = $sequential ? $kept * ( 1 - $coupon['share'] ) : $kept - $coupon['share'];
 
 			if ( $coupon['first'] ) {
 				$first += $coupon['fixed'];
@@ -725,6 +753,34 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$kept = max( 0.0, $kept );
 
 		return array( $kept, $fixed + ( $sequential ? $first * $kept : $first ) );
+	}
+
+	/**
+	 * Coupons that apply at a subtotal: those within their minimum and
+	 * maximum spend, with an individual use one alone.
+	 *
+	 * @param array[] $coupons  Coupons, as discount() describes them, in the
+	 *                          order they apply.
+	 * @param float   $subtotal Subtotal.
+	 *
+	 * @return array[]
+	 */
+	protected static function active_at( $coupons, $subtotal ) {
+		$active = array();
+
+		foreach ( $coupons as $coupon ) {
+			if ( $subtotal < $coupon['minimum'] || ( 0 < $coupon['maximum'] && $subtotal > $coupon['maximum'] ) ) {
+				continue;
+			}
+
+			if ( $active && ( $coupon['individual'] || $active[0]['individual'] ) ) {
+				continue;
+			}
+
+			$active[] = $coupon;
+		}
+
+		return $active;
 	}
 
 	/**
