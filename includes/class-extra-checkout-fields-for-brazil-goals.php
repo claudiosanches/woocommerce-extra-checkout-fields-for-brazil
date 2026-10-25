@@ -105,6 +105,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	protected static $hydrating = false;
 
 	/**
+	 * Whether a customer has used up a coupon, by coupon, user and email,
+	 * until the next totals pass.
+	 *
+	 * @var bool[]
+	 */
+	protected static $used_up = array();
+
+	/**
 	 * Initialize hooks.
 	 */
 	public function __construct() {
@@ -392,7 +400,13 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			return false;
 		}
 
-		$email   = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
+		$email = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
+		$key   = $coupon->get_id() . '|' . get_current_user_id() . '|' . $email;
+
+		if ( isset( self::$used_up[ $key ] ) ) {
+			return self::$used_up[ $key ];
+		}
+
 		$users   = get_current_user_id() ? array( get_current_user_id() ) : array();
 		$aliases = array( $email );
 
@@ -429,7 +443,9 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			static fn( $alias ) => in_array( strtolower( (string) $alias ), $aliases, true )
 		);
 
-		return count( $used ) + (int) $store->get_tentative_usages_for_user( $coupon->get_id(), $aliases ) >= $limit;
+		self::$used_up[ $key ] = count( $used ) + (int) $store->get_tentative_usages_for_user( $coupon->get_id(), $aliases ) >= $limit;
+
+		return self::$used_up[ $key ];
 	}
 
 	/**
@@ -1268,6 +1284,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		}
 
 		$this->applying = true;
+		self::$used_up  = array();
 
 		// WooCommerce works the totals out after each coupon; once at the end
 		// is enough.

@@ -491,6 +491,32 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Showing the goals again checks a coupon's uses no more until the
+	 * totals change.
+	 */
+	public function test_goal_coupon_uses_are_checked_once_per_pass() {
+		$this->zone( array( 'BR' => 'country' ), '200' );
+		$coupon = $this->coupon( 'meta', 1000 );
+		$coupon->set_usage_limit_per_user( 1 );
+		$coupon->save();
+		WC()->customer->set_billing_email( 'guest@example.com' );
+		$this->fill_cart( 1 );
+
+		$queries = 0;
+		$count   = static function ( $query ) use ( &$queries ) {
+			$queries += false !== strpos( $query, '_maybe_used_by_' ) ? 1 : 0;
+
+			return $query;
+		};
+		add_filter( 'query', $count );
+		Extra_Checkout_Fields_For_Brazil_Goals::get_goals();
+		Extra_Checkout_Fields_For_Brazil_Goals::get_goals();
+		remove_filter( 'query', $count );
+
+		$this->assertSame( 1, $queries );
+	}
+
+	/**
 	 * A coupon past its maximum comes off in the same pass that applies the
 	 * one it kept out.
 	 */
