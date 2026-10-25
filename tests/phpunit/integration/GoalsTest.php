@@ -532,6 +532,34 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An extension throwing while a goal coupon applies leaves the cart's
+	 * hooks as they were, and the next pass applies it.
+	 */
+	public function test_goal_coupons_recover_from_an_exception() {
+		$this->coupon( 'meta', 100 );
+		$throw = static function () {
+			throw new RuntimeException( 'Extension failed.' );
+		};
+		add_action( 'woocommerce_applied_coupon', $throw );
+
+		try {
+			$this->fill_cart( 2 );
+		} catch ( RuntimeException $e ) {
+			$this->assertSame( 'Extension failed.', $e->getMessage() );
+		}
+
+		remove_action( 'woocommerce_applied_coupon', $throw );
+
+		$this->assertSame( 20, has_action( 'woocommerce_applied_coupon', array( WC()->cart, 'calculate_totals' ) ) );
+		$this->assertSame( 20, has_action( 'woocommerce_removed_coupon', array( WC()->cart, 'calculate_totals' ) ) );
+		$this->assertFalse( has_filter( 'woocommerce_coupon_message', '__return_empty_string' ) );
+
+		WC()->cart->remove_coupons();
+		WC()->cart->calculate_totals();
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
 	 * A fixed goal coupon takes its tax too when the cart shows prices with
 	 * tax and they are entered without it.
 	 */

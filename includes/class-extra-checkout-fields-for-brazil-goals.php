@@ -1261,19 +1261,11 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @return void
 	 */
 	public function apply_reached_coupons( $cart ) {
-		$session = WC()->session;
-
 		// While an individual use coupon is going on, the goal coupons it
 		// replaces would come straight back.
-		if ( $this->applying || $this->making_room || ! $session ) {
+		if ( $this->applying || $this->making_room || ! WC()->session ) {
 			return;
 		}
-
-		$applied  = (array) $session->get( self::APPLIED, array() );
-		$declined = (array) $session->get( self::DECLINED, array() );
-		$subtotal = self::subtotal( $cart );
-		$changed  = false;
-		$coupons  = self::goal_coupons();
 
 		$this->applying = true;
 
@@ -1283,6 +1275,41 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			'woocommerce_applied_coupon' => remove_action( 'woocommerce_applied_coupon', array( $cart, 'calculate_totals' ), 20 ),
 			'woocommerce_removed_coupon' => remove_action( 'woocommerce_removed_coupon', array( $cart, 'calculate_totals' ), 20 ),
 		);
+
+		try {
+			try {
+				$changed = self::swap_coupons( $cart );
+			} finally {
+				remove_filter( 'woocommerce_coupon_message', '__return_empty_string' );
+
+				foreach ( array_keys( array_filter( $recalculates ) ) as $hook ) {
+					add_action( $hook, array( $cart, 'calculate_totals' ), 20, 0 );
+				}
+			}
+
+			if ( $changed ) {
+				$cart->calculate_totals();
+			}
+		} finally {
+			$this->applying = false;
+		}
+	}
+
+	/**
+	 * Take off the goal coupons the cart no longer reaches, then apply the
+	 * ones it does.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return bool Whether the cart's coupons changed.
+	 */
+	protected static function swap_coupons( $cart ) {
+		$session  = WC()->session;
+		$applied  = (array) $session->get( self::APPLIED, array() );
+		$declined = (array) $session->get( self::DECLINED, array() );
+		$subtotal = self::subtotal( $cart );
+		$changed  = false;
+		$coupons  = self::goal_coupons();
 
 		// Take off first, as a coupon still on can keep another from applying.
 		foreach ( $coupons as $coupon ) {
@@ -1325,15 +1352,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$session->set( self::APPLIED, $applied );
 		$session->set( self::DECLINED, $declined );
 
-		foreach ( array_keys( array_filter( $recalculates ) ) as $hook ) {
-			add_action( $hook, array( $cart, 'calculate_totals' ), 20, 0 );
-		}
-
-		if ( $changed ) {
-			$cart->calculate_totals();
-		}
-
-		$this->applying = false;
+		return $changed;
 	}
 
 	/**
