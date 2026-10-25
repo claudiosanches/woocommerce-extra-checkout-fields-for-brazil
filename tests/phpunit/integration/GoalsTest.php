@@ -1028,6 +1028,23 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The Store API cart a page preloads for the blocks leaves out placed
+	 * bars in item descriptions, as its REST responses do.
+	 */
+	public function test_preloaded_cart_prints_no_placed_bar() {
+		$this->zone( array( 'BR' => 'country' ), '150' );
+		$this->product->set_short_description( '[csbmw_spending_goals]' );
+		$this->product->save();
+		$this->fill_cart( 1 );
+
+		$hydration = Automattic\WooCommerce\Blocks\Package::container()->get( Automattic\WooCommerce\Blocks\Domain\Services\Hydration::class );
+		$cart      = $hydration->get_rest_api_response_data( '/wc/store/v1/cart' );
+
+		$this->assertStringNotContainsString( 'csbmw-goals', $cart['body']['items'][0]['short_description'] );
+		$this->assertStringContainsString( 'csbmw-goals-holder', do_shortcode( '[csbmw_spending_goals]' ) );
+	}
+
+	/**
 	 * A placed bar can choose its own style, and the store's colors travel
 	 * with the bar.
 	 */
