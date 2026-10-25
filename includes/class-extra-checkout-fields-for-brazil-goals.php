@@ -115,6 +115,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		add_action( 'woocommerce_removed_coupon', array( $this, 'remember_declined_coupon' ) );
 		add_filter( 'woocommerce_apply_individual_use_coupon', array( $this, 'start_making_room' ) );
 		add_action( 'woocommerce_applied_coupon', array( $this, 'stop_making_room' ) );
+		add_filter( 'woocommerce_apply_with_individual_use_coupon', array( $this, 'stop_making_room' ) );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
 		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
 
@@ -1421,12 +1422,17 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	}
 
 	/**
-	 * The individual use coupon is on.
+	 * The individual use coupon is on, or turned down for another one kept
+	 * on.
 	 *
-	 * @return void
+	 * @param mixed $value What the hook passes on.
+	 *
+	 * @return mixed
 	 */
-	public function stop_making_room() {
+	public function stop_making_room( $value = null ) {
 		$this->making_room = false;
+
+		return $value;
 	}
 
 	/**

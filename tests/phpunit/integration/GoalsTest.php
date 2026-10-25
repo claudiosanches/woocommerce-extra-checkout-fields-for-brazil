@@ -357,6 +357,31 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * An individual use coupon WooCommerce turns down, as an extension kept
+	 * another one on, leaves goal coupons applying.
+	 */
+	public function test_goal_coupons_apply_after_a_refused_individual_use_coupon() {
+		foreach ( array( 'own', 'other' ) as $code ) {
+			$coupon = $this->coupon( $code, 0, false );
+			$coupon->set_individual_use( true );
+			$coupon->save();
+		}
+
+		$this->coupon( 'meta', 100 );
+		$keep = static fn( $keep, $coupon, $applied ) => $applied;
+		add_filter( 'woocommerce_apply_individual_use_coupon', $keep, 20, 3 );
+
+		$this->fill_cart( 1 );
+		WC()->cart->apply_coupon( 'own' );
+		$this->assertFalse( WC()->cart->apply_coupon( 'other' ) );
+		remove_filter( 'woocommerce_apply_individual_use_coupon', $keep, 20 );
+
+		WC()->cart->remove_coupon( 'own' );
+		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 2 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
 	 * Free shipping follows the zone's minimum and its discount rule.
 	 */
 	public function test_free_shipping_follows_the_zone() {
