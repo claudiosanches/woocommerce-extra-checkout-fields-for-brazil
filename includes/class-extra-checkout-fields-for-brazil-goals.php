@@ -1422,6 +1422,10 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 				continue;
 			}
 
+			// Tracked ahead, as an extension may throw once WooCommerce has
+			// put it on.
+			$session->set( self::APPLIED, array_values( array_unique( array_merge( $applied, array( $code ) ) ) ) );
+
 			// The bar tells the customer, rather than a notice.
 			add_filter( 'woocommerce_coupon_message', '__return_empty_string' );
 

@@ -584,7 +584,7 @@ class GoalsTest extends WP_UnitTestCase {
 
 	/**
 	 * An extension throwing while a goal coupon applies leaves the cart's
-	 * hooks as they were, and the next pass applies it.
+	 * hooks as they were, and the coupon tracked.
 	 */
 	public function test_goal_coupons_recover_from_an_exception() {
 		$this->coupon( 'meta', 100 );
@@ -605,8 +605,12 @@ class GoalsTest extends WP_UnitTestCase {
 		$this->assertSame( 20, has_action( 'woocommerce_removed_coupon', array( WC()->cart, 'calculate_totals' ) ) );
 		$this->assertFalse( has_filter( 'woocommerce_coupon_message', '__return_empty_string' ) );
 
-		WC()->cart->remove_coupons();
-		WC()->cart->calculate_totals();
+		// WooCommerce put the coupon on before the extension threw.
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 1 );
+		$this->assertFalse( WC()->cart->has_discount( 'meta' ) );
+
+		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 2 );
 		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
 	}
 
