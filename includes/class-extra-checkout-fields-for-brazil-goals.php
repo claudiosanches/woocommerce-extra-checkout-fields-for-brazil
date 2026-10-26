@@ -1,0 +1,1949 @@
+<?php
+/**
+ * Spending goals: how much more the cart needs for free shipping or a coupon.
+ *
+ * @package Extra_Checkout_Fields_For_Brazil/Goals
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+use Automattic\WooCommerce\Blocks\Domain\Services\Hydration;
+use Automattic\WooCommerce\Blocks\Package;
+use Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema;
+
+/**
+ * Extra_Checkout_Fields_For_Brazil_Goals class.
+ */
+class Extra_Checkout_Fields_For_Brazil_Goals {
+
+	/**
+	 * Script and style handle of the progress bar.
+	 *
+	 * @var string
+	 */
+	const HANDLE = 'woocommerce-extra-checkout-fields-for-brazil-goals';
+
+	/**
+	 * Coupon meta marking a coupon as a spending goal.
+	 *
+	 * @var string
+	 */
+	const COUPON_META = '_csbmw_spending_goal';
+
+	/**
+	 * Session key of the goal coupons the plugin applied.
+	 *
+	 * @var string
+	 */
+	const APPLIED = 'csbmw_goal_coupons';
+
+	/**
+	 * Session key of the goal coupons the customer removed.
+	 *
+	 * @var string
+	 */
+	const DECLINED = 'csbmw_goal_coupons_declined';
+
+	/**
+	 * WC AJAX endpoint printing the product page bar.
+	 *
+	 * @var string
+	 */
+	const ENDPOINT = 'csbmw_spending_goals';
+
+	/**
+	 * Shortcode printing the bar.
+	 *
+	 * @var string
+	 */
+	const SHORTCODE = 'csbmw_spending_goals';
+
+	/**
+	 * Ways the bar shows several goals.
+	 *
+	 * @var string[]
+	 */
+	const STYLES = array( 'milestones', 'next' );
+
+	/**
+	 * Store API namespace of the cart data.
+	 *
+	 * @var string
+	 */
+	const NAMESPACE = 'csbmw-goals';
+
+	/**
+	 * Where the bar can show, with the setting that turns it on.
+	 *
+	 * @var array
+	 */
+	const PLACES = array(
+		'cart'     => 'goals_cart',
+		'checkout' => 'goals_checkout',
+		'product'  => 'goals_product',
+	);
+
+	/**
+	 * Whether the plugin is changing the cart's coupons itself.
+	 *
+	 * @var bool
+	 */
+	protected $applying = false;
+
+	/**
+	 * Whether WooCommerce is taking coupons off for an individual use one.
+	 *
+	 * @var bool
+	 */
+	protected $making_room = false;
+
+	/**
+	 * Whether a customer has used up a coupon, by coupon, user and email,
+	 * until the next totals pass.
+	 *
+	 * @var bool[]
+	 */
+	protected static $used_up = array();
+
+	/**
+	 * Initialize hooks.
+	 */
+	public function __construct() {
+		add_action( 'woocommerce_after_calculate_totals', array( $this, 'apply_reached_coupons' ), 20 );
+		add_action( 'woocommerce_removed_coupon', array( $this, 'remember_declined_coupon' ) );
+		add_filter( 'woocommerce_apply_individual_use_coupon', array( $this, 'start_making_room' ) );
+		add_action( 'woocommerce_applied_coupon', array( $this, 'stop_making_room' ) );
+		add_filter( 'woocommerce_apply_with_individual_use_coupon', array( $this, 'stop_making_room' ) );
+		add_action( 'woocommerce_add_to_cart', array( $this, 'forget_declined_coupons' ) );
+		add_action( 'woocommerce_after_cart_item_quantity_update', array( $this, 'forget_declined_coupons_on_increase' ), 10, 3 );
+
+		add_action( 'init', array( $this, 'register_block' ) );
+		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
+
+		add_action( 'woocommerce_coupon_options', array( $this, 'coupon_field' ), 10, 2 );
+		add_action( 'woocommerce_coupon_options_save', array( $this, 'save_coupon_field' ), 10, 2 );
+
+		add_action( 'woocommerce_before_cart_totals', array( $this, 'cart_bar' ) );
+		add_filter( 'render_block_woocommerce/cart-order-summary-heading-block', array( $this, 'cart_summary_bar' ) );
+		add_action( 'woocommerce_blocks_cart_block_registration', array( $this, 'register_integration' ) );
+		add_action( 'woocommerce_blocks_checkout_block_registration', array( $this, 'register_integration' ) );
+		add_filter( 'render_block_woocommerce/checkout-order-summary-cart-items-block', array( $this, 'checkout_summary_bar' ) );
+		add_action( 'woocommerce_review_order_before_order_total', array( $this, 'checkout_bar' ) );
+		add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'product_bar' ) );
+		add_action( 'wc_ajax_' . self::ENDPOINT, array( $this, 'ajax_bar' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		if ( did_action( 'woocommerce_blocks_loaded' ) ) {
+			$this->register_cart_data();
+		} else {
+			add_action( 'woocommerce_blocks_loaded', array( $this, 'register_cart_data' ) );
+		}
+	}
+
+	/**
+	 * Plugin settings.
+	 *
+	 * @return array
+	 */
+	protected static function settings() {
+		return (array) get_option( 'wcbcf_settings', array() );
+	}
+
+	/**
+	 * Whether the bar shows in a place.
+	 *
+	 * @param string $place Key of PLACES.
+	 *
+	 * @return bool
+	 */
+	public static function shows_in( $place ) {
+		$settings = self::settings();
+
+		return isset( self::PLACES[ $place ] ) && ! empty( $settings[ self::PLACES[ $place ] ] );
+	}
+
+	/**
+	 * Whether the bar shows anywhere on its own, without a block or shortcode.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled() {
+		foreach ( array_keys( self::PLACES ) as $place ) {
+			if ( self::shows_in( $place ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * How the bar shows several goals.
+	 *
+	 * @param string $choice A block's or shortcode's own choice, empty to
+	 *                       follow the setting.
+	 *
+	 * @return string milestones or next.
+	 */
+	public static function style( $choice = '' ) {
+		if ( in_array( $choice, self::STYLES, true ) ) {
+			return $choice;
+		}
+
+		$settings = self::settings();
+
+		return isset( $settings['goals_style'] ) && 'next' === $settings['goals_style'] ? 'next' : 'milestones';
+	}
+
+	/**
+	 * Bar and track colors from the settings, empty to follow the theme.
+	 *
+	 * @return array
+	 */
+	public static function colors() {
+		$settings = self::settings();
+
+		return array(
+			'bar'   => isset( $settings['goals_bar_color'] ) ? (string) sanitize_hex_color( $settings['goals_bar_color'] ) : '',
+			'track' => isset( $settings['goals_track_color'] ) ? (string) sanitize_hex_color( $settings['goals_track_color'] ) : '',
+		);
+	}
+
+	/**
+	 * Custom properties giving a placed bar its own colors.
+	 *
+	 * @param string $bar   Bar color.
+	 * @param string $track Track color.
+	 *
+	 * @return string
+	 */
+	protected static function color_vars( $bar, $track ) {
+		$vars = '';
+
+		foreach ( array(
+			'--csbmw-goals-bar'   => $bar,
+			'--csbmw-goals-track' => $track,
+		) as $name => $color ) {
+			$color = sanitize_hex_color( (string) $color );
+
+			if ( $color ) {
+				$vars .= $name . ':' . $color . ';';
+			}
+		}
+
+		return $vars;
+	}
+
+	/**
+	 * Price as plain text, as messages and screen readers take it.
+	 *
+	 * @param float $amount Amount.
+	 *
+	 * @return string
+	 */
+	protected static function price( $amount ) {
+		return html_entity_decode( wp_strip_all_tags( wc_price( $amount ) ), ENT_QUOTES, 'UTF-8' );
+	}
+
+	/**
+	 * Cart subtotal as WooCommerce compares it with coupon minimums, without
+	 * the float noise prices with tax can leave in it.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return float
+	 */
+	protected static function subtotal( $cart ) {
+		return (float) wc_remove_number_precision( wc_add_number_precision( (float) $cart->get_displayed_subtotal() ) );
+	}
+
+	/**
+	 * Coupons marked as spending goals, with a minimum spend, nearest
+	 * minimum first, the order they apply in when reached at once.
+	 *
+	 * @return WC_Coupon[]
+	 */
+	public static function goal_coupons() {
+		if ( ! wc_coupons_enabled() ) {
+			return array();
+		}
+
+		$ids = get_posts(
+			array(
+				'post_type'      => 'shop_coupon',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
+				'fields'         => 'ids',
+				'meta_key'       => self::COUPON_META, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'     => 'yes', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			)
+		);
+
+		$coupons = array();
+
+		foreach ( $ids as $id ) {
+			$coupon = new WC_Coupon( $id );
+
+			if ( $coupon->get_code() && 0 < (float) $coupon->get_minimum_amount() ) {
+				$coupons[] = $coupon;
+			}
+		}
+
+		usort(
+			$coupons,
+			static fn( $a, $b ) => array( (float) $a->get_minimum_amount(), $b->get_id() ) <=> array( (float) $b->get_minimum_amount(), $a->get_id() )
+		);
+
+		return $coupons;
+	}
+
+	/**
+	 * What a coupon gives, for the bar.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return string
+	 */
+	protected static function coupon_label( $coupon ) {
+		$amount = (float) $coupon->get_amount();
+
+		if ( $coupon->is_type( 'percent' ) ) {
+			/* translators: %s: discount, such as 10% */
+			$label = sprintf( __( '%s off', 'woocommerce-extra-checkout-fields-for-brazil' ), wc_format_localized_decimal( $amount ) . '%' );
+		} elseif ( $coupon->is_type( 'fixed_product' ) ) {
+			/* translators: %s: discount amount */
+			$label = sprintf( __( '%s off each item', 'woocommerce-extra-checkout-fields-for-brazil' ), self::price( $amount ) );
+		} else {
+			/* translators: %s: discount amount */
+			$label = sprintf( __( '%s off', 'woocommerce-extra-checkout-fields-for-brazil' ), self::price( $amount ) );
+		}
+
+		/**
+		 * Filter what a coupon goal says the customer gets.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param string    $label  Label, such as "10% off".
+		 * @param WC_Coupon $coupon Coupon.
+		 */
+		return apply_filters( 'csbmw_spending_goal_coupon_label', $label, $coupon );
+	}
+
+	/**
+	 * Whether a coupon could apply to the cart once its minimum is reached.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param WC_Cart   $cart   Cart.
+	 * @param bool      $alone  Whether to leave out the individual use rules
+	 *                          against the cart's coupons, which may be gone
+	 *                          by then.
+	 *
+	 * @return bool
+	 */
+	protected static function is_eligible( $coupon, $cart, $alone = false ) {
+		$code    = wc_format_coupon_code( $coupon->get_code() );
+		$applied = $alone ? array() : array_filter(
+			$cart->get_applied_coupons(),
+			static fn( $other ) => ! wc_is_same_coupon( $other, $code )
+		);
+
+		// Applying it would remove the customer's coupons, or be refused.
+		if ( $applied && $coupon->get_individual_use() ) {
+			return false;
+		}
+
+		foreach ( $applied as $other ) {
+			if ( ( new WC_Coupon( $other ) )->get_individual_use() ) {
+				return false;
+			}
+		}
+
+		if ( self::is_used_up( $coupon, $cart ) ) {
+			return false;
+		}
+
+		$ignore_minimum = '__return_false';
+
+		add_filter( 'woocommerce_coupon_validate_minimum_amount', $ignore_minimum );
+		$valid = ( new WC_Discounts( $cart ) )->is_coupon_valid( $coupon );
+		remove_filter( 'woocommerce_coupon_validate_minimum_amount', $ignore_minimum );
+
+		return true === $valid;
+	}
+
+	/**
+	 * Whether the customer has used a coupon as often as it allows each one.
+	 *
+	 * WooCommerce checks only a logged in customer's user ID before checkout.
+	 * At checkout it also counts the account and billing emails, and for a
+	 * guest the accounts that share the billing email, so they count here too.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param WC_Cart   $cart   Cart.
+	 *
+	 * @return bool
+	 */
+	protected static function is_used_up( $coupon, $cart ) {
+		$limit = $coupon->get_usage_limit_per_user();
+		$store = $coupon->get_data_store();
+
+		if ( 0 >= $limit || ! $store ) {
+			return false;
+		}
+
+		$email = $cart->get_customer() ? strtolower( sanitize_email( $cart->get_customer()->get_billing_email() ) ) : '';
+		$key   = $coupon->get_id() . '|' . get_current_user_id() . '|' . $email;
+
+		if ( isset( self::$used_up[ $key ] ) ) {
+			return self::$used_up[ $key ];
+		}
+
+		$users   = get_current_user_id() ? array( get_current_user_id() ) : array();
+		$aliases = array( $email );
+
+		if ( ! $users && '' !== $email ) {
+			$users = get_users(
+				array(
+					'fields'     => 'ID',
+					'meta_key'   => 'billing_email', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'meta_value' => $email, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				)
+			);
+			$owner = get_user_by( 'email', $email );
+
+			if ( $owner ) {
+				$users[]   = $owner->ID;
+				$aliases[] = get_user_meta( $owner->ID, 'billing_email', true );
+			}
+		}
+
+		foreach ( $users as $user_id ) {
+			$user      = get_userdata( (int) $user_id );
+			$aliases[] = (string) $user_id;
+			$aliases[] = $user ? $user->user_email : '';
+		}
+
+		$aliases = array_values( array_unique( array_filter( array_map( static fn( $alias ) => strtolower( (string) $alias ), $aliases ) ) ) );
+
+		if ( ! $aliases ) {
+			return false;
+		}
+
+		$used = array_filter(
+			(array) get_post_meta( $coupon->get_id(), '_used_by', false ),
+			static fn( $alias ) => in_array( strtolower( (string) $alias ), $aliases, true )
+		);
+
+		self::$used_up[ $key ] = count( $used ) + (int) $store->get_tentative_usages_for_user( $coupon->get_id(), $aliases ) >= $limit;
+
+		return self::$used_up[ $key ];
+	}
+
+	/**
+	 * Whether a goal coupon is on offer: eligible, and not removed by the
+	 * customer unless they applied it again.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param WC_Cart   $cart   Cart.
+	 * @param bool      $alone  As is_eligible() takes it.
+	 *
+	 * @return bool
+	 */
+	protected static function is_offered( $coupon, $cart, $alone = false ) {
+		$code     = wc_format_coupon_code( $coupon->get_code() );
+		$declined = WC()->session ? (array) WC()->session->get( self::DECLINED, array() ) : array();
+
+		return ( ! in_array( $code, $declined, true ) || $cart->has_discount( $code ) ) && self::is_eligible( $coupon, $cart, $alone );
+	}
+
+	/**
+	 * Coupon goals for the cart.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return array[]
+	 */
+	protected static function coupon_goals( $cart ) {
+		$subtotal = self::subtotal( $cart );
+		$goals    = array();
+
+		foreach ( self::goal_coupons() as $coupon ) {
+			// Free shipping alone depends on the zone, which the free shipping
+			// goal weighs.
+			if ( ( 0 >= (float) $coupon->get_amount() && $coupon->get_free_shipping() ) || ! self::is_offered( $coupon, $cart ) ) {
+				continue;
+			}
+
+			$minimum = (float) $coupon->get_minimum_amount();
+
+			$goals[] = array(
+				'type'      => 'coupon',
+				'label'     => self::coupon_label( $coupon ),
+				'threshold' => $minimum,
+				'remaining' => $minimum - $subtotal,
+			);
+		}
+
+		return $goals;
+	}
+
+	/**
+	 * Subtotals between which the cart holds a coupon that gives free
+	 * shipping.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return float[][] Lowest and highest subtotal of each coupon.
+	 */
+	protected static function free_shipping_coupon_spans( $cart ) {
+		$spans   = array();
+		$codes   = array();
+		$offered = array();
+		$coupons = array();
+
+		foreach ( $cart->get_coupons() as $applied ) {
+			$coupons[] = self::discount( $applied, 0.0, 0.0 );
+		}
+
+		foreach ( self::goal_coupons() as $coupon ) {
+			$code    = wc_format_coupon_code( $coupon->get_code() );
+			$codes[] = $code;
+
+			if ( ! self::is_offered( $coupon, $cart, true ) ) {
+				continue;
+			}
+
+			$offered[] = $coupon;
+
+			if ( ! $cart->has_discount( $code ) ) {
+				$coupons[] = self::discount( $coupon, 0.0, 0.0 );
+			}
+		}
+
+		foreach ( $offered as $coupon ) {
+			$from = $coupon->get_free_shipping() ? self::applies_from( $cart, $coupon, $coupons ) : null;
+
+			if ( null !== $from ) {
+				$spans[] = array( $from, self::maximum( $coupon ) );
+			}
+		}
+
+		foreach ( $cart->get_coupons() as $code => $coupon ) {
+			if ( $coupon->get_free_shipping() && $coupon->is_valid() && ! in_array( wc_format_coupon_code( $code ), $codes, true ) ) {
+				$spans[] = array( 0.0, self::maximum( $coupon ) );
+			}
+		}
+
+		return $spans;
+	}
+
+	/**
+	 * Lowest subtotal from which a goal coupon applies, once the cart's
+	 * coupons and the goal coupons reached before it make way.
+	 *
+	 * @param WC_Cart   $cart    Cart.
+	 * @param WC_Coupon $coupon  Goal coupon.
+	 * @param array[]   $coupons The cart's coupons, then the goal coupons on
+	 *                           offer off it, as discount() describes them.
+	 *
+	 * @return float|null Null when an individual use coupon keeps it out.
+	 */
+	protected static function applies_from( $cart, $coupon, $coupons ) {
+		$code    = wc_format_coupon_code( $coupon->get_code() );
+		$minimum = (float) $coupon->get_minimum_amount();
+		$maximum = self::maximum( $coupon );
+
+		// Off the cart past its minimum, it is kept out up to the subtotal.
+		$start  = $cart->has_discount( $code ) ? $minimum : max( $minimum, self::subtotal( $cart ) );
+		$points = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $start && $point <= $maximum );
+
+		foreach ( array_merge( array( $start ), $points ) as $point ) {
+			if ( in_array( $code, array_column( self::active_at( $coupons, $point ), 'code' ), true ) ) {
+				return $point;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Highest subtotal a coupon applies to.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return float
+	 */
+	protected static function maximum( $coupon ) {
+		$maximum = (float) $coupon->get_maximum_amount();
+
+		return 0 < $maximum ? $maximum : INF;
+	}
+
+	/**
+	 * Subtotal from which a free shipping method's minimum is met, as
+	 * WooCommerce measures it, with the discounts the cart takes on the way.
+	 *
+	 * @param WC_Shipping_Free_Shipping $method Free shipping method.
+	 * @param WC_Cart                   $cart   Cart.
+	 * @param float                     $from   Lowest subtotal to look from.
+	 *
+	 * @return float|null Null when the discounts keep it out of reach.
+	 */
+	protected static function amount_at( $method, $cart, $from = 0.0 ) {
+		$subtotal = self::subtotal( $cart );
+		$minimum  = (float) $method->min_amount;
+		$total    = $subtotal;
+		$coupons  = array();
+
+		if ( 'no' === $method->ignore_discounts ) {
+			$with_tax = $cart->display_prices_including_tax();
+			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
+			$coupons  = self::coupons_on_the_way( $cart );
+		}
+
+		if ( $from > $subtotal ) {
+			return self::met_from( $minimum, $from, $coupons );
+		}
+
+		// Whether it is met now is what WooCommerce measures, not the estimate.
+		if ( round( $total, wc_get_price_decimals() ) >= $minimum ) {
+			return self::met_since( $minimum, $subtotal, $coupons );
+		}
+
+		return self::met_from( $minimum, $subtotal + self::cent(), $coupons );
+	}
+
+	/**
+	 * Coupons that discount the cart as it grows or shrinks: those on it, in
+	 * the order WooCommerce applies them, then the goal coupons not on it,
+	 * nearest first, whether still to be reached or kept out for now.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return array[] As discount() describes them.
+	 */
+	protected static function coupons_on_the_way( $cart ) {
+		$with_tax = $cart->display_prices_including_tax();
+		$coupons  = array();
+
+		// What a coupon limited to some items takes from what the customer
+		// adds is unknown, so only coupons on the whole cart grow with it.
+		foreach ( $cart->get_coupons() as $code => $coupon ) {
+			$coupons[] = self::grows_with_cart( $coupon )
+				? self::whole_discount( $cart, $coupon )
+				: self::discount( $coupon, 0.0, (float) $cart->get_coupon_discount_amount( $code, ! $with_tax ) );
+		}
+
+		$pending = array_filter(
+			self::goal_coupons(),
+			static fn( $coupon ) => self::grows_with_cart( $coupon )
+				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
+				&& self::is_offered( $coupon, $cart, true )
+		);
+
+		foreach ( $pending as $coupon ) {
+			$coupons[] = self::whole_discount( $cart, $coupon );
+		}
+
+		return $coupons;
+	}
+
+	/**
+	 * Whether a coupon takes its full rate or amount from whatever the cart
+	 * grows to: a percentage or fixed cart discount on every item.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return bool
+	 */
+	protected static function grows_with_cart( $coupon ) {
+		return $coupon->is_type( array( 'percent', 'fixed_cart' ) ) && self::covers_whole_cart( $coupon );
+	}
+
+	/**
+	 * What a coupon on the whole cart takes, in full.
+	 *
+	 * @param WC_Cart   $cart   Cart.
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return array As discount() describes it.
+	 */
+	protected static function whole_discount( $cart, $coupon ) {
+		return $coupon->is_type( 'percent' )
+			? self::discount( $coupon, (float) $coupon->get_amount() / 100, 0.0 )
+			: self::discount( $coupon, 0.0, self::as_displayed( $cart, (float) $coupon->get_amount() ) );
+	}
+
+	/**
+	 * What a coupon takes while the subtotal is within its minimum and
+	 * maximum spend.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 * @param float     $share  Share of the subtotal it takes.
+	 * @param float     $fixed  Fixed amount it takes.
+	 *
+	 * @return array
+	 */
+	protected static function discount( $coupon, $share, $fixed ) {
+		return array(
+			'code'       => wc_format_coupon_code( $coupon->get_code() ),
+			'minimum'    => (float) $coupon->get_minimum_amount(),
+			'maximum'    => (float) $coupon->get_maximum_amount(),
+			'individual' => $coupon->get_individual_use(),
+			'share'      => min( 1.0, $share ),
+			'fixed'      => $fixed,
+			// WooCommerce applies these before percentages.
+			'first'      => $coupon->is_type( 'fixed_product' ),
+		);
+	}
+
+	/**
+	 * A fixed coupon amount as the cart shows prices. WooCommerce takes it
+	 * with or without tax as prices are entered, which the cart may show the
+	 * other way.
+	 *
+	 * @param WC_Cart $cart   Cart.
+	 * @param float   $amount Coupon amount.
+	 *
+	 * @return float
+	 */
+	protected static function as_displayed( $cart, $amount ) {
+		$entered = (float) $cart->get_subtotal() + ( wc_prices_include_tax() ? (float) $cart->get_subtotal_tax() : 0.0 );
+
+		return 0 < $entered ? $amount * self::subtotal( $cart ) / $entered : $amount;
+	}
+
+	/**
+	 * Whether a coupon discounts every item, whatever the customer adds.
+	 *
+	 * @param WC_Coupon $coupon Coupon.
+	 *
+	 * @return bool
+	 */
+	protected static function covers_whole_cart( $coupon ) {
+		return ! $coupon->get_product_ids()
+			&& ! $coupon->get_excluded_product_ids()
+			&& ! $coupon->get_product_categories()
+			&& ! $coupon->get_excluded_product_categories()
+			&& ! $coupon->get_exclude_sale_items()
+			&& ! $coupon->get_limit_usage_to_x_items()
+			&& ! $coupon->get_meta( 'product_brands' )
+			&& ! $coupon->get_meta( 'exclude_product_brands' );
+	}
+
+	/**
+	 * What the coupons take at a subtotal: the share of it the total keeps,
+	 * and a fixed amount. An individual use coupon applies alone, and
+	 * percentages compound when WooCommerce applies coupons one after another,
+	 * taking also from what fixed product coupons leave.
+	 *
+	 * @param array[] $coupons  Coupons, as discount() describes them.
+	 * @param float   $subtotal Subtotal.
+	 *
+	 * @return float[] Share kept and fixed amount.
+	 */
+	protected static function discounts_at( $coupons, $subtotal ) {
+		$sequential = 'yes' === get_option( 'woocommerce_calc_discounts_sequentially', 'no' );
+		$kept       = 1.0;
+		$first      = 0.0;
+		$fixed      = 0.0;
+
+		foreach ( self::active_at( $coupons, $subtotal ) as $coupon ) {
+			$kept = $sequential ? $kept * ( 1 - $coupon['share'] ) : $kept - $coupon['share'];
+
+			if ( $coupon['first'] ) {
+				$first += $coupon['fixed'];
+			} else {
+				$fixed += $coupon['fixed'];
+			}
+		}
+
+		$kept = max( 0.0, $kept );
+
+		return array( $kept, $fixed + ( $sequential ? $first * $kept : $first ) );
+	}
+
+	/**
+	 * Coupons that apply at a subtotal: those within their minimum and
+	 * maximum spend, with an individual use one alone.
+	 *
+	 * @param array[] $coupons  Coupons, as discount() describes them, in the
+	 *                          order they apply.
+	 * @param float   $subtotal Subtotal.
+	 *
+	 * @return array[]
+	 */
+	protected static function active_at( $coupons, $subtotal ) {
+		$active = array();
+
+		foreach ( $coupons as $coupon ) {
+			if ( $subtotal < $coupon['minimum'] || ( 0 < $coupon['maximum'] && $subtotal > $coupon['maximum'] ) ) {
+				continue;
+			}
+
+			if ( $active && ( $coupon['individual'] || $active[0]['individual'] ) ) {
+				continue;
+			}
+
+			$active[] = $coupon;
+		}
+
+		return $active;
+	}
+
+	/**
+	 * Subtotals where a coupon starts or stops applying, in order.
+	 *
+	 * @param array[] $coupons Coupons, as discount() describes them.
+	 *
+	 * @return float[]
+	 */
+	protected static function breakpoints( $coupons ) {
+		$points = array();
+
+		foreach ( $coupons as $coupon ) {
+			$points[] = $coupon['minimum'];
+
+			if ( 0 < $coupon['maximum'] ) {
+				$points[] = round( $coupon['maximum'] + self::cent(), wc_get_price_decimals() );
+			}
+		}
+
+		$points = array_unique( array_filter( $points, static fn( $point ) => 0 < $point ) );
+		sort( $points );
+
+		return $points;
+	}
+
+	/**
+	 * Lowest subtotal from a starting one at which a minimum is met.
+	 *
+	 * @param float   $minimum Minimum.
+	 * @param float   $from    Subtotal to start from.
+	 * @param array[] $coupons Coupons, as discount() describes them.
+	 *
+	 * @return float|null Null when the discounts keep it out of reach.
+	 */
+	protected static function met_from( $minimum, $from, $coupons ) {
+		$start = $from;
+		$ends  = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $from );
+
+		// Between two breakpoints the same coupons apply, so the total grows
+		// in a straight line.
+		foreach ( array_merge( $ends, array( INF ) ) as $end ) {
+			list( $kept, $fixed ) = self::discounts_at( $coupons, $start );
+
+			if ( 0 < $kept ) {
+				$at = max( $start, self::up_to_cent( ( $minimum + $fixed ) / $kept ) );
+
+				if ( $at < $end ) {
+					return $at;
+				}
+			}
+
+			$start = $end;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Lowest subtotal from which a minimum met now stays met up to it, as
+	 * coupons come off below their minimum.
+	 *
+	 * @param float   $minimum  Minimum.
+	 * @param float   $subtotal Cart subtotal.
+	 * @param array[] $coupons  Coupons, as discount() describes them.
+	 *
+	 * @return float
+	 */
+	protected static function met_since( $minimum, $subtotal, $coupons ) {
+		$end    = $subtotal;
+		$starts = array_reverse( array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point <= $subtotal ) );
+
+		foreach ( array_merge( $starts, array( 0.0 ) ) as $start ) {
+			list( $kept, $fixed ) = self::discounts_at( $coupons, $end );
+
+			$at = 0 < $kept ? self::up_to_cent( ( $minimum + $fixed ) / $kept ) : $end;
+
+			if ( $at > $start ) {
+				return min( $at, $end );
+			}
+
+			$end = $start - self::cent();
+		}
+
+		return 0.0;
+	}
+
+	/**
+	 * Smallest amount the store's prices can differ by.
+	 *
+	 * @return float
+	 */
+	protected static function cent() {
+		return 1 / ( 10 ** wc_get_price_decimals() );
+	}
+
+	/**
+	 * An amount rounded up to the cent, as less would fall short.
+	 *
+	 * @param float $amount Amount.
+	 *
+	 * @return float
+	 */
+	protected static function up_to_cent( $amount ) {
+		$decimals = wc_get_price_decimals();
+		$factor   = 10 ** $decimals;
+
+		return round( ceil( round( $amount * $factor, 6 ) ) / $factor, $decimals );
+	}
+
+	/**
+	 * Subtotal from which a zone ships for free.
+	 *
+	 * @param WC_Shipping_Zone $zone      Zone.
+	 * @param WC_Cart          $cart      Cart.
+	 * @param float[][]        $spans     Subtotals between which the cart
+	 *                                    holds a free shipping coupon.
+	 * @param bool             $by_amount Whether the zone's minimum counts as
+	 *                                    a way there, or only as a condition
+	 *                                    the coupon also needs.
+	 *
+	 * @return float|null Null when the zone has no free shipping to reach.
+	 */
+	protected static function zone_free_shipping( $zone, $cart, $spans, $by_amount ) {
+		$best      = null;
+		$coupon_at = $spans ? min( array_column( $spans, 0 ) ) : null;
+
+		foreach ( $zone->get_shipping_methods( true ) as $method ) {
+			if ( ! $method instanceof WC_Shipping_Free_Shipping ) {
+				continue;
+			}
+
+			$requires  = (string) $method->requires;
+			$amount_at = in_array( $requires, array( 'min_amount', 'either', 'both' ), true ) ? self::amount_at( $method, $cart ) : null;
+			$way       = $by_amount ? $amount_at : null;
+
+			if ( '' === $requires ) {
+				$at = 0.0;
+			} elseif ( 'coupon' === $requires ) {
+				$at = $coupon_at;
+			} elseif ( 'min_amount' === $requires ) {
+				$at = $way;
+			} elseif ( 'either' === $requires ) {
+				$ways = array_filter( array( $coupon_at, $way ), static fn( $value ) => null !== $value );
+				$at   = $ways ? min( $ways ) : null;
+			} elseif ( 'both' === $requires && null !== $amount_at ) {
+				$at = null;
+
+				// The minimum has to be met while the coupon applies, which the
+				// goal coupons reached on the way there can undo.
+				foreach ( $spans as list( $from, $to ) ) {
+					$both = $from > $amount_at ? self::amount_at( $method, $cart, $from ) : $amount_at;
+					$at   = null !== $both && $both <= $to && ( null === $at || $both < $at ) ? $both : $at;
+				}
+			} else {
+				$at = null;
+			}
+
+			if ( null !== $at && ( null === $best || $at < $best ) ) {
+				$best = $at;
+			}
+		}
+
+		return $best;
+	}
+
+	/**
+	 * Zones a Brazilian address may fall in, in the order WooCommerce tries
+	 * them, while the CEP that picks one is unknown.
+	 *
+	 * @return WC_Shipping_Zone[]
+	 */
+	protected static function brazilian_zones() {
+		$zones = array();
+
+		foreach ( WC_Shipping_Zones::get_zones() as $data ) {
+			$zone      = new WC_Shipping_Zone( $data['id'] );
+			$regions   = array();
+			$postcodes = false;
+
+			foreach ( $zone->get_zone_locations() as $location ) {
+				if ( 'postcode' === $location->type ) {
+					$postcodes = true;
+				} else {
+					$regions[] = $location;
+				}
+			}
+
+			$whole = empty( $regions );
+			$any   = $whole;
+
+			foreach ( $regions as $location ) {
+				if ( ( 'country' === $location->type && 'BR' === $location->code ) || ( 'continent' === $location->type && 'SA' === $location->code ) ) {
+					$whole = true;
+					$any   = true;
+				} elseif ( 'state' === $location->type && 0 === strpos( $location->code, 'BR:' ) ) {
+					$any = true;
+				}
+			}
+
+			if ( ! $any ) {
+				continue;
+			}
+
+			$zones[] = $zone;
+
+			// Every Brazilian address left stops here.
+			if ( $whole && ! $postcodes ) {
+				return $zones;
+			}
+		}
+
+		$zones[] = new WC_Shipping_Zone( 0 );
+
+		return $zones;
+	}
+
+	/**
+	 * Whether the customer chose to pick the order up, which leaves no
+	 * shipping to make free.
+	 *
+	 * @return bool
+	 */
+	protected static function picks_up() {
+		$methods = WC()->shipping()->get_shipping_methods();
+		/** This filter is documented in woocommerce/includes/class-wc-customer.php */
+		$pickups = (array) apply_filters( 'woocommerce_local_pickup_methods', array( 'legacy_local_pickup', 'local_pickup' ) );
+
+		foreach ( wc_get_chosen_shipping_method_ids() as $id ) {
+			if ( in_array( $id, $pickups, true ) || ( isset( $methods[ $id ] ) && $methods[ $id ]->supports( 'local-pickup' ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Free shipping goal for the cart's destination.
+	 *
+	 * Before a Brazilian address has a CEP, the zone is unknown, so the goal
+	 * shows only when every zone the address may fall in has the same one.
+	 *
+	 * @param WC_Cart $cart      Cart.
+	 * @param bool    $by_amount Whether the zones' minimums count, or only
+	 *                           free shipping coupons.
+	 *
+	 * @return array|null
+	 */
+	protected static function free_shipping_goal( $cart, $by_amount ) {
+		$customer = WC()->customer;
+
+		// An empty cart, as on a product page, is yet to hold what ships.
+		if ( ! $customer instanceof WC_Customer || ( ! $cart->is_empty() && ! $cart->needs_shipping() ) || self::picks_up() ) {
+			return null;
+		}
+
+		$spans = self::free_shipping_coupon_spans( $cart );
+
+		if ( ! $by_amount && ! $spans ) {
+			return null;
+		}
+
+		$country  = $customer->get_shipping_country();
+		$postcode = Extra_Checkout_Fields_For_Brazil_Postcodes::sanitize( $customer->get_shipping_postcode() );
+
+		if ( '' === $country ) {
+			return null;
+		}
+
+		if ( 'BR' === $country && 8 !== strlen( $postcode ) ) {
+			$found = false;
+			$goal  = null;
+
+			foreach ( self::brazilian_zones() as $zone ) {
+				$zone_goal = self::zone_free_shipping( $zone, $cart, $spans, $by_amount );
+
+				if ( $found && $zone_goal !== $goal ) {
+					return null;
+				}
+
+				$found = true;
+				$goal  = $zone_goal;
+			}
+		} else {
+			$state = $customer->get_shipping_state();
+
+			if ( 'BR' === $country && '' === $state ) {
+				$state = Extra_Checkout_Fields_For_Brazil_Postcodes::get_state( $postcode );
+			}
+
+			$zone = WC_Shipping_Zones::get_zone_matching_package(
+				array(
+					'destination' => array(
+						'country'  => $country,
+						'state'    => $state,
+						'postcode' => $customer->get_shipping_postcode(),
+					),
+				)
+			);
+			$goal = self::zone_free_shipping( $zone, $cart, $spans, $by_amount );
+		}
+
+		// Free whatever the cart holds, which leaves nothing to reach.
+		if ( null === $goal || 0 >= $goal ) {
+			return null;
+		}
+
+		return array(
+			'type'      => 'free_shipping',
+			'label'     => __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+			'threshold' => $goal,
+			'remaining' => round( $goal - self::subtotal( $cart ), wc_get_price_decimals() ),
+		);
+	}
+
+	/**
+	 * Goals for the cart, nearest first.
+	 *
+	 * @param WC_Cart|null $cart Cart.
+	 *
+	 * @return array[] Type, label, threshold and remaining amount.
+	 */
+	public static function get_goals( $cart = null ) {
+		$cart = $cart ? $cart : WC()->cart;
+
+		if ( ! $cart instanceof WC_Cart ) {
+			return array();
+		}
+
+		$goals = self::coupon_goals( $cart );
+		$free  = self::free_shipping_goal( $cart, ! empty( self::settings()['goals_free_shipping'] ) );
+
+		if ( null !== $free ) {
+			$goals[] = $free;
+		}
+
+		usort( $goals, static fn( $a, $b ) => $a['remaining'] <=> $b['remaining'] );
+
+		// Coupons giving the same reward, such as two for 10% off, show once,
+		// by the nearest.
+		$rewards = array();
+
+		foreach ( $goals as $index => $goal ) {
+			if ( isset( $rewards[ $goal['label'] ] ) ) {
+				unset( $goals[ $index ] );
+			}
+
+			$rewards[ $goal['label'] ] = true;
+		}
+
+		$goals = array_values( $goals );
+
+		/**
+		 * Filter the spending goals shown for a cart.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param array[] $goals Goals with type, label, threshold and remaining amount, nearest first.
+		 * @param WC_Cart $cart  Cart.
+		 */
+		return apply_filters( 'csbmw_spending_goals', $goals, $cart );
+	}
+
+	/**
+	 * What the bar shows for the cart.
+	 *
+	 * @param WC_Cart|null $cart  Cart.
+	 * @param string       $style A block's or shortcode's own style, empty to
+	 *                            follow the setting.
+	 *
+	 * @return array|null Style, message and its parts, progress, milestones
+	 *                    and colors, or null with no goal to show.
+	 */
+	public static function get_bar( $cart = null, $style = '' ) {
+		$cart  = $cart ? $cart : WC()->cart;
+		$goals = self::get_goals( $cart );
+
+		if ( empty( $goals ) ) {
+			return null;
+		}
+
+		return self::build_bar( $goals, self::subtotal( $cart ), self::style( $style ) );
+	}
+
+	/**
+	 * A piece of the message.
+	 *
+	 * @param string $text   Text.
+	 * @param bool   $strong Whether it is a reward, shown in bold.
+	 *
+	 * @return array
+	 */
+	protected static function part( $text, $strong = false ) {
+		return array(
+			'text'   => $text,
+			'strong' => $strong,
+		);
+	}
+
+	/**
+	 * Fill a translated message with parts, keeping the translation's word
+	 * order.
+	 *
+	 * @param string  $format Message with %s or %1$s placeholders.
+	 * @param array[] $values Parts for each placeholder, in order.
+	 *
+	 * @return array[]
+	 */
+	protected static function fill( $format, $values ) {
+		$parts = array();
+		$next  = 0;
+
+		foreach ( (array) preg_split( '/(%(?:\d+\$)?s)/', $format, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY ) as $piece ) {
+			if ( preg_match( '/^%(?:(\d+)\$)?s$/', $piece, $match ) ) {
+				$index = empty( $match[1] ) ? $next : (int) $match[1] - 1;
+				$parts = array_merge( $parts, $values[ $index ] ?? array() );
+				++$next;
+			} else {
+				$parts[] = self::part( $piece );
+			}
+		}
+
+		return $parts;
+	}
+
+	/**
+	 * Rewards as a list, such as "free shipping and 10% off", each in bold,
+	 * joined as WordPress joins lists in the site's language.
+	 *
+	 * @param string[] $rewards Rewards.
+	 *
+	 * @return array[]
+	 */
+	protected static function rewards_list( $rewards ) {
+		/** This filter is documented in wp-includes/formatting.php */
+		$separators = apply_filters(
+			'wp_sprintf_l',
+			array(
+				/* translators: Used to join items in a list with more than 2 items. */
+				'between'          => sprintf( __( '%1$s, %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+				/* translators: Used to join last two items in a list with more than 2 times. */
+				'between_last_two' => sprintf( __( '%1$s, and %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+				/* translators: Used to join items in a list with only 2 items. */
+				'between_only_two' => sprintf( __( '%1$s and %2$s' ), '', '' ), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain
+			)
+		);
+		$count      = count( $rewards );
+		$parts      = array();
+
+		foreach ( array_values( $rewards ) as $index => $reward ) {
+			if ( $index > 0 ) {
+				if ( 2 === $count ) {
+					$parts[] = self::part( $separators['between_only_two'] );
+				} else {
+					$parts[] = self::part( $index === $count - 1 ? $separators['between_last_two'] : $separators['between'] );
+				}
+			}
+
+			$parts[] = self::part( $reward, true );
+		}
+
+		return $parts;
+	}
+
+	/**
+	 * What the bar shows for some goals.
+	 *
+	 * @param array[] $goals    Goals, nearest first.
+	 * @param float   $subtotal Cart subtotal.
+	 * @param string  $style    milestones or next.
+	 *
+	 * @return array
+	 */
+	protected static function build_bar( $goals, $subtotal, $style ) {
+		// Where each goal falls on a bar measured in the cart subtotal. A goal
+		// still ahead sits where the cart will reach it. One reached stays at
+		// its own amount, so the bar holds still as the cart grows past it.
+		foreach ( $goals as $index => $goal ) {
+			$goals[ $index ]['position'] = 0 >= $goal['remaining'] ? $goal['threshold'] : $subtotal + $goal['remaining'];
+		}
+
+		usort( $goals, static fn( $a, $b ) => $a['position'] <=> $b['position'] );
+
+		$next    = null;
+		$reached = array();
+
+		foreach ( $goals as $goal ) {
+			if ( 0 >= $goal['remaining'] ) {
+				$reached[] = $goal['label'];
+			} elseif ( null === $next ) {
+				$next = $goal;
+			}
+		}
+
+		if ( null !== $next ) {
+			$parts = self::fill(
+				/* translators: 1: amount still to spend, 2: what the customer gets, such as free shipping */
+				__( 'Add %1$s more to get %2$s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				array(
+					array( self::part( self::price( $next['remaining'] ) ) ),
+					array( self::part( $next['label'], true ) ),
+				)
+			);
+		} else {
+			$parts = self::fill(
+				/* translators: %s: what the customer got, such as free shipping and 10% off */
+				__( 'You got %s.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				array( self::rewards_list( $reached ) )
+			);
+		}
+
+		$message = implode( '', wp_list_pluck( $parts, 'text' ) );
+
+		// The bar ends at the next goal, or at the last one, and stays full past it.
+		$end      = 'next' === $style && null !== $next ? $next['position'] : max( wp_list_pluck( $goals, 'position' ) );
+		$progress = $end > 0 ? min( 100, $subtotal / $end * 100 ) : 100;
+
+		$milestones = array();
+
+		if ( 'milestones' === $style ) {
+			foreach ( $goals as $goal ) {
+				$milestones[] = array(
+					'label'    => $goal['label'],
+					'amount'   => self::price( $goal['threshold'] ),
+					'position' => round( $end > 0 ? min( 100, $goal['position'] / $end * 100 ) : 100, 2 ),
+					'reached'  => 0 >= $goal['remaining'],
+				);
+			}
+		}
+
+		return array(
+			'style'      => $style,
+			'message'    => $message,
+			'parts'      => $parts,
+			'progress'   => round( $progress, 2 ),
+			'milestones' => $milestones,
+			'colors'     => self::colors(),
+		);
+	}
+
+	/**
+	 * Apply each goal coupon the cart reaches, and take back the ones it no
+	 * longer reaches or qualifies for, such as past a maximum spend. A coupon
+	 * the customer removed stays removed until the cart grows or drops below
+	 * its minimum.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return void
+	 */
+	public function apply_reached_coupons( $cart ) {
+		// While an individual use coupon is going on, the goal coupons it
+		// replaces would come straight back.
+		if ( $this->applying || $this->making_room || ! WC()->session ) {
+			return;
+		}
+
+		$this->applying = true;
+		self::$used_up  = array();
+
+		// WooCommerce works the totals out after each coupon; once at the end
+		// is enough.
+		$recalculates = array(
+			'woocommerce_applied_coupon' => remove_action( 'woocommerce_applied_coupon', array( $cart, 'calculate_totals' ), 20 ),
+			'woocommerce_removed_coupon' => remove_action( 'woocommerce_removed_coupon', array( $cart, 'calculate_totals' ), 20 ),
+		);
+
+		try {
+			try {
+				$changed = self::swap_coupons( $cart );
+			} finally {
+				remove_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
+
+				foreach ( array_keys( array_filter( $recalculates ) ) as $hook ) {
+					add_action( $hook, array( $cart, 'calculate_totals' ), 20, 0 );
+				}
+			}
+
+			if ( $changed ) {
+				$cart->calculate_totals();
+			}
+		} finally {
+			$this->applying = false;
+		}
+	}
+
+	/**
+	 * Take off the goal coupons the cart no longer reaches, then apply the
+	 * ones it does.
+	 *
+	 * @param WC_Cart $cart Cart.
+	 *
+	 * @return bool Whether the cart's coupons changed.
+	 */
+	protected static function swap_coupons( $cart ) {
+		$session  = WC()->session;
+		$applied  = (array) $session->get( self::APPLIED, array() );
+		$declined = (array) $session->get( self::DECLINED, array() );
+		$subtotal = self::subtotal( $cart );
+		$changed  = false;
+		$coupons  = self::goal_coupons();
+
+		// Take off first, as a coupon still on can keep another from applying.
+		foreach ( $coupons as $coupon ) {
+			$code = wc_format_coupon_code( $coupon->get_code() );
+
+			if ( $cart->has_discount( $code ) && in_array( $code, $applied, true ) && ( $subtotal < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) ) {
+				$cart->remove_coupon( $code );
+				$applied = array_values( array_diff( $applied, array( $code ) ) );
+				$changed = true;
+			}
+		}
+
+		foreach ( $coupons as $coupon ) {
+			$code = wc_format_coupon_code( $coupon->get_code() );
+
+			if ( $cart->has_discount( $code ) ) {
+				continue;
+			}
+
+			if ( $subtotal < (float) $coupon->get_minimum_amount() ) {
+				$declined = array_values( array_diff( $declined, array( $code ) ) );
+				continue;
+			}
+
+			if ( in_array( $code, $declined, true ) || ! self::is_eligible( $coupon, $cart ) ) {
+				continue;
+			}
+
+			// Tracked ahead, as an extension may throw once WooCommerce has
+			// put it on.
+			$session->set( self::APPLIED, array_values( array_unique( array_merge( $applied, array( $code ) ) ) ) );
+
+			add_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
+
+			if ( $cart->apply_coupon( $code ) ) {
+				$applied = array_values( array_unique( array_merge( $applied, array( $code ) ) ) );
+				$changed = true;
+			}
+
+			remove_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
+		}
+
+		$session->set( self::APPLIED, $applied );
+		$session->set( self::DECLINED, $declined );
+
+		return $changed;
+	}
+
+	/**
+	 * No notice for a goal coupon applied, as the bar tells the customer.
+	 *
+	 * @return string
+	 */
+	public static function hide_coupon_message() {
+		return '';
+	}
+
+	/**
+	 * Keep a goal coupon the customer removed from coming back.
+	 *
+	 * WooCommerce also removes a coupon the cart no longer qualifies for, and
+	 * the coupons an individual use one replaces. Neither is the customer's
+	 * choice.
+	 *
+	 * @param string $code Coupon code.
+	 *
+	 * @return void
+	 */
+	public function remember_declined_coupon( $code ) {
+		$session = WC()->session;
+		$cart    = WC()->cart;
+
+		if ( $this->applying || $this->making_room || ! $session || ! $cart ) {
+			return;
+		}
+
+		$code = wc_format_coupon_code( $code );
+
+		foreach ( self::goal_coupons() as $coupon ) {
+			if ( ! wc_is_same_coupon( $coupon->get_code(), $code ) ) {
+				continue;
+			}
+
+			$session->set( self::APPLIED, array_values( array_diff( (array) $session->get( self::APPLIED, array() ), array( $code ) ) ) );
+
+			if ( self::subtotal( $cart ) < (float) $coupon->get_minimum_amount() || ! self::is_eligible( $coupon, $cart ) ) {
+				return;
+			}
+
+			$declined   = (array) $session->get( self::DECLINED, array() );
+			$declined[] = $code;
+			$session->set( self::DECLINED, array_values( array_unique( $declined ) ) );
+
+			return;
+		}
+	}
+
+	/**
+	 * Note that the coupons about to come off make room for an individual use
+	 * one, which is not the customer removing them, nor a reason to apply them
+	 * again.
+	 *
+	 * @param array $keep Coupons to keep.
+	 *
+	 * @return array
+	 */
+	public function start_making_room( $keep ) {
+		$this->making_room = true;
+
+		return $keep;
+	}
+
+	/**
+	 * The individual use coupon is on, or turned down for another one kept
+	 * on.
+	 *
+	 * @param mixed $value What the hook passes on.
+	 *
+	 * @return mixed
+	 */
+	public function stop_making_room( $value = null ) {
+		$this->making_room = false;
+
+		return $value;
+	}
+
+	/**
+	 * Offer the removed goal coupons again once the cart grows.
+	 *
+	 * @return void
+	 */
+	public function forget_declined_coupons() {
+		if ( WC()->session ) {
+			WC()->session->set( self::DECLINED, array() );
+		}
+	}
+
+	/**
+	 * Offer the removed goal coupons again when a quantity goes up.
+	 *
+	 * @param string $cart_item_key Cart item key.
+	 * @param int    $quantity      New quantity.
+	 * @param int    $old_quantity  Previous quantity.
+	 *
+	 * @return void
+	 */
+	public function forget_declined_coupons_on_increase( $cart_item_key, $quantity, $old_quantity ) {
+		if ( $quantity > $old_quantity ) {
+			$this->forget_declined_coupons();
+		}
+	}
+
+	/**
+	 * Spending goal checkbox in the coupon's general options.
+	 *
+	 * @param int       $coupon_id Coupon ID.
+	 * @param WC_Coupon $coupon    Coupon.
+	 *
+	 * @return void
+	 */
+	public function coupon_field( $coupon_id, $coupon ) {
+		woocommerce_wp_checkbox(
+			array(
+				'id'          => 'csbmw_spending_goal',
+				'label'       => __( 'Spending goal', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'description' => __( 'Show how much more the cart needs to reach the minimum spend set in Usage restriction, and apply the coupon once it does.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'value'       => wc_bool_to_string( 'yes' === $coupon->get_meta( self::COUPON_META ) ),
+			)
+		);
+	}
+
+	/**
+	 * Save the spending goal checkbox.
+	 *
+	 * @param int       $coupon_id Coupon ID.
+	 * @param WC_Coupon $coupon    Coupon.
+	 *
+	 * @return void
+	 */
+	public function save_coupon_field( $coupon_id, $coupon ) {
+		// WooCommerce checked the nonce before this action.
+		if ( isset( $_POST['csbmw_spending_goal'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$coupon->update_meta_data( self::COUPON_META, 'yes' );
+		} else {
+			$coupon->delete_meta_data( self::COUPON_META );
+		}
+
+		$coupon->save();
+	}
+
+	/**
+	 * Markup of the bar.
+	 *
+	 * @param string $place Key of PLACES, or block for a placed bar.
+	 * @param string $style A placed bar's own style, empty to follow the
+	 *                      setting.
+	 *
+	 * @return string Empty with no goal to show.
+	 */
+	public static function render( $place, $style = '' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundBeforeLastUsed -- The view prints it.
+		$bar = self::get_bar( null, $style );
+
+		if ( null === $bar ) {
+			return '';
+		}
+
+		ob_start();
+		include __DIR__ . '/views/html-spending-goals.php';
+
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Bar above the classic cart totals.
+	 *
+	 * @return void
+	 */
+	public function cart_bar() {
+		if ( self::shows_in( 'cart' ) ) {
+			echo self::render( 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+	}
+
+	/**
+	 * Where the Cart and Checkout blocks draw the bar in their order summary,
+	 * which the blocks fill with the inner block of that name.
+	 *
+	 * @param string $place cart or checkout.
+	 *
+	 * @return string
+	 */
+	protected static function summary_bar( $place ) {
+		return '<div data-block-name="csbmw/spending-goals-summary" data-place="' . esc_attr( $place ) . '" class="wp-block-csbmw-spending-goals-summary"></div>';
+	}
+
+	/**
+	 * Bar right after the Cart block's Cart totals heading.
+	 *
+	 * @param string $content Heading markup.
+	 *
+	 * @return string
+	 */
+	public function cart_summary_bar( $content ) {
+		return self::shows_in( 'cart' ) ? $content . self::summary_bar( 'cart' ) : $content;
+	}
+
+	/**
+	 * Bar right after the Checkout block's Order summary title, ahead of the
+	 * items.
+	 *
+	 * @param string $content Items markup.
+	 *
+	 * @return string
+	 */
+	public function checkout_summary_bar( $content ) {
+		return self::shows_in( 'checkout' ) ? self::summary_bar( 'checkout' ) . $content : $content;
+	}
+
+	/**
+	 * Bar above the classic checkout order total, which refreshes with it.
+	 *
+	 * @return void
+	 */
+	public function checkout_bar() {
+		$html = self::shows_in( 'checkout' ) ? self::render( 'checkout' ) : '';
+
+		if ( '' !== $html ) {
+			echo '<tr class="csbmw-goals-row"><td colspan="2">' . $html . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+	}
+
+	/**
+	 * Bar above the add to cart form, always printed so a product added
+	 * without reloading the page can fill it.
+	 *
+	 * @return void
+	 */
+	public function product_bar() {
+		if ( self::shows_in( 'product' ) ) {
+			echo '<div class="csbmw-goals-holder is-automatic" aria-live="polite">' . self::render( 'product' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+	}
+
+	/**
+	 * WC AJAX endpoint printing a product page or placed bar for the cart now.
+	 *
+	 * @return void
+	 */
+	public function ajax_bar() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read only, for the visitor's own cart.
+		$style  = isset( $_GET['style'] ) ? sanitize_key( wp_unslash( $_GET['style'] ) ) : '';
+		$placed = ! empty( $_GET['placed'] );
+		// phpcs:enable
+
+		wp_send_json_success( array( 'html' => $placed || self::shows_in( 'product' ) ? self::render( $placed ? 'block' : 'product', $style ) : '' ) );
+	}
+
+	/**
+	 * Register the bar's style and refresh script, and the block.
+	 *
+	 * @return void
+	 */
+	public function register_block() {
+		Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE, 'goals' );
+		Extra_Checkout_Fields_For_Brazil_Assets::register_style( self::HANDLE, 'goals' );
+		wp_localize_script(
+			self::HANDLE,
+			'bmwGoalsParams',
+			array(
+				'url' => WC_AJAX::get_endpoint( self::ENDPOINT ),
+			)
+		);
+
+		$block = register_block_type(
+			dirname( CSBMW_PLUGIN_FILE ) . '/build/blocks/spending-goals',
+			array(
+				'render_callback' => array( $this, 'render_block' ),
+			)
+		);
+
+		if ( $block ) {
+			foreach ( $block->editor_script_handles as $handle ) {
+				Extra_Checkout_Fields_For_Brazil_Assets::set_translations( $handle );
+				wp_add_inline_script( $handle, 'window.bmwGoalsEditor = ' . wp_json_encode( self::editor_preview() ) . ';', 'before' );
+			}
+		}
+	}
+
+	/**
+	 * Sample bars the editor shows, as the store would draw them.
+	 *
+	 * @return array
+	 */
+	protected static function editor_preview() {
+		$goals = array(
+			array(
+				'type'      => 'free_shipping',
+				'label'     => __( 'free shipping', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'threshold' => 150.0,
+				'remaining' => 50.0,
+			),
+			array(
+				'type'      => 'coupon',
+				/* translators: %s: discount, such as 10% */
+				'label'     => sprintf( __( '%s off', 'woocommerce-extra-checkout-fields-for-brazil' ), '10%' ),
+				'threshold' => 300.0,
+				'remaining' => 200.0,
+			),
+		);
+		$bars  = array();
+
+		foreach ( self::STYLES as $style ) {
+			$bars[ $style ] = self::build_bar( $goals, 100.0, $style );
+		}
+
+		return array(
+			'style' => self::style(),
+			'bars'  => $bars,
+		);
+	}
+
+	/**
+	 * A placed bar, kept in the page while empty so a cart change can fill it.
+	 *
+	 * @param string $wrapper Attributes of the wrapper element.
+	 * @param string $style   Its own style, empty to follow the setting.
+	 *
+	 * @return string Empty in REST responses, preloaded ones too, such as the
+	 *                Store API's cart item descriptions, which run shortcodes.
+	 */
+	protected static function placed( $wrapper, $style ) {
+		if ( wp_is_serving_rest_request() || self::is_hydrating() ) {
+			return '';
+		}
+
+		wp_enqueue_style( self::HANDLE );
+		wp_enqueue_script( self::HANDLE );
+
+		if ( self::has_cart_blocks() ) {
+			Extra_Checkout_Fields_For_Brazil_Assets::register_script( self::HANDLE . '-sync', 'goals-sync' );
+			wp_enqueue_script( self::HANDLE . '-sync' );
+		}
+
+		return '<div ' . $wrapper . ' data-goals-style="' . esc_attr( $style ) . '" aria-live="polite">' . self::render( 'block', $style ) . '</div>';
+	}
+
+	/**
+	 * Whether WooCommerce is preloading a Store API response into the page,
+	 * told by the nonce check it turns off for exactly that long.
+	 *
+	 * @return bool
+	 */
+	protected static function is_hydrating() {
+		$hydration = Package::container()->get( Hydration::class );
+
+		return false !== has_filter( 'woocommerce_store_api_disable_nonce_check', array( $hydration, 'disable_nonce_check_callback' ) );
+	}
+
+	/**
+	 * Whether the page has the Cart or Checkout block, which block themes
+	 * draw from a template rather than the content.
+	 *
+	 * @return bool
+	 */
+	protected static function has_cart_blocks() {
+		return has_block( 'woocommerce/cart' ) || has_block( 'woocommerce/checkout' ) || ( ( is_cart() || is_checkout() ) && wp_is_block_theme() );
+	}
+
+	/**
+	 * Render the Spending Goals block.
+	 *
+	 * @param array $attributes Block attributes.
+	 *
+	 * @return string
+	 */
+	public function render_block( $attributes ) {
+		$style = isset( $attributes['goalsStyle'] ) && in_array( $attributes['goalsStyle'], self::STYLES, true ) ? $attributes['goalsStyle'] : '';
+		$vars  = self::color_vars( $attributes['barColor'] ?? '', $attributes['trackColor'] ?? '' );
+		$extra = array( 'class' => 'csbmw-goals-holder is-placed' );
+
+		if ( '' !== $vars ) {
+			$extra['style'] = $vars;
+		}
+
+		return self::placed( get_block_wrapper_attributes( $extra ), $style );
+	}
+
+	/**
+	 * Shortcode printing the bar.
+	 *
+	 * @param array|string $atts Shortcode attributes: style, bar_color and
+	 *                           track_color.
+	 *
+	 * @return string
+	 */
+	public function shortcode( $atts ) {
+		$atts  = shortcode_atts(
+			array(
+				'style'       => '',
+				'bar_color'   => '',
+				'track_color' => '',
+			),
+			$atts,
+			self::SHORTCODE
+		);
+		$style = in_array( $atts['style'], self::STYLES, true ) ? $atts['style'] : '';
+		$vars  = self::color_vars( $atts['bar_color'], $atts['track_color'] );
+
+		return self::placed( 'class="csbmw-goals-holder is-placed"' . ( '' !== $vars ? ' style="' . esc_attr( $vars ) . '"' : '' ), $style );
+	}
+
+	/**
+	 * Styles for the classic bar, and the scripts that refresh or draw it.
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		$product = self::shows_in( 'product' ) && is_product();
+		$blocks  = false;
+		$classic = false;
+
+		foreach ( array( 'cart', 'checkout' ) as $place ) {
+			$page = 'cart' === $place ? is_cart() : is_checkout();
+
+			if ( ! self::shows_in( $place ) || ! ( $page || has_block( 'woocommerce/' . $place ) ) ) {
+				continue;
+			}
+
+			// Block themes draw the page from a template rather than the content.
+			if ( has_block( 'woocommerce/' . $place ) || wp_is_block_theme() ) {
+				$blocks = true;
+			} else {
+				$classic = true;
+			}
+		}
+
+		if ( ! $product && ! $blocks && ! $classic ) {
+			return;
+		}
+
+		wp_enqueue_style( self::HANDLE );
+
+		if ( $product ) {
+			wp_enqueue_script( self::HANDLE );
+		}
+	}
+
+	/**
+	 * Load the order summary inner block with the Cart and Checkout blocks.
+	 *
+	 * @param Automattic\WooCommerce\Blocks\Integrations\IntegrationRegistry $registry Integration registry.
+	 *
+	 * @return void
+	 */
+	public function register_integration( $registry ) {
+		include_once __DIR__ . '/class-extra-checkout-fields-for-brazil-goals-integration.php';
+
+		if ( ! $registry->is_registered( 'csbmw-goals' ) ) {
+			$registry->register( new Extra_Checkout_Fields_For_Brazil_Goals_Integration() );
+		}
+	}
+
+	/**
+	 * Add the bar to the Store API cart, which the Cart and Checkout blocks
+	 * read after every change.
+	 *
+	 * @return void
+	 */
+	public function register_cart_data() {
+		if ( ! function_exists( 'woocommerce_store_api_register_endpoint_data' ) ) {
+			return;
+		}
+
+		woocommerce_store_api_register_endpoint_data(
+			array(
+				'endpoint'        => CartSchema::IDENTIFIER,
+				'namespace'       => self::NAMESPACE,
+				'data_callback'   => array( $this, 'cart_data' ),
+				'schema_callback' => array( $this, 'cart_schema' ),
+				'schema_type'     => ARRAY_A,
+			)
+		);
+	}
+
+	/**
+	 * Store API cart data.
+	 *
+	 * @return array
+	 */
+	public function cart_data() {
+		return array(
+			'bar' => self::is_enabled() ? self::get_bar() : null,
+		);
+	}
+
+	/**
+	 * Store API cart schema.
+	 *
+	 * @return array
+	 */
+	public function cart_schema() {
+		return array(
+			'bar' => array(
+				'description' => __( 'Spending goals progress bar, or null with no goal to show.', 'woocommerce-extra-checkout-fields-for-brazil' ),
+				'type'        => array( 'object', 'null' ),
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+			),
+		);
+	}
+}
+
+new Extra_Checkout_Fields_For_Brazil_Goals();

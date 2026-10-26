@@ -48,8 +48,9 @@ class Extra_Checkout_Fields_For_Brazil_Admin {
 		}
 
 		if ( 'woocommerce_page_woocommerce-extra-checkout-fields-for-brazil' === $screen->id ) {
-			Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-settings', 'admin-settings', array( 'jquery' ) );
+			Extra_Checkout_Fields_For_Brazil_Assets::enqueue( 'woocommerce-extra-checkout-fields-for-brazil-settings', 'admin-settings', array( 'jquery', 'wp-color-picker' ) );
 			wp_enqueue_style( 'wp-components' );
+			wp_enqueue_style( 'wp-color-picker' );
 		}
 	}
 

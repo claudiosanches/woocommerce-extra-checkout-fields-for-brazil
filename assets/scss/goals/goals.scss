@@ -1,0 +1,118 @@
+/*
+ * Spending goals progress bar, on the cart, the checkout and product pages.
+ * Colors follow the text, so the bar suits light and dark themes alike.
+ */
+
+// A placed bar's own colors, then the store's, then the theme's.
+$bar: var(--csbmw-goals-bar, var(--csbmw-goals-default-bar, currentcolor));
+$track: var(--csbmw-goals-track, var(--csbmw-goals-default-track, var(--wc-separator-color, color-mix(in srgb, currentcolor 15%, transparent))));
+$small-text: min(var(--wp--preset--font-size--small, 0.875em), 0.875em);
+
+.csbmw-goals {
+	font-size: $small-text;
+	line-height: 1.5;
+	margin: 0 0 1.5em;
+}
+
+.csbmw-goals-message {
+	margin: 0 0 0.5em;
+
+	// Themes with light body text would leave the rewards barely bolder.
+	strong {
+		font-weight: 700;
+	}
+}
+
+.csbmw-goals-bar {
+	background: $track;
+	border-radius: 999px;
+	height: 8px;
+	position: relative;
+}
+
+$mark: 14px;
+
+.csbmw-goals-fill {
+	background: $bar;
+	border-radius: inherit;
+	height: 100%;
+	left: 0;
+	max-width: 100%;
+	position: absolute;
+	top: 0;
+	transition: width 0.3s ease;
+	width: calc(var(--csbmw-progress) * 1%);
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+// With rings on the track, both measure from the first ring's center to the
+// last one's, so the rings stay inside the bar.
+.csbmw-goals-style-milestones .csbmw-goals-fill {
+	width: calc(#{$mark} / 2 + (100% - #{$mark}) * var(--csbmw-progress) / 100);
+}
+
+// A ring on the track, filled once the goal is reached.
+.csbmw-goals-mark {
+	background: var(--wp--preset--color--base, #fff);
+	border: 2px solid $bar;
+	border-radius: 50%;
+	box-sizing: border-box;
+	height: $mark;
+	left: calc(#{$mark} / 2 + (100% - #{$mark}) * var(--csbmw-position) / 100);
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: $mark;
+
+	&.is-reached {
+		background: $bar;
+	}
+}
+
+// The classic checkout prints it in a row of the order review table.
+.csbmw-goals-row td {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.csbmw-goals-row .csbmw-goals {
+	font-weight: 400;
+	margin: 0;
+}
+
+// A block or shortcode stays in the page while there is no goal, so a cart
+// change can fill it.
+.csbmw-goals-holder:empty {
+	display: none;
+}
+
+// Placed, or in the order summary of the Cart and Checkout blocks, it takes
+// the text size of the block or summary around it.
+.csbmw-goals-summary .csbmw-goals,
+.csbmw-goals-holder.is-placed .csbmw-goals {
+	font-size: inherit;
+	line-height: inherit;
+	margin: 0;
+}
+
+// A bar placed on the page takes the place of the product page's own.
+body:has(.csbmw-goals-holder.is-placed) .csbmw-goals-holder.is-automatic {
+	display: none;
+}
+
+// The checkout's order summary pads its sections at the sides, but not in
+// the collapsible summary of layouts narrower than the sidebar one, nor
+// does the cart's.
+.wp-block-woocommerce-checkout-order-summary-block .csbmw-goals-summary {
+	padding-left: 16px;
+	padding-right: 16px;
+}
+
+/* stylelint-disable-next-line selector-class-pattern -- WooCommerce's class names. */
+.wc-block-components-sidebar-layout:not(.is-large) .wc-block-components-checkout-order-summary__content .csbmw-goals-summary {
+	padding-left: 0;
+	padding-right: 0;
+}

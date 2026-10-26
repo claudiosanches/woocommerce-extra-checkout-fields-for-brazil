@@ -221,6 +221,56 @@ add_action(
 );
 ```
 
+## Spending goals
+
+A coupon becomes a goal while it has a minimum spend and its `_csbmw_spending_goal` meta is
+`yes`, which the Spending goal box in its General tab sets. The plugin applies it once
+the cart subtotal reaches the minimum and takes it back when the subtotal drops below it. A
+coupon the customer removes stays off until a product is added, a quantity goes up, or the
+subtotal drops below the minimum and reaches it again. Past a maximum spend it comes off, and
+returns once the subtotal is under it.
+
+A coupon that gives only free shipping has no goal of its own. It counts toward the free
+shipping goal where the zone's Free shipping method takes a coupon, alone or with the zone's
+minimum.
+
+Where the Free shipping method counts discounts toward its minimum, the goal asks for the
+subtotal that still meets it after the cart's coupons and the percentage or fixed cart goal
+coupons the cart reaches first. Each coupon counts only between its minimum and maximum spend,
+an individual use coupon counts alone, and percentages compound when coupons apply one after
+another. Only coupons on the whole cart grow as products are added. One
+limited to products, categories, brands, sale items or a number of items counts only the
+discount it gives now, and one not yet applied counts nothing, so the amount can come up short
+until it applies. With "Apply minimum order rule before coupon discount" ticked, the minimum
+leaves discounts out. The goal hides while the customer has a pickup method chosen.
+
+The Store API cart carries the bar for the Cart and Checkout blocks in
+`extensions["csbmw-goals"].bar`, null when there is no goal to show:
+
+| Key          | Value                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `style`      | `milestones`, one bar marking every goal, or `next`, the next goal only                               |
+| `message`    | What the cart still needs for the next goal, or what it got                                           |
+| `parts`      | The message in pieces, each with its `text` and whether it is a reward shown `strong`                 |
+| `progress`   | How full the bar is, from 0 to 100                                                                    |
+| `milestones` | Each goal with its `label`, `amount`, `position` on the bar from 0 to 100 and whether it is `reached` |
+| `colors`     | The store's `bar` and `track` colors, empty to follow the theme                                       |
+
+The Spending Goals block and the `[csbmw_spending_goals]` shortcode place the bar anywhere else,
+such as a page, a product template or a header. One on a product page takes the place of the
+bar the setting adds there. Both follow the cart when a product is added without a page load,
+and as the Cart and Checkout blocks change it.
+
+| Shortcode attribute | Value                                                     |
+| ------------------- | --------------------------------------------------------- |
+| `style`             | `milestones` or `next`. Empty follows the setting         |
+| `bar_color`         | Hex color of the bar. Empty uses the store's, or the text |
+| `track_color`       | Hex color of the track. Empty uses the store's            |
+
+```text
+[csbmw_spending_goals style="next" bar_color="#1e8a3c"]
+```
+
 ## Hooks
 
 ### Fields
@@ -355,6 +405,25 @@ add_filter(
 			},
 		) + $services;
 	}
+);
+```
+
+### Spending goals
+
+| Filter                             | Arguments           | Use                                                                                                   |
+| ---------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `csbmw_spending_goals`             | `$goals`, `$cart`   | Goals the bar shows, nearest first, each with `type`, `label`, `threshold` and the `remaining` amount |
+| `csbmw_spending_goal_coupon_label` | `$label`, `$coupon` | What a coupon goal gives, such as "10% off"                                                           |
+
+```php
+// Name the coupon's gift rather than its discount.
+add_filter(
+	'csbmw_spending_goal_coupon_label',
+	function ( $label, $coupon ) {
+		return 'brinde' === $coupon->get_code() ? 'a free tote bag' : $label;
+	},
+	10,
+	2
 );
 ```
 

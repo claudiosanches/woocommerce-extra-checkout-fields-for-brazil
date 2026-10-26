@@ -451,10 +451,12 @@ class Extra_Checkout_Fields_For_Brazil_Blocks {
 				$this->register_field(
 					'company',
 					array(
-						'label'      => __( 'Company name', 'woocommerce-extra-checkout-fields-for-brazil' ),
-						'location'   => 'contact',
-						'index'      => 9,
-						'attributes' => array_merge( $this->text_attributes( 'company' ), array( 'autocomplete' => 'organization' ) ),
+						'label'        => __( 'Company name', 'woocommerce-extra-checkout-fields-for-brazil' ),
+						'location'     => 'contact',
+						'index'        => 9,
+						// A field option, which WooCommerce hands React as autoComplete.
+						'autocomplete' => 'organization',
+						'attributes'   => $this->text_attributes( 'company' ),
 					),
 					$this->conditions( $company, $brazil_only )
 				);

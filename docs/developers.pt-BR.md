@@ -222,6 +222,56 @@ add_action(
 );
 ```
 
+## Metas de compra
+
+Um cupom vira meta quando tem um gasto mínimo e o meta `_csbmw_spending_goal` igual a `yes`,
+que a opção Meta de compra na aba Geral dele grava. O plugin aplica o cupom quando o
+subtotal do carrinho alcança o mínimo e retira quando o subtotal fica abaixo dele. Um cupom
+que o cliente remove fica de fora até um produto ser adicionado, uma quantidade aumentar ou o
+subtotal ficar abaixo do mínimo e alcançá-lo de novo. Acima de um gasto máximo ele sai, e volta
+quando o subtotal fica abaixo dele.
+
+Um cupom que só dá frete grátis não tem meta própria. Ele conta para a meta de frete grátis onde
+o método Frete grátis da área aceita um cupom, sozinho ou com o mínimo da área.
+
+Quando o método Frete grátis conta os descontos no mínimo, a meta pede o subtotal que ainda
+alcança o mínimo depois dos cupons do carrinho e dos cupons de meta percentuais ou de valor
+fixo no carrinho que o carrinho alcança antes. Cada cupom conta só entre o gasto mínimo e o
+máximo dele, um cupom de uso individual conta sozinho, e os percentuais se acumulam quando os
+cupons são aplicados um após o outro. Só cupons sobre o carrinho inteiro crescem
+conforme produtos são adicionados. Um cupom limitado a produtos, categorias, marcas, itens em
+promoção ou a um número de itens conta só o desconto que dá agora, e um ainda não aplicado não
+conta nada, então o valor pode ficar abaixo do necessário até ele ser aplicado. Com "Aplicar
+regras de valor mínimo do pedido antes do cupom de desconto" marcado, o mínimo deixa os
+descontos de fora. A meta some enquanto o cliente tem um método de retirada escolhido.
+
+O carrinho da Store API leva a barra para os blocos Carrinho e Finalizar compra em
+`extensions["csbmw-goals"].bar`, null quando não há meta para mostrar:
+
+| Chave        | Valor                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `style`      | `milestones`, uma barra marcando todas as metas, ou `next`, só a próxima meta                         |
+| `message`    | Quanto falta no carrinho para a próxima meta, ou o que ele ganhou                                     |
+| `parts`      | A mensagem em partes, cada uma com o `text` e se é uma recompensa em destaque em `strong`             |
+| `progress`   | Quanto da barra está preenchido, de 0 a 100                                                           |
+| `milestones` | Cada meta com o `label`, o `amount`, a `position` na barra de 0 a 100 e se foi alcançada em `reached` |
+| `colors`     | As cores `bar` e `track` da loja, vazias para seguir o tema                                           |
+
+O bloco Metas de Compra e o shortcode `[csbmw_spending_goals]` colocam a barra em qualquer outro
+lugar, como uma página, um modelo de produto ou o cabeçalho. Um deles na página do produto toma
+o lugar da barra que a configuração coloca ali. Os dois acompanham o carrinho quando um produto
+é adicionado sem recarregar a página e quando os blocos Carrinho e Finalizar compra o alteram.
+
+| Atributo do shortcode | Valor                                                        |
+| --------------------- | ------------------------------------------------------------ |
+| `style`               | `milestones` ou `next`. Vazio segue a configuração           |
+| `bar_color`           | Cor hexadecimal da barra. Vazio usa a da loja, ou a do texto |
+| `track_color`         | Cor hexadecimal do trilho. Vazio usa a da loja               |
+
+```text
+[csbmw_spending_goals style="next" bar_color="#1e8a3c"]
+```
+
 ## Hooks
 
 ### Campos
@@ -357,6 +407,25 @@ add_filter(
 			},
 		) + $services;
 	}
+);
+```
+
+### Metas de compra
+
+| Filtro                             | Argumentos          | Uso                                                                                                        |
+| ---------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `csbmw_spending_goals`             | `$goals`, `$cart`   | Metas que a barra mostra, a mais próxima primeiro, cada uma com `type`, `label`, `threshold` e `remaining` |
+| `csbmw_spending_goal_coupon_label` | `$label`, `$coupon` | O que uma meta de cupom dá, como "10% de desconto"                                                         |
+
+```php
+// Nomeia o brinde do cupom em vez do desconto.
+add_filter(
+	'csbmw_spending_goal_coupon_label',
+	function ( $label, $coupon ) {
+		return 'brinde' === $coupon->get_code() ? 'uma ecobag de brinde' : $label;
+	},
+	10,
+	2
 );
 ```
 
