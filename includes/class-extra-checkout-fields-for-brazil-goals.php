@@ -588,7 +588,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		if ( 'no' === $method->ignore_discounts ) {
 			$with_tax = $cart->display_prices_including_tax();
 			$total   -= (float) $cart->get_discount_total() + ( $with_tax ? (float) $cart->get_discount_tax() : 0.0 );
-			$coupons  = self::coupons_on_the_way( $cart, $subtotal );
+			$coupons  = self::coupons_on_the_way( $cart );
 		}
 
 		if ( $from > $subtotal ) {
@@ -605,15 +605,14 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 
 	/**
 	 * Coupons that discount the cart as it grows or shrinks: those on it, in
-	 * the order WooCommerce applies them, then the goal coupons it reaches,
-	 * nearest first.
+	 * the order WooCommerce applies them, then the goal coupons not on it,
+	 * nearest first, whether still to be reached or kept out for now.
 	 *
-	 * @param WC_Cart $cart     Cart.
-	 * @param float   $subtotal Cart subtotal.
+	 * @param WC_Cart $cart Cart.
 	 *
 	 * @return array[] As discount() describes them.
 	 */
-	protected static function coupons_on_the_way( $cart, $subtotal ) {
+	protected static function coupons_on_the_way( $cart ) {
 		$with_tax = $cart->display_prices_including_tax();
 		$coupons  = array();
 
@@ -628,7 +627,6 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 		$pending = array_filter(
 			self::goal_coupons(),
 			static fn( $coupon ) => self::grows_with_cart( $coupon )
-				&& $subtotal < (float) $coupon->get_minimum_amount()
 				&& ! $cart->has_discount( wc_format_coupon_code( $coupon->get_code() ) )
 				&& self::is_offered( $coupon, $cart, true )
 		);
