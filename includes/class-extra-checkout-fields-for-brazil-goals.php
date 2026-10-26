@@ -1364,7 +1364,7 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			try {
 				$changed = self::swap_coupons( $cart );
 			} finally {
-				remove_filter( 'woocommerce_coupon_message', '__return_empty_string' );
+				remove_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
 
 				foreach ( array_keys( array_filter( $recalculates ) ) as $hook ) {
 					add_action( $hook, array( $cart, 'calculate_totals' ), 20, 0 );
@@ -1426,21 +1426,29 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			// put it on.
 			$session->set( self::APPLIED, array_values( array_unique( array_merge( $applied, array( $code ) ) ) ) );
 
-			// The bar tells the customer, rather than a notice.
-			add_filter( 'woocommerce_coupon_message', '__return_empty_string' );
+			add_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
 
 			if ( $cart->apply_coupon( $code ) ) {
 				$applied = array_values( array_unique( array_merge( $applied, array( $code ) ) ) );
 				$changed = true;
 			}
 
-			remove_filter( 'woocommerce_coupon_message', '__return_empty_string' );
+			remove_filter( 'woocommerce_coupon_message', array( __CLASS__, 'hide_coupon_message' ) );
 		}
 
 		$session->set( self::APPLIED, $applied );
 		$session->set( self::DECLINED, $declined );
 
 		return $changed;
+	}
+
+	/**
+	 * No notice for a goal coupon applied, as the bar tells the customer.
+	 *
+	 * @return string
+	 */
+	public static function hide_coupon_message() {
+		return '';
 	}
 
 	/**

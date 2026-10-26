@@ -603,7 +603,7 @@ class GoalsTest extends WP_UnitTestCase {
 
 		$this->assertSame( 20, has_action( 'woocommerce_applied_coupon', array( WC()->cart, 'calculate_totals' ) ) );
 		$this->assertSame( 20, has_action( 'woocommerce_removed_coupon', array( WC()->cart, 'calculate_totals' ) ) );
-		$this->assertFalse( has_filter( 'woocommerce_coupon_message', '__return_empty_string' ) );
+		$this->assertFalse( has_filter( 'woocommerce_coupon_message', array( Extra_Checkout_Fields_For_Brazil_Goals::class, 'hide_coupon_message' ) ) );
 
 		// WooCommerce put the coupon on before the extension threw.
 		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
@@ -612,6 +612,21 @@ class GoalsTest extends WP_UnitTestCase {
 
 		WC()->cart->set_quantity( array_key_first( WC()->cart->get_cart() ), 2 );
 		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+	}
+
+	/**
+	 * Hiding the notice of a goal coupon leaves an extension's own filter on
+	 * the coupon message.
+	 */
+	public function test_goal_coupons_leave_other_message_filters() {
+		$this->coupon( 'meta', 100 );
+		add_filter( 'woocommerce_coupon_message', '__return_empty_string' );
+
+		$this->fill_cart( 2 );
+		$this->assertTrue( WC()->cart->has_discount( 'meta' ) );
+		$this->assertSame( 10, has_filter( 'woocommerce_coupon_message', '__return_empty_string' ) );
+
+		remove_filter( 'woocommerce_coupon_message', '__return_empty_string' );
 	}
 
 	/**
