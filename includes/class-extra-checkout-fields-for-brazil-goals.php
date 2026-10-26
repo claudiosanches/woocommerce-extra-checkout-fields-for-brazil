@@ -545,9 +545,11 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 			}
 		}
 
-		$points = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $minimum && $point <= $maximum );
+		// Off the cart past its minimum, it is kept out up to the subtotal.
+		$start  = $cart->has_discount( $code ) ? $minimum : max( $minimum, self::subtotal( $cart ) );
+		$points = array_filter( self::breakpoints( $coupons ), static fn( $point ) => $point > $start && $point <= $maximum );
 
-		foreach ( array_merge( array( $minimum ), $points ) as $point ) {
+		foreach ( array_merge( array( $start ), $points ) as $point ) {
 			if ( in_array( $code, array_column( self::active_at( $coupons, $point ), 'code' ), true ) ) {
 				return $point;
 			}
