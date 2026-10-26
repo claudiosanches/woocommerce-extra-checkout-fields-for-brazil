@@ -499,12 +499,32 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * @return float[][] Lowest and highest subtotal of each coupon.
 	 */
 	protected static function free_shipping_coupon_spans( $cart ) {
-		$spans = array();
-		$codes = array();
+		$spans   = array();
+		$codes   = array();
+		$offered = array();
+		$coupons = array();
+
+		foreach ( $cart->get_coupons() as $applied ) {
+			$coupons[] = self::discount( $applied, 0.0, 0.0 );
+		}
 
 		foreach ( self::goal_coupons() as $coupon ) {
-			$codes[] = wc_format_coupon_code( $coupon->get_code() );
-			$from    = $coupon->get_free_shipping() && self::is_offered( $coupon, $cart, true ) ? self::applies_from( $cart, $coupon ) : null;
+			$code    = wc_format_coupon_code( $coupon->get_code() );
+			$codes[] = $code;
+
+			if ( ! self::is_offered( $coupon, $cart, true ) ) {
+				continue;
+			}
+
+			$offered[] = $coupon;
+
+			if ( ! $cart->has_discount( $code ) ) {
+				$coupons[] = self::discount( $coupon, 0.0, 0.0 );
+			}
+		}
+
+		foreach ( $offered as $coupon ) {
+			$from = $coupon->get_free_shipping() ? self::applies_from( $cart, $coupon, $coupons ) : null;
 
 			if ( null !== $from ) {
 				$spans[] = array( $from, self::maximum( $coupon ) );
@@ -524,26 +544,17 @@ class Extra_Checkout_Fields_For_Brazil_Goals {
 	 * Lowest subtotal from which a goal coupon applies, once the cart's
 	 * coupons and the goal coupons reached before it make way.
 	 *
-	 * @param WC_Cart   $cart   Cart.
-	 * @param WC_Coupon $coupon Goal coupon.
+	 * @param WC_Cart   $cart    Cart.
+	 * @param WC_Coupon $coupon  Goal coupon.
+	 * @param array[]   $coupons The cart's coupons, then the goal coupons on
+	 *                           offer off it, as discount() describes them.
 	 *
 	 * @return float|null Null when an individual use coupon keeps it out.
 	 */
-	protected static function applies_from( $cart, $coupon ) {
+	protected static function applies_from( $cart, $coupon, $coupons ) {
 		$code    = wc_format_coupon_code( $coupon->get_code() );
 		$minimum = (float) $coupon->get_minimum_amount();
 		$maximum = self::maximum( $coupon );
-		$coupons = array();
-
-		foreach ( $cart->get_coupons() as $applied ) {
-			$coupons[] = self::discount( $applied, 0.0, 0.0 );
-		}
-
-		foreach ( self::goal_coupons() as $goal ) {
-			if ( ! $cart->has_discount( wc_format_coupon_code( $goal->get_code() ) ) && self::is_offered( $goal, $cart, true ) ) {
-				$coupons[] = self::discount( $goal, 0.0, 0.0 );
-			}
-		}
 
 		// Off the cart past its minimum, it is kept out up to the subtotal.
 		$start  = $cart->has_discount( $code ) ? $minimum : max( $minimum, self::subtotal( $cart ) );

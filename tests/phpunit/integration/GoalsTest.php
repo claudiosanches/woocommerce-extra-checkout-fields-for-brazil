@@ -1006,6 +1006,33 @@ class GoalsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Free shipping coupons are checked once each, not once per coupon.
+	 */
+	public function test_free_shipping_coupons_are_checked_once() {
+		foreach ( range( 1, 5 ) as $number ) {
+			$coupon = $this->coupon( 'fretegratis' . $number, 100 + $number );
+			$coupon->set_amount( 0 );
+			$coupon->set_free_shipping( true );
+			$coupon->save();
+		}
+
+		$this->zone( array( 'BR' => 'country' ), '0', 'no', 'coupon' );
+		$this->fill_cart( 1 );
+
+		$checks = 0;
+		$count  = static function ( $valid ) use ( &$checks ) {
+			++$checks;
+
+			return $valid;
+		};
+		add_filter( 'woocommerce_coupon_is_valid', $count );
+		$this->assertSame( 51.0, $this->remaining()['free_shipping'] );
+		remove_filter( 'woocommerce_coupon_is_valid', $count );
+
+		$this->assertSame( 5, $checks );
+	}
+
+	/**
 	 * A free shipping coupon counts from where an individual use goal coupon
 	 * reached before it no longer keeps it out.
 	 */
